@@ -567,7 +567,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::waveManager
   currentWave: 0
   maxWaves: 100
-  timeBetweenWaves: 4
+  timeBetweenWaves: 6
   enemiesAlive: 0
   waveInProgress: 0
 --- !u!1001 &939227355
@@ -1091,33 +1091,7 @@ MonoBehaviour:
   enemiesToSpawnThisWave: 0
   enemiesSpawnedThisWave: 0
   isSpawning: 0
---- !u!114 &2790533445911173845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155615222273482514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d19052928de4c49478560cad874495a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::spawnPoint
-  startingEnemies: 3
-  enemyIncreasePercent: 25
-  timeBetweenSpawns: 3
-  basicEnemyPrefab: {fileID: 423618413738385519, guid: 5458afda8bd37b3479300efac54fae3c, type: 3}
-  rangedEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
-  heavyEnemyPrefab: {fileID: 4643874062370731178, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
-  rangedEnemyPercent: 60
-  basicEnemyPercent: 30
-  heavyEnemyPercent: 10
-  spawnDist: 3
-  spawnEffect: {fileID: 0}
-  enemiesToSpawnThisWave: 0
-  enemiesSpawnedThisWave: 0
-  isSpawning: 0
---- !u!1001 &4001081166012508121
+--- !u!1001 &1770547578729217208
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1125,14 +1099,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3906629957791212354, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 3906629957791212354, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -62
-      objectReference: {fileID: 0}
     - target: {fileID: 6785670985224404860, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1213,26 +1179,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8416121849201651347, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: m_text
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8416121849201651347, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: m_fontSize
-      value: 48
-      objectReference: {fileID: 0}
-    - target: {fileID: 8416121849201651347, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: m_margin.z
-      value: -101.58962
-      objectReference: {fileID: 0}
-    - target: {fileID: 8416121849201651347, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: m_enableAutoSizing
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8416121849201651347, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: m_HorizontalAlignment
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8525187160557472781, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Name
       value: UI
@@ -1242,6 +1188,32 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+--- !u!114 &2790533445911173845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155615222273482514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19052928de4c49478560cad874495a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::spawnPoint
+  startingEnemies: 3
+  enemyIncreasePercent: 25
+  timeBetweenSpawns: 3
+  basicEnemyPrefab: {fileID: 423618413738385519, guid: 5458afda8bd37b3479300efac54fae3c, type: 3}
+  rangedEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
+  heavyEnemyPrefab: {fileID: 4643874062370731178, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+  rangedEnemyPercent: 60
+  basicEnemyPercent: 30
+  heavyEnemyPercent: 10
+  spawnDist: 3
+  spawnEffect: {fileID: 0}
+  enemiesToSpawnThisWave: 0
+  enemiesSpawnedThisWave: 0
+  isSpawning: 0
 --- !u!1 &4392195437373994228
 GameObject:
   m_ObjectHideFlags: 0
@@ -1297,7 +1269,7 @@ SceneRoots:
   - {fileID: 1604268014}
   - {fileID: 1041264627}
   - {fileID: 1697934050}
-  - {fileID: 4001081166012508121}
+  - {fileID: 1770547578729217208}
   - {fileID: 355225157}
   - {fileID: 263170800}
   - {fileID: 1526205484}

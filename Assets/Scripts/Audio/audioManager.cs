@@ -10,31 +10,32 @@ public class audioManager : MonoBehaviour
 
     [Header("Volume Settings")]
     [Range(0f, 1f)] public float masterVolume = 1f;
+    [Range(0f, 1f)] public float musicVolume = 1f;
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
     [Header("SFX")]
     [SerializeField] public AudioClip jump;
-    [Range(0, 1)][SerializeField] public float jumpVol;
+    [Range(0, 1)][SerializeField] public float jumpVol = .3f;
     [SerializeField] public AudioClip hurt;
-    [Range(0, 1)][SerializeField] public float hurtVol;
+    [Range(0, 1)][SerializeField] public float hurtVol = .3f;
     [SerializeField] public AudioClip steps;
-    [Range(0, 1)][SerializeField] public float stepsVol;
+    [Range(0, 1)][SerializeField] public float stepsVol = .3f;
     [SerializeField] public AudioClip enemyHit;
-    [Range(0, 1)][SerializeField] public float enemyHitVol;
+    [Range(0, 1)][SerializeField] public float enemyHitVol = .8f;
     [SerializeField] public AudioClip enemyShoot;
-    [Range(0, 1)][SerializeField] public float enemyShootVol;
+    [Range(0, 1)][SerializeField] public float enemyShootVol = .8f;
     [SerializeField] public AudioClip wallHit;
-    [Range(0, 1)][SerializeField] public float wallHitVol;
+    [Range(0, 1)][SerializeField] public float wallHitVol = .8f;
     [SerializeField] public AudioClip equip;
-    [Range(0, 1)][SerializeField] public float equipVol;
+    [Range(0, 1)][SerializeField] public float equipVol = .8f;
     [SerializeField] public AudioClip bulletRicochet;
-    [Range(0, 1)][SerializeField] public float bulletRicochetVol;
+    [Range(0, 1)][SerializeField] public float bulletRicochetVol = .8f;
     [SerializeField] public AudioClip glass;
-    [Range(0, 1)][SerializeField] public float glassVol;
+    [Range(0, 1)][SerializeField] public float glassVol = .8f;
     [SerializeField] public AudioClip buttonClick;
-    [Range(0, 1)][SerializeField] public float buttonClickVol;
+    [Range(0, 1)][SerializeField] public float buttonClickVol = .8f;
     [SerializeField] private AudioClip nukeSFX;
-    [Range(0, 1)][SerializeField] public float nukeSFXVol;
+    [Range(0, 1)][SerializeField] public float nukeSFXVol = .8f;
 
     [Header("Music")]
     [SerializeField] public AudioClip titleScreenSound;
@@ -57,6 +58,11 @@ public class audioManager : MonoBehaviour
     public void setMasterVolume(float vol)
     {
         masterVolume = vol;
+    }
+
+    public void setMusicVolume(float vol)
+    {
+        musicVolume = vol;
     }
 
     public void setSFXVolume(float vol)
@@ -99,7 +105,7 @@ public class audioManager : MonoBehaviour
         if (clip == null || musicSource == null) return;
 
         musicSource.clip = clip;
-        musicSource.volume = masterVolume;
+        musicSource.volume = musicVolume * masterVolume;
         musicSource.Play();
     }
 
