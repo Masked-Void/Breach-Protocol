@@ -26,6 +26,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     [SerializeField] float roamWaitTime = 1.1f;
     float roamTimer;
     Vector3 startingPos;
+    [SerializeField] GameObject fixedRoamPos;
+    [SerializeField] float roamChance = .1f;
 
     protected bool playerInTrigger;
     protected float angleToPlayer;
@@ -33,7 +35,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     protected float attackTimer;
 
     protected Vector3 playerDir;
+
+    [Header("Spawn and Roam")]
     public bool hasLeftSpawnRoom = false;
+    public bool willRoam = false;
+    [SerializeField] GameObject roamPoint;
 
     protected virtual void Start()
     {
@@ -41,6 +47,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         currentHP = maxHP;
         startingPos = transform.position;
         stoppingDistOrig = agent.stoppingDistance;
+
+        roamFixed();
 
         if (model != null)
             colorOrig = model.material.color;
@@ -50,12 +58,19 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     {
         if(gameManager.instance != null && gameManager.instance.isPaused) return;
         attackTimer += Time.unscaledDeltaTime;
-        if (playerInTrigger && canSeePlayer())
+        //if (playerInTrigger && canSeePlayer())
+        //{
+        //}
+        //else
+        //{
+        //    checkRoam();
+        //}
+        if (willRoam)
         {
-        }
-        else
+            checkRoamFixed();
+        } else
         {
-            checkRoam();
+
         }
     }
 
@@ -96,6 +111,35 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         Vector3 ranPos = Random.insideUnitSphere * roamDist + startingPos;
         if (NavMesh.SamplePosition(ranPos, out NavMeshHit hit, roamDist, 1))
             agent.SetDestination(hit.position);
+    }
+
+    void checkRoamFixed()
+    {
+        if (agent.remainingDistance < 0.01f)
+        {
+            roamTimer += Time.deltaTime;
+            if (roamTimer > roamWaitTime)
+            {
+                float randomNumber = Random.Range(0, 1);
+                if (randomNumber > roamChance)
+                {
+                    roamFixed();
+                }
+                else
+                {
+                    roamTimer = 0;
+                }
+            }
+        }
+    }
+
+    void roamFixed()
+    {
+        roamTimer = 0;
+        waveManager manager = fixedRoamPos.GetComponent<waveManager>();
+
+        Vector3 newRoamPos = manager.newRoamPos();
+        agent.SetDestination(newRoamPos);
     }
 
     private void OnTriggerEnter(Collider other)

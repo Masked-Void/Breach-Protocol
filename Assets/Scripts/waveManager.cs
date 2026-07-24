@@ -65,6 +65,11 @@ public class waveManager : MonoBehaviour
     [Header("Spawn Points")]
     [SerializeField] private Transform[] spawnPoints;
 
+    [Header("Roam")]
+    [SerializeField] private Transform[] roamPoints;
+    [Tooltip("Roaming is only for ranged enemies")]
+    [SerializeField] private float roamPercent;
+
     [Header("Runtime")]
     [SerializeField] private int enemiesAlive;
     [SerializeField] private int enemiesSpawnedThisWave;
@@ -145,16 +150,34 @@ public class waveManager : MonoBehaviour
 
         GameObject enemyToSpawn = chooseEnemyPrefab();
 
+
         if (enemyToSpawn == null)
         {
             //Debug.LogWarning("WaveManager is missing an enemy prefab.");
             return;
         }
 
+
         Transform chosenSpawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
         GameObject enemyObj = Instantiate(enemyToSpawn, chosenSpawn.position, chosenSpawn.rotation);
         EnemyBase eb = enemyObj.GetComponent<EnemyBase>();
+
+        if (enemyToSpawn == rangedEnemyPrefab)
+        {
+            float randomValue = Random.Range(0, 1);
+            if (randomValue > roamPercent)
+            {
+                eb.willRoam = true;
+            }
+
+        }
+    }
+
+    public Vector3 newRoamPos()
+    {
+        int randomValue = Random.Range(0, roamPoints.Length);
+        return new Vector3(roamPoints[randomValue].transform.position.x, roamPoints[randomValue].transform.position.y, roamPoints[randomValue].transform.position.z);
     }
 
     GameObject chooseEnemyPrefab()
