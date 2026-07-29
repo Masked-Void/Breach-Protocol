@@ -7,6 +7,7 @@ public class doorController : MonoBehaviour
     [SerializeField] float movementTime = 1;
 
     [SerializeField] GameObject endPosObj;
+    [SerializeField] GameObject doorObj;
 
     Vector3 startPos;
     Vector3 endPos;
@@ -17,7 +18,7 @@ public class doorController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        startPos = transform.position;
+        startPos = doorObj.transform.position;
         endPos = endPosObj.transform.position;
     }
 
@@ -65,7 +66,7 @@ public class doorController : MonoBehaviour
 
             float percentComplete = elapsedTime / movementTime;
 
-            transform.position = Vector3.Lerp(startPos, endPos, percentComplete);
+            doorObj.transform.position = Vector3.Lerp(startPos, endPos, percentComplete);
 
             yield return null;
 
@@ -83,7 +84,7 @@ public class doorController : MonoBehaviour
 
             float percentComplete = elapsedTime / movementTime;
 
-            transform.position = Vector3.Lerp(endPos, startPos, percentComplete);
+            doorObj.transform.position = Vector3.Lerp(endPos, startPos, percentComplete);
 
             yield return null;
         }
