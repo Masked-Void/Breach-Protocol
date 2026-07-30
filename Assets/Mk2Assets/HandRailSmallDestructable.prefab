@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 7852342146803454292}
   - component: {fileID: 8465156656148615731}
   - component: {fileID: 5000178798813727529}
+  - component: {fileID: 5594993172279496573}
+  - component: {fileID: 6090578348771721897}
   m_Layer: 0
   m_Name: HandRailSmallGlass_mesh
   m_TagString: Untagged
@@ -90,6 +92,49 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5594993172279496573
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4643713953965903948}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6832698350697518768, guid: 6efed501cef2bb34c95856047622797f, type: 3}
+--- !u!65 &6090578348771721897
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4643713953965903948}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.323725, y: 1.0503918, z: 0.14441407}
+  m_Center: {x: 1.3500186, y: 0.53690475, z: -0.072202146}
 --- !u!1 &6306686092624542316
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,6 +146,7 @@ GameObject:
   - component: {fileID: 9076090511372125952}
   - component: {fileID: 7354716889983973887}
   - component: {fileID: 4044681878663270846}
+  - component: {fileID: 3539237943755430936}
   m_Layer: 0
   m_Name: HandRailSmall_mesh
   m_TagString: Untagged
@@ -180,6 +226,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3539237943755430936
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6306686092624542316}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3302947437201538286, guid: 6efed501cef2bb34c95856047622797f, type: 3}
 --- !u!1 &7512865966488244013
 GameObject:
   m_ObjectHideFlags: 0
