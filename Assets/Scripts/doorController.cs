@@ -38,7 +38,7 @@ public class doorController : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy")&& other.GetComponent<EnemyBase>().hasLeftSpawnRoom==false)
+        if (other.CompareTag("Enemy")&& other.GetComponent<enemyBase>().hasLeftSpawnRoom==false)
         {
             StartCoroutine(OpenDoor());
         }
@@ -46,10 +46,10 @@ public class doorController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Enemy") && other.GetComponent<EnemyBase>().hasLeftSpawnRoom == false)
+        if (other.CompareTag("Enemy") && other.GetComponent<enemyBase>().hasLeftSpawnRoom == false)
         {
             StartCoroutine(CloseDoor());
-            other.GetComponent<EnemyBase>().hasLeftSpawnRoom = true;
+            other.GetComponent<enemyBase>().hasLeftSpawnRoom = true;
         }
     }
 

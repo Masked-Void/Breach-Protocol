@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class RangedEnemy : EnemyBase
+public class rangedEnemy : enemyBase
 {
     [Header("Weapon")]
     [SerializeField] GameObject bullet;

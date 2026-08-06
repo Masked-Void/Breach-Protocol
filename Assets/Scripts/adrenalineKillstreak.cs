@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class killstreakAdrenaline : killstreakBase
+public class adrenalineKillstreak : killstreakBase
 {
     [Header("Adrenaline Rush")]
     [Tooltip("How slow the world becomes. 0.2 = enemies move at 20% speed.")]

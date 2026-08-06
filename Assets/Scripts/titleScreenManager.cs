@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class titleMenuManager : MonoBehaviour
+public class titleScreenManager : MonoBehaviour
 {
     [SerializeField] private GameObject titleMenuPanel;
     [SerializeField] private Slider progressBar;

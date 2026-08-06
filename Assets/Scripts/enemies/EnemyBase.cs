@@ -3,7 +3,7 @@ using UnityEngine.AI;
 using System.Collections;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public abstract class EnemyBase : MonoBehaviour, IDamage
+public abstract class enemyBase : MonoBehaviour, IDamage
 {
     [Header("Visuals")]
     [SerializeField] public Renderer model;

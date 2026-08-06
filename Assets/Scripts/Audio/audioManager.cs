@@ -16,24 +16,34 @@ public class audioManager : MonoBehaviour
     [Header("SFX")]
     [SerializeField] public AudioClip jump;
     [Range(0, 1)][SerializeField] public float jumpVol = .3f;
+
     [SerializeField] public AudioClip hurt;
     [Range(0, 1)][SerializeField] public float hurtVol = .3f;
+    
     [SerializeField] public AudioClip steps;
     [Range(0, 1)][SerializeField] public float stepsVol = .3f;
+    
     [SerializeField] public AudioClip enemyHit;
     [Range(0, 1)][SerializeField] public float enemyHitVol = .8f;
+    
     [SerializeField] public AudioClip enemyShoot;
     [Range(0, 1)][SerializeField] public float enemyShootVol = .8f;
+    
     [SerializeField] public AudioClip wallHit;
     [Range(0, 1)][SerializeField] public float wallHitVol = .8f;
+    
     [SerializeField] public AudioClip equip;
     [Range(0, 1)][SerializeField] public float equipVol = .8f;
+    
     [SerializeField] public AudioClip bulletRicochet;
     [Range(0, 1)][SerializeField] public float bulletRicochetVol = .8f;
+    
     [SerializeField] public AudioClip glass;
     [Range(0, 1)][SerializeField] public float glassVol = .8f;
+    
     [SerializeField] public AudioClip buttonClick;
     [Range(0, 1)][SerializeField] public float buttonClickVol = .8f;
+    
     [SerializeField] private AudioClip nukeSFX;
     [Range(0, 1)][SerializeField] public float nukeSFXVol = .8f;
 

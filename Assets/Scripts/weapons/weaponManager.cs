@@ -55,7 +55,7 @@ public class weaponManager : MonoBehaviour
 
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
-        spawnedWeaponModel.TryGetComponent<Clip>(out Clip clip);
+        spawnedWeaponModel.TryGetComponent<clip>(out clip clip);
         if(clip != null) clip.enabled = true;
 
         // Locate the barrel or hitpoint
