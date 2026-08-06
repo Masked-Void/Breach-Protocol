@@ -11,9 +11,12 @@ public class buttonFunctions : MonoBehaviour
 
     public void restart()
     {
-        audioManager.instance.playButtonClick();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (audioManager.instance != null)
+        {
+            audioManager.instance.playButtonClick();
+        }
         gameManager.instance.stateUnpause();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void sound()

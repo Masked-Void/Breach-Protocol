@@ -30,6 +30,6 @@ public class RangedEnemy : EnemyBase
     void rotateGun()
     {
         Quaternion rot = Quaternion.LookRotation(playerDir);
-        gunPivot.rotation = Quaternion.Lerp(transform.rotation, rot, gunRotateSpeed * Time.deltaTime);
+        gunPivot.rotation = Quaternion.Lerp(gunPivot.rotation, rot, gunRotateSpeed * Time.deltaTime);
     }
 }

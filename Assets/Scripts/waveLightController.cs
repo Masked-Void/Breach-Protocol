@@ -188,7 +188,7 @@ public class waveLightController : MonoBehaviour
 
         while (timer < duration)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
 
             float percent = duration > 0f
                 ? timer / duration

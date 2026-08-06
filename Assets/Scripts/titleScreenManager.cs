@@ -15,6 +15,7 @@ public class titleMenuManager : MonoBehaviour
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        canvasGroup = titleMenuPanel.GetComponent<CanvasGroup>();
 
         audioManager.instance.playTitleScreenSound();
     }
@@ -58,7 +59,7 @@ public class titleMenuManager : MonoBehaviour
             progressBar.value = 0f;
         }
 
-        AsyncOperation scene = SceneManager.LoadSceneAsync(1);
+        AsyncOperation scene = SceneManager.LoadSceneAsync("MK2");
         scene.allowSceneActivation = false;
 
         while (scene.progress < 0.9f)

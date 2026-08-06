@@ -21,7 +21,7 @@ public class playerInteraction : MonoBehaviour
     {
         if (gameManager.instance != null && gameManager.instance.isPaused) return;
 
-        if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetButtonDown("Fire1"))
             weaponManager.instance.attack();
 
         Ray ray = new Ray(mainCam.transform.position, mainCam.transform.forward);
@@ -32,7 +32,7 @@ public class playerInteraction : MonoBehaviour
             if (hit.collider.TryGetComponent<pickWeapon>(out var weaponPickup))
             {
                 gameManager.instance.pickUpUI.SetActive(true);
-                if (Input.GetKeyDown(KeyCode.E) && picker != null)
+                if (Input.GetButtonDown("Interact") && picker != null)
                 {
                     weaponPickup.interact(picker);
                     gameManager.instance.pickUpUI.SetActive(false);

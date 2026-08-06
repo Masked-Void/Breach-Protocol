@@ -15,6 +15,8 @@ public class doorController : MonoBehaviour
     public bool runOpen = false;
     public bool runClose = false;
 
+    Coroutine doorRoutine;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -26,70 +28,56 @@ public class doorController : MonoBehaviour
     {
         if (runOpen)
         {
-            StartCoroutine(OpenDoor());
+            startDoor(endPos);
             runOpen = false;
         }
 
         if (runClose)
         {
-            StartCoroutine(CloseDoor());
+            startDoor(startPos);
             runClose = false;
         }
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy")&& other.GetComponent<EnemyBase>().hasLeftSpawnRoom==false)
+        if (other.CompareTag("Enemy") && other.TryGetComponent(out EnemyBase eb) && !eb.hasLeftSpawnRoom)
         {
-            StartCoroutine(OpenDoor());
+            startDoor(endPos);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Enemy") && other.GetComponent<EnemyBase>().hasLeftSpawnRoom == false)
+        if (other.CompareTag("Enemy") && other.TryGetComponent(out EnemyBase eb) && !eb.hasLeftSpawnRoom)
         {
-            StartCoroutine(CloseDoor());
-            other.GetComponent<EnemyBase>().hasLeftSpawnRoom = true;
+            startDoor(startPos);
+            eb.hasLeftSpawnRoom = true;
         }
     }
 
-    private IEnumerator OpenDoor()
+    void startDoor(Vector3 target)
     {
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < movementTime)
-        {
-
-            elapsedTime += Time.deltaTime;
-
-            float percentComplete = elapsedTime / movementTime;
-
-            doorObj.transform.position = Vector3.Lerp(startPos, endPos, percentComplete);
-
-            yield return null;
-
-        }
-       
+        if (doorRoutine != null) StopCoroutine(doorRoutine);
+        doorRoutine = StartCoroutine(moveDoor(target));
     }
 
-    private IEnumerator CloseDoor()
+    private IEnumerator moveDoor(Vector3 target)
     {
+        Vector3 from = doorObj.transform.position;
         float elapsedTime = 0f;
 
         while (elapsedTime < movementTime)
         {
             elapsedTime += Time.deltaTime;
-
-            float percentComplete = elapsedTime / movementTime;
-
-            doorObj.transform.position = Vector3.Lerp(endPos, startPos, percentComplete);
-
+            doorObj.transform.position = Vector3.Lerp(from, target, elapsedTime / movementTime);
             yield return null;
         }
 
+        doorObj.transform.position = target;
+        doorRoutine = null;
     }
+
 }
 
 

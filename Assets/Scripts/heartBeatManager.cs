@@ -93,11 +93,6 @@ public class heartbeatManager : MonoBehaviour
         // Converts stress into a BPM value.
         currentBPM = Mathf.RoundToInt(Mathf.Lerp(restingBPM, maxBPM, stressPercent));
 
-        // Sends BPM to the UI through gameManager.
-        if (gameManager.instance != null)
-        {
-            gameManager.instance.updateHeartRate(currentBPM);
-        }
     }
 
     void checkLoseCondition()

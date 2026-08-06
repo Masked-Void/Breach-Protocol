@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6914795750469727557}
   - component: {fileID: 6535228883703808748}
   - component: {fileID: 451181395912338502}
+  - component: {fileID: 1770449938178653932}
   - component: {fileID: 2272548355662393267}
   - component: {fileID: 8313911891260074352}
   m_Layer: 0
@@ -92,6 +93,22 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1770449938178653932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 761162504392701101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 087e7826a5049fb42be0ea25c00187d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::glassShatter
+  wholeGlass: {fileID: 761162504392701101}
+  shards: []
+  explosionRadius: 2
+  YForce: 0.4
 --- !u!65 &2272548355662393267
 BoxCollider:
   m_ObjectHideFlags: 0

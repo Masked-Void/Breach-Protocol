@@ -157,7 +157,6 @@ GameObject:
   - component: {fileID: 7075587635719164594}
   - component: {fileID: 3262802430056639548}
   - component: {fileID: 710156433528328776}
-  - component: {fileID: 5261133990583353142}
   - component: {fileID: 7931631704010347091}
   m_Layer: 7
   m_Name: RangedEnemy
@@ -202,9 +201,12 @@ MonoBehaviour:
   attackRate: 0.4
   attackRange: 8
   attackDamage: 1
-  roamDist: 12
   roamWaitTime: 1.8
+  fixedRoamPos: {fileID: 0}
+  roamChance: 0.1
   hasLeftSpawnRoom: 0
+  willRoam: 0
+  roamPoint: {fileID: 0}
   bullet: {fileID: 6152012165266093810, guid: 05e0818bb028d7f4c93c246ee307f7c5, type: 3}
   gunPivot: {fileID: 7980070263694380636}
   shootPos: {fileID: 7070603407456855050}
@@ -288,27 +290,6 @@ CapsuleCollider:
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &5261133990583353142
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7521726833427132236}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 10
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!195 &7931631704010347091
 NavMeshAgent:

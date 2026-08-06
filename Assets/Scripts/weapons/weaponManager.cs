@@ -81,6 +81,13 @@ public class weaponManager : MonoBehaviour
             return;
 
         attackTimer = 0f;
+       
+        if (heartbeatManager.instance != null)
+        {
+            heartbeatManager.instance.playerShot();
+        }
+
         activeWeapon.Attack(this);
+
     }
 }

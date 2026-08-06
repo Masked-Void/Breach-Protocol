@@ -22,10 +22,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     [Range(1, 20)][SerializeField] public int attackDamage = 1;
 
     [Header("Roaming")]
-    [SerializeField] float roamDist = 10f;
     [SerializeField] float roamWaitTime = 1.1f;
     float roamTimer;
-    Vector3 startingPos;
     [SerializeField] GameObject fixedRoamPos;
     [SerializeField] float roamChance = .1f;
 
@@ -45,7 +43,6 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     {
         agent = GetComponent<NavMeshAgent>();
         currentHP = maxHP;
-        startingPos = transform.position;
         stoppingDistOrig = agent.stoppingDistance;
 
         roamFixed();
@@ -56,22 +53,45 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
     void Update()
     {
-        if(gameManager.instance != null && gameManager.instance.isPaused) return;
-        attackTimer += Time.unscaledDeltaTime;
-        //if (playerInTrigger && canSeePlayer())
-        //{
-        //}
-        //else
-        //{
-        //    checkRoam();
-        //}
-        if (willRoam)
-        {
-            checkRoamFixed();
-        } else
-        {
+        if (gameManager.instance != null && gameManager.instance.isPaused) return;
+        attackTimer += Time.deltaTime;
 
+        // If this enemy is set to roam, never chase the player.
+        if (!willRoam && playerInTrigger && canSeePlayer())
+        {
+            // chase + attack happen inside canSeePlayer
         }
+        else if (willRoam)
+        {
+            // While roaming, don't abandon roam to chase, but still attempt to attack if player is visible/within range.
+            tryAttackFromCurrentPosition();
+            checkRoamFixed();
+        }
+    }
+
+    // Attempt to see and attack the player without changing the agent's destination.
+    // Returns true if the player was visible and an attack/face action was triggered.
+    protected bool tryAttackFromCurrentPosition()
+    {
+        if (gameManager.instance == null || gameManager.instance.player == null) return false;
+
+        Vector3 dir = gameManager.instance.player.transform.position - transform.position;
+        float angle = Vector3.Angle(dir, transform.forward);
+
+        if (angle > FOV) return false;
+
+        if (Physics.Raycast(transform.position, dir, out RaycastHit hit))
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                playerDir = dir;
+                faceTarget();
+                attack();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     bool canSeePlayer()
@@ -92,36 +112,20 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             }
         }
         agent.stoppingDistance = 0;
-        return true;
+        return false;
     }
 
-    void checkRoam()
-    {
-        if (agent.remainingDistance < 0.01f)
-        {
-            roamTimer += Time.deltaTime;
-            if (roamTimer > roamWaitTime) roam();
-        }
-    }
-
-    void roam()
-    {
-        roamTimer = 0;
-        agent.stoppingDistance = 0;
-        Vector3 ranPos = Random.insideUnitSphere * roamDist + startingPos;
-        if (NavMesh.SamplePosition(ranPos, out NavMeshHit hit, roamDist, 1))
-            agent.SetDestination(hit.position);
-    }
+    // Legacy roaming methods removed; fixed roaming (roamFixed) is used instead.
 
     void checkRoamFixed()
     {
-        if (agent.remainingDistance < 0.01f)
+        if (agent.remainingDistance < 0.00001f)
         {
             roamTimer += Time.deltaTime;
             if (roamTimer > roamWaitTime)
             {
-                float randomNumber = Random.Range(0, 1);
-                if (randomNumber > roamChance)
+                float randomNumber = Random.Range(0f, 1f);
+                if (randomNumber < roamChance)
                 {
                     roamFixed();
                 }
@@ -136,10 +140,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     void roamFixed()
     {
         roamTimer = 0;
-        waveManager manager = fixedRoamPos.GetComponent<waveManager>();
-
-        Vector3 newRoamPos = manager.newRoamPos();
-        agent.SetDestination(newRoamPos);
+        if (waveManager.instance != null)
+        {
+            agent.SetDestination(waveManager.instance.newRoamPos());
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -164,10 +168,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
         if (currentHP <= 0)
         {
-            waveManager.instance.enemyKilled();
-            FindAnyObjectByType<killChainManager>()?.RegisterKill();
-            //gameManager.updateGameGoal(-1);
-            Destroy(gameObject);
+            die();
         }
         else if (model != null)
         {
@@ -175,10 +176,24 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         }
     }
 
+    void die()
+    {
+        waveManager.instance.enemyKilled();
+        if (gameManager.instance != null)
+        {
+            gameManager.instance.addKill();
+        }
+        if (killChainManager.instance != null)
+        {
+            killChainManager.instance.RegisterKill();
+        }
+        Destroy(gameObject);
+    }
+
     IEnumerator FlashBlack()
     {
         model.material.color = Color.black;
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSecondsRealtime(.1f);
         model.material.color = colorOrig;
     }
 
@@ -190,10 +205,19 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
     protected abstract void attack();
 
+    protected bool tryMeleeHit()
+    {
+        agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
+        float dist = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
+        if (dist > attackRange || attackTimer <= attackRate) return false;
+
+        attackTimer = 0;
+        gameManager.instance.player.GetComponent<IDamage>()?.takeDamage(attackDamage);
+        return true;
+    }
+
     public void ForceKill()
     {
-        waveManager.instance.enemyKilled();
-        FindAnyObjectByType<killChainManager>()?.RegisterKill();
-        Destroy(gameObject);
+        die();
     }
 }

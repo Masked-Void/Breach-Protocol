@@ -107,7 +107,7 @@ public class waveManager : MonoBehaviour
         }
 
         // Wait for the warning sequence to finish.
-        yield return new WaitForSeconds(timeBetweenWaves);
+        yield return new WaitForSecondsRealtime(timeBetweenWaves);
 
         if (audioManager.instance != null) audioManager.instance.stopMusic();
 
@@ -134,7 +134,7 @@ public class waveManager : MonoBehaviour
             spawnEnemy();
             enemiesSpawnedThisWave++;
 
-            yield return new WaitForSeconds(timeBetweenSpawns);
+            yield return new WaitForSecondsRealtime(timeBetweenSpawns);
         }
 
         isSpawning = false;
@@ -165,8 +165,8 @@ public class waveManager : MonoBehaviour
 
         if (enemyToSpawn == rangedEnemyPrefab)
         {
-            float randomValue = Random.Range(0, 1);
-            if (randomValue > roamPercent)
+            float randomValue = Random.Range(0f, 1f);
+            if (randomValue < roamPercent)
             {
                 eb.willRoam = true;
             }
@@ -176,8 +176,9 @@ public class waveManager : MonoBehaviour
 
     public Vector3 newRoamPos()
     {
-        int randomValue = Random.Range(0, roamPoints.Length);
-        return new Vector3(roamPoints[randomValue].transform.position.x, roamPoints[randomValue].transform.position.y, roamPoints[randomValue].transform.position.z);
+        if (roamPoints == null || roamPoints.Length == 0) return transform.position;
+
+        return roamPoints[Random.Range(0, roamPoints.Length)].position;
     }
 
     GameObject chooseEnemyPrefab()

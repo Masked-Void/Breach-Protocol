@@ -27,7 +27,6 @@ public class nukeKillstreak : killstreakBase
                 continue;
 
             enemy.ForceKill();
-            enemiesKilled++;
         }
 
         // Return the kill-chain system to normal after the nuke finishes.

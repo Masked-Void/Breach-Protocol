@@ -1,15 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-public class playerController : MonoBehaviour, IDamage, IPickWeapon
+public class playerController : MonoBehaviour, IPickWeapon
 {
     [Header("Controller")]
     [SerializeField] CharacterController controller;
     
     [Header("Player Settings")]
-    [SerializeField] int HP;
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
     [SerializeField] int jumpSpeed;
@@ -31,7 +28,6 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
     float stepTimer;
 
     int jumpCount;
-    //int HPOriginal;
 
     Vector3 moveDir;
     Vector3 playerVel;
@@ -40,7 +36,6 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //HPOriginal = HP;
         currentStamina = maxStamina;
     }
 
@@ -119,7 +114,7 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
         if (controller.isGrounded && isMoving)
         {
             stepTimer -= Time.unscaledDeltaTime;
-            if (stepTimer <= 0f)
+            if (stepTimer <= 0f && audioManager.instance != null)
             {
                 audioManager.instance.playSteps();
                 stepTimer = isSprinting ? (stepInterval / sprintMod) : stepInterval;
@@ -141,7 +136,7 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
         }
     }
 
-    public void takeDamage(int amount)
+    public void takeDamage()
     {
         audioManager.instance.playHurt();
 
@@ -153,7 +148,7 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
         }
     }
 
-    public void weaponStats(weaponStats weapon)
+    public void equipWeapon(weaponStats weapon)
     {
         if (weaponManager.instance != null)
         {
@@ -182,7 +177,7 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
     IEnumerator flashDamage()
     {
         gameManager.instance.damageFlashUI.SetActive(true);
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSecondsRealtime(.1f);
         gameManager.instance.damageFlashUI.SetActive(false);
     }
 
