@@ -33,6 +33,11 @@ public class spawnPoint : MonoBehaviour
     [SerializeField] private GameObject rangedEnemyPrefab;
     [SerializeField] private GameObject heavyEnemyPrefab;
 
+    [Header("Weapon Prefabs")]
+    [SerializeField] private GameObject[] basicEnemyWeaponPrefabs;
+    [SerializeField] private GameObject[] rangedEnemyWeaponPrefabs;
+    [SerializeField] private GameObject[] heavyEnemyWeaponPrefabs;
+
     [Header("Enemy Spawn Percentages")]
     [Tooltip("Largest percent. Example: 60")]
     [SerializeField] private float rangedEnemyPercent;
@@ -123,6 +128,22 @@ public class spawnPoint : MonoBehaviour
         if (enemyToSpawn == null)
         {
             return;
+        }
+
+        if (enemyToSpawn == basicEnemyPrefab && basicEnemyWeaponPrefabs.Length > 0)
+        {
+            GameObject weaponPrefab = basicEnemyWeaponPrefabs[Random.Range(0, basicEnemyWeaponPrefabs.Length)];
+            enemyToSpawn.GetComponent<enemyBase>().SetWeaponPrefab(weaponPrefab);
+        }
+        else if (enemyToSpawn == rangedEnemyPrefab && rangedEnemyWeaponPrefabs.Length > 0)
+        {
+            GameObject weaponPrefab = rangedEnemyWeaponPrefabs[Random.Range(0, rangedEnemyWeaponPrefabs.Length)];
+            enemyToSpawn.GetComponent<enemyBase>().SetWeaponPrefab(weaponPrefab);
+        }
+        else if (enemyToSpawn == heavyEnemyPrefab && heavyEnemyWeaponPrefabs.Length > 0)
+        {
+            GameObject weaponPrefab = heavyEnemyWeaponPrefabs[Random.Range(0, heavyEnemyWeaponPrefabs.Length)];
+            enemyToSpawn.GetComponent<enemyBase>().SetWeaponPrefab(weaponPrefab);
         }
 
         Vector3 ranPos = Random.insideUnitSphere * spawnDist;

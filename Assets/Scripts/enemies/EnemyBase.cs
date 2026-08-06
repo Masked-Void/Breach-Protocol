@@ -152,4 +152,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         FindAnyObjectByType<killChainManager>()?.RegisterKill();
         Destroy(gameObject);
     }
+
+    public virtual void SetWeaponPrefab(GameObject weaponPrefab)
+    {
+        // This method can be overridden in derived classes to set the weapon prefab.
+    }
 }
