@@ -7,14 +7,20 @@ public class rangedEnemy : enemyBase
     [SerializeField] Transform gunPivot;
     [Range(1, 30)][SerializeField] int gunRotateSpeed;
 
-    public Transform shootPos;
-    public Transform bullet;
     public GameObject gunModel;
+    public weaponStats[] gunPrefabs;
+
+    gunStats activeGun;
+    private GameObject spawnedWeaponModel;
 
 
-    private void Awake()
+    public Transform gunBarrel;
+
+
+    protected override void Start()
     {
-        
+        base.Start();
+        SetWeaponPrefab();
     }
 
     protected override void attack()
@@ -28,11 +34,11 @@ public class rangedEnemy : enemyBase
     void shoot()
     {
         attackTimer = 0f;
-        if(audioManager.instance != null) 
-            audioManager.instance.playSpatialSFX(audioManager.instance.enemyShoot, shootPos.position, audioManager.instance.enemyShootVol);
-        
-        if (bullet != null && shootPos != null && gunPivot != null)
-            Instantiate(bullet, shootPos.position, gunPivot.rotation);
+        if (audioManager.instance != null)
+            audioManager.instance.playSpatialSFX(audioManager.instance.enemyShoot, gunBarrel.position, audioManager.instance.enemyShootVol);
+
+        if (activeGun.bullet != null && gunPivot != null)
+            Instantiate(activeGun.bullet, gunBarrel.position, gunPivot.rotation);
     }
 
     void rotateGun()
@@ -41,13 +47,21 @@ public class rangedEnemy : enemyBase
         gunPivot.rotation = Quaternion.Lerp(transform.rotation, rot, gunRotateSpeed * Time.deltaTime);
     }
 
-    public override void SetWeaponPrefab(GameObject weaponPrefab)
+    public void SetWeaponPrefab()
     {
-       
-        gunModel = weaponPrefab;
-        bullet = gunModel.GetComponent<gunStats>().bullet;
-        weaponStats newWeapon = weaponPrefab.GetComponent<weaponStats>();
-        string targetName = (newWeapon is gunStats) ? "Muzzle" : "HitPoint";
-        shootPos = FindDeepChild(gunModel.transform, targetName);
+        weaponStats selectedGun = gunPrefabs[Random.Range(0, gunPrefabs.Length)];
+        spawnedWeaponModel = Instantiate(selectedGun.weaponModel, gunModel.transform, false);
+
+        spawnedWeaponModel.transform.localPosition = Vector3.zero;
+        spawnedWeaponModel.transform.localRotation = Quaternion.identity;
+        spawnedWeaponModel.TryGetComponent<clip>(out clip clip);
+        spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker);
+        if(clip != null) clip.enabled = true;
+        if(clip != null) picker.enabled = false;
+
+        // Locate the barrel or hitpoint
+        string targetName = (selectedGun is gunStats) ? "Muzzle" : "HitPoint";
+        gunBarrel = weaponManager.instance.FindDeepChild(spawnedWeaponModel.transform, targetName);
+        activeGun = (gunStats)selectedGun;
     }
 }
