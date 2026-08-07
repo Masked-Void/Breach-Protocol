@@ -16392,10 +16392,16 @@ MonoBehaviour:
   immuneBarObj: {fileID: 1120915140}
   healthBar: {fileID: 3466497288934858481}
   immuneBar: {fileID: 441716073}
+  boss: {fileID: 0}
+  waveManager: {fileID: 0}
   maxHealth: 1000
-  phase1HealthPerc: 0.75
-  phase2HealthPerc: 0.5
-  phase3HealthPerc: 0.25
+  p1EndHealthPerc: 0.75
+  p2EndHealthPerc: 0.5
+  p3EndHealthPerc: 0.25
+  p1EndImmuneTime: 10
+  p2EndImmuneTime: 10
+  p3EndImmuneTime: 10
+  buttonHoldTime: 10
   dealDamage: 0
   damageAmt: 10
   isImmune: 0
@@ -36423,6 +36429,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4443674754182192490, guid: 5d794ae67151375409f71d91fe277007, type: 3}
   m_PrefabInstance: {fileID: 2066831073}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2072760786 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2811215219488502729, guid: c86a67b0c5e834742bd49b453e4e54e2, type: 3}
+  m_PrefabInstance: {fileID: 826542602}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2073547372
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38238,15 +38249,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5023572438512745053, guid: 087c453f2cb0b2c428056357202d6648, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.25
+      value: -12.44599
       objectReference: {fileID: 0}
     - target: {fileID: 5023572438512745053, guid: 087c453f2cb0b2c428056357202d6648, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 12
+      value: 13.147047
       objectReference: {fileID: 0}
     - target: {fileID: 5023572438512745053, guid: 087c453f2cb0b2c428056357202d6648, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 23
+      value: 22.325138
       objectReference: {fileID: 0}
     - target: {fileID: 5023572438512745053, guid: 087c453f2cb0b2c428056357202d6648, type: 3}
       propertyPath: m_LocalRotation.w
@@ -38278,12 +38289,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5045238954676147090, guid: 087c453f2cb0b2c428056357202d6648, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5045238954676147090, guid: 087c453f2cb0b2c428056357202d6648, type: 3}
       propertyPath: followedObject
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2072760786}
     - target: {fileID: 6537565649237901523, guid: 087c453f2cb0b2c428056357202d6648, type: 3}
       propertyPath: m_Name
       value: TheCEO

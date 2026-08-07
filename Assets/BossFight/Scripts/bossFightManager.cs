@@ -1,7 +1,12 @@
+using JetBrains.Annotations;
 using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Text.Json.Serialization;
 using UnityEngine;
 
 using UnityEngine.UI;
+
 
 public class bossFightManager : MonoBehaviour
 {
@@ -9,84 +14,77 @@ public class bossFightManager : MonoBehaviour
     [SerializeField] public Image healthBar;
     [SerializeField] public Image immuneBar;
 
-    [SerializeField] int maxHealth=100;
-    int currentHealth;
+    [SerializeField] public GameObject boss;
 
-    [Range(0f, 1f)] [SerializeField] float phase1HealthPerc = .75f;
-    [Range(0f, 1f)] [SerializeField] float phase2HealthPerc = .5f;
-    [Range(0f, 1f)] [SerializeField] float phase3HealthPerc = .25f;
+    [SerializeField] public bossWaveManager waveManager;
 
-    float phase1Health;
-    float phase2Health;
-    float phase3Health;
+    [SerializeField] int maxHealth = 100;
+    int curHealth;
 
-    bool p1Active;
-    bool p1Activated;
-    bool p1Immuned;
+    [Range(0f, 1f)][SerializeField] float p1EndHealthPerc = .75f;
+    [Range(0f, 1f)][SerializeField] float p2EndHealthPerc = .5f;
+    [Range(0f, 1f)][SerializeField] float p3EndHealthPerc = .25f;
 
-    bool p2Active;
-    bool p2Activated;
-    bool p2Immuned;
+    [SerializeField] float p1EndImmuneTime = 10f;
+    [SerializeField] float p2EndImmuneTime = 10f;
+    [SerializeField] float p3EndImmuneTime = 10f;
 
-    bool p3Active;
-    bool p3Activated;
-    bool p3Immuned;
-
-    bool p4Active;
-    bool p4Activated;
-    bool p4Immuned;
-
-    bool phase1Active;
-    bool phase1Activated;
-    bool phase2Active;
-    bool phase2Activated;
-    bool phase3Active;
-    bool phase3Activated;
-    bool phase4Active;
-    bool phase4Activated;
+    [SerializeField] float areaHoldTime = 10f;
 
     [SerializeField] bool dealDamage = false;
     [SerializeField] int damageAmt = 10;
 
+    [System.NonSerialized] public List<bool> phaseActive = new List<bool> { false,false,false,false };
+    [System.NonSerialized] public List<bool> phaseActivated = new List<bool> { false,false,false,false };
+    [System.NonSerialized] public List<bool> phaseImmuned = new List<bool> { false,false,false,false };
+    [System.NonSerialized] public List<float> endHealthReqs = new List<float> { 0f, 0f, 0f, 0f };
+    [System.NonSerialized] public List<float> endImmuneTimes = new List<float> { 10f,10f,10f,0f };
+
     public bool isImmune;
 
+    public int phase = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Awake()
+    {
+        endHealthReqs[0] = p1EndHealthPerc * maxHealth;
+        endHealthReqs[1] = p2EndHealthPerc * maxHealth;
+        endHealthReqs[2] = p3EndHealthPerc * maxHealth;
+        endHealthReqs[3] = 0f;
+
+        endImmuneTimes[0] = p1EndImmuneTime;
+        endImmuneTimes[1] = p2EndImmuneTime;
+        endImmuneTimes[2] = p3EndImmuneTime;
+        endImmuneTimes[3] = 0f;
+
+        curHealth = maxHealth;
+    }
+
     void Start()
     {
-        phase1Health = phase1HealthPerc * maxHealth;
-        phase2Health = phase2HealthPerc * maxHealth;
-        phase3Health = phase3HealthPerc * maxHealth;
-        currentHealth = maxHealth;
+        phase = 0;
+        phaseActive[0] = true;
+        startPhase(0);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (dealDamage && !isImmune)
+        if (dealDamage && !phaseImmuned[phase])
         {
-            currentHealth-=damageAmt;
+            curHealth -= damageAmt;
+            dealDamage = false;
+        }
+        else if (phaseImmuned[phase])
+        {
             dealDamage = false;
         }
 
-        if (currentHealth < phase1Health && !phase1Activated)
+        if (curHealth <= endHealthReqs[phase])
         {
-            Debug.Log("Reached Phase 1");
-            phase1Activated = true;
-            phase1Active = true;
-        }
-        if (currentHealth < phase2Health && !phase2Activated)
-        {
-            Debug.Log("Reached Phase 2");
-            phase1Active = false;
-            phase2Activated = true;
-            phase2Active = true;
-        }
-        if (currentHealth < phase3Health && !phase3Activated)
-        {
-            Debug.Log("Reached Phase 3");
-            phase2Active = false;
-            phase3Activated = true;
-            phase3Active = true;
+            phaseActivated[phase] = true;
+            phase++;
+            Debug.Log("Remaining items: " + endHealthReqs.Count);
         }
 
         updateBossUI();
@@ -96,35 +94,79 @@ public class bossFightManager : MonoBehaviour
     void updateBossUI()
     {
 
-        if (phase1Activated && !p1Immuned)
-        {
-            // Do something for phase 1
-            p1Immuned = true;
-            StartCoroutine(immuneCoroutine(1));
-        }
-        if (phase2Activated && !p2Immuned)
-        {
-            // Do something for phase 2
-            p2Immuned = true;
-            StartCoroutine(immuneCoroutine(2));
-        } if (phase3Activated && !p3Immuned)
-        {
-            // Do something for phase 3
-            p3Immuned = true;
-            StartCoroutine(immuneCoroutine(3));
-        }
-
-        immuneBar.fillAmount = (float)currentHealth / maxHealth;
-        healthBar.fillAmount = immuneBar.fillAmount;
+        healthBar.fillAmount = (float)curHealth / (float)maxHealth;
 
     }
 
-    IEnumerator immuneCoroutine(int phase)
+    IEnumerator phaseTransition(int endingPhase)
     {
-        isImmune = true;
-        immuneBarObj.SetActive(true);
-        yield return new WaitForSecondsRealtime(5f);
-        isImmune = false;
-        immuneBarObj.SetActive(false);
+        phaseActive[endingPhase] = false;
+
+        bool lastPhase = endingPhase >= phaseActive.Count - 1;
+
+        if (!lastPhase) {
+
+            if (endingPhase == 0) waveManager.endP1();
+            if (endingPhase == 1) waveManager.endP2();
+            if (endingPhase == 2) waveManager.endP3();
+
+            isImmune = true;
+            phaseImmuned[endingPhase] = true;
+            immuneBarObj.SetActive(true);
+
+            float duration = endImmuneTimes[endingPhase];
+            float timer = 0f;
+            while (timer < duration)
+            {
+                timer += Time.deltaTime;
+                immuneBar.fillAmount = 1f - (timer / duration);
+                yield return null;
+            }
+
+            immuneBarObj.SetActive(false);
+            isImmune = false;
+
+            phase = endingPhase + 1;
+            phaseActive[phase] = true;
+            startPhase(phase);
+        }
+        else
+        {
+            // Handle the last phase completion logic here
+            Debug.Log("Boss fight completed!");
+        }
     }
+
+    void startPhase(int phase)
+    {
+        switch (phase)
+        {
+            case 0: phase1(); break;
+            case 1: phase2(); break;
+            case 2: phase3(); break;
+            case 3: phase4(); break;
+        }
+    }
+
+    void phase1()
+    {
+        waveManager.startP1();
+    }
+
+    void phase2()
+    {
+        waveManager.startP2();
+
+    }
+
+    void phase3()
+    {
+        waveManager.startP3();
+    }
+
+    void phase4()
+    {
+        waveManager.startP4();
+    }
+
 }
