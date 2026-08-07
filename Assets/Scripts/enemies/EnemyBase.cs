@@ -27,6 +27,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     float roamTimer;
     Vector3 startingPos;
 
+    [Header("Currency")]
+    int byteValue = 5;
+
+
     protected bool playerInTrigger;
     protected float angleToPlayer;
     protected float stoppingDistOrig;
@@ -124,6 +128,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             FindAnyObjectByType<killChainManager>()?.RegisterKill();
             //gameManager.updateGameGoal(-1);
             Destroy(gameObject);
+            gameManager.instance.AddBytes(byteValue);
         }
         else if (model != null)
         {
