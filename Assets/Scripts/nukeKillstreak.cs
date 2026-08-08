@@ -16,12 +16,12 @@ public class nukeKillstreak : killstreakBase
             killChainManager.instance.SetIgnoreRegisteredKills(true);
         }
 
-        // Finds all currently active EnemyBase components.
-        EnemyBase[] enemies = FindObjectsByType<EnemyBase>();
+        // Finds all currently active enemyBase components.
+        enemyBase[] enemies = FindObjectsByType<enemyBase>();
 
         int enemiesKilled = 0;
 
-        foreach (EnemyBase enemy in enemies)
+        foreach (enemyBase enemy in enemies)
         {
             if (enemy == null)
                 continue;

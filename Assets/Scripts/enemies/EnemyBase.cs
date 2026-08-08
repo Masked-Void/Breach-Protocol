@@ -3,7 +3,7 @@ using UnityEngine.AI;
 using System.Collections;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public abstract class EnemyBase : MonoBehaviour, IDamage
+public abstract class enemyBase : MonoBehaviour, IDamage
 {
     [Header("Visuals")]
     [SerializeField] public Renderer model;
@@ -219,5 +219,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     public void ForceKill()
     {
         die();
+    }
+
+    public virtual void SetWeaponPrefab(GameObject weaponPrefab)
+    {
+        // This method can be overridden in derived classes to set the weapon prefab.
     }
 }

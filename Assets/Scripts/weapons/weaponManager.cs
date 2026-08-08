@@ -9,7 +9,6 @@ public class weaponManager : MonoBehaviour
     private GameObject spawnedWeaponModel;
 
 
-    private GameObject weaponHoldPos;
     public Transform gunBarrel;
     private float attackTimer;
 
@@ -23,13 +22,6 @@ public class weaponManager : MonoBehaviour
         {
             instance = this;
         }
-
-        if (weaponHoldPos == null)
-        {
-            GameObject weaponHoldObj = GameObject.FindWithTag("Weapon Holder");
-            if (weaponHoldObj != null)
-                weaponHoldPos = weaponHoldObj;
-        }
     }
 
     void Update()
@@ -37,9 +29,9 @@ public class weaponManager : MonoBehaviour
         attackTimer += Time.unscaledDeltaTime;
     }
 
-    public void equipWeapon(weaponStats newWeapon)
+    public void equipWeapon(weaponStats newWeapon, Transform weaponHolder)
     {
-        if (newWeapon == null || weaponHoldPos == null) return;
+        if (newWeapon == null) return;
 
         // Drop and destroy current weapon
         if (spawnedWeaponModel != null)
@@ -51,11 +43,11 @@ public class weaponManager : MonoBehaviour
 
         activeWeapon = newWeapon;
         // Spawn model
-        spawnedWeaponModel = Instantiate(newWeapon.weaponModel, weaponHoldPos.transform, false);
+        spawnedWeaponModel = Instantiate(newWeapon.weaponModel, weaponHolder, false);
 
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
-        spawnedWeaponModel.TryGetComponent<Clip>(out Clip clip);
+        spawnedWeaponModel.TryGetComponent<clip>(out clip clip);
         if(clip != null) clip.enabled = true;
 
         // Locate the barrel or hitpoint
@@ -64,7 +56,7 @@ public class weaponManager : MonoBehaviour
     }
 
     // find nested children
-    private Transform FindDeepChild(Transform parent, string name)
+    public Transform FindDeepChild(Transform parent, string name)
     {
         foreach (Transform child in parent)
         {

@@ -5,7 +5,7 @@ public class playerController : MonoBehaviour, IPickWeapon
 {
     [Header("Controller")]
     [SerializeField] CharacterController controller;
-    
+
     [Header("Player Settings")]
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
@@ -31,7 +31,7 @@ public class playerController : MonoBehaviour, IPickWeapon
 
     Vector3 moveDir;
     Vector3 playerVel;
-
+    public GameObject weaponHoldPos;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -153,7 +153,7 @@ public class playerController : MonoBehaviour, IPickWeapon
         if (weaponManager.instance != null)
         {
             audioManager.instance.playEquip();
-            weaponManager.instance.equipWeapon(weapon);
+            weaponManager.instance.equipWeapon(weapon, weaponHoldPos.transform);
         }
     }
 
@@ -192,7 +192,7 @@ public class playerController : MonoBehaviour, IPickWeapon
     public void updatePlayerUI()
     {
         gameManager.instance.playerStaminaBar.fillAmount = (float)currentStamina / maxStamina;
-        
+
     }
 
     public void spawnPlayer()

@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class BasicEnemy : EnemyBase
+public class basicEnemy : enemyBase
 {
     [Header("Melee")]
     [SerializeField] GameObject weapon;

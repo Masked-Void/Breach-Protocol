@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Clip : MonoBehaviour
+public class clip : MonoBehaviour
 {
     Transform clipProjector; 
     public LayerMask clipLayer; 

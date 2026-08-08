@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class heavyEnemy : EnemyBase
+public class heavyEnemy : enemyBase
 {
     [SerializeField] float pushbackForce = 2f;
 

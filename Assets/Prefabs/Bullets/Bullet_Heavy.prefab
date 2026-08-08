@@ -54,8 +54,8 @@ MonoBehaviour:
   rb: {fileID: 7083418051938216941}
   damageAmount: 3
   damageRate: 0.1
-  bulletSpeed: 1
-  bulletDestroyTime: 10
+  bulletSpeed: 3
+  bulletDestroyTime: 5
   shatterForce: 1100
   deflectLayer:
     serializedVersion: 2

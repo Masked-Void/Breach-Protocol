@@ -226,7 +226,7 @@ public class waveLightController : MonoBehaviour
         }
 
         // Change optional emissive fixture materials.
-        foreach (Material material in emissiveMaterials)
+        /*foreach (Material material in emissiveMaterials)
         {
             if (material == null ||
                 !material.HasProperty("_EmissionColor"))
@@ -240,7 +240,7 @@ public class waveLightController : MonoBehaviour
                 intensityPercent;
 
             material.SetColor("_EmissionColor", emissionColor);
-        }
+        }*/
     }
 
     // Stops the warning effect and restores the lights to
