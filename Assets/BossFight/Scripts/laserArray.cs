@@ -1,10 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Linq;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
+// Handles a group of lasers that slide from a hidden spot out into the arena.
+// Each laser is a child of this object and moves between its own two markers.
+// Beams stay off while moving and only switch on once a laser is fully out.
 public class laserArray : MonoBehaviour
 {
 
@@ -13,38 +12,49 @@ public class laserArray : MonoBehaviour
     [SerializeField] string laserOutMarkerName = "laserOut";
 
     [Header("Deploy Motion")]
+    [Tooltip("Seconds for one laser to go from fully in to fully out.")]
     [SerializeField] float deployTime = 1f;
+    [Tooltip("Seconds between each laser starting its move, 0 makes them all move at once.")]
     [SerializeField] float stagger = 0.5f;
 
+    // Sends every laser out, staggered
     [ContextMenu("Deploy")]
     public void deploy()
     {
         moveAll(true);
     }
 
+    // Pulls every laser back in, staggered
     [ContextMenu("Retract")]
     public void retract()
     {
         moveAll(false);
     }
 
+    // Everything one laser needs to move on its own, built once in build()
     class laserUnit
     {
         public Transform laser;
-        public Transform laserIn;
-        public Transform laserOut;
+        public Transform laserInPos;
+        public Transform laserOutPos;
         public Collider[] beams;
-        public float progress;
+        public float currentProgress;
         public Coroutine moveRoutine;
     }
 
+    // Every laser under this object, filled in by build()
     laserUnit[] lasers;
 
+    // The routine that walks down the array with the stagger delay
     Coroutine groupRoutine;
 
+    // Which way the array was last told to go, not whether it finished moving
     bool isOut = false;
 
-    public bool IsOut
+
+
+    // Read only so other scripts can check the array state without changing it
+    public bool getIsOut
     {
         get
         {
@@ -52,69 +62,102 @@ public class laserArray : MonoBehaviour
         }
     }
 
+
+
     private void Awake()
     {
         build();
     }
 
+
+
+    // Grabs every child laser and sets up its markers, beams and starting state
     void build()
     {
 
         int count = transform.childCount;
         lasers = new laserUnit[count];
 
+        // Caches the children first because reparenting markers later shifts the child order
         Transform[] children = new Transform[count];
 
-        for (int i = 0; i < count; i++) { 
-        
+        for (int i = 0; i < count; i++)
+        {
+
             children[i] = transform.GetChild(i);
-        
+
         }
 
         for (int i = 0; i < count; i++)
         {
             Transform laser = children[i];
 
-            laserUnit laserUnit = new laserUnit();
+            laserUnit newUnit = new laserUnit();
 
-            laserUnit.laser = laser;
-            laserUnit.laserIn = findMark(laser, laserInMarkerName);
-            laserUnit.laserOut = findMark(laser, laserOutMarkerName);
-            laserUnit.progress = 0f;
+            newUnit.laser = laser;
+            newUnit.laserInPos = findMark(laser, laserInMarkerName);
+            newUnit.laserOutPos = findMark(laser, laserOutMarkerName);
+            newUnit.currentProgress = 0f;
 
-            if (laserUnit.laserIn == null || laserUnit.laserOut == null)
+            // Makes sure both markers exist, one missing marker kills the whole array
+            if (newUnit.laserInPos == null || newUnit.laserOutPos == null)
             {
                 Debug.LogError("laserArray: '" + laser.name + "' needs two children named '"
                 + laserInMarkerName + "' and '" + laserOutMarkerName + "'.", laser);
                 enabled = false;
-                return; 
+                return;
             }
 
-            laserUnit.beams = laser.GetComponentsInChildren<Collider>(true);
+            // Grabs every collider on the laser, true includes ones that start disabled
+            newUnit.beams = laser.GetComponentsInChildren<Collider>(true);
 
-            laserUnit.laserIn.SetParent(transform, true);
-            laserUnit.laserOut.SetParent(transform, true);
+            // Reparents the markers onto this object so they stay put when the laser moves
+            newUnit.laserInPos.SetParent(transform, true);
+            newUnit.laserOutPos.SetParent(transform, true);
 
-            lasers[i] = laserUnit;
-            setBeam(laserUnit, false);
+            lasers[i] = newUnit;
+
+            // Starts with the beams off since the laser starts hidden
+            setBeam(newUnit, false);
         }
     }
 
+
+
+    // Looks through one laser's children for a marker whose name contains 'wanted'
     Transform findMark(Transform laser, string wanted)
     {
+        // empty variable for 1 return call
+        Transform found = null;
+
+        // Goes through each child of that laser
         foreach (Transform child in laser)
         {
-            if (child.name == wanted)
+            // If the child has that wanted name it assigns it to the found object
+            if (child.name.IndexOf(wanted, System.StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return child;
+                // Warning for if more than one child matches, it keeps the first one and stops looking
+                if (found != null)
+                {
+                    Debug.LogWarning("laserArray: '" + laser.name + "' has more than one child matching '"
+                        + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first.", laser);
+                    break;
+                }
+
+                found = child;
             }
         }
 
-        return null;
+        // Returns null if nothing matched, build() handles that error
+        return found;
     }
 
+
+
+    // Reapplies every laser position after everything else has moved for the frame
     private void LateUpdate()
     {
+        // error check
         if (!enabled)
         {
             return;
@@ -126,18 +169,26 @@ public class laserArray : MonoBehaviour
         }
     }
 
-    public void moveOne(int index,bool goOut)
+
+
+    // Moves a single laser by its index, for when only one needs to fire
+    public void moveOne(int index, bool goOut)
     {
+        // error check
         if (!enabled)
         {
             return;
         }
 
-        startMove(lasers[index],goOut);
+        startMove(lasers[index], goOut);
     }
 
+
+
+    // Moves the whole array one direction with the stagger delay between each laser
     void moveAll(bool goOut)
     {
+        // error check
         if (!enabled)
         {
             return;
@@ -145,6 +196,7 @@ public class laserArray : MonoBehaviour
 
         isOut = goOut;
 
+        // stops the group routine for if it needs to be restarted mid deploy
         if (groupRoutine != null)
         {
             StopCoroutine(groupRoutine);
@@ -153,23 +205,32 @@ public class laserArray : MonoBehaviour
         groupRoutine = StartCoroutine(moveGroup(goOut));
     }
 
+
+
+    // Kicks off each laser one at a time so they don't all pop out together
     IEnumerator moveGroup(bool goOut)
     {
         for (int i = 0; i < lasers.Length; i++)
         {
             startMove(lasers[i], goOut);
 
+            // Scaled time on purpose so the stagger stops while time is frozen
             if (stagger > 0)
             {
                 yield return new WaitForSeconds(stagger);
             }
         }
 
+        // clears routine
         groupRoutine = null;
     }
 
+
+
+    // Starts one laser's move, restarting it from wherever it currently sits
     void startMove(laserUnit unit, bool goOut)
     {
+        // stops that laser's routine for if it needs to be restarted
         if (unit.moveRoutine != null)
         {
             StopCoroutine(unit.moveRoutine);
@@ -179,50 +240,70 @@ public class laserArray : MonoBehaviour
         unit.moveRoutine = StartCoroutine(moveLaser(unit, target));
     }
 
+
+
+    // Lerps one laser between its markers, then turns the beams back on if it made it all the way out
     IEnumerator moveLaser(laserUnit unit, float target)
     {
+        // Beams off while moving so the laser can't hit the player on the way out
         setBeam(unit, false);
 
-        float start = unit.progress;
+        // Gets the current progress for if a routine is started while another routine is already running
+        float currentStartPos = unit.currentProgress;
 
-        float distance = Mathf.Abs(target - start);
+        // gets the distance from current pos
+        float distanceToTravel = Mathf.Abs(target - currentStartPos);
 
-        float duration = deployTime * distance;
+        // gets the time needed in relation to the current distance traveled
+        float duration = deployTime * distanceToTravel;
 
         float timePassed = 0f;
 
         while (timePassed < duration)
         {
-            timePassed += Time.deltaTime;
+            // Scaled so the lasers freeze with everything else, capped at 0.05 so a lag spike can't teleport them
+            timePassed += Mathf.Min(Time.deltaTime, 0.05f);
 
+            // 0 to 1 of how much of the trip is done
             float howFar = Mathf.Clamp01(timePassed / duration);
 
-            unit.progress = Mathf.Lerp(start, target, howFar);
+            unit.currentProgress = Mathf.Lerp(currentStartPos, target, howFar);
             placeLaser(unit);
 
             yield return null;
         }
 
-        unit.progress = target;
+        // Snaps to the exact target so float drift doesn't leave it slightly off
+        unit.currentProgress = target;
         placeLaser(unit);
 
-        if (target >= 1f) {
+        // Only turns the beams on when fully out, a retract leaves them off
+        if (target >= 1f)
+        {
             setBeam(unit, true);
         }
 
+        // clears routine
         unit.moveRoutine = null;
     }
 
+
+
+    // Updates one laser's position and rotation
     void placeLaser(laserUnit unit)
     {
-        unit.laser.position = Vector3.Lerp(unit.laserIn.position, unit.laserOut.position, unit.progress);
-        unit.laser.rotation = Quaternion.Slerp(unit.laserIn.rotation, unit.laserOut.rotation, unit.progress);
+        unit.laser.position = Vector3.Lerp(unit.laserInPos.position, unit.laserOutPos.position, unit.currentProgress);
+        unit.laser.rotation = Quaternion.Slerp(unit.laserInPos.rotation, unit.laserOutPos.rotation, unit.currentProgress);
     }
 
+
+
+    // Turns every collider on one laser on or off
     void setBeam(laserUnit unit, bool on)
     {
         for (int i = 0; i < unit.beams.Length; i++)
         {
+            // skips any collider that got destroyed
             if (unit.beams[i] != null)
                 unit.beams[i].enabled = on;
         }
