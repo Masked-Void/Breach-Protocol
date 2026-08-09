@@ -131,19 +131,19 @@ public class gameManager : MonoBehaviour
     {
         if (waveManager.instance == null) return;
         int currentWave = waveManager.instance.getCurrentWave();
-        enemiesAlive = waveManager.instance.getEnemiesAlive();
+        //enemiesAlive = waveManager.instance.getEnemiesAlive();
 
-        if (currentWave != previousWave)
-        {
-            previousWave = currentWave;
-            previousEnemiesAlive = enemiesAlive;
-        }
-        else if (enemiesAlive < previousEnemiesAlive)
-        {
-            currentKill += previousEnemiesAlive - enemiesAlive;
-        }
+        //if (currentWave != previousWave)
+        //{
+        //    previousWave = currentWave;
+        //    previousEnemiesAlive = enemiesAlive;
+        //}
+        //else if (enemiesAlive < previousEnemiesAlive)
+        //{
+        //    currentKill += previousEnemiesAlive - enemiesAlive;
+        //}
 
-        previousEnemiesAlive = enemiesAlive;
+        //previousEnemiesAlive = enemiesAlive;
 
         waveCounter.text = currentWave.ToString("f0");
         killCounter.text = "Kills: " + currentKill;

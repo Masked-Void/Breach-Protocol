@@ -70,21 +70,19 @@ public class bossFightManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (dealDamage && !phaseImmuned[phase])
+        if (dealDamage)
         {
-            curHealth -= damageAmt;
-            dealDamage = false;
-        }
-        else if (phaseImmuned[phase])
-        {
-            dealDamage = false;
+            if (!isImmune)
+            {
+                curHealth -= damageAmt;
+                dealDamage = false;
+            }
         }
 
-        if (curHealth <= endHealthReqs[phase])
+        if (!isImmune && !phaseActivated[phase] && curHealth <= endHealthReqs[phase])
         {
             phaseActivated[phase] = true;
-            phase++;
-            Debug.Log("Remaining items: " + endHealthReqs.Count);
+            StartCoroutine(phaseTransition(phase));
         }
 
         updateBossUI();
@@ -137,9 +135,9 @@ public class bossFightManager : MonoBehaviour
         }
     }
 
-    void startPhase(int phase)
+    void startPhase(int p)
     {
-        switch (phase)
+        switch (p)
         {
             case 0: phase1(); break;
             case 1: phase2(); break;
@@ -148,23 +146,23 @@ public class bossFightManager : MonoBehaviour
         }
     }
 
-    void phase1()
+    public void phase1()
     {
         waveManager.startP1();
     }
 
-    void phase2()
+    public void phase2()
     {
         waveManager.startP2();
 
     }
 
-    void phase3()
+    public void phase3()
     {
         waveManager.startP3();
     }
 
-    void phase4()
+    public void phase4()
     {
         waveManager.startP4();
     }

@@ -1,83 +1,114 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class doorController : MonoBehaviour
 {
+    [Header("Drag door Obj in")]
+    [SerializeField] Transform doorObj;
 
+    [Header("Marker names (children of the door object)")]
+    [SerializeField] string closedName = "Closed";
+    [SerializeField] string openName = "Open";
+
+    [Header("Speed")]
     [SerializeField] float movementTime = 1;
 
-    [SerializeField] GameObject endPosObj;
-    [SerializeField] GameObject doorObj;
+    [Header("Auto close")]
+    [SerializeField] public bool closeWhenEmpty;
+    public float closeDelay = 1f;
 
-    Vector3 startPos;
-    Vector3 endPos;
+    Transform closedPos;
+    Transform openPos;
 
-    public bool runOpen = false;
-    public bool runClose = false;
+    float current;
 
-    Coroutine doorRoutine;
+    Coroutine moveRoutine;
+
+    int insideCount = 0;
+
+    public bool IsOpen
+    {
+        get
+        {
+            return current >= 1f;
+        }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        startPos = doorObj.transform.position;
-        endPos = endPosObj.transform.position;
-    }
-
-    void Update()
-    {
-        if (runOpen)
+        if (doorObj == null)
         {
-            startDoor(endPos);
-            runOpen = false;
+            Debug.LogError("doorController: doorObj isn't assigned", this);
+            enabled = false;
         }
 
-        if (runClose)
-        {
-            startDoor(startPos);
-            runClose = false;
-        }
+        closedPos = findMark(closedName);
+        openPos = findMark(openName);
     }
 
-    private void OnTriggerEnter(Collider other)
+    Transform findMark(string wanted)
     {
-        if (other.CompareTag("Enemy") && other.TryGetComponent(out EnemyBase eb) && !eb.hasLeftSpawnRoom)
+        foreach (Transform child in doorObj)
         {
-            startDoor(endPos);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Enemy") && other.TryGetComponent(out EnemyBase eb) && !eb.hasLeftSpawnRoom)
-        {
-            startDoor(startPos);
-            eb.hasLeftSpawnRoom = true;
-        }
-    }
-
-    void startDoor(Vector3 target)
-    {
-        if (doorRoutine != null) StopCoroutine(doorRoutine);
-        doorRoutine = StartCoroutine(moveDoor(target));
-    }
-
-    private IEnumerator moveDoor(Vector3 target)
-    {
-        Vector3 from = doorObj.transform.position;
-        float elapsedTime = 0f;
-
-        while (elapsedTime < movementTime)
-        {
-            elapsedTime += Time.deltaTime;
-            doorObj.transform.position = Vector3.Lerp(from, target, elapsedTime / movementTime);
-            yield return null;
+            if (child.name == wanted)
+            {
+                return child;
+            }
         }
 
-        doorObj.transform.position = target;
-        doorRoutine = null;
+        return null;
     }
 
+
+    void OnTriggerEnter(Collider other)
+    {
+
+        if (!isEnemy(other))
+        {
+            return;
+        }
+
+        insideCount += 1;
+        open();
+
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (!isEnemy(other))
+        {
+            return;
+        }
+
+        insideCount -= 1;
+
+        if (insideCount < 0)
+        {
+            insideCount = 0;
+        }
+
+        
+    }
+
+    bool isEnemy(Collider other)
+    {
+        if (!other.CompareTag("Enemy"))
+        {
+            return false;
+        }
+
+        enemyBase enemy;
+        if (!other.TryGetComponent(out enemy))
+        {
+            return false;
+        }
+
+        return !enemy.hasLeftSpawnRoom;
+    }
+
+    void open() { }
 }
 
 

@@ -239,4 +239,13 @@ public class waveManager : MonoBehaviour
         float remaining = timeBetweenWaves - waveTimer;
         return Mathf.Max(0, Mathf.CeilToInt(remaining));
     }
+
+    public Vector3 newRoamPos()
+    {
+        if (roamPoints.Length == 0) return Vector3.zero;
+        int index = Random.Range(0, roamPoints.Length);
+        Vector3 roamPos = roamPoints[index].position;
+        return roamPos;
+    }
+
 }

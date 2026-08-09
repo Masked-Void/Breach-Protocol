@@ -4,6 +4,8 @@ using UnityEngine;
 public class bossWaveManager : MonoBehaviour
 {
 
+    bossWaveManager instance;
+
     [SerializeField] public GameObject[] spawners;
 
     [Header("Phase 1 Enemy Percentages")]
@@ -55,6 +57,11 @@ public class bossWaveManager : MonoBehaviour
     [SerializeField] int p4MaxEnemiesOnMap;
     [SerializeField] int p4MaxSpawnCount;
 
+    void Awake()
+    {
+        instance = this;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -68,10 +75,7 @@ public class bossWaveManager : MonoBehaviour
 
     public void startP4() { }
 
-    public void endP1()
-    {
-
-    }
+    public void endP1() { }
 
     public void endP2() { }
 
