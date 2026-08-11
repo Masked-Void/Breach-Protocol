@@ -18,6 +18,12 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
     [SerializeField] float pushbackFriction = 5f;
     [SerializeField] GameObject playerShield;
 
+    [Header("Upgrades")]
+    public bool explodingBullets;
+    public bool kunaiSpread;
+    
+
+
     [Header("Stamina Settings")]
     [SerializeField] float maxStamina = 5f;
     [SerializeField] float staminaDrainRate = 1f;

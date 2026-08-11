@@ -11,6 +11,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuSound;
+    [SerializeField] GameObject shopUI;
     [SerializeField] timeManager timeManager;
 
     [SerializeField] private TMP_Text scoreText;
@@ -50,7 +51,13 @@ public class gameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
+        if (FindAnyObjectByType<playerInteraction>().shopOpen)
+        { 
+            menuActive = shopUI;
+            return;
+        }
+        
+        if (!FindAnyObjectByType<playerInteraction>().shopOpen && Input.GetButtonDown("Cancel"))
         {
             audioManager.instance.playButtonClick();
             if (menuActive == null)
@@ -67,7 +74,9 @@ public class gameManager : MonoBehaviour
             {
                 openPauseMenu();
             }
-        }
+
+        }    
+        
 
         updateUI();
     }

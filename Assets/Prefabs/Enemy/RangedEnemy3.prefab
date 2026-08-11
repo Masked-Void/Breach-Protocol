@@ -319,7 +319,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   model: {fileID: 0}
   agent: {fileID: 0}
-  maxHP: 0
+  maxHP: 1
   faceTargetSpeed: 8
   FOV: 90
   attackRate: 1.5
@@ -331,7 +331,7 @@ MonoBehaviour:
   bullet: {fileID: 0}
   gunPivot: {fileID: 0}
   shootPos: {fileID: 0}
-  gunRotateSpeed: 0
+  gunRotateSpeed: 1
 --- !u!1001 &8886980051121718680
 PrefabInstance:
   m_ObjectHideFlags: 0

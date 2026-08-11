@@ -16,8 +16,13 @@ public class damage : MonoBehaviour
     [SerializeField] float shatterForce = 350f;
     [SerializeField] LayerMask deflectLayer;
     [SerializeField] ParticleSystem hitEffect;
+    [SerializeField] ParticleSystem explodeEffect;
 
     bool isDamaging;
+    public bool isExplosive;
+    private float explosionRadius = 5f;
+    private int explosionDamage = 50;
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,8 +35,10 @@ public class damage : MonoBehaviour
 
     private void FixedUpdate()
     {
+       
         if (type == damageType.bullet)
         {
+           
             rb.useGravity = false;
             rb.linearVelocity = transform.forward * bulletSpeed;
             Destroy(gameObject, bulletDestroyTime);
@@ -71,6 +78,13 @@ public class damage : MonoBehaviour
 
         if (type == damageType.bullet)
         {
+
+            if (isExplosive)
+            {
+                hitEffect = explodeEffect;
+                explode();
+                
+            }
             if (hitEffect != null)
             {
                 Instantiate(hitEffect, transform.position, Quaternion.identity);
@@ -120,6 +134,23 @@ public class damage : MonoBehaviour
 
             // Apply the new velocity
             rb.linearVelocity = reflectedVelocity;
+        }
+    }
+
+    public void setExplosive()
+    {
+        isExplosive = FindAnyObjectByType<playerController>().explodingBullets;
+    }
+    private void explode()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
+        foreach (Collider hit in hits)
+        {
+            IDamage dmg = hit.GetComponent<IDamage>();
+            if (dmg != null)
+            {
+                dmg.takeDamage(explosionDamage);
+            }
         }
     }
 }

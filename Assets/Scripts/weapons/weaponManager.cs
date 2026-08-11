@@ -34,6 +34,7 @@ public class weaponManager : MonoBehaviour
 
     void Update()
     {
+    
         attackTimer += Time.unscaledDeltaTime;
     }
 
@@ -83,4 +84,6 @@ public class weaponManager : MonoBehaviour
         attackTimer = 0f;
         activeWeapon.Attack(this);
     }
+
+    
 }
