@@ -10,7 +10,10 @@ public class populateShop : MonoBehaviour
     [SerializeField] TMP_Text nameText;
     [SerializeField] TMP_Text descriptionText;
     [SerializeField] TMP_Text costText;
-    
+    private populateShop instance;
+
+
+
 
     private upgradeData currentUpgrade;
 
@@ -28,8 +31,6 @@ public class populateShop : MonoBehaviour
 
     public void BuyUpgrade()
     {
-        Debug.Log("Button pressed on" + gameObject.name);
-        Debug.Log("Current Upgrade: " + currentUpgrade.upgradeName);
         shopManager.instance.buyUpgrade(currentUpgrade);
     }
 

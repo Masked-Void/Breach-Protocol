@@ -1017,6 +1017,22 @@ Light:
   m_CorrespondingSourceObject: {fileID: 108921838437494102, guid: 1e4f0d9e7dbf221419b0bd0e1286aa16, type: 3}
   m_PrefabInstance: {fileID: 1041264627}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2037378555 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2811215219488502729, guid: c86a67b0c5e834742bd49b453e4e54e2, type: 3}
+  m_PrefabInstance: {fileID: 1697934050}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2037378561 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6612763163208644421, guid: c86a67b0c5e834742bd49b453e4e54e2, type: 3}
+  m_PrefabInstance: {fileID: 1697934050}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037378555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f69645cf1307b346824214832b60b26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::playerController
 --- !u!1 &155615222273482514
 GameObject:
   m_ObjectHideFlags: 0
@@ -1148,6 +1164,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8035428096513726599, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 2037378555}
+    - target: {fileID: 8035428096513726599, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: playerScript
+      value: 
+      objectReference: {fileID: 2037378561}
     - target: {fileID: 8525187160557472781, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Name
       value: UI

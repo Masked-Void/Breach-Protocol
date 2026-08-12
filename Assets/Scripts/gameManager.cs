@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,8 @@ public class gameManager : MonoBehaviour
     [SerializeField] public GameObject pickUpUI;
     [SerializeField] public Image playerStaminaBar;
     [SerializeField] public GameObject checkpointPopup;
+    [SerializeField] public TMP_Text bytesText;
+    [SerializeField] public GameObject shopMessage;
     public GameObject playerSpawnPos;
 
     [SerializeField] TMP_Text gameGoalCountText;
@@ -40,7 +43,7 @@ public class gameManager : MonoBehaviour
     public playerController playerScript;
 
     [Header("Currency")]
-    [SerializeField] int totalBytes = 0;
+    [SerializeField] public int totalBytes = 0;
     [SerializeField] public int totalFiles = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -72,6 +75,7 @@ public class gameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        bytesText.text = "Bytes: " + totalBytes.ToString();
         if (FindAnyObjectByType<playerInteraction>().shopOpen)
         { 
             menuActive = shopUI;
@@ -200,5 +204,19 @@ public class gameManager : MonoBehaviour
         {
             waveCountdownText.gameObject.SetActive(false);
         }
+    }
+
+    public IEnumerator WarningText()
+    {
+        gameManager.instance.shopMessage.SetActive(true);
+        yield return new WaitForSecondsRealtime(5);
+        gameManager.instance.shopMessage.SetActive(false);
+        
+    }
+
+    public void showShopWarning()
+    {
+        StopCoroutine(nameof(WarningText));
+        StartCoroutine(WarningText());
     }
 }

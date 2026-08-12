@@ -23,7 +23,14 @@ public class shopManager : MonoBehaviour
 
     public void buyUpgrade(upgradeData upgrade)
     {
+        if (gameManager.instance.totalBytes < upgrade.cost)
+        {
+            gameManager.instance.showShopWarning();
+            return;
+        }
+
         Debug.Log("Upgrade Bought: " + upgrade.upgradeName);
+        gameManager.instance.totalBytes -= upgrade.cost;
         upgrade.applyUpgrade();
     }
 }
