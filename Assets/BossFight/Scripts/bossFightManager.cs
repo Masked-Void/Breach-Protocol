@@ -1,8 +1,5 @@
-using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Text.Json.Serialization;
 using UnityEngine;
 
 using UnityEngine.UI;
@@ -44,7 +41,7 @@ public class bossFightManager : MonoBehaviour
 
     public int phase = 0;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    maskShake shake;
     void Awake()
     {
         endHealthReqs[0] = p1EndHealthPerc * maxHealth;
@@ -58,6 +55,13 @@ public class bossFightManager : MonoBehaviour
         endImmuneTimes[3] = 0f;
 
         curHealth = maxHealth;
+
+        Transform mask = findMark("Head");
+        if (!mask.TryGetComponent(out shake))
+        {
+            Debug.LogError("bossFightManager: No maskShake component on boss",this);
+        }
+        
     }
 
     void Start()
@@ -116,11 +120,16 @@ public class bossFightManager : MonoBehaviour
             float timer = 0f;
             while (timer < duration)
             {
+                if (!shake.doShake)
+                {
+                    shake.doShake = true;
+                }
                 timer += Time.deltaTime;
                 immuneBar.fillAmount = 1f - (timer / duration);
                 yield return null;
             }
 
+            shake.doShake = false;
             immuneBarObj.SetActive(false);
             isImmune = false;
 
@@ -165,6 +174,24 @@ public class bossFightManager : MonoBehaviour
     public void phase4()
     {
         waveManager.startP4();
+    }
+
+
+
+    // Looks through the door object's children for a marker with an exact name match
+    Transform findMark(string wanted)
+    {
+        // Goes through each child of the door object
+        foreach (Transform child in boss.transform)
+        {
+            if (child.name.IndexOf(wanted, System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return child;
+            }
+        }
+
+        // Returns null if nothing matched, Awake handles that error
+        return null;
     }
 
 }

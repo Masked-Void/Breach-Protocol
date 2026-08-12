@@ -51,8 +51,6 @@ public class laserArray : MonoBehaviour
     // Which way the array was last told to go, not whether it finished moving
     bool isOut = false;
 
-
-
     // Read only so other scripts can check the array state without changing it
     public bool getIsOut
     {
@@ -62,6 +60,66 @@ public class laserArray : MonoBehaviour
         }
     }
 
+    // True only when every laser is all the way out and the beams are live
+    // The manager checks this instead of getIsOut, a half deployed array shouldn't count as firing
+    public bool getIsDeployed
+    {
+        get
+        {
+            if (lasers == null || lasers.Length == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < lasers.Length; i++)
+            {
+                if (lasers[i].currentProgress < 1f)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    // True while anything in here is still sliding, group or single
+    public bool getIsMoving
+    {
+        get
+        {
+            if (groupRoutine != null)
+            {
+                return true;
+            }
+
+            if (lasers == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < lasers.Length; i++)
+            {
+                if (lasers[i].moveRoutine != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+
+
+    // How many lasers ended up under this object
+    public int getCount
+    {
+        get
+        {
+            return lasers == null ? 0 : lasers.Length;
+        }
+    }
 
 
     private void Awake()
@@ -104,6 +162,9 @@ public class laserArray : MonoBehaviour
             {
                 Debug.LogError("laserArray: '" + laser.name + "' needs two children named '"
                 + laserInMarkerName + "' and '" + laserOutMarkerName + "'.", laser);
+
+                // Blanks the array so nothing can walk into the half filled entries later
+                lasers = new laserUnit[0];
                 enabled = false;
                 return;
             }
@@ -180,10 +241,39 @@ public class laserArray : MonoBehaviour
             return;
         }
 
+        // Silently skips a bad index, the manager does the same so a stale pattern step just does nothing
+        if (index < 0 || index >= lasers.Length)
+        {
+            return;
+        }
+
         startMove(lasers[index], goOut);
     }
 
+    // Pulls everything in at once with no stagger, for when a phase ends
+    // retract() walks down the array with a delay, so lasers it hasn't reached yet keep deploying
+    public void retractNow()
+    {
+        // error check
+        if (!enabled)
+        {
+            return;
+        }
 
+        isOut = false;
+
+        // Kills the stagger walk first so it can't start lasers back up behind us
+        if (groupRoutine != null)
+        {
+            StopCoroutine(groupRoutine);
+            groupRoutine = null;
+        }
+
+        for (int i = 0; i < lasers.Length; i++)
+        {
+            startMove(lasers[i], false);
+        }
+    }
 
     // Moves the whole array one direction with the stagger delay between each laser
     void moveAll(bool goOut)
@@ -308,4 +398,5 @@ public class laserArray : MonoBehaviour
                 unit.beams[i].enabled = on;
         }
     }
+
 }

@@ -57,6 +57,12 @@ public class bossWaveManager : MonoBehaviour
     [SerializeField] int p4MaxEnemiesOnMap;
     [SerializeField] int p4MaxSpawnCount;
 
+    float rangedPerc;
+    float meleePerc;
+    float heavyPerc;
+    int maxEnemiesOnMap;
+    int maxSpawnCount;
+
     void Awake()
     {
         instance = this;
@@ -68,16 +74,65 @@ public class bossWaveManager : MonoBehaviour
         
     }
 
-    public void startP1() { }
-    public void startP2() { }
+    public void startP1()
+    {
+        rangedPerc = p1RangedPerc;
+        meleePerc = p1MeleePerc;
+        heavyPerc = p1HeavyPerc;
+        maxEnemiesOnMap = p1MaxEnemiesOnMap;
+        maxSpawnCount = p1MaxSpawnCount;
+    }
+    public void startP2()
+    {
+        rangedPerc = p2RangedPerc;
+        meleePerc = p2MeleePerc;
+        heavyPerc = p2HeavyPerc;
+        maxEnemiesOnMap = p2MaxEnemiesOnMap;
+        maxSpawnCount = p2MaxSpawnCount;
+    }
 
-    public void startP3() { }
+    public void startP3()
+    {
+        rangedPerc = p3RangedPerc;
+        meleePerc = p3MeleePerc;
+        heavyPerc = p3HeavyPerc;
+        maxEnemiesOnMap = p3MaxEnemiesOnMap;
+        maxSpawnCount = p3MaxSpawnCount;
+    }
 
-    public void startP4() { }
+    public void startP4()
+    {
+        rangedPerc = p3RangedPerc;
+        meleePerc = p3MeleePerc;
+        heavyPerc = p3HeavyPerc;
+        maxEnemiesOnMap = p3MaxEnemiesOnMap;
+        maxSpawnCount = p3MaxSpawnCount;
+    }
 
-    public void endP1() { }
+    public void endP1()
+    {
+        rangedPerc = p1_p2RangedPerc;
+        meleePerc = p1_p2MeleePerc;
+        heavyPerc = p1_p2HeavyPerc;
+        maxEnemiesOnMap = p1_p2MaxEnemiesOnMap;
+        maxSpawnCount = p1_p2MaxSpawnCount;
+    }
 
-    public void endP2() { }
+    public void endP2()
+    {
+        rangedPerc = p2_p3RangedPerc;
+        meleePerc = p2_p3MeleePerc;
+        heavyPerc = p2_p3HeavyPerc;
+        maxEnemiesOnMap = p2_p3MaxEnemiesOnMap;
+        maxSpawnCount = p2_p3MaxSpawnCount;
+    }
 
-    public void endP3() { }
+    public void endP3()
+    {
+        rangedPerc = p3_p4RangedPerc;
+        meleePerc = p3_p4MeleePerc;
+        heavyPerc= p3_p4HeavyPerc;
+        maxEnemiesOnMap = p3_p4MaxEnemiesOnMap;
+        maxSpawnCount= p3_p4MaxSpawnCount;
+    }
 }

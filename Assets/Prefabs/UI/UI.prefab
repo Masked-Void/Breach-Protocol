@@ -1212,6 +1212,116 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &1328115815631699168
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1793506737615254612}
+  - component: {fileID: 8975253666997279717}
+  - component: {fileID: 4037380419391769177}
+  m_Layer: 0
+  m_Name: BossFightManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1793506737615254612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328115815631699168}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -970.5028, y: -33.809826, z: -8.732442}
+  m_LocalScale: {x: 0.9096293, y: 0.9096293, z: 0.9096293}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6785670985224404860}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8975253666997279717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328115815631699168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0abb0408e3943f4283386315ba64e98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::bossFightManager
+  immuneBarObj: {fileID: 5188553727432753132}
+  healthBar: {fileID: 5163420541461340034}
+  immuneBar: {fileID: 1876684031977131792}
+  boss: {fileID: 0}
+  waveManager: {fileID: 4037380419391769177}
+  maxHealth: 1000
+  p1EndHealthPerc: 0.75
+  p2EndHealthPerc: 0.5
+  p3EndHealthPerc: 0.25
+  p1EndImmuneTime: 10
+  p2EndImmuneTime: 10
+  p3EndImmuneTime: 10
+  areaHoldTime: 10
+  dealDamage: 0
+  damageAmt: 10
+  isImmune: 0
+  phase: 0
+--- !u!114 &4037380419391769177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328115815631699168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 956d0d09c1ece774988a886e973ba6c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::bossWaveManager
+  spawners: []
+  p1RangedPerc: 0.2
+  p1MeleePerc: 0.5
+  p1HeavyPerc: 0.3
+  p1MaxEnemiesOnMap: 10
+  p1MaxSpawnCount: 2
+  p1_p2RangedPerc: 0.35
+  p1_p2MeleePerc: 0.45
+  p1_p2HeavyPerc: 0.2
+  p1_p2MaxEnemiesOnMap: 20
+  p1_p2MaxSpawnCount: 6
+  p2RangedPerc: 0.35
+  p2MeleePerc: 0.45
+  p2HeavyPerc: 0.2
+  p2MaxEnemiesOnMap: 13
+  p2MaxSpawnCount: 3
+  p2_p3RangedPerc: 0.4
+  p2_p3MeleePerc: 0.4
+  p2_p3HeavyPerc: 0.2
+  p2_p3MaxEnemiesOnMap: 20
+  p2_p3MaxSpawnCount: 9
+  p3RangedPerc: 0.45
+  p3MeleePerc: 0.4
+  p3HeavyPerc: 0.15
+  p3MaxEnemiesOnMap: 15
+  p3MaxSpawnCount: 4
+  p3_p4RangedPerc: 0.5
+  p3_p4MeleePerc: 0.3
+  p3_p4HeavyPerc: 0.2
+  p3_p4MaxEnemiesOnMap: 20
+  p3_p4MaxSpawnCount: 12
+  p4RangedPerc: 0.5
+  p4MeleePerc: 0.2
+  p4HeavyPerc: 0.3
+  p4MaxEnemiesOnMap: 20
+  p4MaxSpawnCount: 5
 --- !u!1 &1420167975373854790
 GameObject:
   m_ObjectHideFlags: 0
@@ -6738,7 +6848,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8720294752289137453}
   - component: {fileID: 8035428096513726599}
-  - component: {fileID: 5177273405296645239}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -6794,35 +6903,6 @@ MonoBehaviour:
   isPaused: 0
   player: {fileID: 0}
   playerScript: {fileID: 0}
---- !u!114 &5177273405296645239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8265081172895264960}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0abb0408e3943f4283386315ba64e98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::bossFightManager
-  immuneBarObj: {fileID: 5188553727432753132}
-  healthBar: {fileID: 5163420541461340034}
-  immuneBar: {fileID: 1876684031977131792}
-  boss: {fileID: 0}
-  waveManager: {fileID: 0}
-  maxHealth: 1000
-  p1EndHealthPerc: 0.75
-  p2EndHealthPerc: 0.5
-  p3EndHealthPerc: 0.25
-  p1EndImmuneTime: 10
-  p2EndImmuneTime: 10
-  p3EndImmuneTime: 10
-  areaHoldTime: 10
-  dealDamage: 0
-  damageAmt: 10
-  isImmune: 0
-  phase: 0
 --- !u!1 &8517258719729863745
 GameObject:
   m_ObjectHideFlags: 0
@@ -6904,6 +6984,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8720294752289137453}
+  - {fileID: 1793506737615254612}
   - {fileID: 2868826098185688470}
   - {fileID: 5651305134939918230}
   - {fileID: 9116099305551093452}
