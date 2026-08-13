@@ -8,9 +8,13 @@ public class weaponManager : MonoBehaviour
     public weaponStats activeWeapon;
     private GameObject spawnedWeaponModel;
 
+    [Header("Inventory")]
+    public weaponStats[] weapons = new weaponStats[4];
 
-    public Transform gunBarrel;
+    Transform gunBarrel;
     private float attackTimer;
+
+    int activeSlot = 0;
 
     void Awake()
     {
@@ -29,29 +33,48 @@ public class weaponManager : MonoBehaviour
         attackTimer += Time.unscaledDeltaTime;
     }
 
-    public void equipWeapon(weaponStats newWeapon, Transform weaponHolder)
+    public void equipWeapon(weaponStats newWeapon)
     {
         if (newWeapon == null) return;
 
-        // Drop and destroy current weapon
-        if (spawnedWeaponModel != null)
+        for (int i = 0; i < weapons.Length; i++)
         {
-            Vector3 dropPos = transform.position + transform.forward * 1.5f + transform.up * 0.5f;
-            Instantiate(activeWeapon.weaponModel, dropPos, Quaternion.identity);
-            Destroy(spawnedWeaponModel);
+            if (weapons[i] == newWeapon)
+                return;
         }
 
-        activeWeapon = newWeapon;
-        // Spawn model
-        spawnedWeaponModel = Instantiate(newWeapon.weaponModel, weaponHolder, false);
+        int slot = -1;
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            if (weapons[i] == null)
+            {
+                slot = i;
+                break;
+            }
+        }
+
+        if (slot == -1) return;
+
+        weapons[slot] = newWeapon;
+    }
+
+    public Transform getBarrel()
+    {
+        return gunBarrel;
+    }
+
+    public void showActiveweapon(Transform weaponHolder)
+    {
+        activeWeapon = weapons[activeSlot];
+        spawnedWeaponModel = Instantiate(activeWeapon.weaponModel, weaponHolder, false);
 
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
         spawnedWeaponModel.TryGetComponent<clip>(out clip clip);
-        if(clip != null) clip.enabled = true;
+        if (clip != null) clip.enabled = true;
 
         // Locate the barrel or hitpoint
-        string targetName = (newWeapon is gunStats) ? "Muzzle" : "HitPoint";
+        string targetName = (activeWeapon is gunStats) ? "Muzzle" : "HitPoint";
         gunBarrel = FindDeepChild(spawnedWeaponModel.transform, targetName);
     }
 

@@ -17,7 +17,7 @@ public class meleeStats : weaponStats
 
     public override void Attack(weaponManager manager)
     {
-        Transform gunBarrel = manager.gunBarrel;
+        Transform gunBarrel = manager.getBarrel();
         if (gunBarrel == null) return;
 
         audioManager.instance.playSFX(swingSound, swingSoundVol);

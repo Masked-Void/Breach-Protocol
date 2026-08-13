@@ -37,6 +37,7 @@ public class playerController : MonoBehaviour, IPickWeapon
     void Start()
     {
         currentStamina = maxStamina;
+        if(weaponManager.instance != null) weaponManager.instance.showActiveweapon(weaponHoldPos.transform);
     }
 
     // Update is called once per frame
@@ -153,7 +154,7 @@ public class playerController : MonoBehaviour, IPickWeapon
         if (weaponManager.instance != null)
         {
             audioManager.instance.playEquip();
-            weaponManager.instance.equipWeapon(weapon, weaponHoldPos.transform);
+            weaponManager.instance.equipWeapon(weapon);
         }
     }
 
