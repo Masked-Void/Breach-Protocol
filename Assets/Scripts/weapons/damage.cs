@@ -19,6 +19,9 @@ public class damage : MonoBehaviour
 
     bool isDamaging;
 
+    [Header("Challenge Source")]
+    public weaponStats sourceWeapon;
+    public bool sourceWasGroundPickup;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -62,7 +65,12 @@ public class damage : MonoBehaviour
             glass.Shatter(hitPoint, transform.forward, shatterForce);
             audioManager.instance.playSpatialSFX(audioManager.instance.glass, transform.position, audioManager.instance.glassVol);
         }
-
+        // REGISTER SOURCE ON ENEMY BEFORE DAMAGE
+        enemyBase eb = other.GetComponent<enemyBase>();
+        if (eb != null && sourceWeapon != null)
+        {
+            eb.RegisterDamageSource(sourceWeapon, sourceWasGroundPickup);
+        }
         IDamage dmg = other.GetComponent<IDamage>();
         if (dmg != null && type != damageType.DOT)
         {

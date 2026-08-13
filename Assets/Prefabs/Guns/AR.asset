@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4636424b6eb53a499a9a76a72d3ba85, type: 3}
   m_Name: AR
   m_EditorClassIdentifier: Assembly-CSharp::gunStats
+  weaponID: AR
   weaponModel: {fileID: 5206027675997213250, guid: eba6cb08ef6755948b7eeea05d75f594, type: 3}
   attackRate: 0.1
   gunType: 1

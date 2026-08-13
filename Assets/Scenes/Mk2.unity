@@ -791,11 +791,14 @@ PrefabInstance:
     - {fileID: 3296842099580127169, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 8720294752289137453, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      insertIndex: 1
+      insertIndex: -1
       addedObject: {fileID: 1671493389}
     - targetCorrespondingSourceObject: {fileID: 8720294752289137453, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1436577648}
+    - targetCorrespondingSourceObject: {fileID: 8720294752289137453, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1805049561}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
 --- !u!4 &607182902 stripped
@@ -1072,10 +1075,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86b942d49b7f30649b6fb299653bc060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::waveManager
-  basicWeaponPrefabs:
-  - {fileID: 6413440490822234159, guid: a04645d8876d1a448ad847390068b125, type: 3}
-  heavyWeaponPrefabs:
-  - {fileID: 6413440490822234159, guid: a04645d8876d1a448ad847390068b125, type: 3}
+  basicWeaponPrefabs: []
+  heavyWeaponPrefabs: []
   rangedWeaponPrefabs:
   - {fileID: 5206027675997213250, guid: eba6cb08ef6755948b7eeea05d75f594, type: 3}
   - {fileID: 2859026477195048651, guid: 14b71ce1189a1e14eadaf89c6cab9e3d, type: 3}
@@ -1132,14 +1133,6 @@ MonoBehaviour:
   - {fileID: 1432375877}
   - {fileID: 239891490}
   spawnPointTransforms:
-  - {fileID: 131955503}
-  - {fileID: 250770658}
-  - {fileID: 1882003243}
-  - {fileID: 465132773}
-  - {fileID: 371454122}
-  - {fileID: 1958824979}
-  - {fileID: 1900234639}
-  - {fileID: 2019469601}
   - {fileID: 1807588611}
   - {fileID: 1052936124}
   - {fileID: 1802347088}
@@ -1148,16 +1141,32 @@ MonoBehaviour:
   - {fileID: 833395420}
   - {fileID: 205742043}
   - {fileID: 1950029887}
+  - {fileID: 131955503}
+  - {fileID: 250770658}
+  - {fileID: 1882003243}
+  - {fileID: 465132773}
+  - {fileID: 371454122}
+  - {fileID: 1958824979}
+  - {fileID: 1900234639}
+  - {fileID: 2019469601}
+  - {fileID: 143044428}
+  - {fileID: 1734287103}
+  - {fileID: 1714981168}
+  - {fileID: 1445561781}
+  - {fileID: 237777734}
+  - {fileID: 1758274924}
+  - {fileID: 1734012794}
+  - {fileID: 9116383}
   timeBetweenRoam: 30
-  roamChance: 50
+  roamChance: 30
   enemiesToSpawnAtWave0: 5
   enemyIncreaseMultiplier: 2
-  basicEnemyPercent: 20
-  heavyEnemyPercent: 20
-  rangedEnemyPercent: 60
-  timeBetweenSpawns: 2
-  timeBetweenWaves: 5
-  waveTimer: 0
+  basicEnemyPercent: 0
+  heavyEnemyPercent: 0
+  rangedEnemyPercent: 100
+  timeBetweenSpawns: 10
+  timeBetweenWaves: 0
+  waveTimer: 5
   spawnPointCooldown: 5
   maxWaves: 5
   waitingForNextWave: 0
@@ -1339,6 +1348,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5397179634786674402, guid: f22efb36ccee9cf4e9b989310a189739, type: 3}
   m_PrefabInstance: {fileID: 5019270019786406176}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1805049560
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1805049561}
+  - component: {fileID: 1805049562}
+  m_Layer: 0
+  m_Name: ChallengeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1805049561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805049560}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 280474503}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1805049562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805049560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3deb63ccc4f6bae4b86ea489f1338405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::challengeManager
+  challenges:
+  - {fileID: 11400000, guid: 9ded1e8600c288e46b7581c1ebf8a2a0, type: 2}
 --- !u!4 &1807588611 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 96671376924146229, guid: f22efb36ccee9cf4e9b989310a189739, type: 3}

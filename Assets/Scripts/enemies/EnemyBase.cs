@@ -44,6 +44,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     public bool willRoam = false;
     [SerializeField] GameObject roamPoint;
 
+    [Header("Challenge")]
+    protected weaponStats lastDamageWeapon;
+    protected bool lastDamageFromGround;
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -169,7 +172,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             playerInTrigger = false;
         }
     }
-
+    public void RegisterDamageSource(weaponStats weapon, bool fromGround)
+    {
+        lastDamageWeapon = weapon;
+        lastDamageFromGround = fromGround;
+    }
     public void takeDamage(int amount)
     {
         currentHP -= amount;
@@ -178,11 +185,8 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
         if (currentHP <= 0)
         {
-            waveManager.instance.enemyKilled();
-            FindAnyObjectByType<killChainManager>()?.RegisterKill();
-            //gameManager.updateGameGoal(-1);
-            Destroy(gameObject);
-            gameManager.instance.AddBytes(byteValue);
+            die();
+   
         }
         else if (model != null)
         {
@@ -192,10 +196,16 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     void die()
     {
-        waveManager.instance.enemyKilled();
+        // REPORT TO CHALLENGE SYSTEM
+        if (lastDamageWeapon != null)
+        {
+            challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
+        }
+            waveManager.instance.enemyKilled();
         if (gameManager.instance != null)
         {
             gameManager.instance.addKill();
+            gameManager.instance.AddBytes(byteValue);
         }
         if (killChainManager.instance != null)
         {

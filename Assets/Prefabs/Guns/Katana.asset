@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4e8a83ce7379b0449562a0669445577, type: 3}
   m_Name: Katana
   m_EditorClassIdentifier: Assembly-CSharp::meleeStats
+  weaponID: Katana
   weaponModel: {fileID: 0}
   attackRate: 0.1
   attackDamage: 1

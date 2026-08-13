@@ -46,7 +46,14 @@ public class gunStats : weaponStats
                 Quaternion spreadRotation = gunBarrel.rotation * Quaternion.Euler(randomSpreadX, randomSpreadY, 0);
 
                 // Spawn the bullet projectile flying out into its offset trajectory
-                MonoBehaviour.Instantiate(bullet, gunBarrel.position, spreadRotation);
+                Transform b = MonoBehaviour.Instantiate(bullet, gunBarrel.position, spreadRotation);
+                // PASS CHALLENGE DATA TO BULLET
+                damage dmg = b.GetComponent<damage>();
+                if (dmg != null)
+                {
+                    dmg.sourceWeapon = manager.activeWeapon;
+                    dmg.sourceWasGroundPickup = manager.currentWeaponFromGround;
+                }
             }
         }
     }

@@ -2,6 +2,9 @@ using UnityEngine;
 
 public abstract class weaponStats : ScriptableObject
 {
+    [Header("Identity")]
+    public string weaponID;
+
     [Header("Model")]
     public GameObject weaponModel;
 
