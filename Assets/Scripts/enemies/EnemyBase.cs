@@ -28,6 +28,10 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     [SerializeField] float roamArriveDistance = 0.1f;
     [SerializeField] float roamChance = .1f;
 
+    [Header("Currency")]
+    int byteValue = 5;
+
+
     protected bool playerInTrigger;
     protected float angleToPlayer;
     protected float stoppingDistOrig;
@@ -174,7 +178,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
         if (currentHP <= 0)
         {
-            die();
+            waveManager.instance.enemyKilled();
+            FindAnyObjectByType<killChainManager>()?.RegisterKill();
+            //gameManager.updateGameGoal(-1);
+            Destroy(gameObject);
+            gameManager.instance.AddBytes(byteValue);
         }
         else if (model != null)
         {
