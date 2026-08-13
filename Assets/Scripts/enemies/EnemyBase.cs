@@ -48,7 +48,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     void Update()
     {
-        if(gameManager.instance != null && gameManager.instance.isPaused) return;
+        if (gameManager.instance != null && gameManager.instance.isPaused) return;
         attackTimer += Time.unscaledDeltaTime;
         if (playerInTrigger && canSeePlayer())
         {
@@ -63,7 +63,6 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         playerDir = gameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
-        // Debug.DrawRay(transform.position, playerDir);
 
         if (Physics.Raycast(transform.position, playerDir, out RaycastHit hit))
         {
@@ -89,7 +88,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         }
     }
 
-    void roam()
+    public virtual void roam()
     {
         roamTimer = 0;
         agent.stoppingDistance = 0;
@@ -146,15 +145,18 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     protected abstract void attack();
 
-    public void ForceKill()
+    void die()
     {
         waveManager.instance.enemyKilled();
-        FindAnyObjectByType<killChainManager>()?.RegisterKill();
+        if (killChainManager.instance != null)
+        {
+            killChainManager.instance.RegisterKill();
+        }
         Destroy(gameObject);
     }
 
-    public virtual void SetWeaponPrefab(GameObject weaponPrefab)
+    public void ForceKill()
     {
-        // This method can be overridden in derived classes to set the weapon prefab.
+        die();
     }
 }

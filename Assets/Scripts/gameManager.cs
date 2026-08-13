@@ -18,17 +18,12 @@ public class gameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI killCounter;
     [SerializeField] TextMeshProUGUI waveCounter;
     [SerializeField] TextMeshProUGUI waveCountdownText;
-    [SerializeField] public GameObject pickUpUI;
+    [SerializeField] public GameObject interactionUI;
     [SerializeField] public Image playerStaminaBar;
     [SerializeField] public GameObject checkpointPopup;
     public GameObject playerSpawnPos;
 
-    [SerializeField] TMP_Text gameGoalCountText;
-    int gameGoalCount;
     int currentKill = 0;
-    int enemiesAlive;
-    int previousEnemiesAlive;
-    int previousWave;
 
 
     [Header("Screen Flash")]
@@ -52,7 +47,7 @@ public class gameManager : MonoBehaviour
     {
         if (Input.GetButtonDown("Cancel"))
         {
-            audioManager.instance.playButtonClick();
+            if (audioManager.instance != null) audioManager.instance.playButtonClick();
             if (menuActive == null)
             {
                 statePause();
@@ -76,7 +71,7 @@ public class gameManager : MonoBehaviour
     public void statePause()
     {
         isPaused = true;
-        timeManager.pauseTime();
+        timeManager.instance.pauseTime();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         pauseKills.text = currentKill.ToString("f0");
@@ -87,11 +82,14 @@ public class gameManager : MonoBehaviour
     public void stateUnpause()
     {
         isPaused = false;
-        timeManager.unpauseTime();
+        if (timeManager != null) timeManager.unpauseTime();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        menuActive.SetActive(false);
-        menuActive = null;
+        if (menuActive != null)
+        {
+            menuActive.SetActive(false);
+            menuActive = null;
+        }
         if (audioManager.instance != null) audioManager.instance.resumeMusic();
     }
 
@@ -115,12 +113,6 @@ public class gameManager : MonoBehaviour
         menuActive.SetActive(true);
     }
 
-    // Update the heart rate in UI only, moving it to just heartBeatManager
-    public void updateHeartRate(int bpm)
-    {
-        // Update the heart rate in the UI (not implemented here)
-    }
-
     // Handle the lose state
     public void stateLose()
     {
@@ -130,32 +122,10 @@ public class gameManager : MonoBehaviour
         scoreText.text = currentKill.ToString("f0");
     }
 
-    public void updateGameGoal(int amount)
-    {
-        gameGoalCount += amount;
-        //gameGoalCountText.text = gameGoalCount.ToString("f0");
-
-        if (gameGoalCount <= 0)
-        {
-        }
-    }
-
     void updateUI()
     {
+        if (waveManager.instance == null) return;
         int currentWave = waveManager.instance.getCurrentWave();
-        enemiesAlive = waveManager.instance.getEnemiesAlive();
-
-        if (currentWave != previousWave)
-        {
-            previousWave = currentWave;
-            previousEnemiesAlive = enemiesAlive;
-        }
-        else if (enemiesAlive < previousEnemiesAlive)
-        {
-            currentKill += previousEnemiesAlive - enemiesAlive;
-        }
-
-        previousEnemiesAlive = enemiesAlive;
 
         waveCounter.text = currentWave.ToString("f0");
         killCounter.text = "Kills: " + currentKill;

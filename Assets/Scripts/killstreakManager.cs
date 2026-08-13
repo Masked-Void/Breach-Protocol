@@ -20,10 +20,7 @@ public class killstreakManager : MonoBehaviour
         instance = this;
     }
 
-    void Start()
-    {
-        //killstreaks[1] = GameObject.FindWithTag("Adrenaline");
-    }
+    // Start removed — no initialization required here
 
     public void tryRoll()
     {

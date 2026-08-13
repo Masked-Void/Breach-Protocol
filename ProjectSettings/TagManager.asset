@@ -16,6 +16,7 @@ TagManager:
   - Weapon Holder
   - Clipper
   - Player Spawn Pos
+  - Destructable
   layers:
   - Default
   - TransparentFX
@@ -32,9 +33,9 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - Door
+  - PlayerBarrier
+  - Roam Point
   - 
   - 
   - 

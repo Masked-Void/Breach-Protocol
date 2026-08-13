@@ -44,7 +44,6 @@ GameObject:
   - component: {fileID: 7075587635719164594}
   - component: {fileID: 3262802430056639548}
   - component: {fileID: 710156433528328776}
-  - component: {fileID: 5261133990583353142}
   - component: {fileID: 7931631704010347091}
   m_Layer: 7
   m_Name: RangedEnemy
@@ -89,9 +88,13 @@ MonoBehaviour:
   attackRate: 0.4
   attackRange: 8
   attackDamage: 1
-  roamDist: 12
   roamWaitTime: 1.8
+  fixedRoamPos: {fileID: 0}
+  roamChance: 0.1
   hasLeftSpawnRoom: 0
+  willRoam: 0
+  roamPoint: {fileID: 0}
+  bullet: {fileID: 6152012165266093810, guid: 05e0818bb028d7f4c93c246ee307f7c5, type: 3}
   gunPivot: {fileID: 7980070263694380636}
   gunRotateSpeed: 20
   gunModel: {fileID: 2706629671963561621}

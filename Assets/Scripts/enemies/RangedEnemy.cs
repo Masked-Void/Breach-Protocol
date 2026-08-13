@@ -44,7 +44,7 @@ public class rangedEnemy : enemyBase
     void rotateGun()
     {
         Quaternion rot = Quaternion.LookRotation(playerDir);
-        gunPivot.rotation = Quaternion.Lerp(transform.rotation, rot, gunRotateSpeed * Time.deltaTime);
+        gunPivot.rotation = Quaternion.Lerp(gunPivot.rotation, rot, gunRotateSpeed * Time.deltaTime);
     }
 
     public void SetWeaponPrefab()
@@ -54,10 +54,8 @@ public class rangedEnemy : enemyBase
 
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
-        spawnedWeaponModel.TryGetComponent<clip>(out clip clip);
-        spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker);
-        if(clip != null) clip.enabled = true;
-        if(clip != null) picker.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<clip>(out var weaponClip)) weaponClip.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out var picker)) picker.enabled = false;
 
         // Locate the barrel or hitpoint
         string targetName = (selectedGun is gunStats) ? "Muzzle" : "HitPoint";

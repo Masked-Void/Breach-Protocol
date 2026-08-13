@@ -10,36 +10,60 @@ public class playerInteraction : MonoBehaviour
 
     private Camera mainCam;
     private IPickWeapon picker;
+    private MonoBehaviour pickerMono;
+    private bool isShowingUI = false;
 
     void Start()
     {
         mainCam = Camera.main;
-        TryGetComponent(out picker);
+        if (TryGetComponent(out picker))
+        {
+            pickerMono = picker as MonoBehaviour;
+        }
     }
 
     private void Update()
     {
         if (gameManager.instance != null && gameManager.instance.isPaused) return;
 
-        if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetButtonDown("Fire1"))
             weaponManager.instance.attack();
 
-        Ray ray = new Ray(mainCam.transform.position, mainCam.transform.forward);
-        RaycastHit hit;
+        handleInteraction();
+    }
 
-        if (Physics.Raycast(ray, out hit, maxDistance, interactLayer))
+    private void handleInteraction()
+    {
+        Ray ray = new Ray(mainCam.transform.position, mainCam.transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactLayer))
         {
             if (hit.collider.TryGetComponent<pickWeapon>(out var weaponPickup))
             {
-                gameManager.instance.pickUpUI.SetActive(true);
-                if (Input.GetKeyDown(KeyCode.E) && picker != null)
+                setInteractionUI(true);
+
+                bool isPickerActive = pickerMono == null || pickerMono.enabled;
+
+                if (Input.GetButtonDown("Interact") && picker != null && isPickerActive)
                 {
                     weaponPickup.interact(picker);
-                    gameManager.instance.pickUpUI.SetActive(false);
+                    setInteractionUI(false);
                 }
                 return;
             }
         }
-        gameManager.instance.pickUpUI.SetActive(false);
+        setInteractionUI(false);
+    }
+
+    void setInteractionUI(bool active)
+    {
+        if (isShowingUI == active) return;
+
+        isShowingUI = active;
+
+        if (gameManager.instance != null && gameManager.instance.interactionUI != null)
+        {
+            gameManager.instance.interactionUI.SetActive(active);
+        }
     }
 }

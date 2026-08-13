@@ -39,6 +39,11 @@ public class waveManager : MonoBehaviour
     [SerializeField] private int maxWaves;
     [SerializeField] private float timeBetweenWaves;
 
+    [Header("Roam")]
+    [SerializeField] private Transform[] roamPoints;
+    [Tooltip("Roaming is only for ranged enemies")]
+    [SerializeField] private float roamPercent;
+
     [Header("Runtime")]
     [SerializeField] private int enemiesAlive;
     [SerializeField] private bool waveInProgress;
@@ -46,7 +51,7 @@ public class waveManager : MonoBehaviour
     private bool waitingForNextWave;
     private float waveTimer;
 
-    private List<spawnPoint> spawners = new List<spawnPoint>();
+    private List<spawner> spawners = new List<spawner>();
     private int spawnersStillSpawning;
 
     void Awake()
@@ -83,7 +88,7 @@ public class waveManager : MonoBehaviour
 
     // Called once by each spawnPoint (in its own Start) so waveManager
     // knows it exists and should be included in wave coordination.
-    public void RegisterSpawner(spawnPoint sp)
+    public void RegisterSpawner(spawner sp)
     {
         if (!spawners.Contains(sp))
         {
@@ -91,7 +96,7 @@ public class waveManager : MonoBehaviour
         }
     }
 
-    public void UnregisterSpawner(spawnPoint sp)
+    public void UnregisterSpawner(spawner sp)
     {
         spawners.Remove(sp);
     }
@@ -133,7 +138,7 @@ public class waveManager : MonoBehaviour
 
         // Every spawn point runs its own count/pacing/prefab logic and just
         // reports back how many enemies it committed to spawning this wave.
-        foreach (spawnPoint sp in spawners)
+        foreach (spawner sp in spawners)
         {
             enemiesAlive += sp.BeginWave(currentWave);
         }
@@ -148,7 +153,7 @@ public class waveManager : MonoBehaviour
 
     // Called by a spawnPoint once it has finished spawning its quota for the
     // current wave (this means "done spawning", not "all its enemies died").
-    public void SpawnerFinishedSpawning(spawnPoint sp)
+    public void SpawnerFinishedSpawning(spawner sp)
     {
         spawnersStillSpawning--;
 
@@ -234,4 +239,13 @@ public class waveManager : MonoBehaviour
         float remaining = timeBetweenWaves - waveTimer;
         return Mathf.Max(0, Mathf.CeilToInt(remaining));
     }
+
+    public Vector3 newRoamPos()
+    {
+        if (roamPoints.Length == 0) return Vector3.zero;
+        int index = Random.Range(0, roamPoints.Length);
+        Vector3 roamPos = roamPoints[index].position;
+        return roamPos;
+    }
+
 }

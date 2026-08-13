@@ -511,6 +511,8 @@ MonoBehaviour:
   currentWave: 0
   maxWaves: 100
   timeBetweenWaves: 6
+  roamPoints: []
+  roamPercent: 0
   enemiesAlive: 0
   waveInProgress: 0
 --- !u!1001 &939227355
@@ -1026,9 +1028,6 @@ MonoBehaviour:
   basicEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
   rangedEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
   heavyEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
-  basicEnemyWeaponPrefabs: []
-  rangedEnemyWeaponPrefabs: []
-  heavyEnemyWeaponPrefabs: []
   rangedEnemyPercent: 60
   basicEnemyPercent: 30
   heavyEnemyPercent: 10
@@ -1152,9 +1151,6 @@ MonoBehaviour:
   basicEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
   rangedEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
   heavyEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
-  basicEnemyWeaponPrefabs: []
-  rangedEnemyWeaponPrefabs: []
-  heavyEnemyWeaponPrefabs: []
   rangedEnemyPercent: 60
   basicEnemyPercent: 30
   heavyEnemyPercent: 10

@@ -8,7 +8,7 @@ public class pickWeapon : MonoBehaviour
     {
         if (pic != null)
         {
-            pic.weaponStats(weapon);
+            pic.equipWeapon(weapon);
             Destroy(gameObject);
         }
     }

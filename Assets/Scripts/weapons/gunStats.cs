@@ -29,18 +29,18 @@ public class gunStats : weaponStats
         Transform gunBarrel = manager.gunBarrel;
         if (gunBarrel == null) return;
 
-            audioManager.instance.playSFX(shootSound, shootSoundVol);
+        audioManager.instance.playSFX(shootSound, shootSoundVol);
 
         int shotsToFire = (gunType == GunType.Shotgun) ? pelletCount : 1;
-        spreadAngle = (gunType == GunType.Shotgun) ? spreadAngle : 0;
+        float spreadToUse = (gunType == GunType.Shotgun) ? spreadAngle : 0f;
 
         if (bullet != null)
         {
             for (int i = 0; i < shotsToFire; i++)
             {
                 // Calculate random deviation within the spread angle cone
-                float randomSpreadX = Random.Range(-spreadAngle, spreadAngle);
-                float randomSpreadY = Random.Range(-spreadAngle, spreadAngle);
+                float randomSpreadX = Random.Range(-spreadToUse, spreadToUse);
+                float randomSpreadY = Random.Range(-spreadToUse, spreadToUse);
 
                 // Combine the barrel's base rotation with our random offset angles
                 Quaternion spreadRotation = gunBarrel.rotation * Quaternion.Euler(randomSpreadX, randomSpreadY, 0);
