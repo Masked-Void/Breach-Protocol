@@ -289,6 +289,8 @@ public class waveManager : MonoBehaviour
         }
 
         queueNextWave();
+        gameManager.instance.AddFiles(5);
+        Debug.Log("Current Files: " + gameManager.instance.totalFiles);
     }
 
     public Transform claimRoamPoint(GameObject askingEnemy)
