@@ -1,10 +1,10 @@
 /*
- * Script: spawnPoint
+ * Script: spawner
  *
  * Description:
- * A fully individual enemy spawn point. Each spawnPoint has its own
+ * A fully individual enemy spawn point. Each spawner has its own
  * prefabs, spawn percentages, spawn area, pacing, and difficulty
- * scaling - completely independent of any other spawnPoint in the
+ * scaling - completely independent of any other spawner in the
  * scene. It does not decide when waves start or end; it just spawns
  * its own quota whenever waveManager tells it to, and reports back
  * once it's done.
@@ -18,7 +18,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class spawnPoint : MonoBehaviour
+public class spawner : MonoBehaviour
 {
     [Header("Difficulty Scaling")]
     [SerializeField] private int startingEnemies;
@@ -48,10 +48,9 @@ public class spawnPoint : MonoBehaviour
     [SerializeField] private float spawnDist;
     [SerializeField] private ParticleSystem spawnEffect;
 
-    [Header("Runtime")]
-    [SerializeField] private int enemiesToSpawnThisWave;
-    [SerializeField] private int enemiesSpawnedThisWave;
-    [SerializeField] private bool isSpawning;
+    private int enemiesToSpawnThisWave;
+    private int enemiesSpawnedThisWave;
+    private bool isSpawning;
 
     private float spawnTimer;
 

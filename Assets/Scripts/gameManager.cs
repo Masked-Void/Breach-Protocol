@@ -19,17 +19,13 @@ public class gameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI waveCounter;
     [SerializeField] TextMeshProUGUI waveCountdownText;
     [SerializeField] public GameObject pickUpUI;
+    [SerializeField] public GameObject weaponStatsUI;
     [SerializeField] public Image playerStaminaBar;
     [SerializeField] public GameObject checkpointPopup;
     public GameObject playerSpawnPos;
 
     [SerializeField] TMP_Text gameGoalCountText;
     int gameGoalCount;
-    int currentKill = 0;
-    int enemiesAlive;
-    int previousEnemiesAlive;
-    int previousWave;
-
 
     [Header("Screen Flash")]
     public GameObject damageFlashUI;
@@ -79,7 +75,7 @@ public class gameManager : MonoBehaviour
         timeManager.pauseTime();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        pauseKills.text = currentKill.ToString("f0");
+        pauseKills.text = waveManager.instance.getEnemiesKilled().ToString("f0");
         if (audioManager.instance != null) audioManager.instance.pauseMusic();
     }
 
@@ -127,7 +123,7 @@ public class gameManager : MonoBehaviour
         statePause();
         menuActive = menuLose;
         menuActive.SetActive(true);
-        scoreText.text = currentKill.ToString("f0");
+        scoreText.text = waveManager.instance.getEnemiesKilled().ToString("f0");
     }
 
     public void updateGameGoal(int amount)
@@ -143,22 +139,9 @@ public class gameManager : MonoBehaviour
     void updateUI()
     {
         int currentWave = waveManager.instance.getCurrentWave();
-        enemiesAlive = waveManager.instance.getEnemiesAlive();
-
-        if (currentWave != previousWave)
-        {
-            previousWave = currentWave;
-            previousEnemiesAlive = enemiesAlive;
-        }
-        else if (enemiesAlive < previousEnemiesAlive)
-        {
-            currentKill += previousEnemiesAlive - enemiesAlive;
-        }
-
-        previousEnemiesAlive = enemiesAlive;
 
         waveCounter.text = currentWave.ToString("f0");
-        killCounter.text = "Kills: " + currentKill;
+        killCounter.text = "Kills: " + waveManager.instance.getEnemiesKilled();
 
         if (waveManager.instance.isWaitingForNextWave())
         {

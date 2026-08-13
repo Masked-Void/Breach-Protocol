@@ -7,7 +7,7 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
 {
     [Header("Controller")]
     [SerializeField] CharacterController controller;
-    
+
     [Header("Player Settings")]
     [SerializeField] int HP;
     [SerializeField] int speed;
@@ -58,6 +58,7 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
     {
         if (gameManager.instance != null && gameManager.instance.isPaused)
         {
+            gameManager.instance.weaponStatsUI.SetActive(false);
             gameManager.instance.pickUpUI.SetActive(false);
             return;
         }
@@ -197,7 +198,7 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
     public void updatePlayerUI()
     {
         gameManager.instance.playerStaminaBar.fillAmount = (float)currentStamina / maxStamina;
-        
+
     }
 
     public void spawnPlayer()

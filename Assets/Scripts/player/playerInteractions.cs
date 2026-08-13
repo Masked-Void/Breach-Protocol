@@ -6,6 +6,7 @@ public class playerInteraction : MonoBehaviour
     [Header("Raycast Settings")]
     [Range(1f, 5)][SerializeField] private float maxDistance = 2f;
     [SerializeField] LayerMask interactLayer;
+    GameObject weaponCard;
 
 
     private Camera mainCam;
@@ -15,6 +16,7 @@ public class playerInteraction : MonoBehaviour
     {
         mainCam = Camera.main;
         TryGetComponent(out picker);
+        weaponCard = gameManager.instance.weaponStatsUI;
     }
 
     private void Update()
@@ -32,14 +34,29 @@ public class playerInteraction : MonoBehaviour
             if (hit.collider.TryGetComponent<pickWeapon>(out var weaponPickup))
             {
                 gameManager.instance.pickUpUI.SetActive(true);
+                showWeaponStats(weaponPickup.weapon);
+                setWeaponCardScale(hit.distance);
                 if (Input.GetKeyDown(KeyCode.E) && picker != null)
                 {
                     weaponPickup.interact(picker);
                     gameManager.instance.pickUpUI.SetActive(false);
+                    gameManager.instance.weaponStatsUI.SetActive(false);
                 }
                 return;
             }
         }
         gameManager.instance.pickUpUI.SetActive(false);
+        gameManager.instance.weaponStatsUI.SetActive(false);
+    }
+
+    void showWeaponStats(weaponStats weapon)
+    {
+        weaponCard.SetActive(true);
+    }
+
+    void setWeaponCardScale(float dist)
+    {
+        float clampedDist = Mathf.Clamp(dist, .7f, 1.3f);
+        weaponCard.transform.GetChild(0).localScale = new Vector2(clampedDist, clampedDist);
     }
 }

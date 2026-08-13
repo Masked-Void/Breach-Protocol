@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class pickWeapon : MonoBehaviour
 {
-    [SerializeField] weaponStats weapon;
+    [SerializeField] public weaponStats weapon;
 
     public void interact(IPickWeapon pic)
     {

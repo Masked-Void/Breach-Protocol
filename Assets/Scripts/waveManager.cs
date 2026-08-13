@@ -3,16 +3,16 @@
  *
  * Description:
  * Central wave coordinator. Does NOT spawn enemies itself - each
- * spawnPoint is fully individual (own prefabs, percentages, pacing,
+ * spawner is fully individual (own prefabs, percentages, pacing,
  * and difficulty scaling). WaveManager just owns the wave number and
- * the countdown between waves, and keeps every spawnPoint in sync:
- * the next wave will not begin until every registered spawnPoint has
- * finished spawning AND every enemy from every spawnPoint is dead.
+ * the countdown between waves, and keeps every spawner in sync:
+ * the next wave will not begin until every registered spawner has
+ * finished spawning AND every enemy from every spawner is dead.
  *
  * Responsibilities:
  * - Automatically start the first wave when the level begins
  * - Wait between waves (real-time, unaffected by Time.timeScale),
- *   then tell every spawnPoint to begin the new wave
+ *   then tell every spawner to begin the new wave
  * - Track total enemies alive across all spawn points
  * - Only complete a wave once ALL spawn points are done spawning and
  *   ALL of their enemies are dead
@@ -20,7 +20,7 @@
  * - Notify GameManager when all waves are completed
  *
  * Interacts With:
- * - spawnPoint (one or more, individually configured)
+ * - spawner (one or more, individually configured)
  * - heartbeatManager
  * - gameManager
  * - waveLightController
@@ -39,14 +39,14 @@ public class waveManager : MonoBehaviour
     [SerializeField] private int maxWaves;
     [SerializeField] private float timeBetweenWaves;
 
-    [Header("Runtime")]
-    [SerializeField] private int enemiesAlive;
-    [SerializeField] private bool waveInProgress;
+    private int enemiesAlive;
+    private int enemiesKilled;
+    private bool waveInProgress;
 
     private bool waitingForNextWave;
     private float waveTimer;
 
-    private List<spawnPoint> spawners = new List<spawnPoint>();
+    private List<spawner> spawners = new List<spawner>();
     private int spawnersStillSpawning;
 
     void Awake()
@@ -81,9 +81,9 @@ public class waveManager : MonoBehaviour
         }
     }
 
-    // Called once by each spawnPoint (in its own Start) so waveManager
+    // Called once by each spawner (in its own Start) so waveManager
     // knows it exists and should be included in wave coordination.
-    public void RegisterSpawner(spawnPoint sp)
+    public void RegisterSpawner(spawner sp)
     {
         if (!spawners.Contains(sp))
         {
@@ -91,7 +91,7 @@ public class waveManager : MonoBehaviour
         }
     }
 
-    public void UnregisterSpawner(spawnPoint sp)
+    public void UnregisterSpawner(spawner sp)
     {
         spawners.Remove(sp);
     }
@@ -133,7 +133,7 @@ public class waveManager : MonoBehaviour
 
         // Every spawn point runs its own count/pacing/prefab logic and just
         // reports back how many enemies it committed to spawning this wave.
-        foreach (spawnPoint sp in spawners)
+        foreach (spawner sp in spawners)
         {
             enemiesAlive += sp.BeginWave(currentWave);
         }
@@ -146,9 +146,9 @@ public class waveManager : MonoBehaviour
         }
     }
 
-    // Called by a spawnPoint once it has finished spawning its quota for the
+    // Called by a spawner once it has finished spawning its quota for the
     // current wave (this means "done spawning", not "all its enemies died").
-    public void SpawnerFinishedSpawning(spawnPoint sp)
+    public void SpawnerFinishedSpawning(spawner sp)
     {
         spawnersStillSpawning--;
 
@@ -166,6 +166,7 @@ public class waveManager : MonoBehaviour
     public void enemyKilled()
     {
         enemiesAlive--;
+        enemiesKilled++;
 
         if (enemiesAlive < 0)
         {
@@ -217,6 +218,11 @@ public class waveManager : MonoBehaviour
     public int getEnemiesAlive()
     {
         return enemiesAlive;
+    }
+
+    public int getEnemiesKilled()
+    {
+        return enemiesKilled;
     }
 
     public bool isWaveInProgress()

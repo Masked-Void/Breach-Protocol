@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Spawner : MonoBehaviour
+public class ClassSpawner : MonoBehaviour
 {
     [SerializeField] GameObject objectToSpawn;
     [SerializeField] int amountToSpawn;
