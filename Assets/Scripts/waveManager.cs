@@ -72,10 +72,9 @@ public class waveManager : MonoBehaviour
 
     void Update()
     {
+        if(gameManager.instance != null && gameManager.instance.isPaused) return; 
         if (waitingForNextWave)
         {
-            // Unscaled so the countdown is always real seconds, regardless
-            // of Time.timeScale (slow-mo, hit-stop, etc.).
             waveTimer += Time.unscaledDeltaTime;
 
             if (waveTimer >= timeBetweenWaves)
@@ -103,6 +102,7 @@ public class waveManager : MonoBehaviour
 
     void queueNextWave()
     {
+        if(gameManager.instance != null && gameManager.instance.isPaused) return; 
         currentWave++;
 
         if (currentWave > maxWaves)

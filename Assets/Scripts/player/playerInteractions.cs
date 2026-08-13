@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class playerInteraction : MonoBehaviour
 {
@@ -24,7 +23,10 @@ public class playerInteraction : MonoBehaviour
 
     private void Update()
     {
-        if (gameManager.instance != null && gameManager.instance.isPaused) return;
+        if (gameManager.instance != null && gameManager.instance.isPaused) {
+            isShowingUI = false;
+            return;
+        };
 
         if (Input.GetButtonDown("Fire1"))
             weaponManager.instance.attack();
@@ -38,13 +40,10 @@ public class playerInteraction : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactLayer))
         {
-            if (hit.collider.TryGetComponent<pickWeapon>(out var weaponPickup))
+            if (hit.collider.TryGetComponent<pickWeapon>(out var weaponPickup) && weaponPickup.enabled)
             {
                 setInteractionUI(true);
-
-                bool isPickerActive = pickerMono == null || pickerMono.enabled;
-
-                if (Input.GetButtonDown("Interact") && picker != null && isPickerActive)
+                if (Input.GetButtonDown("Interact"))
                 {
                     weaponPickup.interact(picker);
                     setInteractionUI(false);

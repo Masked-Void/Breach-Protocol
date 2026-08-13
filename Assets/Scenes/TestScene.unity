@@ -569,7 +569,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3862678195115134454, guid: a23cf4d738a991842b1992fb5325b019, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.08259
+      value: -12.27
       objectReference: {fileID: 0}
     - target: {fileID: 3862678195115134454, guid: a23cf4d738a991842b1992fb5325b019, type: 3}
       propertyPath: m_LocalRotation.w
@@ -589,7 +589,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3862678195115134454, guid: a23cf4d738a991842b1992fb5325b019, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -12.27681
+      value: -9.05
       objectReference: {fileID: 0}
     - target: {fileID: 3862678195115134454, guid: a23cf4d738a991842b1992fb5325b019, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -670,7 +670,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1959079790544630, guid: 1e4f0d9e7dbf221419b0bd0e1286aa16, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1521697402}
+      addedObject: {fileID: 1521697404}
   m_SourcePrefab: {fileID: 100100000, guid: 1e4f0d9e7dbf221419b0bd0e1286aa16, type: 3}
 --- !u!108 &1071989803 stripped
 Light:
@@ -682,12 +682,69 @@ Light:
   m_CorrespondingSourceObject: {fileID: 108565402300665664, guid: 1e4f0d9e7dbf221419b0bd0e1286aa16, type: 3}
   m_PrefabInstance: {fileID: 1041264627}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1513555812
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3336681919024084105, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.4109132
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336681919024084105, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 11.000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336681919024084105, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -9.663438
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336681919024084105, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336681919024084105, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336681919024084105, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336681919024084105, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336681919024084105, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336681919024084105, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3336681919024084105, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4643874062370731178, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+      propertyPath: m_Name
+      value: HeavyEnemy
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
 --- !u!1 &1521697400 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1959079790544630, guid: 1e4f0d9e7dbf221419b0bd0e1286aa16, type: 3}
   m_PrefabInstance: {fileID: 1041264627}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1521697402
+--- !u!114 &1521697404
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -717,7 +774,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 1a9d0af18130e7149a3156a319a7220e, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: c067dbee2b5b7874cba52924ced5398a, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1001 &1526205484
 PrefabInstance:
@@ -983,6 +1040,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 7853622137294301037, guid: 14b71ce1189a1e14eadaf89c6cab9e3d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1017,7 +1078,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4392195437373994228}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d19052928de4c49478560cad874495a0, type: 3}
   m_Name: 
@@ -1025,12 +1086,12 @@ MonoBehaviour:
   startingEnemies: 5
   enemyIncreasePercent: 25
   timeBetweenSpawns: 3
-  basicEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
-  rangedEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
-  heavyEnemyPrefab: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
-  rangedEnemyPercent: 60
-  basicEnemyPercent: 30
-  heavyEnemyPercent: 10
+  basicEnemyPrefab: {fileID: 423618413738385519, guid: 5458afda8bd37b3479300efac54fae3c, type: 3}
+  rangedEnemyPrefab: {fileID: 423618413738385519, guid: 5458afda8bd37b3479300efac54fae3c, type: 3}
+  heavyEnemyPrefab: {fileID: 4643874062370731178, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+  rangedEnemyPercent: 0
+  basicEnemyPercent: 0
+  heavyEnemyPercent: 100
   spawnDist: 3
   spawnEffect: {fileID: 0}
   enemiesToSpawnThisWave: 0
@@ -1044,6 +1105,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1328115815631699168, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4037380419391769177, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6785670985224404860, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1225,3 +1294,4 @@ SceneRoots:
   - {fileID: 5672267828419159968}
   - {fileID: 8100600015481293894}
   - {fileID: 786770155}
+  - {fileID: 1513555812}
