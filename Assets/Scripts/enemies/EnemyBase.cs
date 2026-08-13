@@ -24,7 +24,8 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     [Header("Roaming")]
     [SerializeField] float roamWaitTime = 1.1f;
     float roamTimer;
-    [SerializeField] GameObject fixedRoamPos;
+    public Transform roamTarget;
+    [SerializeField] float roamArriveDistance = 0.1f;
     [SerializeField] float roamChance = .1f;
 
     protected bool playerInTrigger;
@@ -45,7 +46,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         currentHP = maxHP;
         stoppingDistOrig = agent.stoppingDistance;
 
-        roamFixed();
+        pickRoamPoint();
 
         if (model != null)
             colorOrig = model.material.color;
@@ -65,7 +66,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         {
             // While roaming, don't abandon roam to chase, but still attempt to attack if player is visible/within range.
             tryAttackFromCurrentPosition();
-            checkRoamFixed();
+            roam();
         }
     }
 
@@ -115,35 +116,40 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         return false;
     }
 
-    // Legacy roaming methods removed; fixed roaming (roamFixed) is used instead.
-
-    void checkRoamFixed()
+    void pickRoamPoint()
     {
-        if (agent.remainingDistance < 0.00001f)
-        {
-            roamTimer += Time.deltaTime;
-            if (roamTimer > roamWaitTime)
-            {
-                float randomNumber = Random.Range(0f, 1f);
-                if (randomNumber < roamChance)
-                {
-                    roamFixed();
-                }
-                else
-                {
-                    roamTimer = 0;
-                }
-            }
-        }
+        if (waveManager.instance == null) return;
+
+        waveManager.instance.releaseRoamPoint(gameObject);
+
+        Transform nextRoamPoint = waveManager.instance.claimRoamPoint(gameObject);
+
+        if (nextRoamPoint == null) return;
+
+        roamTarget = nextRoamPoint;
+        agent.SetDestination(roamTarget.position);
     }
 
-    void roamFixed()
+    void roam()
     {
-        roamTimer = 0;
-        if (waveManager.instance != null)
+        if (roamTarget != null)
         {
-            agent.SetDestination(waveManager.instance.newRoamPos());
+            if(Vector3.Distance(transform.position,roamTarget.position)<= roamArriveDistance)
+            {
+                roamTarget = null;
+                roamTimer = 0f;
+            }
         }
+
+        roamTimer += Time.deltaTime;
+
+        if (roamTimer < roamWaitTime) return;
+
+        roamTimer = 0f;
+
+        if (Random.Range(0f, 1f) > roamChance) return;
+
+        pickRoamPoint();
     }
 
     private void OnTriggerEnter(Collider other)

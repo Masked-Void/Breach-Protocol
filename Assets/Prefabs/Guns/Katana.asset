@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::meleeStats
   weaponModel: {fileID: 0}
   attackRate: 0.1
-  throwForce: 25
   attackDamage: 1
   attackDist: 5
   swingSound: {fileID: 0}
