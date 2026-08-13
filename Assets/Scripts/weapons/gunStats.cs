@@ -17,7 +17,7 @@ public class gunStats : weaponStats
     public Vector3 Rotation;
 
     [Header("Ammo")]
-    [Range(2, 6)] public int pelletCount;
+    [Range(1, 20)] public int pelletCount;
     [Range(.2f, 20f)] public float spreadAngle;
 
     

@@ -9,6 +9,7 @@ public class titleMenuManager : MonoBehaviour
     [SerializeField] private Slider progressBar;
     [SerializeField] private GameObject Buttons;
     [SerializeField] private GameObject SoundMenu;
+    [SerializeField] private GameObject unlockShop;
     CanvasGroup canvasGroup;
 
     void Start()
@@ -93,5 +94,18 @@ public class titleMenuManager : MonoBehaviour
         #else
                     Application.Quit();
         #endif
+    }
+
+    public void openUnlocks()
+    {
+        audioManager.instance.playButtonClick();
+        Buttons.SetActive(false);
+        unlockShop.SetActive(true);
+    }
+
+    public void closeUnlocks()
+    {
+        unlockShop.SetActive(false);
+        Buttons.SetActive(true);
     }
 }
