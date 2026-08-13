@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class gameManager : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class gameManager : MonoBehaviour
     public GameObject playerSpawnPos;
 
     int currentKill = 0;
+    int previousWave = -1;
 
 
     [Header("Screen Flash")]
@@ -130,33 +132,59 @@ public class gameManager : MonoBehaviour
     void updateUI()
     {
         if (waveManager.instance == null) return;
+
         int currentWave = waveManager.instance.getCurrentWave();
-        //enemiesAlive = waveManager.instance.getEnemiesAlive();
+        
 
-        //if (currentWave != previousWave)
-        //{
-        //    previousWave = currentWave;
-        //    previousEnemiesAlive = enemiesAlive;
-        //}
-        //else if (enemiesAlive < previousEnemiesAlive)
-        //{
-        //    currentKill += previousEnemiesAlive - enemiesAlive;
-        //}
+        if (currentWave != previousWave)
+        {
+            previousWave = currentWave;
 
-        //previousEnemiesAlive = enemiesAlive;
+            waveCounter.text = currentWave.ToString("f0");
 
-        waveCounter.text = currentWave.ToString("f0");
-        killCounter.text = "Kills: " + currentKill;
+            StartCoroutine(AnimateWaveText());
+        }
+
+        killCounter.text = currentKill.ToString("f0");
 
         if (waveManager.instance.isWaitingForNextWave())
         {
             int secondsLeft = waveManager.instance.getSecondsUntilNextWave();
-            waveCountdownText.text = "Next Wave starts in " + secondsLeft;
+
+            waveCountdownText.text = "Next Wave Starts In: " + secondsLeft;
             waveCountdownText.gameObject.SetActive(true);
         }
         else
         {
             waveCountdownText.gameObject.SetActive(false);
         }
+    }
+
+    IEnumerator AnimateWaveText()
+    {
+        RectTransform rect = waveCounter.rectTransform;
+
+        Vector3 originalScale = Vector3.one;
+
+        float duration = 0.25f;
+        float timer = 0f;
+
+        rect.localScale = originalScale * 1.3f;
+
+        while (timer < duration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            float t = timer / duration;
+
+
+            t = Mathf.SmoothStep(0f, 1f, t);
+
+            rect.localScale = Vector3.Lerp(originalScale * 1.3f,originalScale,t);
+
+            yield return null;
+        }
+
+        rect.localScale = originalScale;
     }
 }
