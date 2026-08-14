@@ -50,7 +50,6 @@ public class gameManager : MonoBehaviour
     {
         instance = this;
         player = GameObject.FindWithTag("Player");
-
         playerScript = player.GetComponent<playerController>();
     }
     //Currency Stuff
@@ -162,6 +161,8 @@ public class gameManager : MonoBehaviour
         menuActive = menuLose;
         menuActive.SetActive(true);
         scoreText.text = currentKill.ToString("f0");
+        upgradeManager.instance.files += totalFiles;
+        upgradeManager.instance.SaveUpgrades();
     }
 
     public void updateGameGoal(int amount)

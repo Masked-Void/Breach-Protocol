@@ -199,7 +199,10 @@ public class waveManager : MonoBehaviour
 
         queueNextWave();
         gameManager.instance.AddFiles(5);
+        upgradeManager.instance.files += gameManager.instance.totalFiles;
+        upgradeManager.instance.SaveUpgrades();
         Debug.Log("Current Files: " + gameManager.instance.totalFiles);
+
     }
 
     void playerWins()

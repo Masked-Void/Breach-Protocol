@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: spreadKunais
   m_EditorClassIdentifier: Assembly-CSharp::upgradeData
   upgradeName: Spread Kunai
+  id: spread_kunai
   description: Throws several Kunais with each shot.
   cost: 500
   upgradeType: 2
   value: 1
   icon: {fileID: 21300000, guid: 74bcf0a9fc9c34d4faa833bdb8b69cb1, type: 3}
+  equippableVersion: {fileID: 0}

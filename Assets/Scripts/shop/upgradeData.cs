@@ -1,21 +1,26 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Shop/Upgrade")]
 public class upgradeData : ScriptableObject
 {
-    [SerializeField] public string upgradeName;
-    [SerializeField] public string description;
-    [SerializeField] public int cost;
-    [SerializeField] public UpgradeType upgradeType;
-    
-    
-    public float value;
-
+    [SerializeField] private string upgradeName;
+    [SerializeField] private string id;
+    [SerializeField] private string description;
+    [SerializeField] private int cost;
+    [SerializeField] private UpgradeType upgradeType;
+    [SerializeField] private float value;
     [SerializeField] public Sprite icon;
-    
-    
-    
+
+    public string UpgradeName => upgradeName;
+    public string Id => id;
+    public string Description => description;
+    public int Cost => cost;
+    public float Value => value;
+    public Sprite Icon => icon;
+    public upgradeData equippableVersion;
+
+
+
 
 
 
