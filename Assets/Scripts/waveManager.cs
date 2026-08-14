@@ -388,6 +388,51 @@ public class waveManager : MonoBehaviour
         }
     }
 
+    void completeWave()
+    {
+        if (!waveInProgress)
+        {
+            return;
+        }
+
+        waveInProgress = false;
+
+        if (heartbeatManager.instance != null)
+        {
+            heartbeatManager.instance.waveCompleted();
+        }
+
+        queueNextWave();
+        gameManager.instance.AddFiles(5);
+        upgradeManager.instance.files += gameManager.instance.totalFiles;
+        upgradeManager.instance.SaveUpgrades();
+        Debug.Log("Current Files: " + gameManager.instance.totalFiles);
+
+    }
+
+    void playerWins()
+    {
+        if (gameManager.instance != null)
+        {
+            // Add this once your gameManager has a win menu.
+            // gameManager.instance.stateWin();
+        }
+    }
+
+    public int getCurrentWave()
+    {
+        return currentWave;
+    }
+
+    public int getEnemiesAlive()
+    {
+        return enemiesAlive;
+    }
+
+    public bool isWaveInProgress()
+    {
+        return waveInProgress;
+    }
 
     public bool isWaitingForNextWave()
     {
