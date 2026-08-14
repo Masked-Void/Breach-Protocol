@@ -48,11 +48,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146f00575fd66e04e8603e76173291e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::doorController
-  doorObj: {fileID: 8953418673545824781}
-  closedName: GateEndPos
-  openName: GateOpenPos
+  doorObject: {fileID: 8953418673545824781}
+  closedMarkerName: Close
+  openMarkerName: Open
   movementTime: 1
-  closeWhenEmpty: 0
+  closeWhenEmpty: 1
   closeDelay: 1
 --- !u!65 &8159683404962612074
 BoxCollider:
@@ -435,7 +435,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1159408889555399900}
   m_Layer: 15
-  m_Name: GateOpenPos
+  m_Name: Open
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -469,7 +469,7 @@ GameObject:
   - component: {fileID: 5513616665439081221}
   - component: {fileID: 1022926859944098289}
   m_Layer: 0
-  m_Name: GateClosePos
+  m_Name: Close
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
