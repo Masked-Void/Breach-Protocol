@@ -6,7 +6,7 @@ public class weaponManager : MonoBehaviour
 
     [Header("Weapon")]
     public weaponStats activeWeapon;
-    private GameObject spawnedWeaponModel;
+    public GameObject spawnedWeaponModel;
 
     [Header("Inventory")]
     public weaponStats[] weapons = new weaponStats[4];
@@ -66,16 +66,66 @@ public class weaponManager : MonoBehaviour
     public void showActiveweapon(Transform weaponHolder)
     {
         activeWeapon = weapons[activeSlot];
+        if (activeWeapon == null) return;
+
         spawnedWeaponModel = Instantiate(activeWeapon.weaponModel, weaponHolder, false);
 
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
-        spawnedWeaponModel.TryGetComponent<clip>(out clip clip);
-        if (clip != null) clip.enabled = true;
+
+        if (spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody rb)) rb.isKinematic = true;
+        if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = true;
 
         // Locate the barrel or hitpoint
         string targetName = (activeWeapon is gunStats) ? "Muzzle" : "HitPoint";
         gunBarrel = FindDeepChild(spawnedWeaponModel.transform, targetName);
+    }
+
+    public void Throw()
+    {
+        if (spawnedWeaponModel == null) return;
+        spawnedWeaponModel.transform.SetParent(null);
+
+        Rigidbody projectileRb;
+        if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out projectileRb))
+        {
+            projectileRb = spawnedWeaponModel.AddComponent<Rigidbody>();
+        }
+
+        projectileRb.isKinematic = false;
+        projectileRb.useGravity = true;
+
+        // Calculate directional trajectory
+        Vector3 forceDirection = Camera.main.transform.forward;
+        RaycastHit hit;
+
+        if (Physics.Raycast(gameManager.instance.playerScript.weaponHoldPos.transform.position,
+                            gameManager.instance.playerScript.weaponHoldPos.transform.forward,
+                            out hit, 500f))
+        {
+            forceDirection = (hit.point - gameManager.instance.playerScript.weaponHoldPos.transform.position).normalized;
+        }
+
+        // Apply forward and upward force
+        Vector3 forceToAdd = forceDirection * gameManager.instance.playerScript.throwForce
+                           + gameManager.instance.player.transform.up * gameManager.instance.playerScript.throwUpwardForce;
+
+        projectileRb.AddForce(forceToAdd, ForceMode.Impulse);
+
+        // Add subtle spin for realistic throwing physics
+        projectileRb.AddTorque(Camera.main.transform.right * 10f, ForceMode.Impulse);
+
+
+        // Ensure Colliders are active
+        if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider))
+        {
+            weaponCollider.enabled = true;
+        }
+
+        weapons[activeSlot] = null;
+        activeWeapon = null;
+        spawnedWeaponModel = null;
+        gunBarrel = null;
     }
 
     // find nested children
@@ -96,6 +146,6 @@ public class weaponManager : MonoBehaviour
             return;
 
         attackTimer = 0f;
-        activeWeapon.Attack(this);
+        activeWeapon.Attack();
     }
 }

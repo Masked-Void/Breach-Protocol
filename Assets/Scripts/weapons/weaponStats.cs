@@ -9,5 +9,5 @@ public abstract class weaponStats : ScriptableObject
     [Header("Damage")]
     [Range(.1f,5)][SerializeField] public float attackRate;
 
-    public abstract void Attack(weaponManager manager);
+    public abstract void Attack();
 }

@@ -15,9 +15,9 @@ public class meleeStats : weaponStats
     public AudioClip hitWallSound;
     [Range(0, 1)] public float hitWallVol = 1f;
 
-    public override void Attack(weaponManager manager)
+    public override void Attack()
     {
-        Transform gunBarrel = manager.getBarrel();
+        Transform gunBarrel = weaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
 
         audioManager.instance.playSFX(swingSound, swingSoundVol);

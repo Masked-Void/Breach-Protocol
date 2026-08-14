@@ -13,6 +13,8 @@ public class playerController : MonoBehaviour, IPickWeapon
     [SerializeField] int jumpMax;
     [SerializeField] int gravity;
     [SerializeField] float pushbackFriction = 5f;
+    public float throwForce = 5f;
+    public float throwUpwardForce = 5f;
     [SerializeField] GameObject playerShield;
 
     [Header("Stamina Settings")]

@@ -31,6 +31,9 @@ public class playerInteraction : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
             weaponManager.instance.attack();
 
+        if (Input.GetKeyDown(KeyCode.Keypad8))
+            weaponManager.instance.Throw();
+
         handleInteraction();
     }
 
@@ -46,6 +49,7 @@ public class playerInteraction : MonoBehaviour
                 if (Input.GetButtonDown("Interact"))
                 {
                     weaponPickup.interact(picker);
+                    Destroy(hit.collider.gameObject);
                     setInteractionUI(false);
                 }
                 return;

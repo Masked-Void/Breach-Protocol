@@ -9,7 +9,7 @@ public class pickWeapon : MonoBehaviour
         if (pic != null)
         {
             pic.equipWeapon(weapon);
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
     }
 }

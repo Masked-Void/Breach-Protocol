@@ -24,9 +24,9 @@ public class gunStats : weaponStats
     public AudioClip shootSound;
     [Range(0, 1)] public float shootSoundVol;
 
-    public override void Attack(weaponManager manager)
+    public override void Attack()
     {
-        Transform gunBarrel = manager.getBarrel();
+        Transform gunBarrel = weaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
 
         audioManager.instance.playSFX(shootSound, shootSoundVol);
