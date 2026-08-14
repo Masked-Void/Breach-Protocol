@@ -70,7 +70,7 @@ public class gameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bytesText.text = "Bytes: " + totalBytes.ToString();
+        //bytesText.text = "Bytes: " + totalBytes.ToString();
         if (FindAnyObjectByType<playerInteraction>().shopOpen)
         { 
             menuActive = shopUI;
