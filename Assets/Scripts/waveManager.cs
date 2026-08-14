@@ -288,25 +288,6 @@ public class waveManager : MonoBehaviour
 
     }
 
-    void completeWave()
-    {
-        if (!waveInProgress)
-        {
-            return;
-        }
-
-        waveInProgress = false;
-        enemiesAlive = 0;
-
-        if (heartbeatManager.instance != null)
-        {
-            heartbeatManager.instance.waveCompleted();
-        }
-
-        queueNextWave();
-        gameManager.instance.AddFiles(5);
-        Debug.Log("Current Files: " + gameManager.instance.totalFiles);
-    }
 
     public Transform claimRoamPoint(GameObject askingEnemy)
     {
@@ -418,12 +399,6 @@ public class waveManager : MonoBehaviour
             // gameManager.instance.stateWin();
         }
     }
-
-    public int getCurrentWave()
-    {
-        return currentWave;
-    }
-
     public int getEnemiesAlive()
     {
         return enemiesAlive;
