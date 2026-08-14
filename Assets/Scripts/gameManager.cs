@@ -159,13 +159,28 @@ public class gameManager : MonoBehaviour
         upgradeManager.instance.SaveUpgrades();
     }
 
+    public void addKill()
+    {
+        currentKill++;
+    }
+
     void updateUI()
     {
         if (waveManager.instance == null) return;
-        int currentWave = waveManager.instance.getCurrentWave();
 
-        waveCounter.text = currentWave.ToString("f0");
-        killCounter.text = "Kills: " + currentKill;
+        int currentWave = waveManager.instance.getCurrentWave();
+        
+
+        if (currentWave != previousWave)
+        {
+            previousWave = currentWave;
+
+            waveCounter.text = currentWave.ToString("f0");
+
+            StartCoroutine(AnimateWaveText());
+        }
+
+        killCounter.text = currentKill.ToString("f0");
 
         if (waveManager.instance.isWaitingForNextWave())
         {
@@ -222,10 +237,5 @@ public class gameManager : MonoBehaviour
         }
 
         rect.localScale = originalScale;
-    }
-
-    public void addKill()
-    {
-        currentKill++;
     }
 }

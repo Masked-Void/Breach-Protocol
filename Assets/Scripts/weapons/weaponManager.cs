@@ -156,6 +156,7 @@ public class weaponManager : MonoBehaviour
         }
 
         activeWeapon.Attack();
+
     }
 
     

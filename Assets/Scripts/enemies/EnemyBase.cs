@@ -62,8 +62,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     void Update()
     {
         if (gameManager.instance != null && gameManager.instance.isPaused) return;
-        attackTimer += Time.unscaledDeltaTime;
-        if (playerInTrigger && canSeePlayer())
+        attackTimer += Time.deltaTime;
+
+        if (!willRoam)
         {
             // Heavy / Basic: finish first roam point, then b-line player forever
             if (roamTarget != null)
@@ -272,6 +273,17 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     }
 
     protected abstract void attack();
+
+    protected bool tryMeleeHit()
+    {
+        agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
+        float dist = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
+        if (dist > attackRange || attackTimer <= attackRate) return false;
+
+        attackTimer = 0;
+        gameManager.instance.player.GetComponent<IDamage>()?.takeDamage(attackDamage);
+        return true;
+    }
 
     public void ForceKill()
     {
