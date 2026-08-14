@@ -8,6 +8,7 @@ public class pickWeapon : MonoBehaviour
     {
         if (pic != null)
         {
+            weaponManager.instance.currentWeaponFromGround = true;
             pic.equipWeapon(weapon);
             Destroy(gameObject);
         }

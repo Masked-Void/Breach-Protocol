@@ -12,6 +12,8 @@ public class weaponManager : MonoBehaviour
     public Transform gunBarrel;
     private float attackTimer;
 
+    [Header("Challenge")]
+    public bool currentWeaponFromGround = false;
     void Awake()
     {
         if (instance != null && instance != this)

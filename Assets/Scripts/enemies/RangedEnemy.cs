@@ -13,7 +13,6 @@ public class rangedEnemy : enemyBase
     gunStats activeGun;
     private GameObject spawnedWeaponModel;
 
-
     public Transform gunBarrel;
 
 
@@ -57,7 +56,7 @@ public class rangedEnemy : enemyBase
         spawnedWeaponModel.TryGetComponent<clip>(out clip clip);
         spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker);
         if(clip != null) clip.enabled = true;
-        if(clip != null) picker.enabled = false;
+        if(picker != null) picker.enabled = false;
 
         // Locate the barrel or hitpoint
         string targetName = (selectedGun is gunStats) ? "Muzzle" : "HitPoint";
