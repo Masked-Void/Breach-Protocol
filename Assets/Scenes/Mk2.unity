@@ -408,6 +408,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3136144643366654131, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: giveWillRoamChance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3136144643366654131, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: 'roamPointTransforms.Array.data[0]'
       value: 
       objectReference: {fileID: 727934977}
