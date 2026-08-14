@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::gunStats
   weaponID: Pistol
   weaponModel: {fileID: 2859026477195048651, guid: 14b71ce1189a1e14eadaf89c6cab9e3d, type: 3}
-  attackRate: 0.4
+  attackRate: 0.1
   gunType: 0
   bullet: {fileID: 6785665511576398920, guid: 05e0818bb028d7f4c93c246ee307f7c5, type: 3}
   Position: {x: 0.2, y: -0.31, z: 0.5}
   Rotation: {x: 0, y: 0, z: 0}
-  pelletCount: 2
+  pelletCount: 1
   spreadAngle: 0.2
   shootSound: {fileID: 8300000, guid: dce971b0af68f5240864a8d4cc1851ed, type: 3}
   shootSoundVol: 0.8

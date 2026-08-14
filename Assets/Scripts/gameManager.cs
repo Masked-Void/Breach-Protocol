@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuSound;
+    [SerializeField] GameObject shopUI;
     [SerializeField] timeManager timeManager;
 
     [SerializeField] private TMP_Text scoreText;
@@ -21,6 +23,8 @@ public class gameManager : MonoBehaviour
     [SerializeField] public GameObject pickUpUI;
     [SerializeField] public Image playerStaminaBar;
     [SerializeField] public GameObject checkpointPopup;
+    [SerializeField] public TMP_Text bytesText;
+    [SerializeField] public GameObject shopMessage;
     public GameObject playerSpawnPos;
 
     int currentKill = 0;
@@ -34,7 +38,7 @@ public class gameManager : MonoBehaviour
     public playerController playerScript;
 
     [Header("Currency")]
-    [SerializeField] int totalBytes = 0;
+    [SerializeField] public int totalBytes = 0;
     [SerializeField] public int totalFiles = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -66,7 +70,14 @@ public class gameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
+        bytesText.text = "Bytes: " + totalBytes.ToString();
+        if (FindAnyObjectByType<playerInteraction>().shopOpen)
+        { 
+            menuActive = shopUI;
+            return;
+        }
+        
+        if (!FindAnyObjectByType<playerInteraction>().shopOpen && Input.GetButtonDown("Cancel"))
         {
             if (audioManager.instance != null) audioManager.instance.playButtonClick();
             if (menuActive == null)
@@ -83,7 +94,9 @@ public class gameManager : MonoBehaviour
             {
                 openPauseMenu();
             }
-        }
+
+        }    
+        
 
         updateUI();
     }
@@ -179,5 +192,19 @@ public class gameManager : MonoBehaviour
         {
             waveCountdownText.gameObject.SetActive(false);
         }
+    }
+
+    public IEnumerator WarningText()
+    {
+        gameManager.instance.shopMessage.SetActive(true);
+        yield return new WaitForSecondsRealtime(5);
+        gameManager.instance.shopMessage.SetActive(false);
+        
+    }
+
+    public void showShopWarning()
+    {
+        StopCoroutine(nameof(WarningText));
+        StartCoroutine(WarningText());
     }
 }

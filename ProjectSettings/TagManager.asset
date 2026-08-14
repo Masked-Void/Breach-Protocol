@@ -17,6 +17,8 @@ TagManager:
   - Clipper
   - Player Spawn Pos
   - Destructable
+  - Shop
+  - Kunai
   layers:
   - Default
   - TransparentFX
@@ -30,7 +32,7 @@ TagManager:
   - Projectile
   - Player
   - Melee
-  - 
+  - shopTerminal
   - 
   - 
   - Door

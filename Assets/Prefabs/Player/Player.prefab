@@ -203,6 +203,8 @@ MonoBehaviour:
   gravity: 35
   pushbackFriction: 5
   playerShield: {fileID: 1163693913067826184}
+  explodingBullets: 0
+  kunaiSpread: 0
   maxStamina: 50
   staminaDrainRate: 11
   staminaRegenRate: 6
@@ -224,7 +226,9 @@ MonoBehaviour:
   maxDistance: 3
   interactLayer:
     serializedVersion: 2
-    m_Bits: 2304
+    m_Bits: 6400
+  shopUI: {fileID: 0}
+  shopOpen: 0
 --- !u!33 &8426663965172706110
 MeshFilter:
   m_ObjectHideFlags: 0

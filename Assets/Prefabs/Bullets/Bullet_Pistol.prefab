@@ -61,6 +61,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   hitEffect: {fileID: 970440554703164915, guid: 8d2e6d44cc5f25f469ad05556e0d50ca, type: 3}
+  explodeEffect: {fileID: 1007127540951276610, guid: 3ace37360f306cb4aac03640550fa9ef, type: 3}
+  isExplosive: 1
 --- !u!33 &7603304608557851629
 MeshFilter:
   m_ObjectHideFlags: 0

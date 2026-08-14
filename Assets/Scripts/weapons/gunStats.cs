@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class gunStats : weaponStats
 {
-    public enum GunType { Pistol, AR, Shotgun }
+    public enum GunType { Pistol, AR, Shotgun, Kunai }
 
     [Header("Gun Settings")]
     public GunType gunType;
@@ -17,8 +17,11 @@ public class gunStats : weaponStats
     public Vector3 Rotation;
 
     [Header("Ammo")]
-    [Range(2, 6)] public int pelletCount;
-    [Range(.2f, 3f)] public float spreadAngle;
+    [Range(1, 20)] public int pelletCount;
+    [Range(.2f, 20f)] public float spreadAngle;
+
+    
+    
 
     [Header("Audio")]
     public AudioClip shootSound;
@@ -30,9 +33,18 @@ public class gunStats : weaponStats
         if (gunBarrel == null) return;
 
         audioManager.instance.playSFX(shootSound, shootSoundVol);
-
-        int shotsToFire = (gunType == GunType.Shotgun) ? pelletCount : 1;
+     
+        int shotsToFire = (gunType == GunType.Shotgun || gunType == GunType.Kunai) ? pelletCount : 1;
         float spreadToUse = (gunType == GunType.Shotgun) ? spreadAngle : 0f;
+
+        //Upgrade Check
+        if (gunType == GunType.Kunai && FindAnyObjectByType<playerController>().kunaiSpread)
+        {
+            int boostedPelletCount = 3;
+            int boostedSpreadAngle = 15;
+            shotsToFire += boostedPelletCount;
+            spreadAngle += boostedSpreadAngle;
+        }
 
         if (bullet != null)
         {
@@ -44,10 +56,17 @@ public class gunStats : weaponStats
 
                 // Combine the barrel's base rotation with our random offset angles
                 Quaternion spreadRotation = gunBarrel.rotation * Quaternion.Euler(randomSpreadX, randomSpreadY, 0);
+                
 
                 // Spawn the bullet projectile flying out into its offset trajectory
-                Transform b = MonoBehaviour.Instantiate(bullet, gunBarrel.position, spreadRotation);
-                // PASS CHALLENGE DATA TO BULLET
+                Transform spawnedBullet = Transform b = MonoBehaviour.Instantiate(bullet, gunBarrel.position, spreadRotation);
+                
+                //Upgrade Check
+                if (FindAnyObjectByType<playerController>().explodingBullets)
+                {
+                    damage dmg = spawnedBullet.GetComponent<damage>();
+                    dmg.isExplosive = true;
+                    // PASS CHALLENGE DATA TO BULLET
                 damage dmg = b.GetComponent<damage>();
                 if (dmg != null)
                 {
@@ -55,6 +74,10 @@ public class gunStats : weaponStats
                     dmg.sourceWasGroundPickup = manager.currentWeaponFromGround;
                 }
             }
+                
+            }
         }
     }
+
+ 
 }

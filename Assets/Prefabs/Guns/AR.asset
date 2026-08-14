@@ -19,7 +19,7 @@ MonoBehaviour:
   bullet: {fileID: 6785665511576398920, guid: d7a56a45ac2dccc428d4ccc0215f14bd, type: 3}
   Position: {x: 0, y: -0.27, z: 0.63}
   Rotation: {x: -7.9, y: 0, z: 0}
-  pelletCount: 2
+  pelletCount: 1
   spreadAngle: 0.2
   shootSound: {fileID: 8300000, guid: eb14dd355801c574fb7cc4560bd941b7, type: 3}
   shootSoundVol: 0.8
