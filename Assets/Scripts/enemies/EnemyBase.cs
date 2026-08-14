@@ -43,7 +43,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     public bool hasLeftSpawnRoom = false;
     public bool willRoam = false;
     [SerializeField] GameObject roamPoint;
-
+    protected bool isEngaged = false;
     [Header("Challenge")]
     protected weaponStats lastDamageWeapon;
     protected bool lastDamageFromGround;
@@ -64,16 +64,50 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (gameManager.instance != null && gameManager.instance.isPaused) return;
         attackTimer += Time.deltaTime;
 
-        // If this enemy is set to roam, never chase the player.
-        if (!willRoam && playerInTrigger && canSeePlayer())
+        if (!willRoam)
         {
-            // chase + attack happen inside canSeePlayer
+            // Heavy / Basic: finish first roam point, then b-line player forever
+            if (roamTarget != null)
+            {
+                if (AtRoamTarget())
+                {
+                    waveManager.instance?.releaseRoamPoint(gameObject);
+                    roamTarget = null;
+                    agent.stoppingDistance = stoppingDistOrig;
+                }
+            }
+            else if (gameManager.instance?.player != null)
+            {
+                agent.SetDestination(gameManager.instance.player.transform.position);
+                playerDir = gameManager.instance.player.transform.position - transform.position;
+                faceTarget();
+                attack();
+            }
         }
-        else if (willRoam)
+        else if (isEngaged)
         {
-            // While roaming, don't abandon roam to chase, but still attempt to attack if player is visible/within range.
-            tryAttackFromCurrentPosition();
+            // Ranged: now chasing the player
+            if (gameManager.instance?.player != null)
+            {
+                agent.SetDestination(gameManager.instance.player.transform.position);
+                playerDir = gameManager.instance.player.transform.position - transform.position;
+                faceTarget();
+                attack();
+            }
+        }
+        else
+        {
+            // Ranged: roaming — only look around while stopped at a roam point
             roam();
+
+            if (roamTarget == null && playerInTrigger)
+            {
+                if (tryAttackFromCurrentPosition())
+                {
+                    isEngaged = true;
+                    agent.stoppingDistance = stoppingDistOrig;
+                }
+            }
         }
     }
 
@@ -134,31 +168,34 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (nextRoamPoint == null) return;
 
         roamTarget = nextRoamPoint;
+        agent.stoppingDistance = 0f;
         agent.SetDestination(roamTarget.position);
     }
 
     void roam()
     {
-        if (roamTarget != null)
+        if (roamTarget != null && AtRoamTarget())
         {
-            if(Vector3.Distance(transform.position,roamTarget.position)<= roamArriveDistance)
-            {
-                roamTarget = null;
-                roamTimer = 0f;
-            }
+            waveManager.instance?.releaseRoamPoint(gameObject);
+            roamTarget = null;
+            roamTimer = 0f;
+            return;
         }
 
-        roamTimer += Time.deltaTime;
-
-        if (roamTimer < roamWaitTime) return;
-
-        roamTimer = 0f;
-
-        if (Random.Range(0f, 1f) > roamChance) return;
-
-        pickRoamPoint();
+        if (roamTarget == null)
+        {
+            roamTimer += Time.deltaTime;
+            if (roamTimer < roamWaitTime) return;
+            roamTimer = 0f;
+            if (Random.Range(0f, 1f) > roamChance) return;
+            pickRoamPoint();
+        }
     }
-
+    bool AtRoamTarget()
+    {
+        if (roamTarget == null) return false;
+        return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + roamArriveDistance;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player")) playerInTrigger = true;
@@ -180,8 +217,17 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     public void takeDamage(int amount)
     {
         currentHP -= amount;
+
         if (gameManager.instance?.player != null)
-            agent.SetDestination(gameManager.instance.player.transform.position);
+        {
+            if (!willRoam)
+                agent.SetDestination(gameManager.instance.player.transform.position);
+            else
+            {
+                isEngaged = true;
+                agent.stoppingDistance = stoppingDistOrig;
+            }
+        }
 
         if (currentHP <= 0)
         {

@@ -73,14 +73,16 @@ public class waveManager : MonoBehaviour
     [SerializeField] Transform[] spawnPointTransforms;
     private roamPoint[] roamPoints;
     private spawnPoint[] spawnPoints;
-    
+
     [Header("Roam Settings")]
-    [SerializeField] float timeBetweenRoam;
-    [SerializeField] float roamChance;
+    [Tooltip("Roam is for ranged enemies")]
+    [SerializeField] float giveWillRoamChance;
+
 
     [Header("Spawn Settings")]
     [SerializeField] int enemiesToSpawnAtWave0;
     [SerializeField] float enemyIncreaseMultiplier;
+    [HideInInspector] enemyType typeSpawned;
 
     [Header("EnemyPercentToSpawn")]
     [SerializeField] int basicEnemyPercent;
@@ -161,7 +163,17 @@ public class waveManager : MonoBehaviour
             if (point == null) break;               // no spawn points configured
 
             // Instantiate the enemy
-            Instantiate(enemyPrefab, point.point.transform.position, point.point.transform.rotation);
+            GameObject enemy = Instantiate(enemyPrefab, point.point.transform.position, point.point.transform.rotation);
+            
+            if (typeSpawned == enemyType.ranged)
+            {
+                if (enemy.TryGetComponent<enemyBase>(out enemyBase enemyScript))
+                {
+                    bool giveRoam = Random.Range(0f, 1f) <= giveWillRoamChance;
+                    enemyScript.willRoam = giveRoam;
+                }
+            }
+          
 
             point.lastUsed = Time.time;
 
@@ -181,6 +193,7 @@ public class waveManager : MonoBehaviour
         }
 
     }
+
     GameObject chooseEnemyPrefab()
     {
         float totalPercent = rangedEnemyPercent + basicEnemyPercent + heavyEnemyPercent;
@@ -194,6 +207,7 @@ public class waveManager : MonoBehaviour
 
         if (randomValue < rangedEnemyPercent)
         {
+            typeSpawned = enemyType.ranged;
             return rangedEnemyPrefabs[Random.Range(0, rangedEnemyPrefabs.Length)];
         }
 
@@ -201,9 +215,10 @@ public class waveManager : MonoBehaviour
 
         if (randomValue < basicEnemyPercent)
         {
+            typeSpawned = enemyType.basic;
             return basicEnemyPrefabs[Random.Range(0, basicEnemyPrefabs.Length)];
         }
-
+        typeSpawned = enemyType.heavy;
          return heavyEnemyPrefabs[Random.Range(0, heavyEnemyPrefabs.Length)];
     }
     
@@ -320,7 +335,7 @@ public class waveManager : MonoBehaviour
 
         for (int i = 0; i < roamPoints.Length; i++)
         {
-            if (roamPoints[i].claimedBy = askingEnemy)
+            if (roamPoints[i].claimedBy == askingEnemy)
             {
                 roamPoints[i].claimedBy = null;
             }

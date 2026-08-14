@@ -92,9 +92,9 @@ MonoBehaviour:
   roamWaitTime: 1.8
   roamTarget: {fileID: 0}
   roamArriveDistance: 0.1
-  roamChance: 0.1
+  roamChance: 0.55
   hasLeftSpawnRoom: 0
-  willRoam: 0
+  willRoam: 1
   roamPoint: {fileID: 0}
   gunPivot: {fileID: 7980070263694380636}
   gunRotateSpeed: 20
