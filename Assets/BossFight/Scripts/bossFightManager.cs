@@ -1,4 +1,4 @@
-/*using JetBrains.Annotations;
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,6 +45,10 @@ public class bossFightManager : MonoBehaviour
     maskShake shake;
     void Awake()
     {
+        if (boss == null)
+        {
+            this.enabled = false;
+        }
         endHealthReqs[0] = p1EndHealthPerc * maxHealth;
         endHealthReqs[1] = p2EndHealthPerc * maxHealth;
         endHealthReqs[2] = p3EndHealthPerc * maxHealth;
@@ -176,6 +180,19 @@ public class bossFightManager : MonoBehaviour
     {
         waveManager.startP4();
     }
+    // Looks through the bosses object's children for a marker with an exact name match
+    Transform findMark(string wanted)
+    {
+        // Goes through each child of the boss object
+        foreach (Transform child in boss.transform)
+        {
+            if (child.name.IndexOf(wanted, System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return child;
+            }
+        }
 
+        // Returns null if nothing matched, Awake handles that error
+        return null;
+    }
 }
-*/

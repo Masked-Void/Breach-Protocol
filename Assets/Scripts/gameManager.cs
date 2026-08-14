@@ -23,7 +23,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] public GameObject pickUpUI;
     [SerializeField] public Image playerStaminaBar;
     [SerializeField] public GameObject checkpointPopup;
-    [SerializeField] public TMP_Text bytesText;
+    [SerializeField]  TextMeshProUGUI bytesText;
     [SerializeField] public GameObject shopMessage;
     public GameObject playerSpawnPos;
 
@@ -70,7 +70,7 @@ public class gameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //bytesText.text = "Bytes: " + totalBytes.ToString();
+        bytesText.text = "Bytes: " + totalBytes.ToString();
         if (FindAnyObjectByType<playerInteraction>().shopOpen)
         { 
             menuActive = shopUI;
