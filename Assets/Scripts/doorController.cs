@@ -105,7 +105,7 @@ public class doorController : MonoBehaviour
         // Goes through each child of the door object
         foreach (Transform child in doorObject)
         {
-            if (child.name == wanted)
+            if (child.name.IndexOf(wanted, System.StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return child;
             }
