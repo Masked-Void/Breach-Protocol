@@ -27,6 +27,10 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     [SerializeField] GameObject fixedRoamPos;
     [SerializeField] float roamChance = .1f;
 
+    [Header("Currency")]
+    int byteValue = 5;
+
+
     protected bool playerInTrigger;
     protected float angleToPlayer;
     protected float stoppingDistOrig;
@@ -169,6 +173,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (currentHP <= 0)
         {
             die();
+            gameManager.instance.AddBytes(byteValue);
         }
         else if (model != null)
         {

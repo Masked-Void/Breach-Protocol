@@ -33,6 +33,9 @@ public class gameManager : MonoBehaviour
     public GameObject player;
     public playerController playerScript;
 
+    [Header("Currency")]
+    [SerializeField] int totalBytes = 0;
+    [SerializeField] public int totalFiles = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -41,7 +44,25 @@ public class gameManager : MonoBehaviour
 
         playerScript = player.GetComponent<playerController>();
     }
-
+    //Currency Stuff
+    public void AddBytes(int amount)
+    {
+        totalBytes += amount;
+        Debug.Log("Current Bytes: " + totalBytes);
+    }
+    public void AddFiles(int amount)
+    {
+        totalFiles += amount;
+        Debug.Log("Current Files: " + totalFiles);
+    }
+    public void SubtractBytes(int amount)
+    {
+        totalBytes -= amount;
+    }
+    public void SubtractFiles(int amount)
+    {
+        totalFiles -= amount;
+    }
     // Update is called once per frame
     void Update()
     {
