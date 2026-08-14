@@ -53,10 +53,8 @@ public class rangedEnemy : enemyBase
 
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
-        spawnedWeaponModel.TryGetComponent<clip>(out clip clip);
-        spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker);
-        if(clip != null) clip.enabled = true;
-        if(picker != null) picker.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<clip>(out var weaponClip)) weaponClip.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out var picker)) picker.enabled = false;
 
         // Locate the barrel or hitpoint
         string targetName = (selectedGun is gunStats) ? "Muzzle" : "HitPoint";

@@ -62,9 +62,8 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     void Update()
     {
         if (gameManager.instance != null && gameManager.instance.isPaused) return;
-        attackTimer += Time.deltaTime;
-
-        if (!willRoam)
+        attackTimer += Time.unscaledDeltaTime;
+        if (playerInTrigger && canSeePlayer())
         {
             // Heavy / Basic: finish first roam point, then b-line player forever
             if (roamTarget != null)
@@ -97,7 +96,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         }
         else
         {
-            // Ranged: roaming — only look around while stopped at a roam point
+            // Ranged: roaming ï¿½ only look around while stopped at a roam point
             roam();
 
             if (roamTarget == null && playerInTrigger)
@@ -140,7 +139,6 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         playerDir = gameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
-        // Debug.DrawRay(transform.position, playerDir);
 
         if (Physics.Raycast(transform.position, playerDir, out RaycastHit hit))
         {
@@ -172,7 +170,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         agent.SetDestination(roamTarget.position);
     }
 
-    void roam()
+    public virtual void roam()
     {
         if (roamTarget != null && AtRoamTarget())
         {
@@ -275,24 +273,8 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     protected abstract void attack();
 
-    protected bool tryMeleeHit()
-    {
-        agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
-        float dist = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
-        if (dist > attackRange || attackTimer <= attackRate) return false;
-
-        attackTimer = 0;
-        gameManager.instance.player.GetComponent<IDamage>()?.takeDamage(attackDamage);
-        return true;
-    }
-
     public void ForceKill()
     {
         die();
-    }
-
-    public virtual void SetWeaponPrefab(GameObject weaponPrefab)
-    {
-        // This method can be overridden in derived classes to set the weapon prefab.
     }
 }

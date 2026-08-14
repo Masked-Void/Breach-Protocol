@@ -13,6 +13,8 @@ public class playerController : MonoBehaviour, IPickWeapon
     [SerializeField] int jumpMax;
     [SerializeField] int gravity;
     [SerializeField] float pushbackFriction = 5f;
+    public float throwForce = 5f;
+    public float throwUpwardForce = 5f;
     [SerializeField] GameObject playerShield;
 
     [Header("Upgrades")]
@@ -43,6 +45,7 @@ public class playerController : MonoBehaviour, IPickWeapon
     void Start()
     {
         currentStamina = maxStamina;
+        if(weaponManager.instance != null) weaponManager.instance.showActiveweapon(weaponHoldPos.transform);
     }
 
     // Update is called once per frame
@@ -59,7 +62,7 @@ public class playerController : MonoBehaviour, IPickWeapon
     {
         if (gameManager.instance != null && gameManager.instance.isPaused)
         {
-            gameManager.instance.pickUpUI.SetActive(false);
+            gameManager.instance.interactionUI.SetActive(false);
             return;
         }
 
@@ -159,7 +162,7 @@ public class playerController : MonoBehaviour, IPickWeapon
         if (weaponManager.instance != null)
         {
             audioManager.instance.playEquip();
-            weaponManager.instance.equipWeapon(weapon, weaponHoldPos.transform);
+            weaponManager.instance.equipWeapon(weapon);
         }
     }
 

@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 
 public class playerInteraction : MonoBehaviour
@@ -15,11 +14,16 @@ public class playerInteraction : MonoBehaviour
     private Camera mainCam;
     private IPickWeapon picker;
     public bool shopOpen = false;
+    private MonoBehaviour pickerMono;
+    private bool isShowingUI = false;
 
     void Start()
     {
         mainCam = Camera.main;
-        TryGetComponent(out picker);
+        if (TryGetComponent(out picker))
+        {
+            pickerMono = picker as MonoBehaviour;
+        }
     }
 
     private void Update()
@@ -36,21 +40,36 @@ public class playerInteraction : MonoBehaviour
 
         if (gameManager.instance != null && gameManager.instance.isPaused && !shopOpen) return;
 
+        if (gameManager.instance != null && gameManager.instance.isPaused) {
+            isShowingUI = false;
+            return;
+        };
+
         if (Input.GetButtonDown("Fire1"))
             weaponManager.instance.attack();
 
-        Ray ray = new Ray(mainCam.transform.position, mainCam.transform.forward);
-        RaycastHit hit;
+        if (Input.GetKeyDown(KeyCode.Keypad8))
+            weaponManager.instance.Throw();
 
-        if (Physics.Raycast(ray, out hit, maxDistance, interactLayer))
+        handleInteraction();
+    }
+
+    private void handleInteraction()
+    {
+        Ray ray = new Ray(mainCam.transform.position, mainCam.transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactLayer))
         {
-            if (hit.collider.TryGetComponent<pickWeapon>(out var weaponPickup))
+            if (hit.collider.TryGetComponent<pickWeapon>(out var weaponPickup) && weaponPickup.enabled)
             {
-                gameManager.instance.pickUpUI.SetActive(true);
+                setInteractionUI(true);
                 if (Input.GetButtonDown("Interact") && picker != null)
+                setInteractionUI(true);
+                if (Input.GetButtonDown("Interact"))
                 {
                     weaponPickup.interact(picker);
-                    gameManager.instance.pickUpUI.SetActive(false);
+                    Destroy(hit.collider.gameObject);
+                    setInteractionUI(false);
                 }
                 return;
             }
@@ -63,7 +82,7 @@ public class playerInteraction : MonoBehaviour
                 }
             }
         }
-        gameManager.instance.pickUpUI.SetActive(false);
+        setInteractionUI(false);
 
     }
 
@@ -86,5 +105,18 @@ public class playerInteraction : MonoBehaviour
         
         
         
+        setInteractionUI(false);
+    }
+
+    void setInteractionUI(bool active)
+    {
+        if (isShowingUI == active) return;
+
+        isShowingUI = active;
+
+        if (gameManager.instance != null && gameManager.instance.interactionUI != null)
+        {
+            gameManager.instance.interactionUI.SetActive(active);
+        }
     }
 }

@@ -21,7 +21,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI killCounter;
     [SerializeField] TextMeshProUGUI waveCounter;
     [SerializeField] TextMeshProUGUI waveCountdownText;
-    [SerializeField] public GameObject pickUpUI;
+    [SerializeField] public GameObject interactionUI;
     [SerializeField] public Image playerStaminaBar;
     [SerializeField] public GameObject checkpointPopup;
     [SerializeField]  TextMeshProUGUI bytesText;
@@ -159,28 +159,13 @@ public class gameManager : MonoBehaviour
         upgradeManager.instance.SaveUpgrades();
     }
 
-    public void addKill()
-    {
-        currentKill++;
-    }
-
     void updateUI()
     {
         if (waveManager.instance == null) return;
-
         int currentWave = waveManager.instance.getCurrentWave();
-        
 
-        if (currentWave != previousWave)
-        {
-            previousWave = currentWave;
-
-            waveCounter.text = currentWave.ToString("f0");
-
-            StartCoroutine(AnimateWaveText());
-        }
-
-        killCounter.text = currentKill.ToString("f0");
+        waveCounter.text = currentWave.ToString("f0");
+        killCounter.text = "Kills: " + currentKill;
 
         if (waveManager.instance.isWaitingForNextWave())
         {
@@ -237,5 +222,10 @@ public class gameManager : MonoBehaviour
         }
 
         rect.localScale = originalScale;
+    }
+
+    public void addKill()
+    {
+        currentKill++;
     }
 }
