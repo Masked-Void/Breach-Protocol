@@ -59,7 +59,7 @@ public class gunStats : weaponStats
                 
 
                 // Spawn the bullet projectile flying out into its offset trajectory
-                Transform spawnedBullet = Transform b = MonoBehaviour.Instantiate(bullet, gunBarrel.position, spreadRotation);
+                Transform spawnedBullet =MonoBehaviour.Instantiate(bullet, gunBarrel.position, spreadRotation);
                 
                 //Upgrade Check
                 if (FindAnyObjectByType<playerController>().explodingBullets)
@@ -67,11 +67,11 @@ public class gunStats : weaponStats
                     damage dmg = spawnedBullet.GetComponent<damage>();
                     dmg.isExplosive = true;
                     // PASS CHALLENGE DATA TO BULLET
-                damage dmg = b.GetComponent<damage>();
-                if (dmg != null)
+                damage challengeDmg = spawnedBullet.GetComponent<damage>();
+                if (challengeDmg != null)
                 {
-                    dmg.sourceWeapon = manager.activeWeapon;
-                    dmg.sourceWasGroundPickup = manager.currentWeaponFromGround;
+                        challengeDmg.sourceWeapon = manager.activeWeapon;
+                        challengeDmg.sourceWasGroundPickup = manager.currentWeaponFromGround;
                 }
             }
                 
