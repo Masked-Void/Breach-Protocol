@@ -19,9 +19,7 @@ public class gunStats : weaponStats
     [Header("Ammo")]
     [Range(1, 20)] public int pelletCount;
     [Range(.2f, 20f)] public float spreadAngle;
-
-    
-    
+    [Range(5, 30)] public int startingBullets;
 
     [Header("Audio")]
     public AudioClip shootSound;

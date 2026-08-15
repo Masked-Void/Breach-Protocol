@@ -73,11 +73,11 @@ public class damage : MonoBehaviour
             audioManager.instance.playSpatialSFX(audioManager.instance.glass, transform.position, audioManager.instance.glassVol);
         }
         // REGISTER SOURCE ON ENEMY BEFORE DAMAGE
-        enemyBase eb = other.GetComponent<enemyBase>();
-        if (eb != null && sourceWeapon != null)
-        {
-            eb.RegisterDamageSource(sourceWeapon, sourceWasGroundPickup);
-        }
+        // enemyBase eb = other.GetComponent<enemyBase>();
+        // if (eb != null && sourceWeapon != null)
+        // {
+        //     eb.RegisterDamageSource(sourceWeapon, sourceWasGroundPickup);
+        // }
 
         IDamage dmg = other.GetComponent<IDamage>();
         if (dmg != null && type != damageType.DOT)

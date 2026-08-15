@@ -6,6 +6,7 @@ public class playerInteraction : MonoBehaviour
     [Range(1f, 5)][SerializeField] private float maxDistance = 2f;
     [SerializeField] LayerMask interactLayer;
     [SerializeField] KeyCode throwKey;
+    [SerializeField] KeyCode switchKey;
 
     private Camera mainCam;
     private IPickWeapon picker;
@@ -40,6 +41,9 @@ public class playerInteraction : MonoBehaviour
 
         if (Input.GetKeyDown(throwKey) && weaponManager.instance != null)
             weaponManager.instance.throwWeapon();
+        
+        if (Input.GetKeyDown(switchKey) && weaponManager.instance != null)
+            weaponManager.instance.switchToNextWeapon();
 
         handleInteraction();
     }

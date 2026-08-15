@@ -8,14 +8,11 @@ public class heavyEnemy : enemyBase
 
     protected override void attack()
     {
-        if (tryMeleeHit())
+        playerController pc = gameManager.instance.player.GetComponent<playerController>();
+        if (pc != null)
         {
-            playerController pc = gameManager.instance.player.GetComponent<playerController>();
-            if (pc != null)
-            {
-                Vector3 pushDir = (gameManager.instance.player.transform.position - transform.position).normalized;
-                pc.PushBack(pushDir, pushbackForce);
-            }
+            Vector3 pushDir = (gameManager.instance.player.transform.position - transform.position).normalized;
+            pc.PushBack(pushDir, pushbackForce);
         }
     }
 }

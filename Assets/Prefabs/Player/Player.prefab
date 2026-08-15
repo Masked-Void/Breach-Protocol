@@ -195,13 +195,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::playerController
   controller: {fileID: 8618862431611356904}
-  HP: 100
   speed: 3
   sprintMod: 2
   jumpSpeed: 10
   jumpMax: 1
   gravity: 35
   pushbackFriction: 5
+  throwForce: 15
+  throwUpwardForce: 5
   playerShield: {fileID: 1163693913067826184}
   explodingBullets: 0
   kunaiSpread: 0
@@ -226,8 +227,9 @@ MonoBehaviour:
   maxDistance: 3
   interactLayer:
     serializedVersion: 2
-    m_Bits: 6400
-  shopUI: {fileID: 0}
+    m_Bits: 2304
+  throwKey: 264
+  switchKey: 9
   shopOpen: 0
 --- !u!33 &8426663965172706110
 MeshFilter:

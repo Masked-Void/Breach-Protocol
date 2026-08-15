@@ -1,5 +1,6 @@
 using System.Collections;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,43 +9,63 @@ public class gameManager : MonoBehaviour
 
     public static gameManager instance;
 
+    [Header("Menu")]
     [SerializeField] GameObject menuActive;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuSound;
-    public GameObject shopUI;
-    [SerializeField] timeManager timeManager;
 
+    [Header("Kills UI")]
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] TextMeshProUGUI pauseKills;
     [SerializeField] TextMeshProUGUI killCounter;
+
+    [Header("Wave UI")]
     [SerializeField] TextMeshProUGUI waveCounter;
     [SerializeField] TextMeshProUGUI waveCountdownText;
     [SerializeField] TextMeshProUGUI waveCountdown;
+
+    [Header("Interaction UI")]
     public GameObject interactionUI;
     public TMP_Text interactionText;
     public TMP_Text interactionKey;
+
+    [Header("Player")]
     public Image playerStaminaBar;
-    public GameObject checkpointPopup;
-    [SerializeField]  TextMeshProUGUI bytesText;
-    public GameObject shopMessage;
-    
     public GameObject playerSpawnPos;
-
-    int currentKill = 0;
-    int previousWave = -1;
-
-
-    [Header("Screen Flash")]
-    public GameObject damageFlashUI;
-
-    public bool isPaused;
-    public GameObject player;
-    public playerController playerScript;
+    public GameObject checkpointPopup;
 
     [Header("Currency")]
     [SerializeField] public int totalBytes = 0;
     [SerializeField] public int totalFiles = 0;
+    [SerializeField]  TextMeshProUGUI bytesText;
+
+    [Header("Shop")]
+    public GameObject shopMessage;
+    public GameObject shopUI;
+
+    [Header("Screen Flash")]
+    public GameObject damageFlashUI;
+
+    [Header("Weapon UI")]
+    public TextMeshProUGUI magAmmoUI;
+    public TextMeshProUGUI totalAmmoUI;
+    public Image inActiveWeapon1;
+    public Image inActiveWeapon2;
+    public Image lethalUI;
+    public TextMeshProUGUI lethalAmountUI;
+    public Image tacticalUI;
+    public TextMeshProUGUI tacticalAmountUI;
+
+    [Header("Runtime: Do not Change")]
+    public bool isPaused;
+    public GameObject player;
+    public playerController playerScript;
+
+
+    int currentKill = 0;
+    int previousWave = -1;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -103,6 +124,14 @@ public class gameManager : MonoBehaviour
         
 
         updateUI();
+
+        if (weaponManager.instance != null)
+    {
+        if (weaponManager.instance.activeWeapon != null)
+        {
+            magAmmoUI.text = weaponManager.instance.weaponAmmo[weaponManager.instance.getActiveSlot()].ToString();
+        }
+    }
     }
 
     // Pause the game
@@ -120,7 +149,7 @@ public class gameManager : MonoBehaviour
     public void stateUnpause()
     {
         isPaused = false;
-        if (timeManager != null) timeManager.unpauseTime();
+        if (timeManager.instance != null) timeManager.instance.unpauseTime();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         if (menuActive != null)

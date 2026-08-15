@@ -12,8 +12,7 @@ public class rangedEnemy : enemyBase
 
     gunStats activeGun;
     private GameObject spawnedWeaponModel;
-
-    public Transform gunBarrel;
+    Transform gunBarrel;
 
 
     protected override void Start()
@@ -64,7 +63,7 @@ public class rangedEnemy : enemyBase
 
     public override void die()
     {
-        throwWeapon(spawnedWeaponModel, gunPivot.transform);
+        throwWeapon(spawnedWeaponModel, gunModel.transform);
         gunBarrel = null;
         base.die();
     }

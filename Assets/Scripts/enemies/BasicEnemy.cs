@@ -6,7 +6,7 @@ public class basicEnemy : enemyBase
     [Header("Melee")]
     [SerializeField] GameObject weapon;
     [SerializeField] Transform handPos;
-    GameObject spawnedWeaponModel;
+    GameObject weaponInstance;
 
     Quaternion katanaOrigRot;
     Transform katanaTransform;
@@ -16,18 +16,18 @@ public class basicEnemy : enemyBase
         base.Start();
         if (weapon != null && handPos != null)
         {
-            spawnedWeaponModel = Instantiate(weapon, handPos);
-            spawnedWeaponModel.transform.localPosition = Vector3.zero;
-            spawnedWeaponModel.transform.localRotation = Quaternion.identity;
+            GameObject weaponInstance = Instantiate(weapon, handPos);
+            weaponInstance.transform.localPosition = Vector3.zero;
+            weaponInstance.transform.localRotation = Quaternion.identity;
 
-            katanaTransform = spawnedWeaponModel.transform;
+            katanaTransform = weaponInstance.transform;
             katanaOrigRot = katanaTransform.localRotation;
         }
     }
 
     protected override void attack()
     {
-        if (tryMeleeHit() && katanaTransform != null)
+        if (katanaTransform != null)
         {
             StartCoroutine(katanaSwing());
         }
@@ -59,7 +59,7 @@ public class basicEnemy : enemyBase
 
     public override void die()
     {
-        throwWeapon(spawnedWeaponModel, handPos.transform);
+        throwWeapon(weaponInstance, handPos.transform);
         katanaTransform = null; 
         base.die();
     }
