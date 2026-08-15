@@ -2,111 +2,204 @@ using UnityEngine;
 
 public class timeManager : MonoBehaviour
 {
-
     public static timeManager instance;
 
-
     [Header("Time Scale Range")]
-    [SerializeField] float minTimeScale;
-    [SerializeField] float maxTimeScale;
-    [SerializeField] float moveMaxTimeScale;
+    [SerializeField] private float minTimeScale = 0.05f;
+    [SerializeField] private float moveMaxTimeScale = 0.85f;
+    [SerializeField] private float maxTimeScale = 1.0f;
 
-    [SerializeField] float timeScaleSmoothing;
+    [Header("Movement")]
+    [Tooltip("Higher values require more movement before time accelerates strongly.")]
+    [SerializeField] private float movementCurvePower = 1.35f;
 
     [Header("Heartbeat Influence")]
-    [SerializeField] float bpmInfluence;
+    [Range(0f, 1f)]
+    [Tooltip("How strongly maximum stress pushes the world toward maxTimeScale.")]
+    [SerializeField] private float bpmInfluence = 0.40f;
 
-    float currentTimeScale;
-    float baseFixedDeltaTime;
+    [Header("Smoothing")]
+    [Tooltip("How quickly the world responds to time scale changes.")]
+    [SerializeField] private float timeScaleSmoothing = 10f;
 
-    private float? overrideTimeScale = null;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    private float currentTimeScale;
+    private float baseFixedDeltaTime;
+
+    private void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         instance = this;
-        baseFixedDeltaTime = Time.fixedDeltaTime;
-        applyTimeScale(minTimeScale);
-        currentTimeScale = Time.timeScale;
-    }
 
-    void applyTimeScale(float scale)
-    {
-        Time.timeScale = scale;
-        Time.fixedDeltaTime = baseFixedDeltaTime * scale;
+        // Recover the project's original physics step even if Time.timeScale
+        // happened to already be modified.
+        baseFixedDeltaTime =
+            Time.fixedDeltaTime / Mathf.Max(Time.timeScale, 0.0001f);
+
+        currentTimeScale = minTimeScale;
+
+        ApplyTimeScale(currentTimeScale);
     }
 
     private void Update()
     {
-        if (gameManager.instance == null || gameManager.instance.isPaused) return;
-        // If a killstreak owns time, lock it and skip normal scaling logic.
-        if (overrideTimeScale.HasValue)
+        gameManager gm = gameManager.instance;
+
+        if (gm == null ||
+            gm.isPaused ||
+            gm.playerScript == null)
         {
-            if (!Mathf.Approximately(Time.timeScale, overrideTimeScale.Value))
-            {
-                applyTimeScale(overrideTimeScale.Value);
-            }
             return;
         }
-        // Get the player's speed percentage and calculate the target time scale based on it.
-        float playerSpeedPercent = gameManager.instance.playerScript.getSpeedPercent();
-        float target = Mathf.Lerp(minTimeScale, moveMaxTimeScale, playerSpeedPercent);
 
+        // PLAYER MOVEMENT
 
-        // If the heartbeatManager instance exists, get the stress percentage and adjust the target time scale accordingly.
+        float movement01 =
+            Mathf.Clamp01(gm.playerScript.getSpeedPercent());
+
+        // Gives us a tunable SUPERHOT-style response curve.
+        movement01 = Mathf.Pow(
+            movement01,
+            movementCurvePower
+        );
+
+        float movementScale = Mathf.Lerp(
+            minTimeScale,
+            moveMaxTimeScale,
+            movement01
+        );
+
+        // HEARTBEAT
+
+        float stress01 = 0f;
+
         if (heartbeatManager.instance != null)
         {
-            float stressPercent = heartbeatManager.instance.getStressPercent();
-            target += stressPercent * bpmInfluence;
-            target = Mathf.Clamp(target, minTimeScale, maxTimeScale);
+            stress01 =
+                heartbeatManager.instance.getStressPercent();
         }
 
-        // Smoothly interpolate the current time scale towards the target time scale using Mathf.Lerp for a gradual transition.
-        float smoothed = Mathf.Lerp(Time.timeScale, target, timeScaleSmoothing * Time.unscaledDeltaTime);
-        setTimeScale(smoothed);
-        
+        // bpmInfluence is now a percentage, not a raw
+        // time-scale addition.
+        float heartbeatInfluence =
+            Mathf.Clamp01(stress01 * bpmInfluence);
+
+        // Heartbeat pushes the movement-generated scale
+        // toward maxTimeScale.
+        float targetTimeScale = Mathf.Lerp(
+            movementScale,
+            maxTimeScale,
+            heartbeatInfluence
+        );
+
+        // FRAME-RATE-INDEPENDENT SMOOTHING
+
+        float blend =
+            1f -
+            Mathf.Exp(
+                -timeScaleSmoothing *
+                Time.unscaledDeltaTime
+            );
+
+        currentTimeScale = Mathf.Lerp(
+            currentTimeScale,
+            targetTimeScale,
+            blend
+        );
+
+        ApplyTimeScale(currentTimeScale);
+    }
+
+    private void ApplyTimeScale(float newTimeScale)
+    {
+        newTimeScale = Mathf.Clamp(
+            newTimeScale,
+            minTimeScale,
+            maxTimeScale
+        );
+
+        // Avoid unnecessary writes for extremely tiny changes.
+        if (Mathf.Abs(Time.timeScale - newTimeScale) < 0.0001f)
+            return;
+
+        Time.timeScale = newTimeScale;
+
+        // Keeps physics reasonably smooth during slow motion.
+        Time.fixedDeltaTime =
+            baseFixedDeltaTime * newTimeScale;
     }
 
     public void setTimeScale(float newTimeScale)
     {
-        if (gameManager.instance != null && gameManager.instance.isPaused) return;
-        if (overrideTimeScale.HasValue) return; // blocked while killstreak owns time
-        applyTimeScale(newTimeScale);
-        // Adjust the fixedDeltaTime based on the new time scale for consistent physics updates like bullets and player movement. This ensures that physics calculations remain stable regardless of the time scale.
-        currentTimeScale = Time.timeScale;
-    }
-    public void setTimeScaleOverride(float worldTimeScale)
-    {
-        if (!overrideTimeScale.HasValue)
+        if (gameManager.instance != null &&
+            gameManager.instance.isPaused)
         {
-            currentTimeScale = Time.timeScale; // remember where we were
+            return;
         }
 
-        overrideTimeScale = Mathf.Clamp(worldTimeScale, 0.01f, maxTimeScale);
-        applyTimeScale(overrideTimeScale.Value);
+        currentTimeScale = Mathf.Clamp(
+            newTimeScale,
+            minTimeScale,
+            maxTimeScale
+        );
+
+        ApplyTimeScale(currentTimeScale);
     }
 
-    public void clearTimeScaleOverride()
-    {
-        overrideTimeScale = null;
-        applyTimeScale(currentTimeScale);
-    }
-
-    public bool isTimeOverridden()
-    {
-        return overrideTimeScale.HasValue;
-    }
     public float getTimeScale()
     {
-        return Time.timeScale;
+        return currentTimeScale;
     }
 
     public void pauseTime()
     {
-        Time.timeScale = 0;
+        if (Time.timeScale > 0f)
+        {
+            currentTimeScale = Time.timeScale;
+        }
+
+        Time.timeScale = 0f;
     }
 
     public void unpauseTime()
     {
-        applyTimeScale(overrideTimeScale.HasValue ? overrideTimeScale.Value : currentTimeScale);
+        ApplyTimeScale(currentTimeScale);
+    }
+
+    private void OnValidate()
+    {
+        minTimeScale = Mathf.Max(0.001f, minTimeScale);
+
+        maxTimeScale = Mathf.Max(
+            minTimeScale,
+            maxTimeScale
+        );
+
+        moveMaxTimeScale = Mathf.Clamp(
+            moveMaxTimeScale,
+            minTimeScale,
+            maxTimeScale
+        );
+
+        movementCurvePower =
+            Mathf.Max(0.01f, movementCurvePower);
+
+        timeScaleSmoothing =
+            Mathf.Max(0f, timeScaleSmoothing);
+
+        bpmInfluence =
+            Mathf.Clamp01(bpmInfluence);
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
     }
 }
