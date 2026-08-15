@@ -61,4 +61,11 @@ public class rangedEnemy : enemyBase
         gunBarrel = weaponManager.instance.FindDeepChild(spawnedWeaponModel.transform, targetName);
         activeGun = (gunStats)selectedGun;
     }
+
+    public override void die()
+    {
+        throwWeapon(spawnedWeaponModel, gunPivot.transform);
+        gunBarrel = null;
+        base.die();
+    }
 }

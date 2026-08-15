@@ -84,10 +84,11 @@ public class weaponManager : MonoBehaviour
         gunBarrel = FindDeepChild(spawnedWeaponModel.transform, targetName);
     }
 
-    public void Throw()
+    public void throwWeapon()
     {
         if (spawnedWeaponModel == null) return;
         spawnedWeaponModel.transform.SetParent(null);
+        if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = false;
 
         Rigidbody projectileRb;
         if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out projectileRb))

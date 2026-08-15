@@ -239,7 +239,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         }
     }
 
-    void die()
+    public virtual void die()
     {
         // REPORT TO CHALLENGE SYSTEM
         if (lastDamageWeapon != null)
@@ -288,5 +288,34 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     public void ForceKill()
     {
         die();
+    }
+
+    public void throwWeapon(GameObject spawnedWeaponModel, Transform pivot)
+    {
+        if (spawnedWeaponModel == null) return;
+        spawnedWeaponModel.transform.SetParent(null);
+        if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out var picker)) picker.enabled = true;
+
+        if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
+        {
+            projectileRb = spawnedWeaponModel.AddComponent<Rigidbody>();
+        }
+
+        projectileRb.isKinematic = false;
+        projectileRb.useGravity = true;
+
+        // Calculate directional trajectory
+        Vector3 forceDirection = pivot.forward.normalized;
+
+        // Apply forward and upward force
+        Vector3 forceToAdd = forceDirection * 2f + transform.up * 0;
+        projectileRb.AddForce(forceToAdd, ForceMode.Impulse);
+        // Add subtle spin for realistic throwing physics
+        projectileRb.AddTorque(transform.right * 0.3f, ForceMode.Impulse);
+
+        if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider)) weaponCollider.enabled = true;
+
+        spawnedWeaponModel = null;
     }
 }

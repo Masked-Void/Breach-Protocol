@@ -423,7 +423,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4974807777498950081}
   - component: {fileID: 2588432106125937641}
-  - component: {fileID: 2812793455410951867}
+  - component: {fileID: 4547264739208465941}
   m_Layer: 8
   m_Name: AR
   m_TagString: Untagged
@@ -471,8 +471,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::pickWeapon
   weapon: {fileID: 11400000, guid: 5769f53383e30824aba5454d741e75d8, type: 2}
---- !u!136 &2812793455410951867
-CapsuleCollider:
+--- !u!65 &4547264739208465941
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -489,11 +489,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.06
-  m_Height: 1
-  m_Direction: 2
-  m_Center: {x: 0, y: 0.06, z: 0.15}
+  serializedVersion: 3
+  m_Size: {x: 0.13914861, y: 0.4122703, z: 1.2454627}
+  m_Center: {x: 0.008642988, y: -0.0069146357, z: 0.17459023}
 --- !u!1 &5824911893833813757
 GameObject:
   m_ObjectHideFlags: 0

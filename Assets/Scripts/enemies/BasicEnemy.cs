@@ -6,6 +6,7 @@ public class basicEnemy : enemyBase
     [Header("Melee")]
     [SerializeField] GameObject weapon;
     [SerializeField] Transform handPos;
+    GameObject spawnedWeaponModel;
 
     Quaternion katanaOrigRot;
     Transform katanaTransform;
@@ -15,11 +16,11 @@ public class basicEnemy : enemyBase
         base.Start();
         if (weapon != null && handPos != null)
         {
-            GameObject weaponInstance = Instantiate(weapon, handPos);
-            weaponInstance.transform.localPosition = Vector3.zero;
-            weaponInstance.transform.localRotation = Quaternion.identity;
+            spawnedWeaponModel = Instantiate(weapon, handPos);
+            spawnedWeaponModel.transform.localPosition = Vector3.zero;
+            spawnedWeaponModel.transform.localRotation = Quaternion.identity;
 
-            katanaTransform = weaponInstance.transform;
+            katanaTransform = spawnedWeaponModel.transform;
             katanaOrigRot = katanaTransform.localRotation;
         }
     }
@@ -54,5 +55,12 @@ public class basicEnemy : enemyBase
             katanaTransform.localRotation = Quaternion.Lerp(endRot, startRot, t);
             yield return null;
         }
+    }
+
+    public override void die()
+    {
+        throwWeapon(spawnedWeaponModel, handPos.transform);
+        katanaTransform = null; 
+        base.die();
     }
 }

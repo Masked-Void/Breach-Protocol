@@ -20,6 +20,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI killCounter;
     [SerializeField] TextMeshProUGUI waveCounter;
     [SerializeField] TextMeshProUGUI waveCountdownText;
+    [SerializeField] TextMeshProUGUI waveCountdown;
     public GameObject interactionUI;
     public TMP_Text interactionText;
     public TMP_Text interactionKey;
@@ -188,8 +189,8 @@ public class gameManager : MonoBehaviour
         {
             int secondsLeft = waveManager.instance.getSecondsUntilNextWave();
 
-            waveCountdownText.text = "Next Wave Starts In: " + secondsLeft;
             waveCountdownText.gameObject.SetActive(true);
+            waveCountdown.text = "" + secondsLeft;
         }
         else
         {
@@ -199,13 +200,13 @@ public class gameManager : MonoBehaviour
 
     public IEnumerator WarningText()
     {
-        if (gameManager.instance.shopMessage != null)
-            gameManager.instance.shopMessage.SetActive(true);
+        if (shopMessage != null)
+            shopMessage.SetActive(true);
 
         yield return new WaitForSecondsRealtime(5);
 
-        if (gameManager.instance.shopMessage != null)
-            gameManager.instance.shopMessage.SetActive(false);
+        if (shopMessage != null)
+            shopMessage.SetActive(false);
     }
 
     public void showShopWarning()
@@ -216,7 +217,7 @@ public class gameManager : MonoBehaviour
 
     IEnumerator AnimateWaveText()
     {
-        RectTransform rect = waveCounter.rectTransform;
+        RectTransform rect = waveCountdown.rectTransform;
 
         Vector3 originalScale = Vector3.one;
 

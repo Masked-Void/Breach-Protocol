@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -5,15 +6,28 @@ using UnityEngine.UI;
 
 public class titleScreenManager : MonoBehaviour
 {
+    [Header("UI Pages")]
+    public GameObject homePanel;
+    public GameObject weaponPanel;
+    public GameObject settingsPanel;
+    public GameObject aboutPanel;
+
+    [Header("Top Navigation Buttons")]
+    public Button navHomeButton;
+    public Button navWeaponButton;
+    public Button navSettingsButton;
+    public Button navAboutButton;
+    public Button navCreditsButton;
+
     [SerializeField] private GameObject titleMenuPanel;
+    [SerializeField] private GameObject soundMenu;
     [SerializeField] private Slider progressBar;
-    [SerializeField] private GameObject Buttons;
-    [SerializeField] private GameObject SoundMenu;
     [SerializeField] private GameObject unlockShop;
     CanvasGroup canvasGroup;
 
     void Start()
     {
+        switchToHome();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         canvasGroup = titleMenuPanel.GetComponent<CanvasGroup>();
@@ -21,27 +35,21 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playTitleScreenSound();
     }
 
-    public void continueGame()
+     public void continueGame()
     {
         audioManager.instance.playButtonClick();
-        StartCoroutine(LoadSceneAsync());
+        deactivateAllPanels();
+        StartCoroutine(LoadSceneAsync("MK2"));
     }
 
     public void openSettings()
     {
         audioManager.instance.playButtonClick();
-        Buttons.SetActive(false);
-        SoundMenu.SetActive(true);
+        deactivateAllSettings();
+        soundMenu.SetActive(true);
     }
 
-    public void closeSettings()
-    {
-        audioManager.instance.playButtonClick();
-        SoundMenu.SetActive(false);
-        Buttons.SetActive(true);
-    }
-
-    private IEnumerator LoadSceneAsync()
+    private IEnumerator LoadSceneAsync(String levelName)
     {
         if (canvasGroup != null)
         {
@@ -52,7 +60,7 @@ public class titleScreenManager : MonoBehaviour
             }
         }
 
-        Buttons.SetActive(false);
+        deactivateAllPanels();
 
         if (progressBar != null)
         {
@@ -60,13 +68,13 @@ public class titleScreenManager : MonoBehaviour
             progressBar.value = 0f;
         }
 
-        AsyncOperation scene = SceneManager.LoadSceneAsync("MK2");
+        AsyncOperation scene = SceneManager.LoadSceneAsync(levelName);
         scene.allowSceneActivation = false;
 
         while (scene.progress < 0.9f)
         {
             float progressValue = Mathf.Clamp01(scene.progress / 0.9f);
-            
+
             if (progressBar != null)
             {
                 progressBar.value = progressValue;
@@ -91,22 +99,63 @@ public class titleScreenManager : MonoBehaviour
     {
         audioManager.instance.playButtonClick();
         #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
         #else
-                    Application.Quit();
+            Application.Quit();
         #endif
     }
 
     public void openUnlocks()
     {
         audioManager.instance.playButtonClick();
-        Buttons.SetActive(false);
+        deactivateAllSettings();
         unlockShop.SetActive(true);
     }
 
     public void closeUnlocks()
     {
         unlockShop.SetActive(false);
-        Buttons.SetActive(true);
+    }
+
+    public void switchToHome()
+    {
+        audioManager.instance.playButtonClick();
+        deactivateAllPanels();
+        homePanel.SetActive(true);
+    }
+
+    public void switchToWeapon()
+    {
+        audioManager.instance.playButtonClick();
+        deactivateAllPanels();
+        weaponPanel.SetActive(true);
+    }
+
+    public void switchToSettings()
+    {
+        audioManager.instance.playButtonClick();
+        deactivateAllPanels();
+        settingsPanel.SetActive(true);
+    }
+
+    public void switchToAbout()
+    {
+        audioManager.instance.playButtonClick();
+        deactivateAllPanels();
+        aboutPanel.SetActive(true);
+    }
+
+    private void deactivateAllPanels()
+    {
+        homePanel.SetActive(false);
+        weaponPanel.SetActive(false);
+        settingsPanel.SetActive(false);
+        if (aboutPanel != null) aboutPanel.SetActive(false);
+    }
+
+    private void deactivateAllSettings()
+    {
+        soundMenu.SetActive(false);
+        unlockShop.SetActive(false);
     }
 }

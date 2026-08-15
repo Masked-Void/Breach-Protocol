@@ -3,7 +3,7 @@ using System.Collections;
 
 public class damage : MonoBehaviour
 {
-    enum damageType { bullet, stationary, DOT, shard }
+    enum damageType { bullet, stationary, DOT, shard, throwable }
     [SerializeField] damageType type;
     [SerializeField] Rigidbody rb;
 
@@ -78,6 +78,7 @@ public class damage : MonoBehaviour
         {
             eb.RegisterDamageSource(sourceWeapon, sourceWasGroundPickup);
         }
+
         IDamage dmg = other.GetComponent<IDamage>();
         if (dmg != null && type != damageType.DOT)
         {
