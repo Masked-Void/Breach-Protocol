@@ -622,10 +622,10 @@ PrefabInstance:
       addedObject: {fileID: 3094881216281610837}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: be9002642f39fa2498247682acf841c9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8847665093251700369}
+      addedObject: {fileID: 7751036824011331505}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: be9002642f39fa2498247682acf841c9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7751036824011331505}
+      addedObject: {fileID: 8847665093251700369}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: be9002642f39fa2498247682acf841c9, type: 3}
       insertIndex: -1
@@ -650,9 +650,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5648349257927370953}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e94ca34a9c66d3c4d89d58c5addb11be, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a0c7d6bf39fbcd409147a1a68875d0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FaceFollowPlayer
-  followedObject: {fileID: 0}
-  rotationOffsetX: 0
+  shakeMin: {x: -8, y: -10, z: -4}
+  shakeMax: {x: 8, y: 10, z: 4}
+  shakeIntensity: 1
+  shakeInterval: 0.1
+  shakeSpeed: 25
+  settleSpeed: 2
   doShake: 0

@@ -10,7 +10,7 @@ public class adrenalineKillstreak : killstreakBase
     {
         if (timeManager.instance != null)
         {
-            timeManager.instance.setTimeScaleOverride(worldTimeScale);
+            //timeManager.instance.setTimeScaleOverride(worldTimeScale);
         }
     }
 
@@ -18,7 +18,7 @@ public class adrenalineKillstreak : killstreakBase
     {
         if (timeManager.instance != null)
         {
-            timeManager.instance.clearTimeScaleOverride();
+            //timeManager.instance.clearTimeScaleOverride();
         }
     }
 }

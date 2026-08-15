@@ -133,7 +133,6 @@ public class heartbeatManager : MonoBehaviour
 
             if (gameManager.instance != null)
             {
-                gameManager.instance.updateHeartRate(
                     currentBPM
                 );
             }
