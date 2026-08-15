@@ -17,17 +17,6 @@ public class Crosshair : MonoBehaviour
     public Color normalColor = Color.white;
     void Update()
     {
-        RaycastHit hit;
-        if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 100))
-        {
-            if(((1 << hit.collider.gameObject.layer) & interactLayer) != 0)
-            {
-                value = 10;
-                setTarget(true, Color.red);
-            }
-
-            setTarget(false, Color.red);
-        }
         float topValue = Mathf.Lerp(top.position.y,
             center.position.y + margin + value,
             speed * Time.deltaTime);

@@ -2,7 +2,6 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 public class gameManager : MonoBehaviour
 {
@@ -13,7 +12,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuSound;
-    [SerializeField] GameObject shopUI;
+    public GameObject shopUI;
     [SerializeField] timeManager timeManager;
 
     [SerializeField] private TMP_Text scoreText;
@@ -21,11 +20,14 @@ public class gameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI killCounter;
     [SerializeField] TextMeshProUGUI waveCounter;
     [SerializeField] TextMeshProUGUI waveCountdownText;
-    [SerializeField] public GameObject interactionUI;
-    [SerializeField] public Image playerStaminaBar;
-    [SerializeField] public GameObject checkpointPopup;
+    public GameObject interactionUI;
+    public TMP_Text interactionText;
+    public TMP_Text interactionKey;
+    public Image playerStaminaBar;
+    public GameObject checkpointPopup;
     [SerializeField]  TextMeshProUGUI bytesText;
-    [SerializeField] public GameObject shopMessage;
+    public GameObject shopMessage;
+    
     public GameObject playerSpawnPos;
 
     int currentKill = 0;
