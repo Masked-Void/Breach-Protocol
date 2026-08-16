@@ -201,8 +201,8 @@ MonoBehaviour:
   jumpMax: 1
   gravity: 35
   pushbackFriction: 5
-  throwForce: 15
-  throwUpwardForce: 5
+  throwForce: 8
+  throwUpwardForce: 2
   playerShield: {fileID: 1163693913067826184}
   explodingBullets: 0
   kunaiSpread: 0
@@ -227,7 +227,7 @@ MonoBehaviour:
   maxDistance: 3
   interactLayer:
     serializedVersion: 2
-    m_Bits: 2304
+    m_Bits: 6400
   throwKey: 264
   switchKey: 9
   shopOpen: 0

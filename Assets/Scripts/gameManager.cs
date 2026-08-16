@@ -192,19 +192,10 @@ public class gameManager : MonoBehaviour
     {
         if (waveManager.instance == null) return;
 
-        int currentWave = waveManager.instance.getCurrentWave();
+        waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
+        StartCoroutine(AnimateWaveText());
 
-
-        if (currentWave != previousWave)
-        {
-            previousWave = currentWave;
-
-            waveCounter.text = currentWave.ToString("f0");
-
-            StartCoroutine(AnimateWaveText());
-        }
-
-        killCounter.text = currentKill.ToString("f0");
+        killCounter.text = "Kills: " + currentKill;
 
         if (waveManager.instance.isWaitingForNextWave())
         {
@@ -242,7 +233,7 @@ public class gameManager : MonoBehaviour
 
         Vector3 originalScale = Vector3.one;
 
-        float duration = 0.25f;
+        float duration = .1f;
         float timer = 0f;
 
         rect.localScale = originalScale * 1.3f;
