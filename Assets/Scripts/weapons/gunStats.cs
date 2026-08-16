@@ -19,7 +19,7 @@ public class gunStats : weaponStats
     [Header("Ammo")]
     [Range(1, 20)] public int pelletCount;
     [Range(.2f, 20f)] public float spreadAngle;
-    [Range(5, 30)] public int startingBullets;
+    [Range(3, 30)] public int startingBullets;
 
     [Header("Audio")]
     public AudioClip shootSound;
@@ -27,6 +27,7 @@ public class gunStats : weaponStats
 
     public override void Attack()
     {
+        
         Transform gunBarrel = weaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
 

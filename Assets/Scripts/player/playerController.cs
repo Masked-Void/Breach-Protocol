@@ -44,8 +44,7 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentStamina = maxStamina;
-        if(weaponManager.instance != null) weaponManager.instance.showActiveweapon(weaponHoldPos.transform);
+        currentStamina = maxStamina;;
     }
 
     // Update is called once per frame

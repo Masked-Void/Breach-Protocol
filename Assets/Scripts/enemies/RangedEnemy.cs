@@ -14,11 +14,14 @@ public class rangedEnemy : enemyBase
     private GameObject spawnedWeaponModel;
     Transform gunBarrel;
 
+    int currentAmmo;
+
 
     protected override void Start()
     {
         base.Start();
         SetWeaponPrefab();
+        currentAmmo = activeGun.startingBullets;
     }
 
     protected override void attack()
@@ -31,6 +34,9 @@ public class rangedEnemy : enemyBase
 
     void shoot()
     {
+        if(currentAmmo <= 0) return;
+
+        currentAmmo--;
         attackTimer = 0f;
         if (audioManager.instance != null)
             audioManager.instance.playSpatialSFX(audioManager.instance.enemyShoot, gunBarrel.position, audioManager.instance.enemyShootVol);

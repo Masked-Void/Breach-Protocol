@@ -6,21 +6,18 @@ public class weaponManager : MonoBehaviour
 
     [Header("Weapon")]
     public weaponStats activeWeapon;
-    public GameObject spawnedWeaponModel;
-
-    [Header("Inventory")]
-    public weaponStats[] weapons = new weaponStats[3];
-    public int[] weaponAmmo = new int[3];
     public Sprite emptySlot;
 
-    Transform gunBarrel;
-    private float attackTimer;
 
     [Header("Challenge")]
     public bool currentWeaponFromGround = false;
-    int activeSlot = 0;
+
+    GameObject spawnedWeaponModel;
+    Transform gunBarrel;
+    float attackTimer;
 
     int currentAmmo;
+    Transform weaponHolder;
 
     void Awake()
     {
@@ -36,18 +33,8 @@ public class weaponManager : MonoBehaviour
 
     void Start()
     {
-        // Initialize weapons array
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            if (weapons[i] != null)
-            {
-                weaponAmmo[i] = ((gunStats)weapons[i]).startingBullets;
-            }
-        }
-
-        activeSlot = 0;
-        activeWeapon = weapons[0];
-        currentWeaponFromGround = false;
+        weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
+       if (activeWeapon != null) spawnWeapon(activeWeapon);
     }
 
     void Update()
@@ -56,96 +43,42 @@ public class weaponManager : MonoBehaviour
         attackTimer += Time.unscaledDeltaTime;
     }
 
-
-    public void switchToNextWeapon()
-    {
-        if (weapons.Length == 0) return;
-
-        int startSlot = activeSlot;
-        int nextSlot = (activeSlot + 1) % weapons.Length;
-
-        while (nextSlot != startSlot)
-        {
-            if (weapons[nextSlot] != null)
-            {
-                if (spawnedWeaponModel != null)
-                {
-                    Destroy(spawnedWeaponModel);
-                }
-
-                activeSlot = nextSlot;
-                activeWeapon = weapons[activeSlot];
-                currentWeaponFromGround = false;
-
-                if (gameManager.instance != null && gameManager.instance.playerScript != null)
-                {
-                    showActiveweapon(gameManager.instance.playerScript.weaponHoldPos.transform);
-                }
-
-                updateHUD();
-                return;
-            }
-            nextSlot = (nextSlot + 1) % weapons.Length;
-        }
-    }
-
     public void equipWeapon(weaponStats newWeapon)
     {
         if (newWeapon == null) return;
-
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            if (weapons[i] == newWeapon)
-                return;
-        }
-
-        int slot = -1;
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            if (weapons[i] == null)
-            {
-                slot = i;
-                break;
-            }
-        }
-
-        if (slot == -1) return;
-
-        weapons[slot] = newWeapon;
+        if (spawnedWeaponModel != null) throwWeapon();
+        spawnWeapon(newWeapon);
     }
 
-    public Transform getBarrel() => gunBarrel;
-    public int getActiveSlot() => activeSlot;
-
-    public void showActiveweapon(Transform weaponHolder)
+    private void spawnWeapon(weaponStats newWeapon)
     {
-        activeWeapon = weapons[activeSlot];
-        if (activeWeapon == null) return;
+        activeWeapon = newWeapon;
+
+        if (activeWeapon is gunStats gun) currentAmmo = gun.startingBullets;
 
         spawnedWeaponModel = Instantiate(activeWeapon.weaponModel, weaponHolder, false);
-
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
 
         if (spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody rb)) rb.isKinematic = true;
         if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = true;
 
-        // Locate the barrel or hitpoint
         string targetName = (activeWeapon is gunStats) ? "Muzzle" : "HitPoint";
         gunBarrel = FindDeepChild(spawnedWeaponModel.transform, targetName);
+
+        updateHUD();
     }
+
+    public Transform getBarrel() => gunBarrel;
+    public int getCurrentAmmo() => currentAmmo;
 
     public void throwWeapon()
     {
-        if (spawnedWeaponModel == null) return;
         spawnedWeaponModel.transform.SetParent(null);
         if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = false;
-
-        Rigidbody projectileRb;
-        if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out projectileRb))
-        {
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
+        if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
             projectileRb = spawnedWeaponModel.AddComponent<Rigidbody>();
-        }
 
         projectileRb.isKinematic = false;
         projectileRb.useGravity = true;
@@ -170,14 +103,8 @@ public class weaponManager : MonoBehaviour
         // Add subtle spin for realistic throwing physics
         projectileRb.AddTorque(Camera.main.transform.right * 10f, ForceMode.Impulse);
 
+        if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider)) weaponCollider.enabled = true;
 
-        // Ensure Colliders are active
-        if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider))
-        {
-            weaponCollider.enabled = true;
-        }
-
-        weapons[activeSlot] = null;
         activeWeapon = null;
         spawnedWeaponModel = null;
         gunBarrel = null;
@@ -199,10 +126,11 @@ public class weaponManager : MonoBehaviour
 
     public void attack()
     {
-        if (activeWeapon == null || attackTimer < activeWeapon.attackRate)
+        if (activeWeapon == null || attackTimer < activeWeapon.attackRate || currentAmmo <= 0)
             return;
 
         attackTimer = 0f;
+        currentAmmo--;
 
         if (heartbeatManager.instance != null)
         {
@@ -218,8 +146,10 @@ public class weaponManager : MonoBehaviour
         if (gameManager.instance == null) return;
         if (activeWeapon != null)
         {
-            gameManager.instance.magAmmoUI.text = weaponAmmo[activeSlot].ToString();
-            gameManager.instance.totalAmmoUI.text = "0";
+            gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
+        } else
+        {
+            gameManager.instance.magAmmoUI.text = "0";
         }
 
         updateWeaponIcons();
@@ -229,24 +159,13 @@ public class weaponManager : MonoBehaviour
     {
         if (gameManager.instance == null) return;
 
-        int nextSlot = (activeSlot + 1) % weapons.Length;
-        if (weapons[nextSlot] != null && gameManager.instance.inActiveWeapon1 != null)
+        if (activeWeapon != null && gameManager.instance.activeWeapon != null)
         {
-            gameManager.instance.inActiveWeapon1.sprite = weapons[nextSlot].sprite;
+            gameManager.instance.activeWeapon.sprite = activeWeapon.sprite;
         }
         else
         {
-            gameManager.instance.inActiveWeapon1.sprite = emptySlot;
-        }
-
-        int secondNextSlot = (activeSlot + 2) % weapons.Length;
-        if (weapons[secondNextSlot] != null && gameManager.instance.inActiveWeapon2 != null)
-        {
-            gameManager.instance.inActiveWeapon2.sprite = weapons[secondNextSlot].sprite;
-        }
-        else
-        {
-            gameManager.instance.inActiveWeapon2.sprite = emptySlot;
+            gameManager.instance.activeWeapon.sprite = emptySlot;
         }
     }
 }

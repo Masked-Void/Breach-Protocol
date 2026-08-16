@@ -38,7 +38,7 @@ public class gameManager : MonoBehaviour
     [Header("Currency")]
     [SerializeField] public int totalBytes = 0;
     [SerializeField] public int totalFiles = 0;
-    [SerializeField]  TextMeshProUGUI bytesText;
+    [SerializeField] TextMeshProUGUI bytesText;
 
     [Header("Shop")]
     public GameObject shopMessage;
@@ -50,12 +50,7 @@ public class gameManager : MonoBehaviour
     [Header("Weapon UI")]
     public TextMeshProUGUI magAmmoUI;
     public TextMeshProUGUI totalAmmoUI;
-    public Image inActiveWeapon1;
-    public Image inActiveWeapon2;
-    public Image lethalUI;
-    public TextMeshProUGUI lethalAmountUI;
-    public Image tacticalUI;
-    public TextMeshProUGUI tacticalAmountUI;
+    public Image activeWeapon;
 
     [Header("Runtime: Do not Change")]
     public bool isPaused;
@@ -97,11 +92,11 @@ public class gameManager : MonoBehaviour
     {
         bytesText.text = "Bytes: " + totalBytes.ToString();
         if (FindAnyObjectByType<playerInteraction>().shopOpen)
-        { 
+        {
             menuActive = shopUI;
             return;
         }
-        
+
         if (!FindAnyObjectByType<playerInteraction>().shopOpen && Input.GetButtonDown("Cancel"))
         {
             if (audioManager.instance != null) audioManager.instance.playButtonClick();
@@ -120,18 +115,15 @@ public class gameManager : MonoBehaviour
                 openPauseMenu();
             }
 
-        }    
-        
+        }
+
 
         updateUI();
 
-        if (weaponManager.instance != null)
-    {
-        if (weaponManager.instance.activeWeapon != null)
+        if (weaponManager.instance != null && weaponManager.instance.activeWeapon != null)
         {
-            magAmmoUI.text = weaponManager.instance.weaponAmmo[weaponManager.instance.getActiveSlot()].ToString();
+            magAmmoUI.text = weaponManager.instance.getCurrentAmmo().ToString();
         }
-    }
     }
 
     // Pause the game
@@ -201,7 +193,7 @@ public class gameManager : MonoBehaviour
         if (waveManager.instance == null) return;
 
         int currentWave = waveManager.instance.getCurrentWave();
-        
+
 
         if (currentWave != previousWave)
         {

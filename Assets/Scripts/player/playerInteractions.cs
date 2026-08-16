@@ -41,9 +41,6 @@ public class playerInteraction : MonoBehaviour
 
         if (Input.GetKeyDown(throwKey) && weaponManager.instance != null)
             weaponManager.instance.throwWeapon();
-        
-        if (Input.GetKeyDown(switchKey) && weaponManager.instance != null)
-            weaponManager.instance.switchToNextWeapon();
 
         handleInteraction();
     }
