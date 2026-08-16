@@ -1174,13 +1174,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 351436813236768516}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 5495160564447216698}
+        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_MethodName: openUnlocks
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -17766,7 +17766,7 @@ MonoBehaviour:
   progressBar: {fileID: 6410197875664779162}
   Buttons: {fileID: 5423032595818886637}
   SoundMenu: {fileID: 3769675195256111608}
-  unlockShop: {fileID: 0}
+  unlockShop: {fileID: 3729169655840167724}
 --- !u!1 &8919903337099793074
 GameObject:
   m_ObjectHideFlags: 0
