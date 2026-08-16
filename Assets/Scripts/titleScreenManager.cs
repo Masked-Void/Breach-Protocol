@@ -13,6 +13,7 @@ public class titleScreenManager : MonoBehaviour
     public GameObject aboutPanel;
 
     [Header("Top Navigation Buttons")]
+    public GameObject Nav;
     public Button navHomeButton;
     public Button navWeaponButton;
     public Button navSettingsButton;
@@ -38,6 +39,7 @@ public class titleScreenManager : MonoBehaviour
      public void continueGame()
     {
         audioManager.instance.playButtonClick();
+        Nav.SetActive(false);
         deactivateAllPanels();
         StartCoroutine(LoadSceneAsync("MK2"));
     }

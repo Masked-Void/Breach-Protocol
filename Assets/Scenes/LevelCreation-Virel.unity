@@ -629,6 +629,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -5388723012858418602, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
+      propertyPath: shapeType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5388723012858418602, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
+      propertyPath: forceShape
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5388723012858418602, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: -5388723012858418602, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
       propertyPath: patrolPoints.Array.size
       value: 6
       objectReference: {fileID: 0}
@@ -704,6 +716,10 @@ PrefabInstance:
       propertyPath: patrol
       value: 
       objectReference: {fileID: 1280792394}
+    - target: {fileID: 9216845995588709140, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
+      propertyPath: waitTimeOnWayPoint
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
