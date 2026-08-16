@@ -69,6 +69,8 @@ MonoBehaviour:
   wallHitVol: 0.8
   equip: {fileID: 8300000, guid: 06edc8a6e8fcf114797064b83ee4a7be, type: 3}
   equipVol: 0.3
+  emptyMag: {fileID: 8300000, guid: dc83a2314fcc87e4fb1e4cbf062f6220, type: 3}
+  emptyMagVol: 0.8
   bulletRicochet: {fileID: 8300000, guid: 12d8f22461e7f7f4489efa2585c4742f, type: 3}
   bulletRicochetVol: 0.8
   glass: {fileID: 8300000, guid: 064f6eb1c89a99047bc18e56d841f40e, type: 3}

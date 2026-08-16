@@ -1,11 +1,15 @@
 using UnityEngine;
-using UnityEngine.AI;
 
+[RequireComponent(typeof(Patrol))]
 public class rangedEnemy : enemyBase
 {
     [Header("Weapon")]
     [SerializeField] Transform gunPivot;
     [Range(1, 30)][SerializeField] int gunRotateSpeed;
+
+    [Header("Roam")]
+    [SerializeField] float waitTimeOnWayPoint = 2f;
+    public Patrol patrol;
 
     public GameObject gunModel;
     public weaponStats[] gunPrefabs;
@@ -15,13 +19,15 @@ public class rangedEnemy : enemyBase
     Transform gunBarrel;
 
     int currentAmmo;
-
+    float timer;
 
     protected override void Start()
     {
         base.Start();
         SetWeaponPrefab();
         currentAmmo = activeGun.startingBullets;
+        if (TryGetComponent<Patrol>(out Patrol patrol))
+            agent.destination = patrol.getCurrentWayPointPos();
     }
 
     protected override void attack()
@@ -30,6 +36,39 @@ public class rangedEnemy : enemyBase
 
         if (gunPivot != null) rotateGun();
         if (attackTimer > attackRate) shoot();
+    }
+
+    public override bool canSeePlayer()
+    {
+        if (gameManager.instance?.player == null) return false;
+        
+        playerDir = gameManager.instance.player.transform.position - transform.position;
+        angleToPlayer = Vector3.Angle(playerDir, transform.forward);
+
+        if (Physics.Raycast(transform.position, playerDir, out RaycastHit hit))
+        {
+            if (hit.collider.CompareTag("Player") && angleToPlayer <= FOV)
+            {
+                faceTarget();
+                attack();
+                return true;
+            }
+        }
+        agent.stoppingDistance = 0;
+        return true;
+    }
+
+    public override void checkRoam()
+    {
+        if(agent.remainingDistance <= 0.1f)
+        {
+            timer += Time.deltaTime;
+            if(timer >= waitTimeOnWayPoint)
+            {
+                timer = 0f;
+                agent.destination = patrol.getNextWayPointPos();
+            }
+        }
     }
 
     void shoot()

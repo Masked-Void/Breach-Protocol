@@ -34,7 +34,7 @@ public class weaponManager : MonoBehaviour
     void Start()
     {
         weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
-       if (activeWeapon != null) spawnWeapon(activeWeapon);
+        if (activeWeapon != null) spawnWeapon(activeWeapon);
     }
 
     void Update()
@@ -126,8 +126,9 @@ public class weaponManager : MonoBehaviour
 
     public void attack()
     {
-        if (activeWeapon == null || attackTimer < activeWeapon.attackRate || currentAmmo <= 0)
+        if (activeWeapon == null || attackTimer < activeWeapon.attackRate)
             return;
+        if (currentAmmo <= 0) { audioManager.instance.playEmptyMag(); return; }
 
         attackTimer = 0f;
         currentAmmo--;
@@ -147,7 +148,8 @@ public class weaponManager : MonoBehaviour
         if (activeWeapon != null)
         {
             gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
-        } else
+        }
+        else
         {
             gameManager.instance.magAmmoUI.text = "0";
         }

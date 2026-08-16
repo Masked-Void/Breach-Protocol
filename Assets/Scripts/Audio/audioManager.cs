@@ -34,6 +34,9 @@ public class audioManager : MonoBehaviour
     
     [SerializeField] public AudioClip equip;
     [Range(0, 1)][SerializeField] public float equipVol = .8f;
+
+    [SerializeField] public AudioClip emptyMag;
+    [Range(0, 1)][SerializeField] public float emptyMagVol = .8f;
     
     [SerializeField] public AudioClip bulletRicochet;
     [Range(0, 1)][SerializeField] public float bulletRicochetVol = .8f;
@@ -161,6 +164,11 @@ public class audioManager : MonoBehaviour
     public void playEquip()
     {
         playSFX(equip, equipVol);
+    }
+
+    public void playEmptyMag()
+    {
+        playSFX(emptyMag, emptyMagVol);
     }
 
     public void playButtonClick()

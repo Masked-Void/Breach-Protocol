@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8409822020815722294}
   - component: {fileID: 9216845995588709140}
+  - component: {fileID: -5388723012858418602}
   - component: {fileID: 7075587635719164594}
   - component: {fileID: 3262802430056639548}
   - component: {fileID: 710156433528328776}
@@ -89,15 +90,13 @@ MonoBehaviour:
   attackRate: 0.4
   attackRange: 8
   attackDamage: 1
+  roamDist: 10
   roamWaitTime: 1.8
-  roamTarget: {fileID: 0}
-  roamArriveDistance: 0.1
-  roamChance: 0.55
   hasLeftSpawnRoom: 0
-  willRoam: 1
-  roamPoint: {fileID: 0}
   gunPivot: {fileID: 7980070263694380636}
   gunRotateSpeed: 20
+  waitTimeOnWayPoint: 2
+  patrol: {fileID: 0}
   gunModel: {fileID: 2706629671963561621}
   gunPrefabs:
   - {fileID: 11400000, guid: 390a74157b59cac4e8536a3f2d61b51c, type: 2}
@@ -106,7 +105,21 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
   - {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
   - {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
-  gunBarrel: {fileID: 0}
+--- !u!114 &-5388723012858418602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7521726833427132236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f33208a8b1192445b7a6658e9cde3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PathWay
+  patrolPoints:
+  - {fileID: 0}
+  pathType: 0
 --- !u!33 &7075587635719164594
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -16,10 +16,10 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     int currentHP;
     [Range(1, 50)][SerializeField] int maxHP;
     [Range(1, 30)][SerializeField] float faceTargetSpeed = 8f;
-    [Range(15, 180)][SerializeField] float FOV = 90f;
-    [Range(.1f, 5)][SerializeField] public float attackRate = 1.5f;
-    [Range(1, 20)][SerializeField] public float attackRange = 2f;
-    [Range(1, 20)][SerializeField] public int attackDamage = 1;
+    [Range(15, 180)][SerializeField] protected float FOV = 90f;
+    [Range(.1f, 5)] public float attackRate = 1.5f;
+    [Range(1, 20)] public float attackRange = 2f;
+    [Range(1, 20)] public int attackDamage = 1;
 
     [Header("Roaming")]
     [SerializeField] float roamDist = 10f;
@@ -59,7 +59,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         }
     }
 
-    bool canSeePlayer()
+    public virtual bool canSeePlayer()
     {
         playerDir = gameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
@@ -79,7 +79,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         return true;
     }
 
-    void checkRoam()
+    public virtual void checkRoam()
     {
         if (agent.remainingDistance < 0.01f)
         {
