@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class heartbeatManager : MonoBehaviour
@@ -15,19 +16,22 @@ public class heartbeatManager : MonoBehaviour
     [SerializeField] private float currentStress;
     [SerializeField] private float maxStress = 100f;
 
-    [Tooltip("Stress removed per real-world second.")]
+    [Tooltip("Stress removed per real-world second while gameplay is active.")]
     [SerializeField] private float stressDecayRate = 3f;
 
     [Header("Stress Change Values")]
     [SerializeField] private float shootStress = 1f;
     [SerializeField] private float damageStress = 20f;
     [SerializeField] private float nearMissStress = 5f;
-
     [SerializeField] private float killStressReduction = 5f;
     [SerializeField] private float waveStressReduction = 20f;
 
-    private float stressPercent;
+    [Header("UI (Optional)")]
+    [Tooltip("Assign the TMP text that displays the player's BPM. Leave empty if another UI script handles it.")]
+    [SerializeField] private TMP_Text heartRateText;
+    [SerializeField] private string bpmSuffix = " BPM";
 
+    private float stressPercent;
     private bool hasLost;
 
     private void Awake()
@@ -43,12 +47,7 @@ public class heartbeatManager : MonoBehaviour
 
     private void Start()
     {
-        currentStress = Mathf.Clamp(
-            currentStress,
-            0f,
-            maxStress
-        );
-
+        currentStress = Mathf.Clamp(currentStress, 0f, maxStress);
         RefreshHeartbeat(true);
     }
 
@@ -57,25 +56,19 @@ public class heartbeatManager : MonoBehaviour
         if (hasLost)
             return;
 
-        if (gameManager.instance != null &&
-            gameManager.instance.isPaused)
-        {
+        if (gameManager.instance != null && gameManager.instance.isPaused)
             return;
-        }
 
         DecayStress();
     }
 
     private void DecayStress()
     {
-        if (currentStress <= 0f ||
-            stressDecayRate <= 0f)
-        {
+        if (currentStress <= 0f || stressDecayRate <= 0f)
             return;
-        }
 
-        // Heartbeat is player physiology, so it continues
-        // according to real-world time rather than game slow motion.
+        // Stress is physiological, so it decays in real-world time rather
+        // than becoming slower when the game's time scale is reduced.
         float newStress = Mathf.MoveTowards(
             currentStress,
             0f,
@@ -87,61 +80,39 @@ public class heartbeatManager : MonoBehaviour
 
     private void SetStress(float newStress)
     {
-        float clampedStress = Mathf.Clamp(
-            newStress,
-            0f,
-            maxStress
-        );
+        float clampedStress = Mathf.Clamp(newStress, 0f, maxStress);
 
-        if (Mathf.Approximately(
-            clampedStress,
-            currentStress))
-        {
+        if (Mathf.Approximately(clampedStress, currentStress))
             return;
-        }
 
         currentStress = clampedStress;
-
         RefreshHeartbeat(false);
     }
 
     private void RefreshHeartbeat(bool forceUIUpdate)
     {
-        if (maxStress <= 0f)
-        {
-            stressPercent = 0f;
-        }
-        else
-        {
-            stressPercent = Mathf.Clamp01(
-                currentStress / maxStress
-            );
-        }
+        stressPercent = maxStress > 0f
+            ? Mathf.Clamp01(currentStress / maxStress)
+            : 0f;
 
         int newBPM = Mathf.RoundToInt(
-            Mathf.Lerp(
-                restingBPM,
-                maxBPM,
-                stressPercent
-            )
+            Mathf.Lerp(restingBPM, maxBPM, stressPercent)
         );
 
-        // Don't send UI updates every frame.
         if (forceUIUpdate || newBPM != currentBPM)
         {
             currentBPM = newBPM;
-
-            if (gameManager.instance != null)
-            {
-                //gameManager.instance.updateHeartRate(currentBPM);
-            }
+            UpdateHeartRateUI();
         }
 
-        if (!hasLost &&
-            currentBPM >= maxBPM)
-        {
+        if (!hasLost && currentBPM >= maxBPM)
             TriggerHeartFailure();
-        }
+    }
+
+    private void UpdateHeartRateUI()
+    {
+        if (heartRateText != null)
+            heartRateText.text = currentBPM + bpmSuffix;
     }
 
     private void TriggerHeartFailure()
@@ -149,9 +120,7 @@ public class heartbeatManager : MonoBehaviour
         hasLost = true;
 
         if (gameManager.instance != null)
-        {
             gameManager.instance.stateLose();
-        }
     }
 
     // STRESS API
@@ -161,9 +130,7 @@ public class heartbeatManager : MonoBehaviour
         if (amount <= 0f || hasLost)
             return;
 
-        SetStress(
-            currentStress + amount
-        );
+        SetStress(currentStress + amount);
     }
 
     public void reduceStress(float amount)
@@ -171,9 +138,7 @@ public class heartbeatManager : MonoBehaviour
         if (amount <= 0f)
             return;
 
-        SetStress(
-            currentStress - amount
-        );
+        SetStress(currentStress - amount);
     }
 
     // GAMEPLAY EVENTS
@@ -206,13 +171,11 @@ public class heartbeatManager : MonoBehaviour
     public void resetHeartbeat()
     {
         hasLost = false;
-
         currentStress = 0f;
-
         RefreshHeartbeat(true);
     }
 
-    // GETTERS
+    // GETTER
 
     public int getCurrentBPM()
     {
@@ -221,7 +184,6 @@ public class heartbeatManager : MonoBehaviour
 
     public float getStressPercent()
     {
-        // Cached instead of recalculating every timeManager frame.
         return stressPercent;
     }
 
@@ -233,28 +195,14 @@ public class heartbeatManager : MonoBehaviour
     private void OnValidate()
     {
         restingBPM = Mathf.Max(1, restingBPM);
-
-        maxBPM = Mathf.Max(
-            restingBPM + 1,
-            maxBPM
-        );
-
-        maxStress = Mathf.Max(
-            1f,
-            maxStress
-        );
-
-        stressDecayRate = Mathf.Max(
-            0f,
-            stressDecayRate
-        );
+        maxBPM = Mathf.Max(restingBPM + 1, maxBPM);
+        maxStress = Mathf.Max(1f, maxStress);
+        stressDecayRate = Mathf.Max(0f, stressDecayRate);
     }
 
     private void OnDestroy()
     {
         if (instance == this)
-        {
             instance = null;
-        }
     }
 }

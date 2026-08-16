@@ -4,13 +4,17 @@ public class adrenalineKillstreak : killstreakBase
 {
     [Header("Adrenaline Rush")]
     [Tooltip("How slow the world becomes. 0.2 = enemies move at 20% speed.")]
-    [SerializeField][Range(0.01f, 1f)] private float worldTimeScale = 0.2f;
+    [SerializeField, Range(0.01f, 1f)] private float worldTimeScale = 0.2f;
 
     protected override void onActivate()
     {
         if (timeManager.instance != null)
         {
-            //timeManager.instance.setTimeScaleOverride(worldTimeScale);
+            timeManager.instance.setTimeScaleOverride(worldTimeScale);
+        }
+        else
+        {
+            Debug.LogWarning("Adrenaline: no timeManager instance found.", this);
         }
     }
 
@@ -18,7 +22,7 @@ public class adrenalineKillstreak : killstreakBase
     {
         if (timeManager.instance != null)
         {
-            //timeManager.instance.clearTimeScaleOverride();
+            timeManager.instance.clearTimeScaleOverride();
         }
     }
 }
