@@ -1,12 +1,16 @@
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Stress-driven BPM/health system.
+/// Stress and BPM use unscaled real time so freezing the world does not freeze danger.
+/// </summary>
 public class heartbeatManager : MonoBehaviour
 {
     public static heartbeatManager instance;
 
     [Header("BPM Settings")]
-    [SerializeField] private int restingBPM = 60;
+    [SerializeField] private int restingBPM = 20;
     [SerializeField] private int maxBPM = 200;
 
     [Header("Runtime")]
@@ -17,17 +21,16 @@ public class heartbeatManager : MonoBehaviour
     [SerializeField] private float maxStress = 100f;
 
     [Tooltip("Stress removed per real-world second while gameplay is active.")]
-    [SerializeField] private float stressDecayRate = 3f;
+    [SerializeField] private float stressDecayRate = 2f;
 
     [Header("Stress Change Values")]
-    [SerializeField] private float shootStress = 1f;
-    [SerializeField] private float damageStress = 20f;
-    [SerializeField] private float nearMissStress = 5f;
-    [SerializeField] private float killStressReduction = 5f;
-    [SerializeField] private float waveStressReduction = 20f;
+    [SerializeField] private float shootStress = 6f;
+    [SerializeField] private float damageStress = 40f;
+    [SerializeField] private float nearMissStress = 25f;
+    [SerializeField] private float killStressReduction = 10f;
+    [SerializeField] private float waveStressReduction = 30f;
 
     [Header("UI (Optional)")]
-    [Tooltip("Assign the TMP text that displays the player's BPM. Leave empty if another UI script handles it.")]
     [SerializeField] private TMP_Text heartRateText;
     [SerializeField] private string bpmSuffix = " BPM";
 
@@ -67,8 +70,6 @@ public class heartbeatManager : MonoBehaviour
         if (currentStress <= 0f || stressDecayRate <= 0f)
             return;
 
-        // Stress is physiological, so it decays in real-world time rather
-        // than becoming slower when the game's time scale is reduced.
         float newStress = Mathf.MoveTowards(
             currentStress,
             0f,
@@ -119,16 +120,25 @@ public class heartbeatManager : MonoBehaviour
     {
         hasLost = true;
 
+        // Timed/manual streaks must not survive death.
+        if (killstreakManager.instance != null)
+            killstreakManager.instance.cancelActiveStreak();
+
         if (gameManager.instance != null)
             gameManager.instance.stateLose();
     }
-
-    // STRESS API
 
     public void addStress(float amount)
     {
         if (amount <= 0f || hasLost)
             return;
+
+        // God Mode means the player cannot gain stress while it is active.
+        if (killstreakManager.instance != null &&
+            killstreakManager.instance.IsInvulnerable)
+        {
+            return;
+        }
 
         SetStress(currentStress + amount);
     }
@@ -141,8 +151,6 @@ public class heartbeatManager : MonoBehaviour
         SetStress(currentStress - amount);
     }
 
-    // GAMEPLAY EVENTS
-
     public void playerShot()
     {
         addStress(shootStress);
@@ -150,6 +158,13 @@ public class heartbeatManager : MonoBehaviour
 
     public void playerDamaged()
     {
+        // God Mode blocks hit stress completely.
+        if (killstreakManager.instance != null &&
+            killstreakManager.instance.IsInvulnerable)
+        {
+            return;
+        }
+
         addStress(damageStress);
     }
 
@@ -168,6 +183,22 @@ public class heartbeatManager : MonoBehaviour
         reduceStress(waveStressReduction);
     }
 
+    /// <summary>
+    /// Cold Boot uses this. It returns stress/BPM to the resting value
+    /// without resetting run/death state.
+    /// </summary>
+    public void resetToRestingBPM()
+    {
+        if (hasLost)
+            return;
+
+        currentStress = 0f;
+        RefreshHeartbeat(true);
+    }
+
+    /// <summary>
+    /// Full new-run/reset function.
+    /// </summary>
     public void resetHeartbeat()
     {
         hasLost = false;
@@ -175,11 +206,14 @@ public class heartbeatManager : MonoBehaviour
         RefreshHeartbeat(true);
     }
 
-    // GETTER
-
     public int getCurrentBPM()
     {
         return currentBPM;
+    }
+
+    public int getRestingBPM()
+    {
+        return restingBPM;
     }
 
     public float getStressPercent()
