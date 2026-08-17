@@ -57,14 +57,14 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("TestScene"));
+        StartCoroutine(LoadSceneAsync("MK2"));
     }
     public void openLevelDevinC()
     {
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("TestScene"));
+        StartCoroutine(LoadSceneAsync("Mark"));
     }
     public void openLevelMark()
     {
@@ -78,7 +78,7 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("TestScene"));
+        StartCoroutine(LoadSceneAsync("Virel"));
     }
     public void openLevelVirel()
     {
