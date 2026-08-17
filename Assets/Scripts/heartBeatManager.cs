@@ -19,7 +19,7 @@ public class heartbeatManager : MonoBehaviour
     [SerializeField] private float stressDecayRate = 3f;
 
     [Header("Stress Change Values")]
-    [SerializeField] private float shootStress = 1f;
+    [SerializeField] private float shootStress = 4f;
     [SerializeField] private float damageStress = 20f;
     [SerializeField] private float nearMissStress = 5f;
 
@@ -102,7 +102,7 @@ public class heartbeatManager : MonoBehaviour
 
         currentStress = clampedStress;
 
-        RefreshHeartbeat(false);
+        RefreshHeartbeat(true);
     }
 
     private void RefreshHeartbeat(bool forceUIUpdate)

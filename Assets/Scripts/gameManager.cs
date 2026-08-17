@@ -179,8 +179,12 @@ public class gameManager : MonoBehaviour
         menuActive = menuLose;
         menuActive.SetActive(true);
         scoreText.text = currentKill.ToString("f0");
-        upgradeManager.instance.files += totalFiles;
-        upgradeManager.instance.SaveUpgrades();
+        if(upgradeManager.instance != null)
+        {
+            upgradeManager.instance.files += totalFiles;
+            upgradeManager.instance.SaveUpgrades();
+        }
+
     }
 
     public void addKill()
