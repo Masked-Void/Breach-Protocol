@@ -6,7 +6,8 @@ public class basicEnemy : enemyBase
     [Header("Melee")]
     [SerializeField] GameObject weapon;
     [SerializeField] Transform handPos;
-    GameObject weaponInstance;
+
+    GameObject spawnedWeapon;
 
     Quaternion katanaOrigRot;
     Transform katanaTransform;
@@ -16,18 +17,21 @@ public class basicEnemy : enemyBase
         base.Start();
         if (weapon != null && handPos != null)
         {
-            GameObject weaponInstance = Instantiate(weapon, handPos);
-            weaponInstance.transform.localPosition = Vector3.zero;
-            weaponInstance.transform.localRotation = Quaternion.identity;
+            spawnedWeapon = Instantiate(weapon, handPos);
+            spawnedWeapon.transform.localPosition = Vector3.zero;
+            spawnedWeapon.transform.localRotation = Quaternion.identity;
 
-            katanaTransform = weaponInstance.transform;
+            if(spawnedWeapon.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
+
+            katanaTransform = spawnedWeapon.transform;
             katanaOrigRot = katanaTransform.localRotation;
         }
     }
 
     protected override void attack()
     {
-        if (katanaTransform != null)
+        float distToPlayer = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
+        if (katanaTransform != null && tryMeleeHit() && attackRange > distToPlayer)
         {
             StartCoroutine(katanaSwing());
         }
@@ -59,8 +63,7 @@ public class basicEnemy : enemyBase
 
     public override void die()
     {
-        throwWeapon(weaponInstance, handPos.transform);
-        katanaTransform = null; 
+        throwWeapon(spawnedWeapon, handPos);
         base.die();
     }
 }

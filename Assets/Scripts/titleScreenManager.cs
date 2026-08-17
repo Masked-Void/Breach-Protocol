@@ -20,6 +20,14 @@ public class titleScreenManager : MonoBehaviour
     public Button navAboutButton;
     public Button navCreditsButton;
 
+    [Header("Levels")]
+    public Button LevelSamuel;
+    public Button levelDevinS;
+    public Button levelDevinC;
+    public Button levelMark;
+    public Button levelKhurshed;
+    public Button levelVirel;
+
     [SerializeField] private GameObject titleMenuPanel;
     [SerializeField] private GameObject soundMenu;
     [SerializeField] private Slider progressBar;
@@ -36,12 +44,47 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playTitleScreenSound();
     }
 
-     public void continueGame()
+     public void openLevelSamuel()
     {
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
         StartCoroutine(LoadSceneAsync("MK2"));
+    }
+    public void openLevelDevinS()
+    {
+        audioManager.instance.playButtonClick();
+        Nav.SetActive(false);
+        deactivateAllPanels();
+        StartCoroutine(LoadSceneAsync("MK2"));
+    }
+    public void openLevelDevinC()
+    {
+        audioManager.instance.playButtonClick();
+        Nav.SetActive(false);
+        deactivateAllPanels();
+        StartCoroutine(LoadSceneAsync("MK2"));
+    }
+    public void openLevelMark()
+    {
+        audioManager.instance.playButtonClick();
+        Nav.SetActive(false);
+        deactivateAllPanels();
+        StartCoroutine(LoadSceneAsync("Mark"));
+    }
+    public void openLevelKhurshed()
+    {
+        audioManager.instance.playButtonClick();
+        Nav.SetActive(false);
+        deactivateAllPanels();
+        StartCoroutine(LoadSceneAsync("MK2"));
+    }
+    public void openLevelVirel()
+    {
+        audioManager.instance.playButtonClick();
+        Nav.SetActive(false);
+        deactivateAllPanels();
+        StartCoroutine(LoadSceneAsync("Virel"));
     }
 
     public void openSettings()
@@ -53,14 +96,14 @@ public class titleScreenManager : MonoBehaviour
 
     private IEnumerator LoadSceneAsync(String levelName)
     {
-        if (canvasGroup != null)
+        /*if (canvasGroup != null)
         {
             while (canvasGroup.alpha > 0f)
             {
                 canvasGroup.alpha -= Time.deltaTime * 2f;
                 yield return null;
             }
-        }
+        }*/
 
         deactivateAllPanels();
 

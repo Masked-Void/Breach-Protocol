@@ -2506,7 +2506,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1793506737615254612
 Transform:
   m_ObjectHideFlags: 0
@@ -3002,7 +3002,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 280, y: -122}
+  m_AnchoredPosition: {x: 280, y: -101}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7708256913499104676
@@ -3042,8 +3042,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281413846
+  m_fontColor: {r: 0.83921576, g: 0.18823531, b: 0.19215688, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5445,11 +5445,119 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86b942d49b7f30649b6fb299653bc060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::waveManager
-  currentWave: 0
-  maxWaves: 5
+  basicWeaponPrefabs:
+  - {fileID: 423618413738385519, guid: 5458afda8bd37b3479300efac54fae3c, type: 3}
+  heavyWeaponPrefabs: []
+  rangedWeaponPrefabs:
+  - {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
+  basicEnemyPrefabs: {fileID: 423618413738385519, guid: 5458afda8bd37b3479300efac54fae3c, type: 3}
+  heavyEnemyPrefabs: {fileID: 4643874062370731178, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
+  rangedEnemyPrefabs: {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
+  roamPointTransforms:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  spawnPointTransforms:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  giveWillRoamChance: 20
+  enemiesToSpawnAtWave0: 5
+  enemyIncreaseMultiplier: 25
+  basicEnemyPercent: 40
+  heavyEnemyPercent: 30
+  rangedEnemyPercent: 30
+  timeBetweenSpawns: 5
   timeBetweenWaves: 5
-  enemiesAlive: 0
-  waveInProgress: 0
+  waveTimer: 20
+  spawnPointCooldown: 5
+  maxWaves: 5
+  waitingForNextWave: 0
+  currentWave: 0
 --- !u!1 &3608811328258816531
 GameObject:
   m_ObjectHideFlags: 0
@@ -5920,7 +6028,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::weaponManager
   activeWeapon: {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
-  emptySlot: {fileID: 0}
+  emptySlot: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
   currentWeaponFromGround: 0
 --- !u!1 &3935490871085857162
 GameObject:
@@ -7545,7 +7653,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7307245926241466795
 Transform:
   m_ObjectHideFlags: 0
@@ -11334,9 +11442,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::killstreakManager
   killstreakChance: 1
   killstreaks:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 4425952871445845886}
+  - {fileID: 9102029155579315717}
+  - {fileID: 6882778174617672838}
 --- !u!1 &7682611954302644201
 GameObject:
   m_ObjectHideFlags: 0

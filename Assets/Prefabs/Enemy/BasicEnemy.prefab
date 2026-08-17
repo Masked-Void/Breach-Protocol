@@ -52,15 +52,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BasicEnemy
   model: {fileID: 7057455984083282150}
   agent: {fileID: 41331064655073898}
-  maxHP: 2
+  maxHP: 1
   faceTargetSpeed: 15
   FOV: 180
   attackRate: 0.5
   attackRange: 2
   attackDamage: 20
-  roamDist: 10
   roamWaitTime: 4
+  roamTarget: {fileID: 0}
+  roamArriveDistance: 0.1
+  roamChance: 0.1
   hasLeftSpawnRoom: 0
+  willRoam: 0
+  roamPoint: {fileID: 0}
   weapon: {fileID: 6413440490822234159, guid: a04645d8876d1a448ad847390068b125, type: 3}
   handPos: {fileID: 509105239251634250}
 --- !u!33 &2420307151298392500

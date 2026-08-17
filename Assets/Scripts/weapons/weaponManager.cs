@@ -61,6 +61,7 @@ public class weaponManager : MonoBehaviour
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
 
         if (spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody rb)) rb.isKinematic = true;
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
         if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = true;
 
         string targetName = (activeWeapon is gunStats) ? "Muzzle" : "HitPoint";

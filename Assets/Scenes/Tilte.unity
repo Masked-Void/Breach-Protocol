@@ -3174,7 +3174,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5197893708272752789}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8908266191869494107}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!224 &996259197505591275
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4680,7 +4692,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8750549802336526687}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5495160565594828991}
+        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_MethodName: openLevelVirel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1439432906123002109
 GameObject:
   m_ObjectHideFlags: 0
@@ -8490,7 +8514,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5495160565594828991}
         m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
-        m_MethodName: continueGame
+        m_MethodName: openLevelSamuel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10234,7 +10258,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6582971301656453136}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5495160565594828991}
+        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_MethodName: openLevelDevinS
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &3418515678952749225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13446,7 +13482,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8404543579444230447}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5495160565594828991}
+        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_MethodName: openLevelMark
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &4455517952938562176
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14633,7 +14681,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8604620713780767285}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5495160565594828991}
+        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_MethodName: openLevelDevinC
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4957823402761021664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16113,6 +16173,12 @@ MonoBehaviour:
   navSettingsButton: {fileID: 6347859306380081827}
   navAboutButton: {fileID: 5947252509798769455}
   navCreditsButton: {fileID: 6997300152526039959}
+  LevelSamuel: {fileID: 0}
+  levelDevinS: {fileID: 0}
+  levelDevinC: {fileID: 0}
+  levelMark: {fileID: 0}
+  levelKhurshed: {fileID: 0}
+  levelVirel: {fileID: 0}
   titleMenuPanel: {fileID: 3249064492266842431}
   soundMenu: {fileID: 3769675196404381053}
   progressBar: {fileID: 6410197874699223839}
@@ -23188,7 +23254,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4918323239691774920}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5495160565594828991}
+        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_MethodName: openLevelKhurshed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7953490311202826676
 GameObject:
   m_ObjectHideFlags: 0
