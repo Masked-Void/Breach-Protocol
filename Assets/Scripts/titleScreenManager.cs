@@ -36,6 +36,7 @@ public class titleScreenManager : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1f;
         switchToHome();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -44,7 +45,7 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playTitleScreenSound();
     }
 
-     public void openLevelSamuel()
+    public void openLevelSamuel()
     {
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
@@ -56,14 +57,14 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("MK2"));
+        StartCoroutine(LoadSceneAsync("TestScene"));
     }
     public void openLevelDevinC()
     {
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("MK2"));
+        StartCoroutine(LoadSceneAsync("TestScene"));
     }
     public void openLevelMark()
     {
@@ -77,7 +78,7 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("MK2"));
+        StartCoroutine(LoadSceneAsync("TestScene"));
     }
     public void openLevelVirel()
     {
@@ -133,7 +134,7 @@ public class titleScreenManager : MonoBehaviour
             progressBar.value = 1f;
         }
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSecondsRealtime(0.2f);
 
         if (audioManager.instance != null) audioManager.instance.stopMusic();
 
@@ -143,11 +144,11 @@ public class titleScreenManager : MonoBehaviour
     public void quitGame()
     {
         audioManager.instance.playButtonClick();
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-        #else
-            Application.Quit();
-        #endif
+#else
+        Application.Quit();
+#endif
     }
 
     public void openUnlocks()

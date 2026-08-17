@@ -20,10 +20,16 @@ public class buttonFunctions : MonoBehaviour
     }
 
     public void homeNav()
+{
+    audioManager.instance.playButtonClick();
+    
+    if (gameManager.instance != null)
     {
-        audioManager.instance.playButtonClick();
-        SceneManager.LoadScene(0);
+        gameManager.instance.stateUnpause();
     }
+
+    SceneManager.LoadScene(0);
+}
 
     public void sound()
     {
