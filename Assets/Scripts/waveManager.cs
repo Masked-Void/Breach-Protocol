@@ -1,33 +1,4 @@
-/*
-Script: WaveManager*
-Description:
-Central wave coordinator. Does NOT spawn enemies itself - each
-spawnPoint is fully individual (own prefabs, percentages, pacing,
-and difficulty scaling). WaveManager just owns the wave number and
-the countdown between waves, and keeps every spawnPoint in sync:
-the next wave will not begin until every registered spawnPoint has
-finished spawning AND every enemy from every spawnPoint is dead.*
-Responsibilities:
-Automatically start the first wave when the level begins
-Wait between waves (real-time, unaffected by Time.timeScale),
-then tell every spawnPoint to begin the new wave
-Track total enemies alive across all spawn points
-Only complete a wave once ALL spawn points are done spawning and
-ALL of their enemies are dead
-Notify HeartbeatManager when enemies die or waves end
-Notify GameManager when all waves are completed
-*
-Interacts With:
-spawnPoint (one or more, individually configured)
-heartbeatManager
-gameManager
-waveLightController
-audioManager
-*/
-
-using JetBrains.Annotations;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public enum enemyType { basic, heavy, ranged }
@@ -51,7 +22,7 @@ public class spawnPoint
 
     public bool isFree(float cooldown)
     {
-         return (Time.time - lastUsed >= cooldown);
+        return (Time.unscaledTime - lastUsed >= cooldown);
     }
 }
 
@@ -60,7 +31,7 @@ public class waveManager : MonoBehaviour
     public static waveManager instance;
 
     [Header("Prefabs")]
-    [SerializeField] GameObject []basicWeaponPrefabs;
+    [SerializeField] GameObject[] basicWeaponPrefabs;
     [SerializeField] GameObject[] heavyWeaponPrefabs;
     [SerializeField] GameObject[] rangedWeaponPrefabs;
 
@@ -73,12 +44,6 @@ public class waveManager : MonoBehaviour
     [SerializeField] Transform[] spawnPointTransforms;
     private roamPoint[] roamPoints;
     private spawnPoint[] spawnPoints;
-
-    [Header("Roam Settings")]
-    [Tooltip("Roam is for ranged enemies")]
-    [SerializeField] float giveWillRoamChance;
-
-
     [Header("Spawn Settings")]
     [SerializeField] int enemiesToSpawnAtWave0;
     [SerializeField] float enemyIncreaseMultiplier;
@@ -97,7 +62,6 @@ public class waveManager : MonoBehaviour
 
     [Header("Misc")]
     [SerializeField] int maxWaves;
-    private int currentIndex;
     [SerializeField] bool waitingForNextWave;
     bool waveInProgress;
 
@@ -105,7 +69,6 @@ public class waveManager : MonoBehaviour
     [SerializeField] private int currentWave = 0;
 
     int enemiesAlive;
-    int enemiesToSpawn;
 
     private Coroutine spawnRoutine;
 
@@ -164,27 +127,17 @@ public class waveManager : MonoBehaviour
 
             // Instantiate the enemy
             GameObject enemy = Instantiate(enemyPrefab, point.point.transform.position, point.point.transform.rotation);
-            
-            if (typeSpawned == enemyType.ranged)
-            {
-                if (enemy.TryGetComponent<enemyBase>(out enemyBase enemyScript))
-                {
-                    bool giveRoam = Random.Range(0f, 1f) <= giveWillRoamChance;
-                    enemyScript.willRoam = giveRoam;
-                }
-            }
-          
-
-            point.lastUsed = Time.time;
+            // RangedEnemy now owns its AI behavior directly.
+            // The deleted enemyBase.willRoam API is intentionally not used here.
+            point.lastUsed = Time.unscaledTime;
 
             enemiesAlive++;
 
             // Wait before spawning the next one
-            yield return new WaitForSeconds(timeBetweenSpawns);
-           
+            yield return new WaitForSecondsRealtime(timeBetweenSpawns);
+
         }
 
-        enemiesToSpawn = 0;
         spawnRoutine = null;
 
         if (enemiesAlive <= 0)
@@ -219,9 +172,9 @@ public class waveManager : MonoBehaviour
             return basicEnemyPrefabs[Random.Range(0, basicEnemyPrefabs.Length)];
         }
         typeSpawned = enemyType.heavy;
-         return heavyEnemyPrefabs[Random.Range(0, heavyEnemyPrefabs.Length)];
+        return heavyEnemyPrefabs[Random.Range(0, heavyEnemyPrefabs.Length)];
     }
-    
+
     private spawnPoint getSpawnPoint(GameObject enemy)
     {
         if (spawnPoints.Length == 0) return null;
@@ -252,8 +205,7 @@ public class waveManager : MonoBehaviour
         waveInProgress = true;
         enemiesAlive = 0;
 
-        enemiesToSpawn = 1;
-        
+
         if (spawnRoutine != null)
         {
             StopCoroutine(spawnRoutine);
@@ -269,7 +221,7 @@ public class waveManager : MonoBehaviour
 
         if (currentWave > maxWaves)
         {
-           //layerWins();
+            //layerWins();
             return;
         }
 
@@ -358,12 +310,8 @@ public class waveManager : MonoBehaviour
             enemiesAlive = 0;
         }
 
-        if (heartbeatManager.instance != null)
-        {
-            heartbeatManager.instance.enemyKilled();
-        }
-
-        if (enemiesAlive <= 0)
+        // Do not end the wave while the spawn coroutine is still producing enemies.
+        if (enemiesAlive <= 0 && spawnRoutine == null)
         {
             completeWave();
         }
@@ -425,7 +373,7 @@ public class waveManager : MonoBehaviour
         if (source == null) return new Transform[0];
 
         int counted = 0;
-    
+
         for (int i = 0; i < source.Length; i++)
         {
             if (source[i] != null) counted++;
@@ -433,8 +381,8 @@ public class waveManager : MonoBehaviour
 
         Transform[] cleaned = new Transform[counted];
 
-        int write = 0; 
-        for (int i = 0;  i < source.Length; i++)
+        int write = 0;
+        for (int i = 0; i < source.Length; i++)
         {
             if (source[i] == null) continue;
 
@@ -449,17 +397,16 @@ public class waveManager : MonoBehaviour
     {
         Transform[] cleaned = cleanList(points);
         spawnPoints = new spawnPoint[cleaned.Length];
-           
+
         for (int i = 0; i < cleaned.Length; i++)
         {
             spawnPoint newPoint = new spawnPoint();
             newPoint.point = cleaned[i];
             newPoint.lastUsed = 0f;
-        
+
             spawnPoints[i] = newPoint;
         }
 
-        currentIndex = 0;
 
         if (spawnPointTransforms.Length == 0)
         {
