@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: PistolWhipper
   m_EditorClassIdentifier: Assembly-CSharp::challengeData
   challengeID: pistol_5
-  displayName: pistol
-  description: 
+  displayName: Pistol Whipper I
+  description: Get kills with the pistol
+  progress: 2
   targetWeaponID: Pistol
   killCount: 5
   requireGroundPickup: 1

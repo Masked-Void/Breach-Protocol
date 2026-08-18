@@ -9,6 +9,7 @@ public class titleScreenManager : MonoBehaviour
     [Header("UI Pages")]
     public GameObject homePanel;
     public GameObject weaponPanel;
+    public GameObject challengePanel;
     public GameObject settingsPanel;
     public GameObject aboutPanel;
 
@@ -19,14 +20,6 @@ public class titleScreenManager : MonoBehaviour
     public Button navSettingsButton;
     public Button navAboutButton;
     public Button navCreditsButton;
-
-    [Header("Levels")]
-    public Button LevelSamuel;
-    public Button levelDevinS;
-    public Button levelDevinC;
-    public Button levelMark;
-    public Button levelKhurshed;
-    public Button levelVirel;
 
     [SerializeField] private GameObject titleMenuPanel;
     [SerializeField] private GameObject soundMenu;
@@ -169,7 +162,12 @@ public class titleScreenManager : MonoBehaviour
         deactivateAllPanels();
         homePanel.SetActive(true);
     }
-
+    public void switchToChallenge()
+    {
+        audioManager.instance.playButtonClick();
+        deactivateAllPanels();
+        challengePanel.SetActive(true);
+    }
     public void switchToWeapon()
     {
         audioManager.instance.playButtonClick();
@@ -196,6 +194,7 @@ public class titleScreenManager : MonoBehaviour
         homePanel.SetActive(false);
         weaponPanel.SetActive(false);
         settingsPanel.SetActive(false);
+        challengePanel.SetActive(false);
         if (aboutPanel != null) aboutPanel.SetActive(false);
     }
 
