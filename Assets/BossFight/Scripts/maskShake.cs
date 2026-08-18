@@ -1,4 +1,4 @@
-using Microsoft.Unity.VisualStudio.Editor;
+//using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 // Shakes the mask, will do ontop of whatever the base boss is looking at
