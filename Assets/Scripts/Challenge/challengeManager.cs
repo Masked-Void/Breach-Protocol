@@ -31,6 +31,7 @@ public class challengeManager : MonoBehaviour
 
     public void ReportKill(weaponStats weapon, bool fromGround)
     {
+
         if (weapon == null || challenges == null || challenges.Length == 0) return;
 
         foreach (var c in challenges)
@@ -40,10 +41,14 @@ public class challengeManager : MonoBehaviour
             if (c.requireGroundPickup && !fromGround) continue;
 
             if (!progress.ContainsKey(c.challengeID))
+            {
                 progress[c.challengeID] = 0;
+            }
 
-            progress[c.challengeID]++;
+                progress[c.challengeID]++;
 
+
+            
             Debug.Log($"[{c.displayName}] {progress[c.challengeID]}/{c.killCount}");
 
             if (progress[c.challengeID] >= c.killCount)

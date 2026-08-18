@@ -65,15 +65,16 @@ public class gunStats : weaponStats
                 {
                     damage dmg = spawnedBullet.GetComponent<damage>();
                     dmg.isExplosive = true;
-                    // PASS CHALLENGE DATA TO BULLET
+
+
+                }
+                // PASS CHALLENGE DATA TO BULLET
                 damage challengeDmg = spawnedBullet.GetComponent<damage>();
                 if (challengeDmg != null)
                 {
-                        challengeDmg.sourceWeapon = weaponManager.instance.activeWeapon;
-                        challengeDmg.sourceWasGroundPickup = weaponManager.instance.currentWeaponFromGround;
+                    challengeDmg.sourceWeapon = weaponManager.instance.activeWeapon;
+                    challengeDmg.sourceWasGroundPickup = weaponManager.instance.currentWeaponFromGround;
                 }
-            }
-                
             }
         }
     }

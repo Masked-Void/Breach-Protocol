@@ -16168,11 +16168,11 @@ MonoBehaviour:
   settingsPanel: {fileID: 289081889589844475}
   aboutPanel: {fileID: 0}
   Nav: {fileID: 2337049626488607379}
-  navHomeButton: {fileID: 1609025587234472498}
-  navWeaponButton: {fileID: 8155392884940679484}
-  navSettingsButton: {fileID: 6347859306380081827}
-  navAboutButton: {fileID: 5947252509798769455}
-  navCreditsButton: {fileID: 6997300152526039959}
+  navHomeButton: {fileID: 4299806913339518046}
+  navWeaponButton: {fileID: 9068863796747644537}
+  navSettingsButton: {fileID: 2824250265015320859}
+  navAboutButton: {fileID: 8315333883634851558}
+  navCreditsButton: {fileID: 8904966302434763056}
   LevelSamuel: {fileID: 0}
   levelDevinS: {fileID: 0}
   levelDevinC: {fileID: 0}
@@ -19878,6 +19878,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7701414214195237209}
+  - component: {fileID: 7701414214195237210}
   m_Layer: 5
   m_Name: Shop
   m_TagString: Untagged
@@ -22790,6 +22791,21 @@ RectTransform:
   m_AnchoredPosition: {x: 37, y: -43}
   m_SizeDelta: {x: 1850, y: 780}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7701414214195237210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6697615305036181891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c12348562df5184da8da86b53f52c4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::upgradeManager
+  unlockedUpgrades: []
+  purchasedUpgrades: []
+  files: 0
 --- !u!222 &7712689292560456619
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -25988,6 +26004,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3302942073692725954}
   - component: {fileID: 5495160565594828991}
+  - component: {fileID: 8908266191869494108}
   m_Layer: 5
   m_Name: Manager
   m_TagString: Untagged
@@ -25995,6 +26012,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8908266191869494108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908266191869494107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3deb63ccc4f6bae4b86ea489f1338405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::challengeManager
+  challenges:
+  - {fileID: 11400000, guid: 9ded1e8600c288e46b7581c1ebf8a2a0, type: 2}
 --- !u!114 &8912526036249244835
 MonoBehaviour:
   m_ObjectHideFlags: 0
