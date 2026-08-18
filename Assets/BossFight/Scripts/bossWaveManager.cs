@@ -102,15 +102,15 @@ public class bossWaveManager : MonoBehaviour {
     }
 
     // Called by bossFightManager as each phase begins
-    public void startP1() { applySetup(p1); }
-    public void startP2() { applySetup(p2); }
-    public void startP3() { applySetup(p3); }
-    public void startP4() { applySetup(p4); }
+    public void startP1() { applySetup(p1); segmentCue(false); }
+    public void startP2() { applySetup(p2); segmentCue(false); }
+    public void startP3() { applySetup(p3); segmentCue(false); }
+    public void startP4() { applySetup(p4); segmentCue(false); }
 
     // Called as each phase ends. Spawning keeps going through immune window, just using different spawn numbers
-    public void endP1() { applySetup(p1_p2); }
-    public void endP2() { applySetup(p2_p3); }
-    public void endP3() { applySetup(p3_p4); }
+    public void endP1() { applySetup(p1_p2); segmentCue(true); }
+    public void endP2() { applySetup(p2_p3); segmentCue(true); }
+    public void endP3() { applySetup(p3_p4); segmentCue(true); }
 
     // Boss is dead, stop spawning.
     public void endP4() { stopSpawning(); }

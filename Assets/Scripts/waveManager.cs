@@ -145,6 +145,10 @@ public class waveManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
+    }
     private IEnumerator spawn()
     {
         // How many enemies this wave?  wave0 = base, then multiply each wave

@@ -11,7 +11,13 @@ public class upgradeManager : MonoBehaviour
 
     void Awake()
     {
+        if (instance != null&& instance != this) {
+            Destroy(gameObject);
+            return;
+        }
+
         instance = this;
+        
         LoadUpgrades();
     }
 
@@ -72,5 +78,10 @@ public class upgradeManager : MonoBehaviour
         unlockedUpgrades.Clear();
         files = 0;
         SaveUpgrades();
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
     }
 }

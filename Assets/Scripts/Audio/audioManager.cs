@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using UnityEngine;
 
 public class audioManager : MonoBehaviour
@@ -66,6 +67,11 @@ public class audioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         sfxSource.spatialBlend = 0f;
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
     }
 
     public void setMasterVolume(float vol)

@@ -65,10 +65,20 @@ public class gameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        if (instance != null && instance != this) {
+            Destroy(gameObject);
+            return;
+        }
         instance = this;
         player = GameObject.FindWithTag("Player");
         playerScript = player.GetComponent<playerController>();
     }
+
+    void OnDestroy() {
+        if (instance == this)
+            instance = null;
+    }
+
     //Currency Stuff
     public void AddBytes(int amount)
     {

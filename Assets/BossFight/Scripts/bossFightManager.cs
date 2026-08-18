@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 // runs the CEO fight. owns boss health, the four phases, and the immune windows between them.
 // immunity is broken by the player finishing a hold, so the immune window waits on holdZoneManager.
-public class bossFightManager : MonoBehaviour {
+public class bossFightManager : MonoBehaviour,IDamage {
 
     [Header("References")]
     [SerializeField] private GameObject boss;
     [SerializeField] private bossWaveManager waveManager;
     [SerializeField] private holdZoneManager holdManager;
+    [SerializeField] private trapManager trapManager;
 
     [Header("UI")]
     [SerializeField] private GameObject immuneBarObj;
@@ -188,12 +189,21 @@ public class bossFightManager : MonoBehaviour {
 
         Debug.Log("boss fight completed");
 
+        // Stops wave and traps
         waveManager.endP4();
         trapManager.endP4();
+
+        if (gameManager.instance != null) {
+            gameManager.instance.AddFiles(bossFileReward);
+            gameManager.instance.stateWin();
+        }
+
+
     }
 
 
     void startPhase(int p) {
+
         // every damage phase gets one optional hold point picked at random
         holdManager.startDamageHold();
 
@@ -216,18 +226,26 @@ public class bossFightManager : MonoBehaviour {
 
     public void phase1() {
         waveManager.startP1();
+        trapManager.startP1();
     }
 
     public void phase2() {
         waveManager.startP2();
+        trapManager.startP2();
     }
 
     public void phase3() {
         waveManager.startP3();
+        trapManager.startP3();
     }
 
     public void phase4() {
         waveManager.startP4();
+        trapManager.startP4();
+    }
+
+    public void takeDamage(int amount) {
+        applyDamage(amount * bulletDamageMult);
     }
 
     // Looks through the bosses object's children for a marker with an exact name match

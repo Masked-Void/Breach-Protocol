@@ -17,7 +17,17 @@ public class killstreakManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        if (instance != null && instance != this) {
+            Destroy(gameObject);
+            return;
+        }
+
         instance = this;
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
     }
 
     // Start removed — no initialization required here
