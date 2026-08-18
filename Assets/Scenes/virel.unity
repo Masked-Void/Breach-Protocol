@@ -85232,6 +85232,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2832254335797235552}
   - component: {fileID: 1416873293362105718}
+  - component: {fileID: 7976590818285212818}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -85239,6 +85240,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7976590818285212818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7976590818285212817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c52b5e83b85708345a2f81eb37ae815e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::heartbeatManager
+  restingBPM: 60
+  maxBPM: 200
+  currentBPM: 0
+  currentStress: 0
+  maxStress: 100
+  stressDecayRate: 3
+  shootStress: 4
+  damageStress: 20
+  nearMissStress: 5
+  killStressReduction: 5
+  waveStressReduction: 20
 --- !u!95 &7976790217251222775
 Animator:
   serializedVersion: 7

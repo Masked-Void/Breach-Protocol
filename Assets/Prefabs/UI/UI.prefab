@@ -5843,9 +5843,9 @@ MonoBehaviour:
   giveWillRoamChance: 20
   enemiesToSpawnAtWave0: 5
   enemyIncreaseMultiplier: 25
-  basicEnemyPercent: 60
+  basicEnemyPercent: 0
   heavyEnemyPercent: 0
-  rangedEnemyPercent: 30
+  rangedEnemyPercent: 100
   timeBetweenSpawns: 5
   timeBetweenWaves: 5
   waveTimer: 20
@@ -12670,6 +12670,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8720294752289137453}
   - component: {fileID: 8035428096513726599}
+  - component: {fileID: 169431371970482795}
+  - component: {fileID: 1663185637359858990}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -12738,6 +12740,45 @@ MonoBehaviour:
   isPaused: 0
   player: {fileID: 0}
   playerScript: {fileID: 0}
+--- !u!114 &169431371970482795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8265081172895264960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c52b5e83b85708345a2f81eb37ae815e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::heartbeatManager
+  restingBPM: 20
+  maxBPM: 2000
+  currentBPM: 0
+  currentStress: 0
+  maxStress: 100
+  stressDecayRate: 3
+  shootStress: 4
+  damageStress: 20
+  nearMissStress: 5
+  killStressReduction: 5
+  waveStressReduction: 20
+--- !u!114 &1663185637359858990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8265081172895264960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3deb63ccc4f6bae4b86ea489f1338405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::challengeManager
+  weaponName: {fileID: 0}
+  challengeSlots: []
+  challenges:
+  - {fileID: 11400000, guid: 9ded1e8600c288e46b7581c1ebf8a2a0, type: 2}
 --- !u!1 &8284173446702082359
 GameObject:
   m_ObjectHideFlags: 0
