@@ -9,6 +9,7 @@ public class titleScreenManager : MonoBehaviour
     [Header("UI Pages")]
     public GameObject homePanel;
     public GameObject weaponPanel;
+    public GameObject challengePanel;
     public GameObject settingsPanel;
     public GameObject aboutPanel;
 
@@ -169,7 +170,13 @@ public class titleScreenManager : MonoBehaviour
         deactivateAllPanels();
         homePanel.SetActive(true);
     }
-
+    public void switchToChallenge()
+    {
+        audioManager.instance.playButtonClick();
+        deactivateAllPanels();
+        challengeManager.instance.GetChallengeIDUI("pistol_5");
+        challengePanel.SetActive(true);
+    }
     public void switchToWeapon()
     {
         audioManager.instance.playButtonClick();

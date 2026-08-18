@@ -3,11 +3,14 @@ using System.IO;
 using System;
 using UnityEngine;
 using static upgradeManager;
+using TMPro;
+using UnityEngine.UI;
 
 public class challengeManager : MonoBehaviour
 {
     public static challengeManager instance { get; private set; }
-
+    public TextMeshProUGUI challengeIDUI;
+    public Image challengeProgressBar;
     [SerializeField] private challengeData[] challenges;
 
     private Dictionary<string, int> progress = new Dictionary<string, int>();
@@ -24,7 +27,19 @@ public class challengeManager : MonoBehaviour
         Save();
         Debug.Log("Challenges reset.");
     }
+    public void GetChallengeIDUI(string challengeID)
+    {
+        foreach(challengeData challenge in challenges )
+        {
+            if (challenge.challengeID == challengeID)
+            {
+            challengeIDUI.text = challenge.displayName;
+            challengeProgressBar.fillAmount = (float)challenge.progress / (float)challenge.killCount;
+            }
+        }
 
+
+    }
     void Awake()
     {
         if (instance != null && instance != this)
@@ -80,7 +95,7 @@ public class challengeManager : MonoBehaviour
             if (challenge.targetWeaponID != weapon.weaponID) continue;
             if (challenge.requireGroundPickup && !fromGround) continue;
 
-            progress[challenge.challengeID]++;
+            challenge.progress++;
 
             Debug.Log($"[{challenge.displayName}] {progress[challenge.challengeID]}/{challenge.killCount}");
 
