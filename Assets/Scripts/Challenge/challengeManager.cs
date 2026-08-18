@@ -34,7 +34,7 @@ public class challengeManager : MonoBehaviour
             if (challenge.challengeID == challengeID)
             {
             challengeIDUI.text = challenge.displayName;
-            challengeProgressBar.fillAmount = (float)challenge.progress / (float)challenge.killCount;
+            challengeProgressBar.fillAmount = challenge.progress / (float)challenge.killCount;
             }
         }
 
