@@ -53,6 +53,11 @@ public class meleeStats : weaponStats
         RaycastHit hit;
         if (Physics.Raycast(gunBarrel.position, gunBarrel.forward, out hit, attackDist))
         {
+            enemyBase eb = hit.transform.GetComponent<enemyBase>();
+            if (eb != null)
+            {
+                eb.RegisterDamageSource(weaponManager.instance.activeWeapon, weaponManager.instance.currentWeaponFromGround);
+            }
             IDamage dmg = hit.transform.GetComponent<IDamage>();
             if (dmg != null)
             {
