@@ -13,8 +13,8 @@ public class challengeManager : MonoBehaviour
     private Dictionary<string, int> progress = new Dictionary<string, int>();
     private Dictionary<string, bool> completed = new Dictionary<string, bool>();
 
-    public saveProgressSystemNative saveProg;
-    public saveCompleteSystemNative saveComp;
+    public saveProgressSystemNative saveProg = new saveProgressSystemNative();
+    public saveCompleteSystemNative saveComp = new saveCompleteSystemNative();
 
     [ContextMenu("Reset Challenges")]
     void ResetChallenges()
@@ -33,9 +33,6 @@ public class challengeManager : MonoBehaviour
             return;
         }
         instance = this;
-
-        saveProg = new saveProgressSystemNative();
-        saveComp = new saveCompleteSystemNative();
 
         if (saveProg != null || saveComp != null)
         {
@@ -106,37 +103,6 @@ public class challengeManager : MonoBehaviour
 
     public bool IsComplete(string id) => completed[id];
     public int GetProgress(string id) => progress.ContainsKey(id) ? progress[id] : 0;
-
-
-
-
-    //[System.Serializable]
-    public class challengeSaveData
-    {
-        public Dictionary<string, int> challenge_id_progress;
-    }
-
-    //public void SaveChallenges()
-    //{
-    //    challengeSaveData data = new challengeSaveData
-    //    {
-    //        challenge_id_progress = progress
-    //    };
-    //    string json = JsonUtility.ToJson(data);
-    //    PlayerPrefs.SetString("ChallengeProgress", json);
-    //    PlayerPrefs.Save();
-    //}
-
-    //public void LoadChallenges()
-    //{
-    //    if (!PlayerPrefs.HasKey("ChallengeProgress")) return;
-
-    //    string json = PlayerPrefs.GetString("ChallengeProgress");
-    //    challengeSaveData data = JsonUtility.FromJson<challengeSaveData>(json);
-
-    //    progress = data.progress;
-   
-    //}
 
     void Save()
     {
