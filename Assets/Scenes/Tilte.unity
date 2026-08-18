@@ -1353,7 +1353,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6192807173256413579}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3883676068691656014}
+        m_TargetAssemblyTypeName: soundMenu, Assembly-CSharp
+        m_MethodName: ToggleMute
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &344105827762456905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11588,6 +11600,7 @@ MonoBehaviour:
   masterSlider: {fileID: 1964207171058739035}
   musicSlider: {fileID: 4388492827228861822}
   sfxSlider: {fileID: 3645364202844241758}
+  muteText: {fileID: 8624504409313525853}
 --- !u!222 &3885108482553818207
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -16168,17 +16181,17 @@ MonoBehaviour:
   settingsPanel: {fileID: 289081889589844475}
   aboutPanel: {fileID: 0}
   Nav: {fileID: 2337049626488607379}
-  navHomeButton: {fileID: 1609025587234472498}
-  navWeaponButton: {fileID: 8155392884940679484}
-  navSettingsButton: {fileID: 6347859306380081827}
-  navAboutButton: {fileID: 5947252509798769455}
-  navCreditsButton: {fileID: 6997300152526039959}
-  LevelSamuel: {fileID: 0}
-  levelDevinS: {fileID: 0}
-  levelDevinC: {fileID: 0}
-  levelMark: {fileID: 0}
-  levelKhurshed: {fileID: 0}
-  levelVirel: {fileID: 0}
+  navHomeButton: {fileID: 4299806913339518046}
+  navWeaponButton: {fileID: 9068863796747644537}
+  navSettingsButton: {fileID: 2824250265015320859}
+  navAboutButton: {fileID: 8315333883634851558}
+  navCreditsButton: {fileID: 8904966302434763056}
+  LevelSamuel: {fileID: 2931751528060288063}
+  levelDevinS: {fileID: 3416813017424042088}
+  levelDevinC: {fileID: 4950887648451809110}
+  levelMark: {fileID: 4450988561161279682}
+  levelKhurshed: {fileID: 7942862805764493248}
+  levelVirel: {fileID: 1434994415585162685}
   titleMenuPanel: {fileID: 3249064492266842431}
   soundMenu: {fileID: 3769675196404381053}
   progressBar: {fileID: 6410197874699223839}
