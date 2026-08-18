@@ -71,14 +71,6 @@ public class bossFightManager : MonoBehaviour {
 
         curHealth = maxHealth;
 
-<<<<<<< Updated upstream
-        /*Transform mask = findMark("Head");
-        if (!mask.TryGetComponent(out shake))
-        {
-            Debug.LogError("bossFightManager: No maskShake component on boss",this);
-        }*/
-        
-=======
         // the mask is a child of the boss, so find it by name before pulling components off it
         Transform mask = findMark("Head");
         if (mask == null) {
@@ -90,7 +82,6 @@ public class bossFightManager : MonoBehaviour {
         if (!mask.TryGetComponent(out shake)) {
             Debug.LogError("bossFightManager: no maskShake component on the boss head" , this);
         }
->>>>>>> Stashed changes
     }
 
 
@@ -231,33 +222,21 @@ public class bossFightManager : MonoBehaviour {
     public void phase4() {
         waveManager.startP4();
     }
-<<<<<<< Updated upstream
+
     // Looks through the bosses object's children for a marker with an exact name match
-    /*Transform findMark(string wanted)
+    Transform findMark(string wanted)
     {
         // Goes through each child of the boss object
         foreach (Transform child in boss.transform)
         {
-            if (child.name.IndexOf(wanted, System.StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-=======
-
-
-    // looks through the boss object's children for a marker whose name contains wanted
-    Transform findMark(string wanted) {
-        foreach (Transform child in boss.transform) {
             if (child.name.IndexOf(wanted , System.StringComparison.OrdinalIgnoreCase) >= 0) {
->>>>>>> Stashed changes
+
                 return child;
             }
         }
 
         // nothing matched, Awake handles that
         return null;
-<<<<<<< Updated upstream
-    }*/
-}
-=======
+
     }
 }
->>>>>>> Stashed changes
