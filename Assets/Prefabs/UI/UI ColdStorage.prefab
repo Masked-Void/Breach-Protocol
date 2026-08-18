@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3136144643366654131, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: roamPointTransforms.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3136144643366654131, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: spawnPointTransforms.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6785670985224404860, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -90,7 +98,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8525187160557472781, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Name
-      value: UI
+      value: UI ColdStorage
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
