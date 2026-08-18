@@ -9,8 +9,17 @@ using UnityEngine.UI;
 public class challengeManager : MonoBehaviour
 {
     public static challengeManager instance { get; private set; }
-    public TextMeshProUGUI challengeIDUI;
-    public Image challengeProgressBar;
+
+    [System.Serializable]
+    public class ChallengeUISlot
+    {
+        public GameObject slotRoot;
+        public TextMeshProUGUI challengeName;
+        public Image progressBar;
+    }
+
+    public TextMeshProUGUI weaponName;
+    [SerializeField] private ChallengeUISlot[] challengeSlots;
     [SerializeField] private challengeData[] challenges;
 
     private Dictionary<string, int> progress = new Dictionary<string, int>();
@@ -27,18 +36,42 @@ public class challengeManager : MonoBehaviour
         Save();
         Debug.Log("Challenges reset.");
     }
-    public void GetChallengeIDUI(string challengeID)
+    public void displayWeaponChallenges(challengeData[] weaponChallenges)
     {
-        foreach(challengeData challenge in challenges )
+        if (weaponChallenges == null || weaponChallenges.Length == 0) return;
+
+        if (weaponName != null)
         {
-            if (challenge.challengeID == challengeID)
-            {
-            challengeIDUI.text = challenge.displayName;
-            challengeProgressBar.fillAmount = challenge.progress / (float)challenge.killCount;
-            }
+            weaponName.text = weaponChallenges[0].targetWeaponID;
         }
 
+        for (int i = 0; i < challengeSlots.Length; i++)
+        {
+            if (i < weaponChallenges.Length)
+            {
+                // Show slot & populate data
+                challengeSlots[i].slotRoot.SetActive(true);
 
+                var challenge = weaponChallenges[i];
+                int currentProg = GetProgress(challenge.challengeID);
+                float progressRatio = challenge.killCount > 0 ? (float)currentProg / challenge.killCount : 0f;
+
+                if (challengeSlots[i].challengeName != null)
+                {
+                    challengeSlots[i].challengeName.text = challenge.displayName;
+                }
+
+                if (challengeSlots[i].progressBar != null)
+                {
+                    challengeSlots[i].progressBar.fillAmount = Mathf.Clamp01(progressRatio);
+                }
+            }
+            else
+            {
+                // Hide slot if the weapon has fewer than 3 challenges
+                challengeSlots[i].slotRoot.SetActive(false);
+            }
+        }
     }
     void Awake()
     {
@@ -95,7 +128,7 @@ public class challengeManager : MonoBehaviour
             if (challenge.targetWeaponID != weapon.weaponID) continue;
             if (challenge.requireGroundPickup && !fromGround) continue;
 
-            challenge.progress++;
+            progress[challenge.challengeID]++;
 
             Debug.Log($"[{challenge.displayName}] {progress[challenge.challengeID]}/{challenge.killCount}");
 
@@ -137,10 +170,4 @@ public class challengeManager : MonoBehaviour
         saveComp.loadWithJsonUtility();
         completed = saveComp.completeDict;
     }
-
-   
-   
-
-   
-
 }

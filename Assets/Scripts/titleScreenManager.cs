@@ -21,14 +21,6 @@ public class titleScreenManager : MonoBehaviour
     public Button navAboutButton;
     public Button navCreditsButton;
 
-    [Header("Levels")]
-    public Button LevelSamuel;
-    public Button levelDevinS;
-    public Button levelDevinC;
-    public Button levelMark;
-    public Button levelKhurshed;
-    public Button levelVirel;
-
     [SerializeField] private GameObject titleMenuPanel;
     [SerializeField] private GameObject soundMenu;
     [SerializeField] private Slider progressBar;
@@ -174,7 +166,6 @@ public class titleScreenManager : MonoBehaviour
     {
         audioManager.instance.playButtonClick();
         deactivateAllPanels();
-        challengeManager.instance.GetChallengeIDUI("pistol_5");
         challengePanel.SetActive(true);
     }
     public void switchToWeapon()
@@ -203,6 +194,7 @@ public class titleScreenManager : MonoBehaviour
         homePanel.SetActive(false);
         weaponPanel.SetActive(false);
         settingsPanel.SetActive(false);
+        challengePanel.SetActive(false);
         if (aboutPanel != null) aboutPanel.SetActive(false);
     }
 
