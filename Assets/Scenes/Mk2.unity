@@ -428,48 +428,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7065154625900841173, guid: f22efb36ccee9cf4e9b989310a189739, type: 3}
   m_PrefabInstance: {fileID: 8890859873832373904}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &803854719 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8265081172895264960, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-  m_PrefabInstance: {fileID: 1015771340606558800}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &803854722
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 803854719}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c52b5e83b85708345a2f81eb37ae815e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::heartbeatManager
-  restingBPM: 20
-  maxBPM: 2000
-  currentBPM: 0
-  currentStress: 0
-  maxStress: 100
-  stressDecayRate: 3
-  shootStress: 4
-  damageStress: 20
-  nearMissStress: 5
-  killStressReduction: 5
-  waveStressReduction: 20
---- !u!114 &803854725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 803854719}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3deb63ccc4f6bae4b86ea489f1338405, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::challengeManager
-  challenges:
-  - {fileID: 11400000, guid: 9ded1e8600c288e46b7581c1ebf8a2a0, type: 2}
 --- !u!4 &821172478 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3712071704314338367, guid: f22efb36ccee9cf4e9b989310a189739, type: 3}
@@ -755,14 +713,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3136144643366654131, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: basicEnemyPercent
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3136144643366654131, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: rangedEnemyPercent
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 3136144643366654131, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: 'roamPointTransforms.Array.data[0]'
       value: 
@@ -1126,13 +1076,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8265081172895264960, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 803854722}
-    - targetCorrespondingSourceObject: {fileID: 8265081172895264960, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 803854725}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
 --- !u!1001 &8890859873832373904
 PrefabInstance:
