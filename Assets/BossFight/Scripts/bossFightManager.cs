@@ -6,10 +6,11 @@ using UnityEngine.UI;
 // runs the CEO fight. owns boss health, the four phases, and the immune windows between them.
 // immunity is broken by the player finishing a hold, so the immune window waits on holdZoneManager.
 public class bossFightManager : MonoBehaviour {
-    [Header("Refs")]
+
+    [Header("References")]
     [SerializeField] private GameObject boss;
     [SerializeField] private bossWaveManager waveManager;
-    [SerializeField] private holdZoneManager holds;
+    [SerializeField] private holdZoneManager holdManager;
 
     [Header("UI")]
     [SerializeField] private GameObject immuneBarObj;
@@ -18,10 +19,15 @@ public class bossFightManager : MonoBehaviour {
     [SerializeField] private Image immuneBar;
 
     [Header("Health")]
-    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float maxHealth = 1000f;
+    [Range(0f , 1f)][SerializeField] private float bulletDamageMult = 1f;
     [Range(0f , 1f)][SerializeField] private float p1EndHealthPerc = .75f;
     [Range(0f , 1f)][SerializeField] private float p2EndHealthPerc = .5f;
     [Range(0f , 1f)][SerializeField] private float p3EndHealthPerc = .25f;
+
+    [Header("Misc")]
+    [Tooltip("Files banked for killing the CEO")]
+    [SerializeField] private int bossFileReward = 5;
 
     [Header("Debug")]
     [Tooltip("tick this in play mode to chip the boss by damageAmt")]
@@ -57,7 +63,7 @@ public class bossFightManager : MonoBehaviour {
             return;
         }
 
-        if (holds == null) {
+        if (holdManager == null) {
             Debug.LogError("bossFightManager: no holdZoneManager assigned" , this);
             enabled = false;
             return;
@@ -151,14 +157,14 @@ public class bossFightManager : MonoBehaviour {
                 shake.doShake = true;
 
             // no timer here. the window stays open until the player finishes the center hold
-            holds.startImmuneHold();
+            holdManager.startImmuneHold();
 
-            while (!holds.immuneHoldDone) {
-                immuneBar.fillAmount = holds.immuneProgress;
+            while (!holdManager.immuneHoldDone) {
+                immuneBar.fillAmount = holdManager.immuneProgress;
                 yield return null;
             }
 
-            holds.stopAll();
+            holdManager.stopAll();
 
             if (shake != null)
                 shake.doShake = false;
@@ -172,7 +178,7 @@ public class bossFightManager : MonoBehaviour {
             startPhase(phase);
         } else {
             fightOver = true;
-            holds.stopAll();
+            holdManager.stopAll();
             bossDefeated();
         }
     }
@@ -182,13 +188,14 @@ public class bossFightManager : MonoBehaviour {
 
         Debug.Log("boss fight completed");
 
-        // death vfx, win state, and the run end hookup go here
+        waveManager.endP4();
+        trapManager.endP4();
     }
 
 
     void startPhase(int p) {
         // every damage phase gets one optional hold point picked at random
-        holds.startDamageHold();
+        holdManager.startDamageHold();
 
         switch (p) {
             case 0:

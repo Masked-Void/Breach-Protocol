@@ -14,6 +14,9 @@ public struct laserStep {
     [Tooltip("which laser on the pillar. use -1 to fire the entire pillar at once")]
     public int slot;
 
+    [Tooltip("On pulls laser back in")]
+    public bool retract;
+
     [Tooltip("seconds to wait after this step. set it to 0 to fire together with the next one")]
     public float delay;
 }
@@ -310,10 +313,18 @@ public class laserArrayManager : MonoBehaviour {
             for (int i = 0 ; i < pattern.steps.Length ; i++) {
                 laserStep step = pattern.steps[i];
 
-                if (step.slot < 0) {
-                    firePillar(step.color);
+                if (step.slot > 0) {
+                    if (step.retract) {
+                        stopPillar(step.color);
+                    } else {
+                        firePillar(step.color);
+                    } 
                 } else {
-                    fireLaser(step.color , step.slot);
+                    if (step.retract) {
+                        stopLaser(step.color , step.slot);
+                    } else {
+                        fireLaser(step.color , step.slot);
+                    }
                 }
 
                 // waitForSeconds(0) still burns a frame, skipping the yield is what makes

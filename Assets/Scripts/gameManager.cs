@@ -13,6 +13,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuActive;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
+    [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuSound;
 
     [Header("Kills UI")]
@@ -175,18 +176,32 @@ public class gameManager : MonoBehaviour
     // Handle the lose state
     public void stateLose()
     {
+        endRun(menuLose);
+    }
+
+    //Handes the win state aka when the boss dies
+    public void stateWin() {
+        endRun(menuWin);
+    }
+
+    // Simple method so simplify states
+    void endRun(GameObject endMenu) {
         statePause();
-        menuActive = menuLose;
-        menuActive.SetActive(true);
-        scoreText.text = currentKill.ToString("f0");
-        if(upgradeManager.instance != null)
-        {
+
+        if (endMenu != null) {
+            menuActive = endMenu;
+            endMenu.SetActive(false);
+        }
+
+        if (scoreText != null) {
+            scoreText.text = currentKill.ToString("f0");
+        }
+
+        if (upgradeManager.instance != null) {
             upgradeManager.instance.files += totalFiles;
             upgradeManager.instance.SaveUpgrades();
         }
-
     }
-
     public void addKill()
     {
         currentKill++;

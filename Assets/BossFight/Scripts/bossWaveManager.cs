@@ -29,9 +29,6 @@ public class bossWaveManager : MonoBehaviour {
     [SerializeField] GameObject[] heavyEnemyPrefabs;
     [SerializeField] GameObject[] rangedEnemyPrefabs;
 
-    [SerializeField] GameObject[] basicWeaponPrefabs;
-    [SerializeField] GameObject[] heavyWeaponPrefabs;
-    [SerializeField] GameObject[] rangedWeaponPrefabs;
 
 
     [Header("Roam and Spawn points")]
@@ -44,6 +41,14 @@ public class bossWaveManager : MonoBehaviour {
     [Header("Roam Settings")]
     [SerializeField] float giveWillRoamChance;
 
+    [Header("Cues")]
+    [Tooltip("Music that plays while a madage phase is running")]
+    [SerializeField] AudioClip phaseMusic;
+    [Tooltip("Music that plays during immune phase")]
+    [SerializeField] AudioClip immuneMusic;
+    [Tooltip("How long warning lights flash when a segment changes")]
+    [SerializeField] float lightFlashTime = 3f;
+    
 
     [Header("Spawn Settings")]
     [SerializeField] float timeBetweenSpawns = .25f;
@@ -110,6 +115,21 @@ public class bossWaveManager : MonoBehaviour {
     // Boss is dead, stop spawning.
     public void endP4() { stopSpawning(); }
 
+
+    private void segmentCue(bool immuneWindow) {
+        if (waveLightController.instance != null) {
+            waveLightController.instance.FlashWarningLights(lightFlashTime);
+        }
+
+        if (audioManager.instance == null)
+            return;
+
+        if (immuneWindow) {
+            audioManager.instance.playMusic(immuneMusic);
+        } else {
+            audioManager.instance.playMusic(phaseMusic);
+        }
+    }
 
     // Swap the spawn numbers to the current phase numbers
     private void applySetup(waveSetup setup) {
@@ -339,16 +359,6 @@ public class bossWaveManager : MonoBehaviour {
         typeSpawned = enemyType.heavy;
         return pickFrom(heavyEnemyPrefabs);
 
-    }
-
-    private GameObject getWeapon() {
-        if (typeSpawned == enemyType.ranged)
-            return pickFrom(rangedWeaponPrefabs);
-        if (typeSpawned == enemyType.basic)
-            return pickFrom(basicWeaponPrefabs);
-        if (typeSpawned == enemyType.heavy)
-            return pickFrom(heavyWeaponPrefabs);
-        return null;
     }
 
 
