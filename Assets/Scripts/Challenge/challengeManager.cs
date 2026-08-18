@@ -13,8 +13,8 @@ public class challengeManager : MonoBehaviour
     private Dictionary<string, int> progress = new Dictionary<string, int>();
     private Dictionary<string, bool> completed = new Dictionary<string, bool>();
 
-    public SaveProgressSystemNative saveProg;
-    public SaveCompleteSystemNative saveComp;
+    public saveProgressSystemNative saveProg;
+    public saveCompleteSystemNative saveComp;
 
     [ContextMenu("Reset Challenges")]
     void ResetChallenges()
@@ -34,8 +34,8 @@ public class challengeManager : MonoBehaviour
         }
         instance = this;
 
-        saveProg = new SaveProgressSystemNative();
-        saveComp = new SaveCompleteSystemNative();
+        saveProg = new saveProgressSystemNative();
+        saveComp = new saveCompleteSystemNative();
 
         if (saveProg != null || saveComp != null)
         {
@@ -157,114 +157,9 @@ public class challengeManager : MonoBehaviour
         completed = saveComp.completeDict;
     }
 
-    [Serializable]
-    public class serializationWrapper
-    {
+   
+   
 
-        public List<string> keys = new List<string>();
-        public List<int> progressVals = new List<int>();
-        public List<bool> challengeVals = new List<bool>();
-
-        public serializationWrapper(Dictionary<string,int> dictionary)
-        {
-            foreach (var keyValuePair in dictionary)
-            {
-                keys.Add(keyValuePair.Key);
-                progressVals.Add(keyValuePair.Value);
-            }
-        }
-
-        public serializationWrapper(Dictionary<string, bool> dictionary)
-        {
-            foreach (var keyValuePair in dictionary)
-            {
-                keys.Add(keyValuePair.Key);
-                challengeVals.Add(keyValuePair.Value);
-            }
-        }
-
-        public Dictionary<string,int> toProgDictionary()
-        {
-            Dictionary<string,int> targetDict = new Dictionary<string,int>();
-            for (int i = 0; i < keys.Count; i++)
-            {
-                targetDict.Add(keys[i], progressVals[i]);
-            }
-
-            return targetDict;
-        }
-
-        public Dictionary<string, bool> toCompDictionary()
-        {
-            Dictionary<string, bool> targetDict = new Dictionary<string, bool>();
-            for (int i = 0; i < keys.Count; i++)
-            {
-                targetDict.Add(keys[i], challengeVals[i]);
-            }
-
-            return targetDict;
-        }
-    }
-
-    public class SaveProgressSystemNative
-    {
-        public Dictionary<string, int> progressDict = new Dictionary<string, int>();
-
-        public void saveWithJsonUtility()
-        {
-            string path = Path.Combine(Application.persistentDataPath, "challenge_progress");
-
-            serializationWrapper wrapper = new serializationWrapper(progressDict);
-
-            string json = JsonUtility.ToJson(wrapper, true);
-
-            File.WriteAllText(path, json);
-        }
-
-        public void loadWithJsonUtility()
-        {
-            string path = Path.Combine(Application.persistentDataPath, "challenge_progress");
-
-            if (File.Exists(path))
-            {
-                string json = File.ReadAllText(path);
-
-                serializationWrapper wrapper = JsonUtility.FromJson<serializationWrapper>(json);
-
-                progressDict = wrapper.toProgDictionary();
-            }
-        }
-    }
-
-    public class SaveCompleteSystemNative
-    {
-        public Dictionary<string, bool> completeDict = new Dictionary<string, bool>();
-
-        public void saveWithJsonUtility()
-        {
-            string path = Path.Combine(Application.persistentDataPath, "challenge_complete");
-
-            serializationWrapper wrapper = new serializationWrapper(completeDict);
-
-            string json = JsonUtility.ToJson(wrapper, true);
-
-            File.WriteAllText(path, json);
-        }
-
-        public void loadWithJsonUtility()
-        {
-            string path = Path.Combine(Application.persistentDataPath, "challenge_complete");
-
-            if (File.Exists(path))
-            {
-                string json = File.ReadAllText(path);
-
-                serializationWrapper wrapper = JsonUtility.FromJson<serializationWrapper>(json);
-
-                completeDict = wrapper.toCompDictionary();
-            }
-        }
-    }
-
+   
 
 }
