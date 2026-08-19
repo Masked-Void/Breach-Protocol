@@ -43,10 +43,10 @@ public class meleeStats : weaponStats
 
         if (weaponManager.instance.activeWeapon.weaponModel.CompareTag("Katana" ))
         {
-           
         }
         Transform gunBarrel = weaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
+            Debug.Log("Katana says hi");
 
         audioManager.instance.playSFX(swingSound, swingSoundVol);
 
