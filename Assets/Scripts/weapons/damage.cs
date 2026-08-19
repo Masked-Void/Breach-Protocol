@@ -19,6 +19,7 @@ public class damage : MonoBehaviour
     [SerializeField] ParticleSystem explodeEffect;
 
     bool isDamaging;
+    private bool hasHit = false;
     public bool isExplosive;
     private float explosionRadius = 5f;
     private int explosionDamage = 50;
@@ -45,6 +46,48 @@ public class damage : MonoBehaviour
             rb.useGravity = false;
             rb.linearVelocity = transform.forward * bulletSpeed;
             Destroy(gameObject, bulletDestroyTime);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (type != damageType.throwable || hasHit) return;
+
+        Collider other = collision.collider;
+        if (other.isTrigger || other.CompareTag("Player")) return;
+
+        hasHit = true;
+
+        // Glass shatter check
+        glassShatter glass = other.GetComponent<glassShatter>() ?? other.GetComponentInParent<glassShatter>();
+        if (glass != null)
+        {
+            glass.Shatter(collision.contacts[0].point, transform.forward, shatterForce);
+            if (audioManager.instance != null)
+                audioManager.instance.playSpatialSFX(audioManager.instance.glass, transform.position, audioManager.instance.glassVol);
+        }
+
+        // Register damage source for challenge progression
+        enemyBase eb = other.GetComponent<enemyBase>();
+        if (eb != null && sourceWeapon != null)
+        {
+            eb.RegisterDamageSource(sourceWeapon, sourceWasGroundPickup);
+        }
+
+        // Deal damage
+        IDamage dmg = other.GetComponent<IDamage>();
+        if (dmg != null)
+        {
+            dmg.takeDamage(damageAmount);
+        }
+
+        // Play SFX
+        if (audioManager.instance != null)
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                audioManager.instance.playSpatialSFX(audioManager.instance.enemyHit, transform.position, audioManager.instance.enemyHitVol);
+            else
+                audioManager.instance.playSpatialSFX(audioManager.instance.wallHit, transform.position, audioManager.instance.wallHitVol);
         }
     }
 

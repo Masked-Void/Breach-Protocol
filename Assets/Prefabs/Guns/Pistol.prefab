@@ -335,6 +335,7 @@ GameObject:
   - component: {fileID: 7853622137294301037}
   - component: {fileID: 767894515129350033}
   - component: {fileID: 8939391966927358283}
+  - component: {fileID: -6674411551926378590}
   m_Layer: 8
   m_Name: Pistol
   m_TagString: Untagged
@@ -416,6 +417,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.050784748, y: 0.20485775, z: 0.27371925}
   m_Center: {x: -0.000068081754, y: -0.039197598, z: 0.021055834}
+--- !u!114 &-6674411551926378590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2859026477195048651}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18ff2f9e2b40a9844b285415edfbfd90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::damage
+  type: 4
+  rb: {fileID: 0}
+  damageAmount: 1
+  damageRate: 0.1
+  bulletSpeed: 1
+  bulletDestroyTime: 0
+  shatterForce: 350
+  deflectLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  hitEffect: {fileID: 0}
+  explodeEffect: {fileID: 0}
+  isExplosive: 0
+  sourceWeapon: {fileID: 0}
+  sourceWasGroundPickup: 0
 --- !u!1 &6898970785776082926
 GameObject:
   m_ObjectHideFlags: 0

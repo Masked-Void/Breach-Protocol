@@ -113,6 +113,7 @@ public class weaponManager : MonoBehaviour
         projectileRb.AddTorque(Camera.main.transform.right * 10f, ForceMode.Impulse);
 
         if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider)) weaponCollider.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<damage>(out damage thrownDamage)) thrownDamage.enabled = true;
 
         activeWeapon = null;
         spawnedWeaponModel = null;
