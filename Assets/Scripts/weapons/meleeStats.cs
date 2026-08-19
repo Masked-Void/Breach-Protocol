@@ -46,7 +46,7 @@ public class meleeStats : weaponStats
         }
         Transform gunBarrel = weaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
-            Debug.Log("Katana says hi");
+
 
         audioManager.instance.playSFX(swingSound, swingSoundVol);
 
