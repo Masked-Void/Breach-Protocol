@@ -43,16 +43,21 @@ public class meleeStats : weaponStats
 
         if (weaponManager.instance.activeWeapon.weaponModel.CompareTag("Katana" ))
         {
-           
         }
         Transform gunBarrel = weaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
+            Debug.Log("Katana says hi");
 
         audioManager.instance.playSFX(swingSound, swingSoundVol);
 
         RaycastHit hit;
         if (Physics.Raycast(gunBarrel.position, gunBarrel.forward, out hit, attackDist))
         {
+            enemyBase eb = hit.transform.GetComponent<enemyBase>();
+            if (eb != null)
+            {
+                eb.RegisterDamageSource(weaponManager.instance.activeWeapon, weaponManager.instance.currentWeaponFromGround);
+            }
             IDamage dmg = hit.transform.GetComponent<IDamage>();
             if (dmg != null)
             {

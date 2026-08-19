@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 162886db7513b5c4694b9e2fed4e9df8, type: 3}
-  m_Name: PistolWhipper
+  m_Name: SlicenDiceII
   m_EditorClassIdentifier: Assembly-CSharp::challengeData
-  challengeID: pistol_5
-  displayName: pistol
-  description: 
-  targetWeaponID: Pistol
-  killCount: 5
-  requireGroundPickup: 0
-  rewardWeaponID: Pistol
+  challengeID: katana_20
+  displayName: Slice'n Dice II
+  description: get 20 kills with katana
+  progress: 0
+  targetWeaponID: Katana
+  killCount: 20
+  requireGroundPickup: 1
+  rewardWeaponID: Katana
