@@ -71,6 +71,7 @@ public class weaponManager : MonoBehaviour
         if (spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody rb)) rb.isKinematic = true;
         if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
         if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<damage>(out damage thrownDamage)) thrownDamage.enabled = false;
 
         string targetName = (activeWeapon is gunStats) ? "Muzzle" : "HitPoint";
         gunBarrel = FindDeepChild(spawnedWeaponModel.transform, targetName);
