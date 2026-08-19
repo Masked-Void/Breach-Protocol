@@ -24,11 +24,9 @@ public class weaponManager : MonoBehaviour
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
+            return;
         }
-        else
-        {
-            instance = this;
-        }
+        instance = this;
     }
 
     void Start()
@@ -41,6 +39,11 @@ public class weaponManager : MonoBehaviour
     {
 
         attackTimer += Time.unscaledDeltaTime;
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
     }
 
     public void equipWeapon(weaponStats newWeapon)

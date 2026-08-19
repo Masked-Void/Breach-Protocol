@@ -5,6 +5,7 @@ using UnityEngine;
 using static upgradeManager;
 using TMPro;
 using UnityEngine.UI;
+using System.ComponentModel;
 
 public class challengeManager : MonoBehaviour
 {
@@ -100,6 +101,11 @@ public class challengeManager : MonoBehaviour
             }
         }
 
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
     }
 
     void InstantiateList()
