@@ -1,7 +1,5 @@
 using UnityEngine;
-using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent))]
 public class heavyEnemy : enemyBase
 {
     [SerializeField] float pushbackForce = 2f;
@@ -9,7 +7,7 @@ public class heavyEnemy : enemyBase
     protected override void attack()
     {
         float distToPlayer = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
-        if (tryMeleeHit() && attackRange > distToPlayer)
+        if (attackRange > distToPlayer)
         {
             playerController pc = gameManager.instance.player.GetComponent<playerController>();
             if (pc != null)

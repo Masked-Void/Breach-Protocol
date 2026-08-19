@@ -16,17 +16,16 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     int currentHP;
     [Range(1, 50)][SerializeField] int maxHP;
     [Range(1, 30)][SerializeField] float faceTargetSpeed = 8f;
-    [Range(15, 180)][SerializeField] float FOV = 90f;
-    [Range(.1f, 5)][SerializeField] public float attackRate = 1.5f;
-    [Range(1, 20)][SerializeField] public float attackRange = 2f;
-    [Range(1, 20)][SerializeField] public int attackDamage = 1;
+    [Range(15, 180)][SerializeField] protected float FOV = 90f;
+    [Range(.1f, 5)] public float attackRate = 1.5f;
+    [Range(1, 20)] public float attackRange = 2f;
+    [Range(1, 20)] public int attackDamage = 1;
 
     [Header("Roaming")]
+    [SerializeField] float roamDist = 10f;
     [SerializeField] float roamWaitTime = 1.1f;
     float roamTimer;
-    public Transform roamTarget;
-    [SerializeField] float roamArriveDistance = 0.1f;
-    [SerializeField] float roamChance = .1f;
+    Vector3 startingPos;
 
     [Header("Currency")]
     int byteValue = 5;
@@ -44,16 +43,17 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     public bool willRoam = false;
     [SerializeField] GameObject roamPoint;
     protected bool isEngaged = false;
+
     [Header("Challenge")]
     protected weaponStats lastDamageWeapon;
     protected bool lastDamageFromGround;
+
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         currentHP = maxHP;
+        startingPos = transform.position;
         stoppingDistOrig = agent.stoppingDistance;
-
-        pickRoamPoint();
 
         if (model != null)
             colorOrig = model.material.color;
@@ -62,81 +62,17 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     void Update()
     {
         if (gameManager.instance != null && gameManager.instance.isPaused) return;
-        attackTimer += Time.deltaTime;
-
-        if (!willRoam)
+        attackTimer += Time.unscaledDeltaTime;
+        if (playerInTrigger && canSeePlayer())
         {
-            // Heavy / Basic: finish first roam point, then b-line player forever
-            if (roamTarget != null)
-            {
-                if (AtRoamTarget())
-                {
-                    waveManager.instance?.releaseRoamPoint(gameObject);
-                    roamTarget = null;
-                    agent.stoppingDistance = stoppingDistOrig;
-                }
-            }
-            else if (gameManager.instance?.player != null)
-            {
-                agent.SetDestination(gameManager.instance.player.transform.position);
-                playerDir = gameManager.instance.player.transform.position - transform.position;
-                faceTarget();
-                attack();
-            }
-        }
-        else if (isEngaged)
-        {
-            // Ranged: now chasing the player
-            if (gameManager.instance?.player != null)
-            {
-                agent.SetDestination(gameManager.instance.player.transform.position);
-                playerDir = gameManager.instance.player.transform.position - transform.position;
-                faceTarget();
-                attack();
-            }
         }
         else
         {
-            // Ranged: roaming � only look around while stopped at a roam point
-            roam();
-
-            if (roamTarget == null && playerInTrigger)
-            {
-                if (tryAttackFromCurrentPosition())
-                {
-                    isEngaged = true;
-                    agent.stoppingDistance = stoppingDistOrig;
-                }
-            }
+            checkRoam();
         }
     }
 
-    // Attempt to see and attack the player without changing the agent's destination.
-    // Returns true if the player was visible and an attack/face action was triggered.
-    protected bool tryAttackFromCurrentPosition()
-    {
-        if (gameManager.instance == null || gameManager.instance.player == null) return false;
-
-        Vector3 dir = gameManager.instance.player.transform.position - transform.position;
-        float angle = Vector3.Angle(dir, transform.forward);
-
-        if (angle > FOV) return false;
-
-        if (Physics.Raycast(transform.position, dir, out RaycastHit hit))
-        {
-            if (hit.collider.CompareTag("Player"))
-            {
-                playerDir = dir;
-                faceTarget();
-                attack();
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    bool canSeePlayer()
+    public virtual bool canSeePlayer()
     {
         playerDir = gameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
@@ -153,48 +89,27 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             }
         }
         agent.stoppingDistance = 0;
-        return false;
+        return true;
     }
 
-    void pickRoamPoint()
+    public virtual void checkRoam()
     {
-        if (waveManager.instance == null) return;
-
-        waveManager.instance.releaseRoamPoint(gameObject);
-
-        Transform nextRoamPoint = waveManager.instance.claimRoamPoint(gameObject);
-
-        if (nextRoamPoint == null) return;
-
-        roamTarget = nextRoamPoint;
-        agent.stoppingDistance = 0f;
-        agent.SetDestination(roamTarget.position);
+        if (agent.remainingDistance < 0.01f)
+        {
+            roamTimer += Time.deltaTime;
+            if (roamTimer > roamWaitTime) roam();
+        }
     }
 
     public virtual void roam()
     {
-        if (roamTarget != null && AtRoamTarget())
-        {
-            waveManager.instance?.releaseRoamPoint(gameObject);
-            roamTarget = null;
-            roamTimer = 0f;
-            return;
-        }
+        roamTimer = 0;
+        agent.stoppingDistance = 0;
+        Vector3 ranPos = Random.insideUnitSphere * roamDist + startingPos;
+        if (NavMesh.SamplePosition(ranPos, out NavMeshHit hit, roamDist, 1))
+            agent.SetDestination(hit.position);
+    }
 
-        if (roamTarget == null)
-        {
-            roamTimer += Time.deltaTime;
-            if (roamTimer < roamWaitTime) return;
-            roamTimer = 0f;
-            if (Random.Range(0f, 1f) > roamChance) return;
-            pickRoamPoint();
-        }
-    }
-    bool AtRoamTarget()
-    {
-        if (roamTarget == null) return false;
-        return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + roamArriveDistance;
-    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player")) playerInTrigger = true;
@@ -208,30 +123,16 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             playerInTrigger = false;
         }
     }
-    public void RegisterDamageSource(weaponStats weapon, bool fromGround)
-    {
-        lastDamageWeapon = weapon;
-        lastDamageFromGround = fromGround;
-    }
+
     public void takeDamage(int amount)
     {
         currentHP -= amount;
-
         if (gameManager.instance?.player != null)
-        {
-            if (!willRoam)
-                agent.SetDestination(gameManager.instance.player.transform.position);
-            else
-            {
-                isEngaged = true;
-                agent.stoppingDistance = stoppingDistOrig;
-            }
-        }
+            agent.SetDestination(gameManager.instance.player.transform.position);
 
         if (currentHP <= 0)
         {
             die();
-            gameManager.instance.AddBytes(byteValue);
         }
         else if (model != null)
         {
@@ -239,8 +140,22 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         }
     }
 
+    public void ForceKill()
+    {
+        die();
+    }
+
+    
+
+    public void RegisterDamageSource(weaponStats weapon, bool fromGround)
+    {
+        lastDamageWeapon = weapon;
+        lastDamageFromGround = fromGround;
+    }
+
     public virtual void die()
     {
+        gameManager.instance.AddBytes(byteValue);
         // REPORT TO CHALLENGE SYSTEM
         if (lastDamageWeapon != null)
         {
@@ -274,21 +189,6 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     protected abstract void attack();
 
-    protected bool tryMeleeHit()
-    {
-        agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
-        float dist = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
-        if (dist > attackRange || attackTimer <= attackRate) return false;
-
-        attackTimer = 0;
-        gameManager.instance.player.GetComponent<IDamage>()?.takeDamage(attackDamage);
-        return true;
-    }
-
-    public void ForceKill()
-    {
-        die();
-    }
 
     public void throwWeapon(GameObject spawnedWeaponModel, Transform pivot)
     {

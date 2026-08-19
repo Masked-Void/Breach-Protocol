@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class weaponManager : MonoBehaviour
@@ -45,8 +46,15 @@ public class weaponManager : MonoBehaviour
 
     public void equipWeapon(weaponStats newWeapon)
     {
-        if (newWeapon == null) return;
+        StartCoroutine(equip(newWeapon));
+    }
+
+    IEnumerator equip(weaponStats newWeapon)
+    {
+        if (newWeapon == null) yield return null;
         if (spawnedWeaponModel != null) throwWeapon();
+        yield return new WaitForSeconds(1.5f);
+        audioManager.instance.playEquip();
         spawnWeapon(newWeapon);
     }
 
@@ -149,25 +157,11 @@ public class weaponManager : MonoBehaviour
         if (activeWeapon != null)
         {
             gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
-        }
-        else
-        {
-            gameManager.instance.magAmmoUI.text = "0";
-        }
-
-        updateWeaponIcons();
-    }
-
-    void updateWeaponIcons()
-    {
-        if (gameManager.instance == null) return;
-
-        if (activeWeapon != null && gameManager.instance.activeWeapon != null)
-        {
             gameManager.instance.activeWeapon.sprite = activeWeapon.sprite;
         }
         else
         {
+            gameManager.instance.magAmmoUI.text = "0";
             gameManager.instance.activeWeapon.sprite = emptySlot;
         }
     }
