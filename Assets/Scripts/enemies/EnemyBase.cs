@@ -28,6 +28,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     [SerializeField] float roamArriveDistance = 0.1f;
     [SerializeField] float roamChance = .1f;
 
+    [Header("Footsteps")]
+    [SerializeField] float stepInterval = 0.5f;
+    [SerializeField] float movementThreshold = 0.1f;
+    float stepTimer;
+
     [Header("Currency")]
     int byteValue = 5;
 
@@ -63,6 +68,8 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         if (gameManager.instance != null && gameManager.instance.isPaused) return;
         attackTimer += Time.deltaTime;
+
+        HandleFootSteps();
 
         if (!willRoam)
         {
@@ -108,6 +115,29 @@ public abstract class enemyBase : MonoBehaviour, IDamage
                     agent.stoppingDistance = stoppingDistOrig;
                 }
             }
+        }
+    }
+
+    void HandleFootSteps()
+    {
+        if (agent.velocity.magnitude > movementThreshold)
+        {
+            stepTimer += Time.deltaTime;
+
+            if (stepTimer >= stepInterval)
+            {
+                stepTimer = 0f;
+
+                if (audioManager.instance != null && audioManager.instance.enemySteps != null)
+                {
+                    audioManager.instance.playSpatialSFX(audioManager.instance.enemySteps, transform.position, audioManager.instance.enemyStepsVol, 3f, 20f);
+
+                }
+            }
+        }
+        else
+        {
+            stepTimer = 0f;
         }
     }
 
