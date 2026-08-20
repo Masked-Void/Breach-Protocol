@@ -12,11 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162886db7513b5c4694b9e2fed4e9df8, type: 3}
   m_Name: PistolWhipper
   m_EditorClassIdentifier: Assembly-CSharp::challengeData
-  challengeID: pistol_5
-  displayName: Pistol Whipper I
-  description: Get kills with the pistol
-  progress: 2
-  targetWeaponID: Pistol
-  killCount: 5
+  challengesList:
+  - challengeID: pistol_5
+    displayName: Pistol whipper I
+    killCount: 5
+  - challengeID: pistol_20
+    displayName: Pistol whipper II
+    killCount: 20
+  - challengeID: pistol_100
+    displayName: Pistol whipper III
+    killCount: 100
+  description: Get kills with a picked up pistol
+  weapon: {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
   requireGroundPickup: 1
-  rewardWeaponID: Pistol
