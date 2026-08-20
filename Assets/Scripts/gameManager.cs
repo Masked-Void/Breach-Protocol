@@ -55,12 +55,12 @@ public class gameManager : MonoBehaviour
     public void AddBytes(int amount)
     {
         totalBytes += amount;
-        Debug.Log("Current Bytes: " + totalBytes);
+        //Debug.Log("Current Bytes: " + totalBytes);
     }
     public void AddFiles(int amount)
     {
         totalFiles += amount;
-        Debug.Log("Current Files: " + totalFiles);
+        //Debug.Log("Current Files: " + totalFiles);
     }
     public void SubtractBytes(int amount)
     {

@@ -16,7 +16,7 @@ public class challengeManager : MonoBehaviour
         completed.Clear();
         PlayerPrefs.DeleteKey("Challenges_Completed");
         PlayerPrefs.Save();
-        Debug.Log("Challenges reset.");
+        //Debug.Log("Challenges reset.");
     }
     void Awake()
     {
@@ -44,7 +44,7 @@ public class challengeManager : MonoBehaviour
 
             progress[c.challengeID]++;
 
-            Debug.Log($"[{c.displayName}] {progress[c.challengeID]}/{c.killCount}");
+           // Debug.Log($"[{c.displayName}] {progress[c.challengeID]}/{c.killCount}");
 
             if (progress[c.challengeID] >= c.killCount)
             {
@@ -56,7 +56,7 @@ public class challengeManager : MonoBehaviour
     void Complete(challengeData c)
     {
         completed.Add(c.challengeID);
-        Debug.Log($"Challenge Complete: {c.displayName}! Unlocked {c.rewardWeaponID}");
+        //Debug.Log($"Challenge Complete: {c.displayName}! Unlocked {c.rewardWeaponID}");
         // TODO: Unlock in your shop here (e.g., ShopManager.instance.Unlock(c.rewardWeaponID))
         Save();
     }

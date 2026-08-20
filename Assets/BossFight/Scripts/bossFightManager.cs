@@ -64,7 +64,7 @@ public class bossFightManager : MonoBehaviour
         Transform mask = findMark("Head");
         if (!mask.TryGetComponent(out shake))
         {
-            Debug.LogError("bossFightManager: No maskShake component on boss",this);
+            //Debug.LogError("bossFightManager: No maskShake component on boss",this);
         }
         
     }
@@ -145,7 +145,7 @@ public class bossFightManager : MonoBehaviour
         else
         {
             // Handle the last phase completion logic here
-            Debug.Log("Boss fight completed!");
+            //Debug.Log("Boss fight completed!");
         }
     }
 

@@ -79,7 +79,7 @@ public class lavaManager : MonoBehaviour
         // Makes sure the lava object exists
         if (lavaObject == null)
         {
-            Debug.LogError("lavaManager: lavaObject isn't assigned.", this);
+           // Debug.LogError("lavaManager: lavaObject isn't assigned.", this);
             enabled = false;
             return;
         }
@@ -91,8 +91,8 @@ public class lavaManager : MonoBehaviour
         // Makes sure they exist
         if (lowPos == null || highPos == null)
         {
-            Debug.LogError("lavaManager: '" + lavaObject.name + "' needs two children named '"
-                + lowMarkerName + "' and '" + highMarkerName + "'.", lavaObject);
+            //Debug.LogError("lavaManager: '" + lavaObject.name + "' needs two children named '"
+                //+ lowMarkerName + "' and '" + highMarkerName + "'.", lavaObject);
             enabled = false;
             return;
         }
@@ -122,8 +122,8 @@ public class lavaManager : MonoBehaviour
                 // Warning for if more than one child matches, it keeps the first one and stops looking
                 if (found != null)
                 {
-                    Debug.LogWarning("lavaManager: '" + lavaObject.name + "' has more than one child matching '"
-                        + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first.", lavaObject);
+                    //Debug.LogWarning("lavaManager: '" + lavaObject.name + "' has more than one child matching '"
+                        //+ wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first.", lavaObject);
                     break;
                 }
 

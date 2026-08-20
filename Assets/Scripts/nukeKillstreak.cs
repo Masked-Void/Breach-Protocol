@@ -19,7 +19,7 @@ public class nukeKillstreak : killstreakBase
         // Finds all currently active enemyBase components.
         enemyBase[] enemies = FindObjectsByType<enemyBase>();
 
-        int enemiesKilled = 0;
+        //int enemiesKilled = 0;
 
         foreach (enemyBase enemy in enemies)
         {
