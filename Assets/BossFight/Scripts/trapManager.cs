@@ -10,6 +10,8 @@ public struct trapSetup {
     public bool laserActive;
     [Tooltip("Index into laserArrayManager's pattern list. -1 runs no sequence")]
     public int laserPattern;
+    public bool generatePattern;
+    [Range(0f , 1f)] public float laserDifficulty;
     public int laserSpinDirection;
 
     [Header("Lava")]
@@ -62,6 +64,7 @@ public class trapManager : MonoBehaviour {
 
     // What is running so applying the same thing does nothing
     private int currentPattern = -2;
+    private int currentRecipe = -1;
     private int currentSpin = 0;
     private bool platformsUp = false;
 
@@ -167,10 +170,11 @@ public class trapManager : MonoBehaviour {
     }
 
     private void activateLasers(trapSetup setup) {
-        if (laserManager == null)
+        if (laserManager == null) {
             return;
+        }
 
-        if (!setup.laserActive) {
+        if (!setup.laserActive) { 
             if (currentPattern != -2) {
                 laserManager.stopPattern();
                 currentPattern = -2;
@@ -184,20 +188,25 @@ public class trapManager : MonoBehaviour {
             return;
         }
 
-        if (setup.laserPattern != currentPattern) {
-            if (setup.laserPattern >= 0)
+        if (setup.generatePattern) {
+            laserManager.startGeneratedPattern(setup.laserDifficulty);
+            currentPattern = -2;
+        } else if (setup.laserPattern != currentPattern) {
+            if (setup.laserPattern >= 0) {
                 laserManager.startPattern(setup.laserPattern);
-            else
+            }else {
                 laserManager.stopPattern();
+            }
 
             currentPattern = setup.laserPattern;
         }
 
         if (setup.laserSpinDirection != currentSpin) {
-            if (setup.laserSpinDirection != 0)
+            if (setup.laserSpinDirection != 0) {
                 laserManager.startSpin(setup.laserSpinDirection);
-            else
+            }else {
                 laserManager.stopRotation();
+            }
 
             currentSpin = setup.laserSpinDirection;
         }
@@ -226,35 +235,38 @@ public class trapManager : MonoBehaviour {
     }
 
 
+
     [ContextMenu("Apply defaults")]
     private void applyDefaults() {
         // Phase 1, enemies only, no hazards at all
-        p1 = makeSetup(false , -1 , 0 , false , 0f , false , false , 0f);
+        p1 = makeSetup(false , -1 , false , 0f , 0 , false , 0f , false , false , 0f);
 
         // Immune 1, lasers spin and rise and fall
-        p1_p2 = makeSetup(true , 0 , 1 , false , 0f , false , false , 0f);
+        p1_p2 = makeSetup(true , -1 , true , 0.15f , 1 , false , 0f , false , false , 0f);
 
         // Phase 2, the lasers stay active
-        p2 = makeSetup(true , 0 , 1 , false , 0f , false , false , 0f);
+        p2 = makeSetup(true , -1 , true , 0.15f , 1 , false , 0f , false , false , 0f);
 
         // Immune 2, more lasers and the platforms rise so the hold point goes up
-        p2_p3 = makeSetup(true , 1 , 1 , false , 0f , true , false , 0f);
+        p2_p3 = makeSetup(true , -1 , true , 0.5f , 1 , false , 0f , true , false , 0f);
 
         // Phase 3, more lasers again. Platforms stay up since the escalation is cumulative
-        p3 = makeSetup(true , 1 , 1 , false , 0f , true , false , 0f);
+        p3 = makeSetup(true , -1 , true , 0.5f , 1 , false , 0f , true , false , 0f);
 
         // Immune 3, platforms rise with lava behind them
-        p3_p4 = makeSetup(true , 2 , -1 , true , 0.6f , true , false , 0f);
+        p3_p4 = makeSetup(true , -1 , true , 0.8f , -1 , true , 0.6f , true , false , 0f);
 
         // Phase 4, platforms and lava rise and fall on a loop
-        p4 = makeSetup(true , 2 , -1 , true , 0.85f , true , true , 8f);
+        p4 = makeSetup(true , -1 , true , 1f , -1 , true , 0.85f , true , true , 8f);
     }
 
-    private trapSetup makeSetup(bool lasers , int pattern , int spin , bool lavaOn , float level , bool platforms , bool cycle , float interval) {
+    private trapSetup makeSetup(bool lasers , int pattern , bool generate , float difficulty , int spin , bool lavaOn , float level , bool platforms , bool cycle , float interval) {
         trapSetup setup = new trapSetup();
 
         setup.laserActive = lasers;
         setup.laserPattern = pattern;
+        setup.generatePattern = generate;
+        setup.laserDifficulty = difficulty;
         setup.laserSpinDirection = spin;
         setup.lavaActive = lavaOn;
         setup.lavaLevel = level;

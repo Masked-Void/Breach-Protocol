@@ -723,7 +723,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::bossFightManager
   boss: {fileID: 0}
   waveManager: {fileID: 6490373206905493497}
-  holdManager: {fileID: 0}
+  holdManager: {fileID: 3018863977292105427}
   trapManager: {fileID: 0}
   immuneBarObj: {fileID: 0}
   healthBar: {fileID: 0}
@@ -736,7 +736,7 @@ MonoBehaviour:
   bossFileReward: 5
   dealDamage: 0
   damageAmt: 10
-  isImmune: 0
+  isImmune: 1
   phase: 0
 --- !u!114 &6490373206905493497
 MonoBehaviour:
@@ -756,7 +756,48 @@ MonoBehaviour:
   - {fileID: 4643874062370731178, guid: 05521e55a36e58144bf91c84bcfd74b3, type: 3}
   rangedEnemyPrefabs:
   - {fileID: 7521726833427132236, guid: 63c3691f790d7874b81f32944993d6ee, type: 3}
-  roamPointTransforms: []
+  roamPointTransforms:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   spawnPointTransforms:
   - {fileID: 0}
   - {fileID: 0}
@@ -822,7 +863,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  giveWillRoamChance: 0
+  giveWillRoamChance: 60
   phaseMusic: {fileID: 0}
   immuneMusic: {fileID: 0}
   lightFlashTime: 3
@@ -965,6 +1006,7 @@ Transform:
   - {fileID: 2489071603658823392}
   - {fileID: 1893131772570796436}
   - {fileID: 4998178666483395587}
+  - {fileID: 6597600925185632170}
   - {fileID: 3206590182012816661}
   m_Father: {fileID: 4699026901257401134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1098,6 +1140,116 @@ MonoBehaviour:
   movementCurvePower: 1.35
   bpmInfluence: 1
   timeScaleSmoothing: 1
+--- !u!1 &8780413800556966254
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6597600925185632170}
+  - component: {fileID: 5824588057710585167}
+  m_Layer: 0
+  m_Name: TrapManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6597600925185632170
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8780413800556966254}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 180240876083905022}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5824588057710585167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8780413800556966254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f566b41f5af258046939fd3091a539d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::trapManager
+  laserManager: {fileID: 0}
+  lavaManager: {fileID: 0}
+  platManager: {fileID: 8773107891066057639}
+  p1:
+    laserActive: 0
+    laserPattern: 0
+    laserSpinDirection: 0
+    lavaActive: 0
+    lavaLevel: 0
+    platformsActive: 0
+    cycleTraps: 0
+    cycleInterval: 0
+  p1_p2:
+    laserActive: 1
+    laserPattern: 0
+    laserSpinDirection: 0
+    lavaActive: 0
+    lavaLevel: 0
+    platformsActive: 0
+    cycleTraps: 0
+    cycleInterval: 0
+  p2:
+    laserActive: 1
+    laserPattern: 0
+    laserSpinDirection: 0
+    lavaActive: 0
+    lavaLevel: 0
+    platformsActive: 0
+    cycleTraps: 0
+    cycleInterval: 0
+  p2_p3:
+    laserActive: 0
+    laserPattern: 0
+    laserSpinDirection: 0
+    lavaActive: 1
+    lavaLevel: 1
+    platformsActive: 1
+    cycleTraps: 0
+    cycleInterval: 0
+  p3:
+    laserActive: 1
+    laserPattern: 0
+    laserSpinDirection: 0
+    lavaActive: 0
+    lavaLevel: 0
+    platformsActive: 0
+    cycleTraps: 0
+    cycleInterval: 0
+  p3_p4:
+    laserActive: 1
+    laserPattern: 0
+    laserSpinDirection: 0
+    lavaActive: 1
+    lavaLevel: 1
+    platformsActive: 1
+    cycleTraps: 0
+    cycleInterval: 0
+  p4:
+    laserActive: 1
+    laserPattern: 0
+    laserSpinDirection: 0
+    lavaActive: 1
+    lavaLevel: 1
+    platformsActive: 1
+    cycleTraps: 1
+    cycleInterval: 10
 --- !u!1001 &2242167949748735058
 PrefabInstance:
   m_ObjectHideFlags: 0

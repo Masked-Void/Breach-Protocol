@@ -151,7 +151,7 @@ public class weaponManager : MonoBehaviour
         if (gameManager.instance == null) return;
         if (activeWeapon != null)
         {
-            gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
+            //gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
         }
         else
         {
@@ -171,7 +171,7 @@ public class weaponManager : MonoBehaviour
         }
         else
         {
-            gameManager.instance.activeWeapon.sprite = emptySlot;
+            //gameManager.instance.activeWeapon.sprite = emptySlot;
         }
     }
 }

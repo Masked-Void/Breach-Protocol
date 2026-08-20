@@ -122,7 +122,7 @@ public class bossFightManager : MonoBehaviour,IDamage {
 
 
     void updateBossUI() {
-        healthBar.fillAmount = Mathf.Clamp01(curHealth / Mathf.Max(1f , maxHealth));
+        //healthBar.fillAmount = Mathf.Clamp01(curHealth / Mathf.Max(1f , maxHealth));
     }
 
 
@@ -226,7 +226,7 @@ public class bossFightManager : MonoBehaviour,IDamage {
 
     public void phase1() {
         waveManager.startP1();
-        trapManager.startP1();
+        //trapManager.startP1();
     }
 
     public void phase2() {

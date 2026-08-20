@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // Handles a group of lasers that slide from a hidden spot out into the arena.
@@ -9,12 +11,24 @@ public class laserArray : MonoBehaviour {
     [Header("Marker Names: (Children of each laser)")]
     [SerializeField] string laserInMarkerName = "laserIn";
     [SerializeField] string laserOutMarkerName = "laserOut";
+    [SerializeField] string beamMarkerName = "beam";
 
     [Header("Deploy Motion")]
     [Tooltip("Seconds for one laser to go from fully in to fully out.")]
     [SerializeField] float deployTime = 1f;
     [Tooltip("Seconds between each laser starting its move, 0 makes them all move at once.")]
     [SerializeField] float stagger = 0.5f;
+
+    [Header("Beam")]
+    [Tooltip("How far beam reaches. Just in case there is a hole for some reason")]
+    [SerializeField] float maxBeamLength = 100f;
+    [Tooltip("What stops the beam")]
+    [SerializeField] LayerMask beamMask = ~0;
+    [Tooltip("How much damage (Stress) the beam does per tick")]
+    [SerializeField] int beamDamage = 1;
+    [Tooltip("Real seconds between ticks to account for time slow and not instant death")]
+    [SerializeField] float beamRate = .5f;
+    [SerializeField] float beamStartOffset = .1f;
 
     // Sends every laser out, staggered
     [ContextMenu("Deploy")]
@@ -33,8 +47,11 @@ public class laserArray : MonoBehaviour {
         public Transform laser;
         public Transform laserInPos;
         public Transform laserOutPos;
-        public Collider[] beams;
+        public Transform beamPos;
+        public LineRenderer beam;
         public float currentProgress;
+        public float nextTick;
+        public bool isOut;
         public Coroutine moveRoutine;
     }
 
@@ -102,11 +119,33 @@ public class laserArray : MonoBehaviour {
         }
     }
 
+    public bool getIsAnyDeployed {
+        get {
+            if (lasers== null) {
+                return false;
+            }
+
+            for (int i = 0 ;i<lasers.Length ; i++) {
+                if (lasers[i].currentProgress >= 1f) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public bool getIsLaserOut(int index) {
+        if (lasers == null || index < 0 || index >= lasers.Length) {
+            return false;
+        }
+
+        return lasers[index].isOut;
+    }
 
     private void Awake() {
         build();
     }
-
 
 
     // Grabs every child laser and sets up its markers, beams and starting state
@@ -145,8 +184,17 @@ public class laserArray : MonoBehaviour {
                 return;
             }
 
-            // Grabs every collider on the laser, true includes ones that start disabled
-            newUnit.beams = laser.GetComponentsInChildren<Collider>(true);
+            newUnit.beamPos = findMark(laser , beamMarkerName);
+
+            if (newUnit.beamPos == null) {
+                Debug.LogWarning("laserArray: '" + laser.name + "' has no child named '" + beamMarkerName + "', so it will move but never fire." , laser);
+            } else if (!newUnit.beamPos.TryGetComponent<LineRenderer>(out newUnit.beam)) {
+                Debug.LogWarning("laserArray: '" + newUnit.beamPos.name + "' has no LineRenderer." , laser);
+            }else {
+                newUnit.beam.useWorldSpace = false;
+                newUnit.beam.positionCount = 2;
+                newUnit.beam.SetPosition(0 , Vector3.zero);
+            }
 
             // Reparents the markers onto this object so they stay put when the laser moves
             newUnit.laserInPos.SetParent(transform , true);
@@ -155,7 +203,7 @@ public class laserArray : MonoBehaviour {
             lasers[i] = newUnit;
 
             // Starts with the beams off since the laser starts hidden
-            setBeam(newUnit , false);
+            setBeam(newUnit.beam , false);
         }
     }
 
@@ -196,10 +244,55 @@ public class laserArray : MonoBehaviour {
 
         for (int i = 0 ; i < lasers.Length ; i++) {
             placeLaser(lasers[i]);
+            updateBeam(lasers[i]);
         }
     }
 
 
+    void updateBeam(laserUnit laser) {
+        if (laser.beam == null || laser.beamPos == null) {
+            return;
+        }
+
+        if (laser.currentProgress < 1f) { return; }
+
+        float reach = maxBeamLength;
+
+        Vector3 rayStart = laser.beamPos.position + laser.beamPos.forward * beamStartOffset;
+
+        bool didHit = Physics.Raycast(rayStart , laser.beamPos.forward , out RaycastHit hit , maxBeamLength , beamMask , QueryTriggerInteraction.Ignore);
+
+        if (didHit && hit.collider.transform.IsChildOf(transform)) {
+            didHit = false;
+        }
+
+        if (didHit) {
+            reach = hit.distance;
+        }
+
+        float scaleZ = laser.beamPos.lossyScale.z;
+        float localReach = Mathf.Abs(scaleZ) < 0.001f ? reach : reach / scaleZ;
+
+        laser.beam.SetPosition(1 , Vector3.forward * localReach);
+
+        if (!didHit) { return; }
+
+        if (Time.unscaledTime < laser.nextTick)
+            return;
+
+        IDamage dmg = hit.collider.GetComponent<IDamage>();
+
+        if (dmg == null) {
+            dmg = hit.collider.GetComponentInParent<IDamage>();
+        }
+
+        if (dmg == null) {
+            return;
+        }
+
+        dmg.takeDamage(beamDamage);
+        laser.nextTick = Time.unscaledTime + Mathf.Max(0.05f , beamRate);
+    }
 
     // Moves a single laser by its index, for when only one needs to fire
     public void moveOne(int index , bool goOut) {
@@ -280,6 +373,8 @@ public class laserArray : MonoBehaviour {
             StopCoroutine(unit.moveRoutine);
         }
 
+        unit.isOut = goOut;
+
         float target = goOut ? 1f : 0f;
         unit.moveRoutine = StartCoroutine(moveLaser(unit , target));
     }
@@ -289,7 +384,7 @@ public class laserArray : MonoBehaviour {
     // Lerps one laser between its markers, then turns the beams back on if it made it all the way out
     IEnumerator moveLaser(laserUnit unit , float target) {
         // Beams off while moving so the laser can't hit the player on the way out
-        setBeam(unit , false);
+        setBeam(unit.beam , false);
 
         // Gets the current progress for if a routine is started while another routine is already running
         float currentStartPos = unit.currentProgress;
@@ -321,7 +416,7 @@ public class laserArray : MonoBehaviour {
 
         // Only turns the beams on when fully out, a retract leaves them off
         if (target >= 1f) {
-            setBeam(unit , true);
+            setBeam(unit.beam , true);
         }
 
         // clears routine
@@ -337,14 +432,11 @@ public class laserArray : MonoBehaviour {
     }
 
 
-
     // Turns every collider on one laser on or off
-    void setBeam(laserUnit unit , bool on) {
-        for (int i = 0 ; i < unit.beams.Length ; i++) {
-            // skips any collider that got destroyed
-            if (unit.beams[i] != null)
-                unit.beams[i].enabled = on;
-        }
+    void setBeam(LineRenderer beam , bool on) {
+        if (beam == null)
+            return;
+        beam.enabled = on;
     }
 
 }

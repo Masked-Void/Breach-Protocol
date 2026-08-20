@@ -363,7 +363,7 @@ public class bossWaveManager : MonoBehaviour {
 
 
     private void setWaveSetupBase() {
-        waveSetup[] waves = new waveSetup[] { p1 , p1_p2 , p2_p3 , p3 , p3_p4 , p4 };
+        waveSetup[] waves = new waveSetup[] { p1 , p1_p2 ,p2, p2_p3 , p3 , p3_p4 , p4 };
 
         for (int i = 0 ; i < waves.Length ; i++) {
             if (waves[i].basicEnemyPercent == 0f) {

@@ -148,7 +148,7 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
     {
         audioManager.instance.playHurt();
 
-        StartCoroutine(flashDamage());
+        //StartCoroutine(flashDamage());
 
         if (heartbeatManager.instance != null)
         {
