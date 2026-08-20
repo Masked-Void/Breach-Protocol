@@ -74,16 +74,16 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (!willRoam)
         {
             // Heavy / Basic: finish first roam point, then b-line player forever
-            if (roamTarget != null)
-            {
+           // if (roamTarget != null) removed this so melee enemies will go straight to player
+            
                 if (AtRoamTarget())
                 {
                     waveManager.instance?.releaseRoamPoint(gameObject);
                     roamTarget = null;
                     agent.stoppingDistance = stoppingDistOrig;
                 }
-            }
-            else if (gameManager.instance?.player != null)
+            
+            if (gameManager.instance?.player != null)
             {
                 agent.SetDestination(gameManager.instance.player.transform.position);
                 playerDir = gameManager.instance.player.transform.position - transform.position;
@@ -107,7 +107,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             // Ranged: roaming � only look around while stopped at a roam point
             roam();
 
-            if (roamTarget == null && playerInTrigger)
+            if (playerInTrigger) // adjusted this so Ranged enemies will attack if they run into player while on the way to roam point.
             {
                 if (tryAttackFromCurrentPosition())
                 {
