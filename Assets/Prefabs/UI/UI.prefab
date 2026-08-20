@@ -2205,7 +2205,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 185, y: -51}
+  m_AnchoredPosition: {x: 185, y: -108.44577}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7708256913499104676
@@ -2236,7 +2236,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Kills: 0 '
+  m_text: 'Bytes: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
@@ -4775,10 +4775,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::timeManager
   minTimeScale: 1.06
-  maxTimeScale: 3.5
   moveMaxTimeScale: 1.3
-  timeScaleSmoothing: 1
+  maxTimeScale: 3.5
+  movementCurvePower: 1.35
   bpmInfluence: 1
+  timeScaleSmoothing: 1
 --- !u!1 &3938048208810570155
 GameObject:
   m_ObjectHideFlags: 0
