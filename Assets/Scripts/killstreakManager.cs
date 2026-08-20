@@ -44,7 +44,7 @@ public class killstreakManager : MonoBehaviour
 
     private readonly killstreakBase[] slots = new killstreakBase[3];
     private readonly HashSet<killstreakBase> activeStreaks = new HashSet<killstreakBase>();
-    private readonly HashSet<EnemyBase> chainReactionVictims = new HashSet<EnemyBase>();
+    private readonly HashSet<enemyBase> chainReactionVictims = new HashSet<enemyBase>();
 
     private readonly Collider[] chainReactionBuffer = new Collider[64];
 
@@ -310,7 +310,7 @@ public class killstreakManager : MonoBehaviour
         return (errorRotation * normalizedDirection).normalized;
     }
 
-    public void TriggerChainReaction(EnemyBase source, int originalDamage)
+    public void TriggerChainReaction(enemyBase source, int originalDamage)
     {
         if (!chainReactionActive || source == null || originalDamage <= 0)
             return;
@@ -338,7 +338,7 @@ public class killstreakManager : MonoBehaviour
             if (hit == null)
                 continue;
 
-            EnemyBase enemy = hit.GetComponentInParent<EnemyBase>();
+            enemyBase enemy = hit.GetComponentInParent<enemyBase>();
 
             if (enemy == null || enemy == source || enemy.IsDead)
                 continue;
