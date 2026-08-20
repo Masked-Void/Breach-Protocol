@@ -6,6 +6,7 @@ public class weaponManager : MonoBehaviour
 
     [Header("Weapon")]
     public weaponStats activeWeapon;
+    [SerializeField] private weaponStats[] allWeapons;
     public Sprite emptySlot;
 
 
@@ -33,7 +34,21 @@ public class weaponManager : MonoBehaviour
 
     void Start()
     {
+        if (gameManager.instance == null || gameManager.instance.playerScript == null) return;
+
         weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
+
+        // Load saved weapon
+        string savedWeaponName = PlayerPrefs.GetString("EquippedWeapon", "");
+        if (!string.IsNullOrEmpty(savedWeaponName) && allWeapons != null)
+        {
+            weaponStats loadedWeapon = System.Array.Find(allWeapons, w => w != null && w.Name == savedWeaponName);
+            if (loadedWeapon != null)
+            {
+                activeWeapon = loadedWeapon;
+            }
+        }
+
         if (activeWeapon != null) spawnWeapon(activeWeapon);
     }
 

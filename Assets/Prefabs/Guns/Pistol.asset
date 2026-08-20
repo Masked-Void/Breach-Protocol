@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4636424b6eb53a499a9a76a72d3ba85, type: 3}
   m_Name: Pistol
   m_EditorClassIdentifier: Assembly-CSharp::gunStats
-  weaponID: Pistol
+  Name: 
   weaponModel: {fileID: 2859026477195048651, guid: 14b71ce1189a1e14eadaf89c6cab9e3d, type: 3}
   sprite: {fileID: 21300000, guid: 99796ae903d72a847bb64c1ee6b394f5, type: 3}
+  cost: 100
   attackRate: 0.1
   gunType: 0
   bullet: {fileID: 6785665511576398920, guid: 05e0818bb028d7f4c93c246ee307f7c5, type: 3}

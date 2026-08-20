@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,12 @@ public class upgradeButtonData : MonoBehaviour
     void OnEnable()
     {
         // Whenever the upgrade panel opens, auto-click this button if marked as default
+        initButton();
+    }
+
+    IEnumerator initButton()
+    {
+        yield return null;
         if (selectOnEnable)
         {
             Selected();

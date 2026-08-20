@@ -8,7 +8,6 @@ public class challengeButtonData : MonoBehaviour
     Button button;
     public GameObject lockIcon;
     [SerializeField] private bool selectOnEnable = false;
-    public weaponStats equipedWeapon;
 
     void Start()
     {
@@ -46,10 +45,5 @@ public class challengeButtonData : MonoBehaviour
     {
         if (challengeManager.instance != null && challenge != null)
             challengeManager.instance.displayWeaponChallenges(challenge);
-    }
-
-    public void equipButtonClicked()
-    {
-        weaponManager.instance.activeWeapon = equipedWeapon;
     }
 }
