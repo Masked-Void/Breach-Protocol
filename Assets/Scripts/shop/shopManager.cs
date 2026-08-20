@@ -61,7 +61,7 @@ public class shopManager : MonoBehaviour
 
         Debug.Log("Upgrade Bought: " + upgrade.UpgradeName);
         gameManager.instance.totalBytes -= upgrade.Cost;
-        upgradeManager.instance.PurchaseUpgrade(upgrade.Id);
+        //upgradeManager.instance.PurchaseUpgrade(upgrade.Id);
         upgrade.applyUpgrade();
     }
 

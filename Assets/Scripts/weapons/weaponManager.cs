@@ -78,6 +78,7 @@ public class weaponManager : MonoBehaviour
         activeWeapon = newWeapon;
 
         if (activeWeapon is gunStats gun) currentAmmo = gun.startingBullets;
+        if (activeWeapon is meleeStats melee) currentAmmo = 10_000;
 
         spawnedWeaponModel = Instantiate(activeWeapon.weaponModel, weaponHolder, false);
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
@@ -171,9 +172,12 @@ public class weaponManager : MonoBehaviour
     void updateHUD()
     {
         if (gameManager.instance == null) return;
-        
+
         if (activeWeapon != null && activeWeapon is gunStats)
+        {
+            gameManager.instance.ammoPanel.SetActive(true);
             gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
+        }
         else
             gameManager.instance.ammoPanel.SetActive(activeWeapon is gunStats);
 
@@ -193,5 +197,11 @@ public class weaponManager : MonoBehaviour
             gameManager.instance.magAmmoUI.text = "0";
             gameManager.instance.activeWeapon.sprite = emptySlot;
         }
+    }
+
+    [ContextMenu("Reset Saved Weapon")]
+    public void ResetChallenges()
+    {
+        PlayerPrefs.DeleteKey("EquippedWeapon");
     }
 }

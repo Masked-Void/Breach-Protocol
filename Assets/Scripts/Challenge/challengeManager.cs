@@ -12,7 +12,7 @@ public class challengeManager : MonoBehaviour
     public static challengeManager instance { get; private set; }
 
     [System.Serializable]
-    public class ChallengeUISlot
+    public struct ChallengeUISlot
     {
         public GameObject slotRoot;
         public TextMeshProUGUI challengeName;
@@ -26,17 +26,16 @@ public class challengeManager : MonoBehaviour
     public Button actionButton;
     public TextMeshProUGUI actionText;
 
-    [SerializeField] private ChallengeUISlot[] challengeSlots;
-    [SerializeField] private challengeData[] challenges;
+    [SerializeField] ChallengeUISlot[] challengeSlots;
+    [SerializeField] challengeData[] challenges;
 
-    private challengeData currentlySelectedChallenge;
+    challengeData currentlySelectedChallenge;
 
-    private Dictionary<string, int> progress = new Dictionary<string, int>();
-    private Dictionary<string, bool> completed = new Dictionary<string, bool>();
-    private Dictionary<string, bool> purchasedWeapons = new Dictionary<string, bool>();
+    Dictionary<string, int> progress = new Dictionary<string, int>();
+    Dictionary<string, bool> completed = new Dictionary<string, bool>();
+    HashSet<string> purchasedWeapons = new HashSet<string>();
+    Dictionary<weaponStats, List<challengeData>> weaponChallengeLookup = new Dictionary<weaponStats, List<challengeData>>();
 
-    public saveProgressSystemNative saveProg = new saveProgressSystemNative();
-    public saveCompleteSystemNative saveComp = new saveCompleteSystemNative();
 
     void Awake()
     {
@@ -47,9 +46,8 @@ public class challengeManager : MonoBehaviour
         }
         instance = this;
 
-        Load();
         InstantiateList();
-        Save();
+        LoadData();
     }
 
     void OnDestroy()
@@ -57,86 +55,75 @@ public class challengeManager : MonoBehaviour
         if (instance == this) instance = null;
     }
 
-    [ContextMenu("Reset Challenges")]
-    void ResetChallenges()
-    {
-        progress.Clear();
-        completed.Clear();
-        purchasedWeapons.Clear();
-        InstantiateList();
-        Save();
-        Debug.Log("Challenges reset.");
-    }
-
     void InstantiateList()
     {
+        weaponChallengeLookup.Clear();
         if (challenges == null) return;
 
         foreach (var cData in challenges)
         {
-            if (cData == null || cData.challengesList == null) continue;
+            if (cData == null || cData.weapon == null) continue;
 
-            foreach (var subchallenge in cData.challengesList)
+            if (!weaponChallengeLookup.TryGetValue(cData.weapon, out var list))
             {
-                if (string.IsNullOrEmpty(subchallenge.challengeID)) continue;
-
-                if (!progress.ContainsKey(subchallenge.challengeID))
-                    progress[subchallenge.challengeID] = 0;
-
-                if (!completed.ContainsKey(subchallenge.challengeID))
-                    completed[subchallenge.challengeID] = false;
+                list = new List<challengeData>();
+                weaponChallengeLookup[cData.weapon] = list;
             }
-            if (cData.weapon != null && !purchasedWeapons.ContainsKey(cData.weapon.Name))
-            {
-                purchasedWeapons[cData.weapon.Name] = false;
-            }
+            list.Add(cData);
         }
     }
+
     public bool IsComplete(string id)
     {
-        return completed.TryGetValue(id, out bool done) && done;
+        return !string.IsNullOrEmpty(id) && completed.TryGetValue(id, out bool done) && done;
     }
 
     public int GetProgress(string id)
     {
-        return progress.TryGetValue(id, out int p) ? p : 0;
+        return !string.IsNullOrEmpty(id) && progress.TryGetValue(id, out int p) ? p : 0;
     }
 
     public bool IsWeaponBought(weaponStats weapon)
     {
-        if (weapon == null) return false;
-        return purchasedWeapons.TryGetValue(weapon.Name, out bool bought) && bought;
+        return weapon != null && !string.IsNullOrEmpty(weapon.Name) && purchasedWeapons.Contains(weapon.Name);
     }
 
     public void ReportKill(weaponStats weapon, bool fromGround)
     {
-        if (weapon == null || challenges == null || challenges.Length == 0) return;
+        if (weapon == null || !weaponChallengeLookup.TryGetValue(weapon, out var associatedChallenges)) return;
+        bool hasProgressChanged = false;
 
-        foreach (var cData in challenges)
+        foreach (var cData in associatedChallenges)
         {
             if (cData == null || cData.challengesList == null) continue;
-            if (cData.weapon != weapon) continue;
             if (cData.requireGroundPickup && !fromGround) continue;
 
             foreach (var subchallenge in cData.challengesList)
             {
-                if (IsComplete(subchallenge.challengeID)) continue;
-                int newProgress = GetProgress(subchallenge.challengeID) + 1;
-                progress[subchallenge.challengeID] = newProgress;
+                string id = subchallenge.challengeID;
+                if (string.IsNullOrEmpty(id) || IsComplete(id)) continue;
+
+                int newProgress = GetProgress(id) + 1;
+                progress[id] = newProgress;
+                PlayerPrefs.SetInt("Prog_" + id, newProgress);
 
                 if (newProgress >= subchallenge.killCount)
-                    completed[subchallenge.challengeID] = true;
+                {
+                    completed[id] = true;
+                    PlayerPrefs.SetInt("Comp_" + id, 1);
+                }
+
+                hasProgressChanged = true;
             }
         }
-
-        Save();
+        if (hasProgressChanged) PlayerPrefs.Save();
     }
 
     // ---------- UI ----------
 
     public void displayWeaponChallenges(challengeData weaponChallenge)
     {
-        if (weaponChallenge == null || weaponChallenge.challengesList == null) return;
+        if (weaponChallenge == null) return;
         currentlySelectedChallenge = weaponChallenge;
 
         bool allComplete = areAllChallengesComplete(weaponChallenge);
@@ -158,13 +145,15 @@ public class challengeManager : MonoBehaviour
         }
 
         if (statsPanel != null) statsPanel.SetActive(allComplete);
+        if (weaponName != null && weaponChallenge.weapon != null) weaponName.text = weaponChallenge.weapon.Name;
+        if (description != null) description.text = weaponChallenge.description;
 
-        if (weaponName != null && weaponChallenge.weapon != null)
-            weaponName.text = weaponChallenge.weapon.Name;
+        updateActionButton(weaponChallenge, isBought, isEquipped);
+        displayProgressUI(weaponChallenge);
+    }
 
-        if (description != null)
-            description.text = weaponChallenge.description;
-
+    void updateActionButton(challengeData weaponChallenge, bool isBought, bool isEquipped)
+    {
         if (actionButton != null && actionText != null)
         {
             actionButton.onClick.RemoveAllListeners();
@@ -174,16 +163,16 @@ public class challengeManager : MonoBehaviour
                 int cost = weaponChallenge.weapon != null ? weaponChallenge.weapon.cost : 0;
                 actionText.text = $"Buy ({cost})";
 
-                bool canAfford = upgradeManager.instance != null && upgradeManager.instance.files >= cost;
-                actionButton.interactable = canAfford;
+                int currentFiles = upgradeManager.instance != null ? upgradeManager.instance.files : 0;
+                bool canAfford = currentFiles >= cost; ;
 
+                actionButton.interactable = canAfford;
                 actionButton.onClick.AddListener(() => buyWeapon(weaponChallenge));
             }
             else if (!isEquipped)
             {
                 actionText.text = "Equip";
                 actionButton.interactable = true;
-
                 actionButton.onClick.AddListener(() => equipWeapon(weaponChallenge));
             }
             else
@@ -192,16 +181,16 @@ public class challengeManager : MonoBehaviour
                 actionButton.interactable = false;
             }
         }
-        displayProgressUI(weaponChallenge);
-
     }
 
     void displayProgressUI(challengeData weaponChallenge)
     {
+        if (challengeSlots == null || weaponChallenge.challengesList == null) return;
+
         // Display progress slots
         for (int i = 0; i < challengeSlots.Length; i++)
         {
-            if (challengeSlots[i] == null || challengeSlots[i].slotRoot == null) continue;
+            if (challengeSlots[i].slotRoot == null) continue;
 
             if (i < weaponChallenge.challengesList.Length)
             {
@@ -226,31 +215,39 @@ public class challengeManager : MonoBehaviour
         }
     }
 
-    private void buyWeapon(challengeData challenge)
+    void buyWeapon(challengeData challenge)
     {
+        if (audioManager.instance != null)
+            audioManager.instance.playButtonClick();
+
         if (challenge == null || challenge.weapon == null) return;
 
         if (upgradeManager.instance != null && upgradeManager.instance.files >= challenge.weapon.cost)
         {
             upgradeManager.instance.files -= challenge.weapon.cost;
-            purchasedWeapons[challenge.weapon.Name] = true;
-            Save();
+
+            purchasedWeapons.Add(challenge.weapon.Name);
+            PlayerPrefs.SetInt("Bought_" + challenge.weapon.Name, 1);
+
+            if (upgradeManager.instance != null) upgradeManager.instance.SaveUpgrades();
+            PlayerPrefs.Save();
 
             displayWeaponChallenges(challenge);
         }
     }
 
-    private void equipWeapon(challengeData challenge)
+    void equipWeapon(challengeData challenge)
     {
+        if (audioManager.instance != null)
+            audioManager.instance.playButtonClick();
+
         if (challenge == null || challenge.weapon == null) return;
 
         PlayerPrefs.SetString("EquippedWeapon", challenge.weapon.Name);
         PlayerPrefs.Save();
 
         if (weaponManager.instance != null)
-        {
             weaponManager.instance.activeWeapon = challenge.weapon;
-        }
 
         // Refresh UI so previous weapon returns to "Equip" state and current switches to "Equipped"
         displayWeaponChallenges(challenge);
@@ -258,50 +255,78 @@ public class challengeManager : MonoBehaviour
 
     public bool areAllChallengesComplete(challengeData weaponChallenge)
     {
-        if (weaponChallenge == null || weaponChallenge.challengesList.Length == 0) return true;
+        if (weaponChallenge == null || weaponChallenge.challengesList == null || weaponChallenge.challengesList.Length == 0) return true;
         foreach (var challenge in weaponChallenge.challengesList)
-        {
             if (GetProgress(challenge.challengeID) < challenge.killCount) return false;
-        }
+
         return true;
     }
 
-    void Save()
+    void LoadData()
     {
-        saveProg.progressDict = progress;
-        saveProg.saveWithJsonUtility();
+        progress.Clear();
+        completed.Clear();
+        purchasedWeapons.Clear();
 
-        saveComp.completeDict = completed;
-        saveComp.saveWithJsonUtility();
+        if (challenges == null) return;
 
-        // Save purchased weapons
-        foreach (var pair in purchasedWeapons)
+        foreach (var cData in challenges)
         {
-            PlayerPrefs.SetInt("Bought_" + pair.Key, pair.Value ? 1 : 0);
-        }
+            if (cData == null) continue;
 
-        PlayerPrefs.Save();
+            if (cData.challengesList != null)
+            {
+                foreach (var sub in cData.challengesList)
+                {
+                    if (string.IsNullOrEmpty(sub.challengeID)) continue;
+
+                    int progValue = PlayerPrefs.GetInt("Prog_" + sub.challengeID, 0);
+                    bool compValue = PlayerPrefs.GetInt("Comp_" + sub.challengeID, 0) == 1;
+
+                    progress[sub.challengeID] = progValue;
+                    completed[sub.challengeID] = compValue;
+                }
+            }
+
+            if (cData.weapon != null && !string.IsNullOrEmpty(cData.weapon.Name))
+            {
+                if (PlayerPrefs.GetInt("Bought_" + cData.weapon.Name, 0) == 1)
+                {
+                    purchasedWeapons.Add(cData.weapon.Name);
+                }
+            }
+        }
     }
 
-    void Load()
+    [ContextMenu("Reset Challenges")]
+    public void ResetChallenges()
     {
-        saveProg.loadWithJsonUtility();
-        progress = saveProg.progressDict ?? new Dictionary<string, int>();
-
-        saveComp.loadWithJsonUtility();
-        completed = saveComp.completeDict ?? new Dictionary<string, bool>();
-
-        // Load purchased weapons
-        purchasedWeapons.Clear();
         if (challenges != null)
         {
             foreach (var cData in challenges)
             {
-                if (cData != null && cData.weapon != null)
+                if (cData == null) continue;
+
+                if (cData.challengesList != null)
                 {
-                    purchasedWeapons[cData.weapon.Name] = PlayerPrefs.GetInt("Bought_" + cData.weapon.Name, 0) == 1;
+                    foreach (var sub in cData.challengesList)
+                    {
+                        if (string.IsNullOrEmpty(sub.challengeID)) continue;
+                        PlayerPrefs.DeleteKey("Prog_" + sub.challengeID);
+                        PlayerPrefs.DeleteKey("Comp_" + sub.challengeID);
+                    }
+                }
+
+                if (cData.weapon != null && !string.IsNullOrEmpty(cData.weapon.Name))
+                {
+                    PlayerPrefs.DeleteKey("Bought_" + cData.weapon.Name);
                 }
             }
         }
+
+        PlayerPrefs.Save();
+        LoadData();
+        if (currentlySelectedChallenge != null) displayWeaponChallenges(currentlySelectedChallenge);
+        Debug.Log("Challenges reset successfully.");
     }
 }

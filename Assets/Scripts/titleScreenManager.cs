@@ -24,8 +24,6 @@ public class titleScreenManager : MonoBehaviour
     [SerializeField] private GameObject titleMenuPanel;
     [SerializeField] private GameObject soundMenu;
     [SerializeField] private Slider progressBar;
-    [SerializeField] private GameObject unlockShop;
-    CanvasGroup canvasGroup;
 
     void Start()
     {
@@ -33,7 +31,6 @@ public class titleScreenManager : MonoBehaviour
         switchToHome();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        canvasGroup = titleMenuPanel.GetComponent<CanvasGroup>();
 
         audioManager.instance.playTitleScreenSound();
     }
@@ -90,15 +87,6 @@ public class titleScreenManager : MonoBehaviour
 
     private IEnumerator LoadSceneAsync(String levelName)
     {
-        /*if (canvasGroup != null)
-        {
-            while (canvasGroup.alpha > 0f)
-            {
-                canvasGroup.alpha -= Time.deltaTime * 2f;
-                yield return null;
-            }
-        }*/
-
         deactivateAllPanels();
 
         if (progressBar != null)
@@ -137,23 +125,11 @@ public class titleScreenManager : MonoBehaviour
     public void quitGame()
     {
         audioManager.instance.playButtonClick();
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
-    }
-
-    public void openUnlocks()
-    {
-        audioManager.instance.playButtonClick();
-        deactivateAllSettings();
-        unlockShop.SetActive(true);
-    }
-
-    public void closeUnlocks()
-    {
-        unlockShop.SetActive(false);
+        #else
+            Application.Quit();
+        #endif
     }
 
     public void switchToHome()
@@ -201,6 +177,5 @@ public class titleScreenManager : MonoBehaviour
     private void deactivateAllSettings()
     {
         soundMenu.SetActive(false);
-        unlockShop.SetActive(false);
     }
 }

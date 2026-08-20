@@ -17,7 +17,7 @@ public class upgradeButtonData : MonoBehaviour
     void OnEnable()
     {
         // Whenever the upgrade panel opens, auto-click this button if marked as default
-        initButton();
+        StartCoroutine(initButton());
     }
 
     IEnumerator initButton()
@@ -32,7 +32,10 @@ public class upgradeButtonData : MonoBehaviour
     // Handle weapon selection
     void Selected()
     {
+        if (audioManager.instance != null)
+            audioManager.instance.playButtonClick();
+            
         if (upgradeManager.instance != null && upgrade != null)
-            upgradeManager.instance.displayUpgrades(upgrade.Id);
+            upgradeManager.instance.displayUpgrades(upgrade);
     }
 }
