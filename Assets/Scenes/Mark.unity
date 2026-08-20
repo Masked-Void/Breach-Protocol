@@ -1016,14 +1016,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
-    - target: {fileID: 3158528093294607250, guid: f6cac081b8b96d349922d8b995d5194b, type: 3}
-      propertyPath: enemySteps
-      value: 
-      objectReference: {fileID: 8300000, guid: a67715f73f72b164eba6f2c4f59cfee5, type: 3}
-    - target: {fileID: 3158528093294607250, guid: f6cac081b8b96d349922d8b995d5194b, type: 3}
-      propertyPath: enemyStepsVol
-      value: 0.26
-      objectReference: {fileID: 0}
     - target: {fileID: 3570559560683553528, guid: f6cac081b8b96d349922d8b995d5194b, type: 3}
       propertyPath: player
       value: 
@@ -1032,10 +1024,6 @@ PrefabInstance:
       propertyPath: playerScript
       value: 
       objectReference: {fileID: 1045677935}
-    - target: {fileID: 8469982996786760396, guid: f6cac081b8b96d349922d8b995d5194b, type: 3}
-      propertyPath: roamPointTransforms.Array.size
-      value: 59
-      objectReference: {fileID: 0}
     - target: {fileID: 8469982996786760396, guid: f6cac081b8b96d349922d8b995d5194b, type: 3}
       propertyPath: 'roamPointTransforms.Array.data[0]'
       value: 
@@ -1273,10 +1261,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 266167369}
     - target: {fileID: 8469982996786760396, guid: f6cac081b8b96d349922d8b995d5194b, type: 3}
-      propertyPath: 'roamPointTransforms.Array.data[59]'
-      value: 
-      objectReference: {fileID: 266167369}
-    - target: {fileID: 8469982996786760396, guid: f6cac081b8b96d349922d8b995d5194b, type: 3}
       propertyPath: 'spawnPointTransforms.Array.data[0]'
       value: 
       objectReference: {fileID: 537227441}
@@ -1397,8 +1381,7 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 526294643}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 5503631889333872287, guid: f6cac081b8b96d349922d8b995d5194b, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6cac081b8b96d349922d8b995d5194b, type: 3}

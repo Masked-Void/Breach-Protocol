@@ -76,6 +76,10 @@ PrefabInstance:
       propertyPath: heavyWeaponPrefabs.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3136144643366654131, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: roamPointTransforms.Array.size
+      value: 59
+      objectReference: {fileID: 0}
     - target: {fileID: 5398059572705969386, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_fontColor.b
       value: 0.19215688
@@ -199,21 +203,22 @@ PrefabInstance:
     - target: {fileID: 8492635337672450541, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: enemySteps
       value: 
-      objectReference: {fileID: 8300000, guid: e2a29f4ad523d3742b9a5342cbbe73d5, type: 3}
+      objectReference: {fileID: 8300000, guid: a67715f73f72b164eba6f2c4f59cfee5, type: 3}
     - target: {fileID: 8492635337672450541, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: enemyStepsVol
-      value: 0.096
+      value: 0.26
       objectReference: {fileID: 0}
     - target: {fileID: 8525187160557472781, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Name
-      value: UI Variant
+      value: UI Mark
       objectReference: {fileID: 0}
     - target: {fileID: 8975253666997279717, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 1328115815631699168, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
