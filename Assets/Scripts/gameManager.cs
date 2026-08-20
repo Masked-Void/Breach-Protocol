@@ -101,7 +101,7 @@ public class gameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       // bytesText.text = "Bytes: " + totalBytes.ToString();
+        bytesText.text = "Bytes: " + totalBytes.ToString();
         if (FindAnyObjectByType<playerInteraction>().shopOpen)
         {
             menuActive = shopUI;
@@ -129,11 +129,11 @@ public class gameManager : MonoBehaviour
         }
 
 
-        //updateUI();
+        updateUI();
 
         if (weaponManager.instance != null && weaponManager.instance.activeWeapon != null)
         {
-            //magAmmoUI.text = weaponManager.instance.getCurrentAmmo().ToString();
+            magAmmoUI.text = weaponManager.instance.getCurrentAmmo().ToString();
         }
     }
 
@@ -221,21 +221,24 @@ public class gameManager : MonoBehaviour
     {
         if (waveManager.instance == null) return;
 
-        waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
-        StartCoroutine(AnimateWaveText());
+        if (waveCounter != null) {
+            waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
+            StartCoroutine(AnimateWaveText());
 
-        killCounter.text = "Kills: " + currentKill;
+            killCounter.text = "Kills: " + currentKill;
+        }
 
-        if (waveManager.instance.isWaitingForNextWave())
-        {
+        if (waveManager.instance.isWaitingForNextWave()) {
             int secondsLeft = waveManager.instance.getSecondsUntilNextWave();
 
-            waveCountdownText.gameObject.SetActive(true);
-            waveCountdown.text = "" + secondsLeft;
-        }
-        else
-        {
-            waveCountdownText.gameObject.SetActive(false);
+            if (waveCountdownText != null) {
+                waveCountdownText.gameObject.SetActive(true);
+                waveCountdown.text = "" + secondsLeft;
+            }
+        } else {
+            if (waveCountdown != null) {
+                waveCountdownText.gameObject.SetActive(false);
+            }
         }
     }
 
