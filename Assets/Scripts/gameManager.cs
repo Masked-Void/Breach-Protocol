@@ -48,6 +48,7 @@ public class gameManager : MonoBehaviour
     public GameObject damageFlashUI;
 
     [Header("Weapon UI")]
+    public GameObject ammoPanel;
     public TextMeshProUGUI magAmmoUI;
     public TextMeshProUGUI totalAmmoUI;
     public Image activeWeapon;

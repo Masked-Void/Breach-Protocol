@@ -28,7 +28,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     Vector3 startingPos;
 
     [Header("Currency")]
-    int byteValue = 5;
+    [SerializeField] int byteValue = 5;
 
 
     protected bool playerInTrigger;
@@ -174,7 +174,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         Destroy(gameObject);
     }
 
-    IEnumerator FlashBlack()
+    IEnumerator FlashBlack() //when enemy gets damaged they flash black
     {
         model.material.color = Color.black;
         yield return new WaitForSecondsRealtime(.1f);

@@ -7,6 +7,7 @@ public class weaponManager : MonoBehaviour
 
     [Header("Weapon")]
     public weaponStats activeWeapon;
+    [SerializeField] private weaponStats[] allWeapons;
     public Sprite emptySlot;
 
 
@@ -34,7 +35,21 @@ public class weaponManager : MonoBehaviour
 
     void Start()
     {
+        if (gameManager.instance == null || gameManager.instance.playerScript == null) return;
+
         weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
+
+        // Load saved weapon
+        string savedWeaponName = PlayerPrefs.GetString("EquippedWeapon", "");
+        if (!string.IsNullOrEmpty(savedWeaponName) && allWeapons != null)
+        {
+            weaponStats loadedWeapon = System.Array.Find(allWeapons, w => w != null && w.Name == savedWeaponName);
+            if (loadedWeapon != null)
+            {
+                activeWeapon = loadedWeapon;
+            }
+        }
+
         if (activeWeapon != null) spawnWeapon(activeWeapon);
     }
 
@@ -156,9 +171,21 @@ public class weaponManager : MonoBehaviour
     void updateHUD()
     {
         if (gameManager.instance == null) return;
-        if (activeWeapon != null)
-        {
+        
+        if (activeWeapon != null && activeWeapon is gunStats)
             gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
+        else
+            gameManager.instance.ammoPanel.SetActive(activeWeapon is gunStats);
+
+        updateWeaponIcons();
+    }
+
+    void updateWeaponIcons()
+    {
+        if (gameManager.instance == null) return;
+
+        if (activeWeapon != null && gameManager.instance.activeWeapon != null)
+        {
             gameManager.instance.activeWeapon.sprite = activeWeapon.sprite;
         }
         else

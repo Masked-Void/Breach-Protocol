@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 162886db7513b5c4694b9e2fed4e9df8, type: 3}
-  m_Name: PepperSpray
+  m_Name: SlicenDice
   m_EditorClassIdentifier: Assembly-CSharp::challengeData
   challengesList:
-  - challengeID: shotgun_5
-    displayName: Pepper Spray I
+  - challengeID: katana_5
+    displayName: Slice'n'Dice I
     killCount: 5
-  - challengeID: shotgun_20
-    displayName: Pepper Spray II
+  - challengeID: katana_20
+    displayName: Slice'n'Dice II
     killCount: 20
-  - challengeID: shotgun_100
-    displayName: Pepper Spray III
+  - challengeID: katana_100
+    displayName: Slice'n'Dice III
     killCount: 100
-  description: Get kills with a picked up shotgun
-  weapon: {fileID: 11400000, guid: 390a74157b59cac4e8536a3f2d61b51c, type: 2}
+  description: Get kills with a picked up katana
+  weapon: {fileID: 11400000, guid: 763d647bb6b08d84ead259df0be17567, type: 2}
   requireGroundPickup: 1
