@@ -200,7 +200,7 @@ public class weaponManager : MonoBehaviour
     }
 
     [ContextMenu("Reset Saved Weapon")]
-    public void ResetChallenges()
+    public void ResetWeapon()
     {
         PlayerPrefs.DeleteKey("EquippedWeapon");
     }

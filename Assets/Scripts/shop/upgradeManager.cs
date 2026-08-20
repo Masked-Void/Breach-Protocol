@@ -117,4 +117,12 @@ public class upgradeManager : MonoBehaviour
         purchasedUpgrades = data.purchased ?? new List<string>();
         files = data.files;
     }
+
+    [ContextMenu("Reset Saved Upgrades")]
+    public void ResetUpgrades()
+    {
+        PlayerPrefs.DeleteKey("UnlockedUpgrades");
+        unlockedUpgrades.Clear();
+        purchasedUpgrades.Clear();
+    }
 }
