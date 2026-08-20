@@ -228,7 +228,6 @@ public class challengeManager : MonoBehaviour
 
     private void buyWeapon(challengeData challenge)
     {
-        Debug.LogError("Buying...");
         if (challenge == null || challenge.weapon == null) return;
 
         if (upgradeManager.instance != null && upgradeManager.instance.files >= challenge.weapon.cost)
@@ -243,7 +242,6 @@ public class challengeManager : MonoBehaviour
 
     private void equipWeapon(challengeData challenge)
     {
-        Debug.LogError("Equiping...");
         if (challenge == null || challenge.weapon == null) return;
 
         PlayerPrefs.SetString("EquippedWeapon", challenge.weapon.Name);

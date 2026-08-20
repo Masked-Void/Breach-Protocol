@@ -161,14 +161,11 @@ public class weaponManager : MonoBehaviour
     void updateHUD()
     {
         if (gameManager.instance == null) return;
-        if (activeWeapon != null)
-        {
+        
+        if (activeWeapon != null && activeWeapon is gunStats)
             gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
-        }
         else
-        {
-            gameManager.instance.magAmmoUI.text = "0";
-        }
+            gameManager.instance.ammoPanel.SetActive(activeWeapon is gunStats);
 
         updateWeaponIcons();
     }

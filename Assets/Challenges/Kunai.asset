@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162886db7513b5c4694b9e2fed4e9df8, type: 3}
+  m_Name: Kunai
+  m_EditorClassIdentifier: Assembly-CSharp::challengeData
+  challengesList:
+  - challengeID: kunai_5
+    displayName: Bulls Eye I
+    killCount: 5
+  - challengeID: kunai_20
+    displayName: Bulls Eye II
+    killCount: 20
+  - challengeID: kunai_100
+    displayName: Bulls Eye III
+    killCount: 100
+  description: Get kills with a picked up kunai
+  weapon: {fileID: 11400000, guid: ef7a53a17b68b474aa996e4a59d58c49, type: 2}
+  requireGroundPickup: 1

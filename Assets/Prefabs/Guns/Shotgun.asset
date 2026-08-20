@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4636424b6eb53a499a9a76a72d3ba85, type: 3}
   m_Name: Shotgun
   m_EditorClassIdentifier: Assembly-CSharp::gunStats
-  Name: 
+  Name: Shotgun
   weaponModel: {fileID: 1667066249292612647, guid: 23420cd4a077aa1438142986260b9f4f, type: 3}
   sprite: {fileID: 21300000, guid: 45e87e289f681c84698ace4de26ed5bd, type: 3}
   cost: 700

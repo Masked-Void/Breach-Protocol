@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7028459208233928008}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.6849365, y: 11.08783, z: -6.33192}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -44,6 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e428cbe05d63774b8f700a25e0d553f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::weaponManager
-  activeWeapon: {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
+  activeWeapon: {fileID: 0}
+  allWeapons:
+  - {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
+  - {fileID: 11400000, guid: 390a74157b59cac4e8536a3f2d61b51c, type: 2}
+  - {fileID: 11400000, guid: 763d647bb6b08d84ead259df0be17567, type: 2}
+  - {fileID: 11400000, guid: ef7a53a17b68b474aa996e4a59d58c49, type: 2}
+  - {fileID: 11400000, guid: 5769f53383e30824aba5454d741e75d8, type: 2}
   emptySlot: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
   currentWeaponFromGround: 0

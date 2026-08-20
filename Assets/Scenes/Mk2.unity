@@ -713,54 +713,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: challenges.Array.size
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[1]'
-      value: 
-      objectReference: {fileID: 11400000, guid: b73464a9757d18545b9d6a9a4f6d509f, type: 2}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[2]'
-      value: 
-      objectReference: {fileID: 11400000, guid: a8045c63f3bb23f429bf474d1e828aa4, type: 2}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[3]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 37f6c5d1b435b96439af4c8284b51a66, type: 2}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[4]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 399e5832e66d1b345bb85d2b20232dd4, type: 2}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[5]'
-      value: 
-      objectReference: {fileID: 11400000, guid: c5a1476adfd1f734fa1b16d3734bea2a, type: 2}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[6]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 3d9db04893625d2468eeb3a2b012f6f2, type: 2}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[7]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 866843d4e240c6246a067cfc81421f9d, type: 2}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[8]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 6e72b944dcd03324e8c9d953ef5e7196, type: 2}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[9]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 4195367342290cb48834db5bcd45969c, type: 2}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[10]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 20c042c30c9b3d941b5430d08c15654f, type: 2}
-    - target: {fileID: 1663185637359858990, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-      propertyPath: 'challenges.Array.data[11]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 6b67319d44bfd1e4bb354798e0ca276d, type: 2}
     - target: {fileID: 3136144643366654131, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: 'roamPointTransforms.Array.data[0]'
       value: 
