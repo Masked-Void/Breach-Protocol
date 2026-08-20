@@ -1,0 +1,30 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class upgradeButtonData : MonoBehaviour
+{
+    public upgradeData upgrade;
+    Button button;
+    [SerializeField] private bool selectOnEnable = false;
+
+    void Awake()
+    {
+        button = GetComponent<Button>();
+        button.onClick.AddListener(Selected);
+    }
+
+    void OnEnable()
+    {
+        // Whenever the challenge panel opens, auto-click this button if marked as default
+        if (selectOnEnable)
+        {
+            Selected();
+        }
+    }
+
+    void Selected()
+    {
+        if (upgradeManager.instance != null && upgrade != null)
+            upgradeManager.instance.displayUpgrades(upgrade.Id);
+    }
+}

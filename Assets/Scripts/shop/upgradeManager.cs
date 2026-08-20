@@ -1,14 +1,29 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class upgradeManager : MonoBehaviour
 {
     public static upgradeManager instance;
-
+    public upgradeData[] upgrades;
+    public TextMeshProUGUI upgradeName;
+    public TextMeshProUGUI upgradeDescription;
+    public TextMeshProUGUI upgradeCost;
     public List<string> unlockedUpgrades = new List<string>();
     public List<string> purchasedUpgrades = new List<string>();
     public int files;
-
+   public void  displayUpgrades(string id)
+    {
+        foreach (var upgrade in upgrades)
+        {
+            if (upgrade.Id == id)
+            {
+                upgradeName.text = upgrade.UpgradeName;
+                upgradeDescription.text = upgrade.Description;
+                upgradeCost.text = ""+ upgrade.Cost;
+            }
+        }
+    }
     void Awake()
     {
         instance = this;

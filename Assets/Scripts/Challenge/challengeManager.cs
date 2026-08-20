@@ -28,51 +28,6 @@ public class challengeManager : MonoBehaviour
     public saveProgressSystemNative saveProg = new saveProgressSystemNative();
     public saveCompleteSystemNative saveComp = new saveCompleteSystemNative();
 
-    [ContextMenu("Reset Challenges")]
-    void ResetChallenges()
-    {
-        progress.Clear();
-        completed.Clear();
-        Save();
-        Debug.Log("Challenges reset.");
-    }
-    public void displayWeaponChallenges(challengeData[] weaponChallenges)
-    {
-        if (weaponChallenges == null || weaponChallenges.Length == 0) return;
-
-        if (weaponName != null)
-        {
-            weaponName.text = weaponChallenges[0].targetWeaponID;
-        }
-
-        for (int i = 0; i < challengeSlots.Length; i++)
-        {
-            if (i < weaponChallenges.Length)
-            {
-                // Show slot & populate data
-                challengeSlots[i].slotRoot.SetActive(true);
-
-                var challenge = weaponChallenges[i];
-                int currentProg = GetProgress(challenge.challengeID);
-                float progressRatio = challenge.killCount > 0 ? (float)currentProg / challenge.killCount : 0f;
-
-                if (challengeSlots[i].challengeName != null)
-                {
-                    challengeSlots[i].challengeName.text = challenge.displayName;
-                }
-
-                if (challengeSlots[i].progressBar != null)
-                {
-                    challengeSlots[i].progressBar.fillAmount = Mathf.Clamp01(progressRatio);
-                }
-            }
-            else
-            {
-                // Hide slot if the weapon has fewer than 3 challenges
-                challengeSlots[i].slotRoot.SetActive(false);
-            }
-        }
-    }
     void Awake()
     {
         if (instance != null && instance != this)
@@ -82,60 +37,99 @@ public class challengeManager : MonoBehaviour
         }
         instance = this;
 
-        if (saveProg != null || saveComp != null)
-        {
-            Load();
-            InstantiateList();
-            Save();
-        }
-        else
-        {
-            if (saveProg == null)
-            {
-                Debug.LogError("challengeManager: saveProg not assigned");
-            }
-            if (saveComp == null)
-            {
-                Debug.LogError("challengeManager: saveComp not assigned");
-            }
-        }
+        Load();
+        InstantiateList();
+        Save();
+    }
 
+    void OnDestroy()
+    {
+        if (instance == this) instance = null;
+    }
+
+    [ContextMenu("Reset Challenges")]
+    void ResetChallenges()
+    {
+        progress.Clear();
+        completed.Clear();
+        InstantiateList();
+        Save();
+        Debug.Log("Challenges reset.");
     }
 
     void InstantiateList()
     {
+        if (challenges == null) return;
+
         for (int i = 0; i < challenges.Length; i++)
         {
+            if (challenges[i] == null) continue;
+
             if (!progress.ContainsKey(challenges[i].challengeID))
-            {
                 progress[challenges[i].challengeID] = 0;
-            }
+
             if (!completed.ContainsKey(challenges[i].challengeID))
-            {
                 completed[challenges[i].challengeID] = false;
-            }
         }
     }
 
+
+
+    public bool IsComplete(string id)
+    {
+        return completed.TryGetValue(id, out bool done) && done;
+    }
+
+    public int GetProgress(string id)
+    {
+        return progress.TryGetValue(id, out int p) ? p : 0;
+    }
+
+
+    public bool AreAllComplete(challengeData[] required)
+    {
+        if (required == null || required.Length == 0) return true;
+
+        foreach (var c in required)
+        {
+            if (c == null) continue;
+            if (!IsComplete(c.challengeID)) return false;
+        }
+        return true;
+    }
+
+  
+    public int CountComplete(challengeData[] required)
+    {
+        if (required == null) return 0;
+
+        int n = 0;
+        foreach (var c in required)
+        {
+            if (c != null && IsComplete(c.challengeID)) n++;
+        }
+        return n;
+    }
+
+
     public void ReportKill(weaponStats weapon, bool fromGround)
     {
-
         if (weapon == null || challenges == null || challenges.Length == 0) return;
 
         foreach (var challenge in challenges)
         {
-            if (completed[challenge.challengeID] == true) continue;
+            if (challenge == null) continue;
+            if (IsComplete(challenge.challengeID)) continue;
             if (challenge.targetWeaponID != weapon.weaponID) continue;
             if (challenge.requireGroundPickup && !fromGround) continue;
 
-            progress[challenge.challengeID]++;
+            int newProgress = GetProgress(challenge.challengeID) + 1;
+            progress[challenge.challengeID] = newProgress;
 
-            Debug.Log($"[{challenge.displayName}] {progress[challenge.challengeID]}/{challenge.killCount}");
+            Debug.Log($"[{challenge.displayName}] {newProgress}/{challenge.killCount}");
 
-            if (progress[challenge.challengeID] >= challenge.killCount)
-            {
+            if (newProgress >= challenge.killCount)
                 Complete(challenge);
-            }
         }
 
         Save();
@@ -145,12 +139,47 @@ public class challengeManager : MonoBehaviour
     {
         completed[challenge.challengeID] = true;
         Debug.Log($"Challenge Complete: {challenge.displayName}! Unlocked {challenge.rewardWeaponID}");
-        // TODO: Unlock in your shop here (e.g., ShopManager.instance.Unlock(c.rewardWeaponID))
-        Save();
+  
     }
 
-    public bool IsComplete(string id) => completed[id];
-    public int GetProgress(string id) => progress.ContainsKey(id) ? progress[id] : 0;
+    // ---------- UI ----------
+
+    public void displayWeaponChallenges(challengeData[] weaponChallenges)
+    {
+        if (weaponChallenges == null || weaponChallenges.Length == 0) return;
+        if (challengeSlots == null || challengeSlots.Length == 0) return;
+
+        if (weaponName != null)
+            weaponName.text = weaponChallenges[0].targetWeaponID;
+
+        for (int i = 0; i < challengeSlots.Length; i++)
+        {
+            if (challengeSlots[i] == null || challengeSlots[i].slotRoot == null) continue;
+
+            if (i < weaponChallenges.Length && weaponChallenges[i] != null)
+            {
+                challengeSlots[i].slotRoot.SetActive(true);
+
+                var challenge = weaponChallenges[i];
+                int currentProg = GetProgress(challenge.challengeID);
+                float progressRatio = challenge.killCount > 0
+                    ? (float)currentProg / challenge.killCount
+                    : 0f;
+
+                if (challengeSlots[i].challengeName != null)
+                    challengeSlots[i].challengeName.text = challenge.displayName;
+
+                if (challengeSlots[i].progressBar != null)
+                    challengeSlots[i].progressBar.fillAmount = Mathf.Clamp01(progressRatio);
+            }
+            else
+            {
+                challengeSlots[i].slotRoot.SetActive(false);
+            }
+        }
+    }
+
+
 
     void Save()
     {
@@ -161,13 +190,12 @@ public class challengeManager : MonoBehaviour
         saveComp.saveWithJsonUtility();
     }
 
-
     void Load()
     {
         saveProg.loadWithJsonUtility();
-        progress = saveProg.progressDict;
+        progress = saveProg.progressDict ?? new Dictionary<string, int>();
 
         saveComp.loadWithJsonUtility();
-        completed = saveComp.completeDict;
+        completed = saveComp.completeDict ?? new Dictionary<string, bool>();
     }
 }
