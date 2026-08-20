@@ -63,8 +63,9 @@ public class trapManager : MonoBehaviour {
     [SerializeField] private trapSetup p4;
 
     // What is running so applying the same thing does nothing
-    private int currentPattern = -2;
-    private int currentRecipe = -1;
+    private int currentPattern = int.MinValue;
+    private bool generatedRunning = false;
+    private float currentDifficulty = -1f;
     private int currentSpin = 0;
     private bool platformsUp = false;
 
@@ -83,6 +84,7 @@ public class trapManager : MonoBehaviour {
         if (platManager == null) {
             Debug.LogWarning("trapManager: no platformsManager assigned" , this);
         }
+
     }
 
 
@@ -140,7 +142,9 @@ public class trapManager : MonoBehaviour {
             platManager.fallPlatforms();
         }
 
-        currentPattern = -2;
+        currentPattern = -1;
+        generatedRunning = false;
+        currentDifficulty = -1f;
         currentSpin = 0;
         platformsUp = false;
     }
@@ -174,10 +178,12 @@ public class trapManager : MonoBehaviour {
             return;
         }
 
-        if (!setup.laserActive) { 
-            if (currentPattern != -2) {
+        if (!setup.laserActive) {
+            if (generatedRunning || currentPattern != -1) {
                 laserManager.stopPattern();
-                currentPattern = -2;
+                generatedRunning = false;
+                currentDifficulty = -1f;
+                currentPattern = -1;
             }
 
             if (currentSpin != 0) {
@@ -189,27 +195,34 @@ public class trapManager : MonoBehaviour {
         }
 
         if (setup.generatePattern) {
-            laserManager.startGeneratedPattern(setup.laserDifficulty);
-            currentPattern = -2;
-        } else if (setup.laserPattern != currentPattern) {
+            if (!generatedRunning || !Mathf.Approximately(currentDifficulty , setup.laserDifficulty)) {
+                laserManager.startGeneratedPattern(setup.laserDifficulty);
+                generatedRunning = true;
+                currentDifficulty = setup.laserDifficulty;
+                currentPattern = int.MinValue;
+            }
+        } else if (generatedRunning || setup.laserPattern != currentPattern) {
             if (setup.laserPattern >= 0) {
                 laserManager.startPattern(setup.laserPattern);
-            }else {
+            } else {
                 laserManager.stopPattern();
             }
 
+            generatedRunning = false;
+            currentDifficulty = -1f;
             currentPattern = setup.laserPattern;
         }
 
         if (setup.laserSpinDirection != currentSpin) {
             if (setup.laserSpinDirection != 0) {
                 laserManager.startSpin(setup.laserSpinDirection);
-            }else {
+            } else {
                 laserManager.stopRotation();
             }
 
             currentSpin = setup.laserSpinDirection;
         }
+    
     }
 
     private void activateLava(trapSetup setup) {

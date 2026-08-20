@@ -31,6 +31,8 @@ public class holdZoneManager : MonoBehaviour {
     public bool holdActive { get { return activeZone != null; } }
     public int damageHoldsDone { get; private set; }
 
+    public bool hasImmuneZone { get { return immuneZone != null; } }
+
     // Cleaned copy of the list
     private holdZone[] damagePoints;
     private holdZone activeZone;
@@ -84,10 +86,13 @@ public class holdZoneManager : MonoBehaviour {
     [ContextMenu("Start Immune Hold")]
     public void startImmuneHold() {
         stopAll();
-        if (immuneZone == null)
-            return;
 
         immuneHoldDone = false;
+
+        if (immuneZone == null){
+            Debug.LogError("holdZoneManager: startImmuneHold with no immune zone assigned" , this);
+            return;
+        }
         activeZone = immuneZone;
         immuneZone.activate(this);
 
@@ -99,22 +104,23 @@ public class holdZoneManager : MonoBehaviour {
     [ContextMenu("Start Damage Hold")]
     public void startDamageHold() {
         stopAll();
-        if (damageZones.Count == 0)
+        
+        if (damagePoints == null || damagePoints.Length == 0)
             return;
 
         int pick;
-        if (damageZones.Count > 1 && lastDamageIndex >= 0) {
+        if (damagePoints.Length > 1 && lastDamageIndex>=0) {
             // roll from the list minus last time's point, then step over the gap.
             // doing it this way keeps every remaining point equally likely
-            pick = Random.Range(0 , damageZones.Count - 1);
+            pick = Random.Range(0 , damagePoints.Length - 1);
             if (pick >= lastDamageIndex)
                 pick++;
         } else {
-            pick = Random.Range(0 , damageZones.Count);
+            pick = Random.Range(0 , damagePoints.Length);
         }
 
         lastDamageIndex = pick;
-        activeZone = damageZones[pick];
+        activeZone = damagePoints[pick];
         if (activeZone == null)
             return;
 
@@ -129,9 +135,9 @@ public class holdZoneManager : MonoBehaviour {
         if (immuneZone != null)
             immuneZone.deactivate();
 
-        for (int i = 0 ; i < damageZones.Count ; i++)
-            if (damageZones[i] != null)
-                damageZones[i].deactivate();
+        for (int i = 0 ; i < damagePoints.Length ; i++)
+            if (damagePoints[i] != null)
+                damagePoints[i].deactivate();
 
         activeZone = null;
         if (hudObj != null)
@@ -143,7 +149,7 @@ public class holdZoneManager : MonoBehaviour {
         if (zone == null)
             return;
 
-        if (zone = immuneZone) {
+        if (zone == immuneZone) {
             immuneHoldDone = true;
             return;
         }

@@ -21,8 +21,8 @@ public struct waveSetup {
 // runs enemy spawning for the CEO fight. the boss manager swaps setups as phases start and end,
 // and a single loop keeps topping the arena back up to whatever the current setup allows.
 // everything in here is real seconds because nothing in the boss arena obeys the player's time scale.
-public class bossWaveManager : MonoBehaviour {
-    bossWaveManager instance;
+public class bossWaveManager : MonoBehaviour , IWaveHost {
+    public static bossWaveManager instance;
 
     [Header("Prefabs")]
     [SerializeField] GameObject[] basicEnemyPrefabs;
@@ -90,6 +90,8 @@ public class bossWaveManager : MonoBehaviour {
 
         instance = this;
 
+        waveHost.active = this;
+
         assignSpawnPoints(spawnPointTransforms);
         assignRoamPoints(roamPointTransforms);
 
@@ -99,6 +101,10 @@ public class bossWaveManager : MonoBehaviour {
     void OnDestroy() {
         if (instance == this)
             instance = null;
+
+        if (ReferenceEquals(waveHost.active, this)) {
+            waveHost.active = null;
+        }
     }
 
     // Called by bossFightManager as each phase begins
@@ -151,19 +157,21 @@ public class bossWaveManager : MonoBehaviour {
 
     private IEnumerator spawnLoop() {
         // only fill the room that is left, so it never goes above maxEnemiesOnMap but it isnt target.
-        int roomLeft = current.maxEnemiesOnMap - enemiesAlive;
-        int toSpawn = Mathf.Min(roomLeft , current.maxSpawnCount);
+        while (true) {
+            int roomLeft = current.maxEnemiesOnMap - enemiesAlive;
+            int toSpawn = Mathf.Min(roomLeft , current.maxSpawnCount);
 
-        for (int i = 0 ; i < toSpawn ; i++) {
-            spawnOne();
+            for (int i = 0 ; i < toSpawn ; i++) {
+                spawnOne();
 
-            // Wait before spawning the next one
-            yield return new WaitForSecondsRealtime(timeBetweenSpawns);
+                // Wait before spawning the next one
+                yield return new WaitForSecondsRealtime(timeBetweenSpawns);
+            }
+
+            // Real seconds like the rest of the boss arena, Floor so a setup left at 0
+            // cannot spin the loop every frame
+            yield return new WaitForSecondsRealtime(Mathf.Max(0.05f , current.timeBetweenBursts));
         }
-
-        // Real seconds like the rest of the boss arena, Floor so a setup left at 0
-        // cannot spin the loop every frame
-        yield return new WaitForSecondsRealtime(Mathf.Max(0.05f , current.timeBetweenBursts));
     }
 
     private void spawnOne() {
@@ -187,7 +195,7 @@ public class bossWaveManager : MonoBehaviour {
             }
         }
 
-        point.lastUsed = Time.time;
+        point.lastUsed = Time.unscaledTime;
 
         enemiesAlive++;
     }

@@ -41,8 +41,8 @@ public class bossFightManager : MonoBehaviour,IDamage {
     [System.NonSerialized] public List<bool> phaseImmuned = new List<bool> { false , false , false , false };
     [System.NonSerialized] public List<float> endHealthReqs = new List<float> { 0f , 0f , 0f , 0f };
 
-    public bool isImmune;
-    public int phase = 0;
+    [System.NonSerialized] public bool isImmune;
+    [System.NonSerialized] public int phase = 0;
 
     private float curHealth;
     private bool fightOver = false;
@@ -70,6 +70,12 @@ public class bossFightManager : MonoBehaviour,IDamage {
             return;
         }
 
+        if (trapManager == null) {
+            Debug.LogError("bossFightManager: no trapManager assigned" , this);
+            enabled = false;
+            return;
+        }
+
         // health thresholds that end each phase. phase 4 ends on death so its req stays at 0
         endHealthReqs[0] = p1EndHealthPerc * maxHealth;
         endHealthReqs[1] = p2EndHealthPerc * maxHealth;
@@ -77,6 +83,9 @@ public class bossFightManager : MonoBehaviour,IDamage {
         endHealthReqs[3] = 0f;
 
         curHealth = maxHealth;
+
+        isImmune = false;
+        phase = 0;
 
         // the mask is a child of the boss, so find it by name before pulling components off it
         Transform mask = findMark("Head");
@@ -94,6 +103,7 @@ public class bossFightManager : MonoBehaviour,IDamage {
 
     void Start() {
         phase = 0;
+        isImmune = false;
         phaseActive[0] = true;
         startPhase(0);
     }
@@ -122,6 +132,11 @@ public class bossFightManager : MonoBehaviour,IDamage {
 
 
     void updateBossUI() {
+
+        if (healthBar==null) {
+            return;
+        }
+
         healthBar.fillAmount = Mathf.Clamp01(curHealth / Mathf.Max(1f , maxHealth));
     }
 
@@ -142,16 +157,21 @@ public class bossFightManager : MonoBehaviour,IDamage {
 
         if (!lastPhase) {
             // shut down the waves the phase was running
-            if (endingPhase == 0)
+            if (endingPhase == 0) {
                 waveManager.endP1();
-            else if (endingPhase == 1)
+                trapManager.endP1();
+            } else if (endingPhase == 1) {
                 waveManager.endP2();
-            else if (endingPhase == 2)
+                trapManager.endP2();
+            } else if (endingPhase == 2) {
                 waveManager.endP3();
-
+                trapManager.endP3();
+            }
             isImmune = true;
             phaseImmuned[endingPhase] = true;
-            immuneBarObj.SetActive(true);
+            if (immuneBar != null) {
+                immuneBarObj.SetActive(true);
+            }
 
             // shaking mask is the immune tell, set it once instead of re-checking it every frame
             if (shake != null)
@@ -160,16 +180,25 @@ public class bossFightManager : MonoBehaviour,IDamage {
             // no timer here. the window stays open until the player finishes the center hold
             holdManager.startImmuneHold();
 
-            while (!holdManager.immuneHoldDone) {
-                immuneBar.fillAmount = holdManager.immuneProgress;
-                yield return null;
+            if (!holdManager.hasImmuneZone) {
+                Debug.LogError("bossFightManager: no immune zone, skipping hold" , this);
+            } else {
+                while (!holdManager.immuneHoldDone) {
+                    if (immuneBar != null) {
+                        immuneBar.fillAmount = holdManager.immuneProgress;
+                    }
+                    yield return null;
+                }
             }
 
             holdManager.stopAll();
 
             if (shake != null)
                 shake.doShake = false;
-            immuneBarObj.SetActive(false);
+            if (immuneBarObj != null) { 
+                immuneBarObj.SetActive(false);
+            }
+
             phaseImmuned[endingPhase] = false;
             isImmune = false;
 

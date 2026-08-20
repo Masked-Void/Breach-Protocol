@@ -71,7 +71,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             {
                 if (AtRoamTarget())
                 {
-                    waveManager.instance?.releaseRoamPoint(gameObject);
+                    waveHost.active?.releaseRoamPoint(gameObject);
                     roamTarget = null;
                     agent.stoppingDistance = stoppingDistOrig;
                 }
@@ -158,11 +158,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     void pickRoamPoint()
     {
-        if (waveManager.instance == null) return;
+        if (waveHost.active == null) return;
 
-        waveManager.instance.releaseRoamPoint(gameObject);
+        waveHost.active.releaseRoamPoint(gameObject);
 
-        Transform nextRoamPoint = waveManager.instance.claimRoamPoint(gameObject);
+        Transform nextRoamPoint = waveHost.active.claimRoamPoint(gameObject);
 
         if (nextRoamPoint == null) return;
 
@@ -175,7 +175,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         if (roamTarget != null && AtRoamTarget())
         {
-            waveManager.instance?.releaseRoamPoint(gameObject);
+            waveHost.active?.releaseRoamPoint(gameObject);
             roamTarget = null;
             roamTimer = 0f;
             return;
@@ -246,7 +246,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         {
             challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
         }
-            waveManager.instance.enemyKilled();
+            waveHost.active.enemyKilled();
         if (gameManager.instance != null)
         {
             gameManager.instance.addKill();

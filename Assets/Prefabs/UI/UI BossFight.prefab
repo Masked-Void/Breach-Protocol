@@ -481,7 +481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6563334725291218171
 Transform:
   m_ObjectHideFlags: 0
@@ -724,10 +724,10 @@ MonoBehaviour:
   boss: {fileID: 0}
   waveManager: {fileID: 6490373206905493497}
   holdManager: {fileID: 3018863977292105427}
-  trapManager: {fileID: 0}
-  immuneBarObj: {fileID: 0}
-  healthBar: {fileID: 0}
-  immuneBar: {fileID: 0}
+  trapManager: {fileID: 5824588057710585167}
+  immuneBarObj: {fileID: 912177803640787988}
+  healthBar: {fileID: 6392262081991152592}
+  immuneBar: {fileID: 366645286060098370}
   maxHealth: 1000
   bulletDamageMult: 1
   p1EndHealthPerc: 0.75
@@ -735,9 +735,7 @@ MonoBehaviour:
   p3EndHealthPerc: 0.25
   bossFileReward: 5
   dealDamage: 0
-  damageAmt: 10
-  isImmune: 1
-  phase: 0
+  damageAmt: 100
 --- !u!114 &6490373206905493497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -870,54 +868,54 @@ MonoBehaviour:
   timeBetweenSpawns: 0.25
   spawnPointCooldown: 5
   p1:
-    basicEnemyPercent: 0
-    heavyEnemyPercent: 0
-    rangedEnemyPercent: 0
-    maxEnemiesOnMap: 0
-    maxSpawnCount: 0
-    timeBetweenBursts: 0
+    basicEnemyPercent: 40
+    heavyEnemyPercent: 10
+    rangedEnemyPercent: 50
+    maxEnemiesOnMap: 4
+    maxSpawnCount: 7
+    timeBetweenBursts: 10
   p1_p2:
-    basicEnemyPercent: 0
-    heavyEnemyPercent: 0
-    rangedEnemyPercent: 0
-    maxEnemiesOnMap: 0
-    maxSpawnCount: 0
-    timeBetweenBursts: 0
+    basicEnemyPercent: 35
+    heavyEnemyPercent: 15
+    rangedEnemyPercent: 50
+    maxEnemiesOnMap: 6
+    maxSpawnCount: 9
+    timeBetweenBursts: 15
   p2:
-    basicEnemyPercent: 0
-    heavyEnemyPercent: 0
-    rangedEnemyPercent: 0
-    maxEnemiesOnMap: 0
-    maxSpawnCount: 0
-    timeBetweenBursts: 0
+    basicEnemyPercent: 30
+    heavyEnemyPercent: 20
+    rangedEnemyPercent: 50
+    maxEnemiesOnMap: 9
+    maxSpawnCount: 13
+    timeBetweenBursts: 10
   p2_p3:
-    basicEnemyPercent: 0
-    heavyEnemyPercent: 0
-    rangedEnemyPercent: 0
-    maxEnemiesOnMap: 0
-    maxSpawnCount: 0
-    timeBetweenBursts: 0
+    basicEnemyPercent: 25
+    heavyEnemyPercent: 25
+    rangedEnemyPercent: 50
+    maxEnemiesOnMap: 11
+    maxSpawnCount: 15
+    timeBetweenBursts: 12
   p3:
-    basicEnemyPercent: 0
-    heavyEnemyPercent: 0
-    rangedEnemyPercent: 0
-    maxEnemiesOnMap: 0
-    maxSpawnCount: 0
-    timeBetweenBursts: 0
+    basicEnemyPercent: 20
+    heavyEnemyPercent: 30
+    rangedEnemyPercent: 50
+    maxEnemiesOnMap: 15
+    maxSpawnCount: 30
+    timeBetweenBursts: 15
   p3_p4:
-    basicEnemyPercent: 0
-    heavyEnemyPercent: 0
-    rangedEnemyPercent: 0
-    maxEnemiesOnMap: 0
-    maxSpawnCount: 0
-    timeBetweenBursts: 0
+    basicEnemyPercent: 15
+    heavyEnemyPercent: 35
+    rangedEnemyPercent: 50
+    maxEnemiesOnMap: 18
+    maxSpawnCount: 50
+    timeBetweenBursts: 15
   p4:
-    basicEnemyPercent: 0
-    heavyEnemyPercent: 0
-    rangedEnemyPercent: 0
-    maxEnemiesOnMap: 0
-    maxSpawnCount: 0
-    timeBetweenBursts: 0
+    basicEnemyPercent: 10
+    heavyEnemyPercent: 40
+    rangedEnemyPercent: 50
+    maxEnemiesOnMap: 22
+    maxSpawnCount: 70
+    timeBetweenBursts: 15
 --- !u!1 &7134745881730784994
 GameObject:
   m_ObjectHideFlags: 0
@@ -962,11 +960,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a83c07dad81b5c4bb01978d1b8a874e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::killstreakManager
-  killstreakChance: 1
-  killstreaks:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  killstreakChance: 0
+  killstreaks: []
 --- !u!1 &7541871362785683565
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,31 +1018,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::gameManager
   menuActive: {fileID: 0}
-  menuPause: {fileID: 0}
-  menuLose: {fileID: 0}
+  menuPause: {fileID: 665828869980560042}
+  menuLose: {fileID: 317832229483669190}
   menuWin: {fileID: 0}
-  menuSound: {fileID: 0}
-  scoreText: {fileID: 0}
-  pauseKills: {fileID: 0}
-  killCounter: {fileID: 0}
+  menuSound: {fileID: 8635423712169008686}
+  scoreText: {fileID: 425477912220122348}
+  pauseKills: {fileID: 4834530927595049286}
+  killCounter: {fileID: 4562720491078014579}
   waveCounter: {fileID: 0}
   waveCountdownText: {fileID: 0}
   waveCountdown: {fileID: 0}
-  interactionUI: {fileID: 0}
-  interactionText: {fileID: 0}
-  interactionKey: {fileID: 0}
-  playerStaminaBar: {fileID: 0}
+  interactionUI: {fileID: 3007003935825100281}
+  interactionText: {fileID: 5828761427848487703}
+  interactionKey: {fileID: 5454393268382957311}
+  playerStaminaBar: {fileID: 6459163044057815609}
   playerSpawnPos: {fileID: 0}
   checkpointPopup: {fileID: 0}
   totalBytes: 0
   totalFiles: 0
-  bytesText: {fileID: 0}
+  bytesText: {fileID: 5609247709888761851}
   shopMessage: {fileID: 0}
-  shopUI: {fileID: 0}
-  damageFlashUI: {fileID: 0}
-  magAmmoUI: {fileID: 0}
-  totalAmmoUI: {fileID: 0}
-  activeWeapon: {fileID: 0}
+  shopUI: {fileID: 5630077855558466646}
+  damageFlashUI: {fileID: 5129635263756173633}
+  magAmmoUI: {fileID: 7851538014898282958}
+  totalAmmoUI: {fileID: 387281522253062215}
+  activeWeapon: {fileID: 4414258154742376737}
   isPaused: 0
   player: {fileID: 0}
   playerScript: {fileID: 0}
@@ -1064,13 +1059,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::heartbeatManager
   restingBPM: 20
-  maxBPM: 2000
+  maxBPM: 200
   currentBPM: 0
   currentStress: 0
   maxStress: 100
   stressDecayRate: 3
   shootStress: 4
-  damageStress: 20
+  damageStress: 1
   nearMissStress: 5
   killStressReduction: 5
   waveStressReduction: 20
@@ -1190,6 +1185,8 @@ MonoBehaviour:
   p1:
     laserActive: 0
     laserPattern: 0
+    generatePattern: 0
+    laserDifficulty: 0
     laserSpinDirection: 0
     lavaActive: 0
     lavaLevel: 0
@@ -1199,15 +1196,19 @@ MonoBehaviour:
   p1_p2:
     laserActive: 1
     laserPattern: 0
+    generatePattern: 1
+    laserDifficulty: 0.1
     laserSpinDirection: 0
     lavaActive: 0
     lavaLevel: 0
-    platformsActive: 0
+    platformsActive: 1
     cycleTraps: 0
     cycleInterval: 0
   p2:
     laserActive: 1
     laserPattern: 0
+    generatePattern: 1
+    laserDifficulty: 0.2
     laserSpinDirection: 0
     lavaActive: 0
     lavaLevel: 0
@@ -1215,8 +1216,10 @@ MonoBehaviour:
     cycleTraps: 0
     cycleInterval: 0
   p2_p3:
-    laserActive: 0
+    laserActive: 1
     laserPattern: 0
+    generatePattern: 1
+    laserDifficulty: 0.4
     laserSpinDirection: 0
     lavaActive: 1
     lavaLevel: 1
@@ -1226,7 +1229,9 @@ MonoBehaviour:
   p3:
     laserActive: 1
     laserPattern: 0
-    laserSpinDirection: 0
+    generatePattern: 1
+    laserDifficulty: 0.5
+    laserSpinDirection: 1
     lavaActive: 0
     lavaLevel: 0
     platformsActive: 0
@@ -1235,7 +1240,9 @@ MonoBehaviour:
   p3_p4:
     laserActive: 1
     laserPattern: 0
-    laserSpinDirection: 0
+    generatePattern: 1
+    laserDifficulty: 0.8
+    laserSpinDirection: 1
     lavaActive: 1
     lavaLevel: 1
     platformsActive: 1
@@ -1244,7 +1251,9 @@ MonoBehaviour:
   p4:
     laserActive: 1
     laserPattern: 0
-    laserSpinDirection: 0
+    generatePattern: 1
+    laserDifficulty: 1
+    laserSpinDirection: 1
     lavaActive: 1
     lavaLevel: 1
     platformsActive: 1
@@ -1360,8 +1369,175 @@ PrefabInstance:
       addedObject: {fileID: 180240876083905022}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+--- !u!1 &317832229483669190 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1978467152138693268, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &366645286060098370 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1876684031977131792, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &387281522253062215 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1892111768595819541, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &425477912220122348 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1943969778442809534, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &665828869980560042 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1594476624264173304, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &912177803640787988 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1420167975373854790, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3007003935825100281 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3938048208810570155, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4414258154742376737 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2476803570528183667, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &4562720491078014579 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2328305766212295201, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!224 &4699026901257401134 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6785670985224404860, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4834530927595049286 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6632240520636357908, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &5129635263756173633 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6353989490101128467, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5454393268382957311 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6101289088109081261, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &5609247709888761851 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5964396260631626665, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &5630077855558466646 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5854620296670146564, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5828761427848487703 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5764093484585873221, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &6392262081991152592 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5163420541461340034, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &6459163044057815609 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5097592435789239915, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &7851538014898282958 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8352914963223211420, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 2242167949748735058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &8635423712169008686 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7551120145542517372, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
   m_PrefabInstance: {fileID: 2242167949748735058}
   m_PrefabAsset: {fileID: 0}

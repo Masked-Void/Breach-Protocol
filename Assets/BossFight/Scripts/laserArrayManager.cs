@@ -1,4 +1,3 @@
-using NUnit.Framework.Interfaces;
 using System.Collections;
 using UnityEngine;
 
@@ -302,16 +301,13 @@ public class laserArrayManager : MonoBehaviour {
     // true if any laser on this pillar is currently deployed
     // needs a matching accessor over on laserArray
     public bool getIsFiring(pillarColor color) {
-        int count = getLaserCount(color);
+        laserArray[] arrays = getPillar(color);
+        if (arrays == null) { return false; }
 
-        for (int i = 0 ; i < count ; i++) {
-            laserArray target = getLaser(getPillarIndex(color) , i);
-
-            if (target == null)
-                continue;
-
-            if (target.getIsDeployed)
+        for (int i = 0 ; i < arrays.Length ; i++) {
+            if (arrays[i] != null && arrays[i].getIsAnyDeployed) {
                 return true;
+            }
         }
 
         return false;
@@ -336,7 +332,7 @@ public class laserArrayManager : MonoBehaviour {
         int dir = direction < 0 ? -1 : 1;
 
         while (true) {
-            arrayPivot.Rotate(0f , spinSpeed * dir * Time.deltaTime , 0f);
+            arrayPivot.Rotate(0f , spinSpeed * dir * Time.unscaledDeltaTime , 0f);
             yield return null;
         }
     }
@@ -358,7 +354,7 @@ public class laserArrayManager : MonoBehaviour {
 
         while (Mathf.Abs(remaining) > angleEpsilon) {
             // dont overshoot on the last frame, only move as far as whats left
-            float step = sweepSpeed * Time.deltaTime;
+            float step = sweepSpeed * Time.unscaledDeltaTime;
             step = Mathf.Min(step , Mathf.Abs(remaining)) * Mathf.Sign(remaining);
 
             arrayPivot.Rotate(0f , step , 0f);
@@ -397,7 +393,7 @@ public class laserArrayManager : MonoBehaviour {
     public void startPattern(int patternIndex) {
         if (patterns == null)
             return;
-        if (patternIndex < 0 || patternIndex > patterns.Length)
+        if (patternIndex < 0 || patternIndex >= patterns.Length)
             return;
 
         laserPattern chosen = patterns[patternIndex];
@@ -417,19 +413,7 @@ public class laserArrayManager : MonoBehaviour {
             for (int i = 0 ; i < pattern.steps.Length ; i++) {
                 laserStep step = pattern.steps[i];
 
-                if (step.slot > 0) {
-                    if (step.retract) {
-                        stopPillar(step.color);
-                    } else {
-                        firePillar(step.color);
-                    }
-                } else {
-                    if (step.retract) {
-                        stopLaser(step.color , step.slot);
-                    } else {
-                        fireLaser(step.color , step.slot);
-                    }
-                }
+                runStep(step);
 
                 // waitForSeconds(0) still burns a frame, skipping the yield is what makes
                 // a delay of 0 actually fire together with the next step
@@ -497,7 +481,7 @@ public class laserArrayManager : MonoBehaviour {
             float maxDelay = Mathf.Max(minDelay, jittered(delayRange.y));
 
             float retractChance = Mathf.Clamp01(jittered(Mathf.Lerp(generator.retractEasy, generator.retractHard , difficulty)));
-            float wholePillarChance = Mathf.Clamp01(jittered(Mathf.Lerp(generator.wholePillarEasy, generator.wholePillarEasy , difficulty)));
+            float wholePillarChance = Mathf.Clamp01(jittered(Mathf.Lerp(generator.wholePillarEasy, generator.wholePillarHard , difficulty)));
 
             AnimationCurve slotBias = rollSlotBias();
 

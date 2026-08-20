@@ -51,11 +51,11 @@ public class spawnPoint
 
     public bool isFree(float cooldown)
     {
-         return (Time.time - lastUsed >= cooldown);
+         return (Time.unscaledTime - lastUsed >= cooldown);
     }
 }
 
-public class waveManager : MonoBehaviour
+public class waveManager : MonoBehaviour,IWaveHost
 {
     public static waveManager instance;
 
@@ -119,6 +119,8 @@ public class waveManager : MonoBehaviour
 
         instance = this;
 
+        waveHost.active = this;
+
         assignSpawnPoints(spawnPointTransforms);
         assignRoamPoints(roamPointTransforms);
     }
@@ -148,6 +150,10 @@ public class waveManager : MonoBehaviour
     private void OnDestroy() {
         if (instance == this)
             instance = null;
+
+        if (ReferenceEquals(waveHost.active , this)) {
+            waveHost.active = null;
+        }
     }
     private IEnumerator spawn()
     {
@@ -180,7 +186,7 @@ public class waveManager : MonoBehaviour
             }
           
 
-            point.lastUsed = Time.time;
+            point.lastUsed = Time.unscaledTime;
 
             enemiesAlive++;
 

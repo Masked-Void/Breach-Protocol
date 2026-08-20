@@ -356,7 +356,7 @@ public class laserArray : MonoBehaviour {
 
             // Scaled time on purpose so the stagger stops while time is frozen
             if (stagger > 0) {
-                yield return new WaitForSeconds(stagger);
+                yield return new WaitForSecondsRealtime(stagger);
             }
         }
 
@@ -399,7 +399,7 @@ public class laserArray : MonoBehaviour {
 
         while (timePassed < duration) {
             // Scaled so the lasers freeze with everything else, capped at 0.05 so a lag spike can't teleport them
-            timePassed += Mathf.Min(Time.deltaTime , 0.05f);
+            timePassed += Mathf.Min(Time.unscaledDeltaTime , 0.05f);
 
             // 0 to 1 of how much of the trip is done
             float howFar = Mathf.Clamp01(timePassed / duration);

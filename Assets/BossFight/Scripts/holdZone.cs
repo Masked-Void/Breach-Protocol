@@ -184,7 +184,7 @@ public class holdZone : MonoBehaviour {
         owner = null;
 
         if (visuals != null)
-            visuals.SetActive(true);
+            visuals.SetActive(false);
 
         updateScreen();
     }
