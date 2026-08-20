@@ -15,13 +15,14 @@ public class upgradeButtonData : MonoBehaviour
 
     void OnEnable()
     {
-        // Whenever the challenge panel opens, auto-click this button if marked as default
+        // Whenever the upgrade panel opens, auto-click this button if marked as default
         if (selectOnEnable)
         {
             Selected();
         }
     }
 
+    // Handle weapon selection
     void Selected()
     {
         if (upgradeManager.instance != null && upgrade != null)

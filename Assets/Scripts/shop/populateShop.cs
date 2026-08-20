@@ -28,6 +28,4 @@ public class populateShop : MonoBehaviour
     {
         shopManager.instance.buyUpgrade(currentUpgrade);
     }
-
-   
 }
