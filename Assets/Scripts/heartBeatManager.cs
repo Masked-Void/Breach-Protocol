@@ -29,6 +29,7 @@ public class heartbeatManager : MonoBehaviour
     [SerializeField] private float nearMissStress = 25f;
     [SerializeField] private float killStressReduction = 10f;
     [SerializeField] private float waveStressReduction = 30f;
+    
 
     [Header("UI (Optional)")]
     [SerializeField] private TMP_Text heartRateText;
@@ -87,7 +88,8 @@ public class heartbeatManager : MonoBehaviour
             return;
 
         currentStress = clampedStress;
-        RefreshHeartbeat(false);
+
+        RefreshHeartbeat(true);
     }
 
     private void RefreshHeartbeat(bool forceUIUpdate)

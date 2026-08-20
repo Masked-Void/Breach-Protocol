@@ -1,353 +1,174 @@
 using UnityEngine;
 
-public class weaponManager : MonoBehaviour, IAmmoRefundReceiver
+public class weaponManager : MonoBehaviour
 {
     public static weaponManager instance { get; private set; }
 
     [Header("Weapon")]
     public weaponStats activeWeapon;
-    public GameObject spawnedWeaponModel;
+    public Sprite emptySlot;
 
-    [Header("Inventory")]
-    public weaponStats[] weapons = new weaponStats[4];
-
-    private Transform gunBarrel;
-    private float attackTimer;
 
     [Header("Challenge")]
     public bool currentWeaponFromGround = false;
 
-    private int activeSlot = 0;
+    GameObject spawnedWeaponModel;
+    Transform gunBarrel;
+    float attackTimer;
 
-    private void Awake()
+    int currentAmmo;
+    Transform weaponHolder;
+
+    void Awake()
     {
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
-            return;
         }
-
-        instance = this;
+        else
+        {
+            instance = this;
+        }
     }
 
-
-    private void Update()
+    void Start()
     {
-        // Weapon fire rate should remain based on real time.
+        weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
+        if (activeWeapon != null) spawnWeapon(activeWeapon);
+    }
+
+    void Update()
+    {
+
         attackTimer += Time.unscaledDeltaTime;
     }
 
     public void equipWeapon(weaponStats newWeapon)
     {
-        if (newWeapon == null)
-            return;
-
-        // Don't add the exact same weapon reference twice.
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            if (weapons[i] == newWeapon)
-                return;
-        }
-
-        // Find first open inventory slot.
-        int slot = -1;
-
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            if (weapons[i] == null)
-            {
-                slot = i;
-                break;
-            }
-        }
-
-        // Inventory full.
-        if (slot == -1)
-            return;
-
-        weapons[slot] = newWeapon;
+        if (newWeapon == null) return;
+        if (spawnedWeaponModel != null) throwWeapon();
+        spawnWeapon(newWeapon);
     }
 
-    public Transform getBarrel()
+    private void spawnWeapon(weaponStats newWeapon)
     {
-        return gunBarrel;
-    }
+        activeWeapon = newWeapon;
 
-    public void showActiveweapon(Transform weaponHolder)
-    {
-        if (weaponHolder == null)
-            return;
+        if (activeWeapon is gunStats gun) currentAmmo = gun.startingBullets;
 
-        activeWeapon = weapons[activeSlot];
-
-        if (activeWeapon == null)
-            return;
-
-        // Destroy an existing held model before spawning another.
-        if (spawnedWeaponModel != null)
-        {
-            Destroy(spawnedWeaponModel);
-        }
-
-        spawnedWeaponModel = Instantiate(
-            activeWeapon.weaponModel,
-            weaponHolder,
-            false
-        );
-
+        spawnedWeaponModel = Instantiate(activeWeapon.weaponModel, weaponHolder, false);
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
 
+        if (spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody rb)) rb.isKinematic = true;
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = true;
 
-        // Held weapon should not use physics.
-        if (spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody rb))
-        {
-            rb.isKinematic = true;
-        }
+        string targetName = (activeWeapon is gunStats) ? "Muzzle" : "HitPoint";
+        gunBarrel = FindDeepChild(spawnedWeaponModel.transform, targetName);
 
-
-        // Enable the existing clip component if the weapon uses one.
-        if (spawnedWeaponModel.TryGetComponent<clip>(out clip weaponClip))
-        {
-            weaponClip.enabled = true;
-        }
-
-
-        // Guns look for "Muzzle".
-        // Non-guns look for "HitPoint".
-        string targetName =
-            activeWeapon is gunStats
-                ? "Muzzle"
-                : "HitPoint";
-
-        gunBarrel = FindDeepChild(
-            spawnedWeaponModel.transform,
-            targetName
-        );
-
-
-        if (gunBarrel == null)
-        {
-            Debug.LogWarning(
-                "weaponManager: Could not find " +
-                targetName +
-                " on " +
-                activeWeapon.name
-            );
-        }
+        updateHUD();
     }
 
-    public void Throw()
+    public Transform getBarrel() => gunBarrel;
+    public int getCurrentAmmo() => currentAmmo;
+
+    public void throwWeapon()
     {
-        if (spawnedWeaponModel == null)
-            return;
-
-
         spawnedWeaponModel.transform.SetParent(null);
-
-        Rigidbody projectileRb;
-
-        if (!spawnedWeaponModel.TryGetComponent(
-            out projectileRb))
-        {
-            projectileRb =
-                spawnedWeaponModel.AddComponent<Rigidbody>();
-        }
+        if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
+        if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
+            projectileRb = spawnedWeaponModel.AddComponent<Rigidbody>();
 
         projectileRb.isKinematic = false;
         projectileRb.useGravity = true;
 
-        Camera mainCamera = Camera.main;
+        // Calculate directional trajectory
+        Vector3 forceDirection = Camera.main.transform.forward;
+        RaycastHit hit;
 
-        if (mainCamera == null)
+        if (Physics.Raycast(gameManager.instance.playerScript.weaponHoldPos.transform.position,
+                            gameManager.instance.playerScript.weaponHoldPos.transform.forward,
+                            out hit, 500f))
         {
-            Debug.LogWarning(
-                "weaponManager: No Main Camera found."
-            );
-
-            return;
+            forceDirection = (hit.point - gameManager.instance.playerScript.weaponHoldPos.transform.position).normalized;
         }
 
+        // Apply forward and upward force
+        Vector3 forceToAdd = forceDirection * gameManager.instance.playerScript.throwForce
+                           + gameManager.instance.player.transform.up * gameManager.instance.playerScript.throwUpwardForce;
 
-        Vector3 forceDirection =
-            mainCamera.transform.forward;
+        projectileRb.AddForce(forceToAdd, ForceMode.Impulse);
 
+        // Add subtle spin for realistic throwing physics
+        projectileRb.AddTorque(Camera.main.transform.right * 10f, ForceMode.Impulse);
 
-        if (gameManager.instance != null &&
-            gameManager.instance.playerScript != null &&
-            gameManager.instance.playerScript.weaponHoldPos != null)
-        {
-            Transform holdTransform =
-                gameManager.instance
-                    .playerScript
-                    .weaponHoldPos
-                    .transform;
-
-
-            if (Physics.Raycast(
-                holdTransform.position,
-                holdTransform.forward,
-                out RaycastHit hit,
-                500f))
-            {
-                forceDirection =
-                    (
-                        hit.point -
-                        holdTransform.position
-                    ).normalized;
-            }
-        }
-
-        if (gameManager.instance != null &&
-            gameManager.instance.playerScript != null &&
-            gameManager.instance.player != null)
-        {
-            Vector3 forceToAdd =
-                forceDirection *
-                gameManager.instance
-                    .playerScript
-                    .throwForce
-                +
-                gameManager.instance
-                    .player
-                    .transform
-                    .up *
-                gameManager.instance
-                    .playerScript
-                    .throwUpwardForce;
-
-
-            projectileRb.AddForce(
-                forceToAdd,
-                ForceMode.Impulse
-            );
-        }
-
-
-        // Add some rotational motion.
-        projectileRb.AddTorque(
-            mainCamera.transform.right * 10f,
-            ForceMode.Impulse
-        );
-
-        if (spawnedWeaponModel.TryGetComponent<Collider>(
-            out Collider weaponCollider))
-        {
-            weaponCollider.enabled = true;
-        }
-
-        weapons[activeSlot] = null;
+        if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider)) weaponCollider.enabled = true;
 
         activeWeapon = null;
         spawnedWeaponModel = null;
         gunBarrel = null;
+
+        updateHUD();
     }
 
-    public Transform FindDeepChild(
-        Transform parent,
-        string targetName)
+    // find nested children
+    public Transform FindDeepChild(Transform parent, string name)
     {
-        if (parent == null)
-            return null;
-
-
         foreach (Transform child in parent)
         {
-            if (child.name == targetName)
-            {
-                return child;
-            }
-
-
-            Transform result =
-                FindDeepChild(
-                    child,
-                    targetName
-                );
-
-
-            if (result != null)
-            {
-                return result;
-            }
+            if (child.name == name) return child;
+            Transform result = FindDeepChild(child, name);
+            if (result != null) return result;
         }
-
-
         return null;
     }
 
-    /// <summary>
-    /// Packet Leech calls this whenever a valid player kill
-    /// should return ammunition to the currently held weapon.
-    ///
-    /// The actual ammo variable currently lives somewhere
-    /// outside weaponManager, so this method is intentionally
-    /// compile-safe until gunStats / weaponStats / clip are wired.
-    /// </summary>
-    public void RefundAmmo(int amount)
-    {
-        if (amount <= 0)
-            return;
-
-
-        if (activeWeapon == null)
-            return;
-
-
-        // -----------------------------------------------------
-        // TODO:
-        // Actual ammo refund gets added here after checking:
-        //
-        // weaponStats.cs
-        // gunStats.cs
-        // clip.cs
-        //
-        // Example final behavior:
-        //
-        // currentAmmo =
-        //     Mathf.Min(
-        //         currentAmmo + amount,
-        //         magazineSize
-        //     );
-        // -----------------------------------------------------
-
-        Debug.Log(
-            "Packet Leech requested +" +
-            amount +
-            " ammo for " +
-            activeWeapon.name
-        );
-    }
-
-
     public void attack()
     {
-        if (activeWeapon == null)
+        if (activeWeapon == null || attackTimer < activeWeapon.attackRate)
             return;
-
-
-        if (attackTimer < activeWeapon.attackRate)
-            return;
-
+        if (currentAmmo <= 0) { audioManager.instance.playEmptyMag(); return; }
 
         attackTimer = 0f;
+        currentAmmo--;
 
-
-        // Player shooting contributes heartbeat stress.
         if (heartbeatManager.instance != null)
         {
             heartbeatManager.instance.playerShot();
         }
 
-
         activeWeapon.Attack();
+
     }
 
-    private void OnDestroy()
+    void updateHUD()
     {
-        if (instance == this)
+        if (gameManager.instance == null) return;
+        if (activeWeapon != null)
         {
-            instance = null;
+            gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
+        }
+        else
+        {
+            gameManager.instance.magAmmoUI.text = "0";
+        }
+
+        updateWeaponIcons();
+    }
+
+    void updateWeaponIcons()
+    {
+        if (gameManager.instance == null) return;
+
+        if (activeWeapon != null && gameManager.instance.activeWeapon != null)
+        {
+            gameManager.instance.activeWeapon.sprite = activeWeapon.sprite;
+        }
+        else
+        {
+            gameManager.instance.activeWeapon.sprite = emptySlot;
         }
     }
 }

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::gunStats
   weaponID: AR
   weaponModel: {fileID: 5206027675997213250, guid: eba6cb08ef6755948b7eeea05d75f594, type: 3}
+  sprite: {fileID: 21300000, guid: 953b0c6774422534497f1829aa42f79c, type: 3}
   attackRate: 0.1
   gunType: 1
   bullet: {fileID: 6785665511576398920, guid: d7a56a45ac2dccc428d4ccc0215f14bd, type: 3}
@@ -21,5 +22,6 @@ MonoBehaviour:
   Rotation: {x: -7.9, y: 0, z: 0}
   pelletCount: 1
   spreadAngle: 0.2
+  startingBullets: 10
   shootSound: {fileID: 8300000, guid: eb14dd355801c574fb7cc4560bd941b7, type: 3}
   shootSoundVol: 0.8

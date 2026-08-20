@@ -19,9 +19,7 @@ public class gunStats : weaponStats
     [Header("Ammo")]
     [Range(1, 20)] public int pelletCount;
     [Range(.2f, 20f)] public float spreadAngle;
-
-    
-    
+    [Range(3, 30)] public int startingBullets;
 
     [Header("Audio")]
     public AudioClip shootSound;
@@ -29,6 +27,7 @@ public class gunStats : weaponStats
 
     public override void Attack()
     {
+        
         Transform gunBarrel = weaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
 
@@ -66,15 +65,16 @@ public class gunStats : weaponStats
                 {
                     damage dmg = spawnedBullet.GetComponent<damage>();
                     dmg.isExplosive = true;
-                    // PASS CHALLENGE DATA TO BULLET
+
+
+                }
+                // PASS CHALLENGE DATA TO BULLET
                 damage challengeDmg = spawnedBullet.GetComponent<damage>();
                 if (challengeDmg != null)
                 {
-                        challengeDmg.sourceWeapon = weaponManager.instance.activeWeapon;
-                        challengeDmg.sourceWasGroundPickup = weaponManager.instance.currentWeaponFromGround;
+                    challengeDmg.sourceWeapon = weaponManager.instance.activeWeapon;
+                    challengeDmg.sourceWasGroundPickup = weaponManager.instance.currentWeaponFromGround;
                 }
-            }
-                
             }
         }
     }

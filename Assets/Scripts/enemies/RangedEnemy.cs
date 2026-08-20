@@ -1,173 +1,77 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class RangedEnemy : EnemyBase
+public class rangedEnemy : enemyBase
 {
-    [Header("Projectile")]
-    [SerializeField] private GameObject bullet;
+    [Header("Weapon")]
+    [SerializeField] Transform gunPivot;
+    [Range(1, 30)][SerializeField] int gunRotateSpeed;
 
-    [Tooltip("Optional manual muzzle. Leave empty for Robot_Soldier_Black; the RightHand bone is used automatically.")]
-    [SerializeField] private Transform shootPos;
+    public GameObject gunModel;
+    public weaponStats[] gunPrefabs;
 
-    [SerializeField] private float shootRate = 1f;
-    [SerializeField] private float shootingRange = 18f;
-    [SerializeField] private float aimHeight = 1f;
+    [SerializeField] Patrol patrol;
 
-    [Header("Robot Soldier Muzzle")]
-    [SerializeField] private float muzzleForwardOffset = 0.35f;
-    [SerializeField] private float muzzleUpOffset = 0.02f;
-    [SerializeField] private float muzzleRightOffset = 0f;
+    gunStats activeGun;
+    private GameObject spawnedWeaponModel;
 
-    [Header("Movement")]
-    [SerializeField] private float stoppingDistance = 8f;
-    [SerializeField] private float repathInterval = 0.15f;
-    [SerializeField] private float navSampleRadius = 2f;
+    public Transform gunBarrel;
 
-    private Transform rightHand;
-    private float shootingRangeSqr;
-    private float stoppingDistanceSqr;
-    private float nextShotTime;
-    private float nextRepathTime;
+    int currentAmmo;
 
     protected override void Start()
     {
         base.Start();
-
-        shootingRangeSqr = shootingRange * shootingRange;
-        stoppingDistanceSqr = stoppingDistance * stoppingDistance;
-
-        FindRobotSoldierHand();
-
-        nextRepathTime =
-            Time.unscaledTime + Random.Range(0f, repathInterval);
+        SetWeaponPrefab();
+        currentAmmo = activeGun.startingBullets * 3;
+        if (TryGetComponent<Patrol>(out patrol))
+            agent.destination = patrol.getCurrentWayPointPos();
     }
 
-    private void FindRobotSoldierHand()
+    protected override void attack()
     {
-        if (animator != null && animator.isHuman)
-            rightHand = animator.GetBoneTransform(HumanBodyBones.RightHand);
+        agent.stoppingDistance = stoppingDistOrig;
 
-        if (rightHand == null)
-            rightHand = FindChildRecursive("RightHand");
-
-        if (shootPos == null && rightHand == null)
-        {
-            Debug.LogWarning(
-                "RangedEnemy could not find RightHand. Assign Shoot Pos manually.",
-                this
-            );
-        }
+        if (gunPivot != null) rotateGun();
+        if (attackTimer > attackRate && currentAmmo >= 0) shoot();
     }
 
-    protected override void UpdateBehavior()
+    void shoot()
     {
-        if (playerTransform == null)
-            return;
+        currentAmmo--;
+        attackTimer = 0f;
+        if (audioManager.instance != null)
+            audioManager.instance.playSpatialSFX(audioManager.instance.enemyShoot, gunBarrel.position, audioManager.instance.enemyShootVol);
 
-        float distanceSqr = playerDir.sqrMagnitude;
-
-        UpdateMovement(distanceSqr);
-
-        if (distanceSqr <= shootingRangeSqr &&
-            Time.time >= nextShotTime)
-        {
-            Shoot();
-        }
+        if (activeGun.bullet != null && gunPivot != null)
+            Instantiate(activeGun.bullet, gunBarrel.position, gunPivot.rotation);
     }
 
-    private void UpdateMovement(float distanceSqr)
+    void rotateGun()
     {
-        if (agent == null || !agent.enabled || !agent.isOnNavMesh)
-            return;
-
-        if (distanceSqr <= stoppingDistanceSqr)
-        {
-            if (!agent.isStopped)
-            {
-                agent.isStopped = true;
-
-                if (agent.hasPath)
-                    agent.ResetPath();
-            }
-
-            return;
-        }
-
-        if (agent.isStopped)
-            agent.isStopped = false;
-
-        if (Time.unscaledTime < nextRepathTime || agent.pathPending)
-            return;
-
-        nextRepathTime = Time.unscaledTime + repathInterval;
-
-        if (NavMesh.SamplePosition(
-            playerTransform.position,
-            out NavMeshHit hit,
-            navSampleRadius,
-            NavMesh.AllAreas))
-        {
-            agent.SetDestination(hit.position);
-        }
+        Quaternion rot = Quaternion.LookRotation(playerDir);
+        gunPivot.rotation = Quaternion.Lerp(gunPivot.rotation, rot, gunRotateSpeed * Time.deltaTime);
     }
 
-    private void Shoot()
+    public void SetWeaponPrefab()
     {
-        nextShotTime = Time.time + shootRate;
+        weaponStats selectedGun = gunPrefabs[Random.Range(0, gunPrefabs.Length)];
+        spawnedWeaponModel = Instantiate(selectedGun.weaponModel, gunModel.transform, false);
 
-        if (bullet == null)
-        {
-            Debug.LogWarning("RangedEnemy is missing its Bullet prefab.", this);
-            return;
-        }
+        spawnedWeaponModel.transform.localPosition = Vector3.zero;
+        spawnedWeaponModel.transform.localRotation = Quaternion.identity;
+        if (spawnedWeaponModel.TryGetComponent<clip>(out var weaponClip)) weaponClip.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out var picker)) picker.enabled = false;
 
-        Vector3 origin = GetMuzzlePosition();
-        Vector3 target = playerTransform.position + Vector3.up * aimHeight;
-        Vector3 direction = target - origin;
-
-        if (direction.sqrMagnitude < 0.0001f)
-            return;
-
-        direction.Normalize();
-
-        // Ghost Protocol intentionally corrupts enemy aim.
-        if (killstreakManager.instance != null)
-        {
-            direction = killstreakManager.instance.ApplyGhostAimError(direction);
-        }
-
-        Quaternion shotRotation =
-            Quaternion.LookRotation(direction, Vector3.up);
-
-        Instantiate(bullet, origin, shotRotation);
+        // Locate the barrel or hitpoint
+        string targetName = (selectedGun is gunStats) ? "Muzzle" : "HitPoint";
+        gunBarrel = weaponManager.instance.FindDeepChild(spawnedWeaponModel.transform, targetName);
+        activeGun = (gunStats)selectedGun;
     }
 
-    private Vector3 GetMuzzlePosition()
+    public override void die()
     {
-        if (shootPos != null)
-            return shootPos.position;
-
-        if (rightHand != null)
-        {
-            return rightHand.position
-                + transform.forward * muzzleForwardOffset
-                + transform.up * muzzleUpOffset
-                + transform.right * muzzleRightOffset;
-        }
-
-        return transform.position
-            + transform.up * 1.35f
-            + transform.forward * 0.5f;
-    }
-
-    protected override void OnValidate()
-    {
-        base.OnValidate();
-
-        shootRate = Mathf.Max(0.05f, shootRate);
-        shootingRange = Mathf.Max(0.1f, shootingRange);
-        stoppingDistance = Mathf.Clamp(stoppingDistance, 0.1f, shootingRange);
-        repathInterval = Mathf.Max(0.02f, repathInterval);
-        navSampleRadius = Mathf.Max(0.1f, navSampleRadius);
+        throwWeapon(spawnedWeaponModel, gunModel.transform);
+        base.die();
     }
 }

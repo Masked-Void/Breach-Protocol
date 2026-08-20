@@ -52,7 +52,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BasicEnemy
   model: {fileID: 7057455984083282150}
   agent: {fileID: 41331064655073898}
-  maxHP: 2
+  maxHP: 1
   faceTargetSpeed: 15
   FOV: 180
   attackRate: 0.5

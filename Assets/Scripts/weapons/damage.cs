@@ -3,7 +3,7 @@ using System.Collections;
 
 public class damage : MonoBehaviour
 {
-    enum damageType { bullet, stationary, DOT, shard }
+    enum damageType { bullet, stationary, DOT, shard, throwable }
     [SerializeField] damageType type;
     [SerializeField] Rigidbody rb;
 
@@ -22,7 +22,7 @@ public class damage : MonoBehaviour
     public bool isExplosive;
     private float explosionRadius = 5f;
     private int explosionDamage = 50;
-
+    
 
     [Header("Challenge Source")]
     public weaponStats sourceWeapon;
@@ -38,10 +38,10 @@ public class damage : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+       
         if (type == damageType.bullet)
         {
-
+           
             rb.useGravity = false;
             rb.linearVelocity = transform.forward * bulletSpeed;
             Destroy(gameObject, bulletDestroyTime);
@@ -72,9 +72,13 @@ public class damage : MonoBehaviour
             glass.Shatter(hitPoint, transform.forward, shatterForce);
             audioManager.instance.playSpatialSFX(audioManager.instance.glass, transform.position, audioManager.instance.glassVol);
         }
-        // Damage now goes through IDamage / EnemyBase directly.
-        // The old enemyBase.RegisterDamageSource API was removed during
-        // the EnemyBase migration.
+        // REGISTER SOURCE ON ENEMY BEFORE DAMAGE
+         enemyBase eb = other.GetComponent<enemyBase>();
+         if (eb != null && sourceWeapon != null)
+         {
+             eb.RegisterDamageSource(sourceWeapon, sourceWasGroundPickup);
+         }
+
         IDamage dmg = other.GetComponent<IDamage>();
         if (dmg != null && type != damageType.DOT)
         {
@@ -88,14 +92,14 @@ public class damage : MonoBehaviour
             {
                 hitEffect = explodeEffect;
                 explode();
-
+                
             }
             if (hitEffect != null)
             {
                 Instantiate(hitEffect, transform.position, Quaternion.identity);
             }
 
-            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            if(other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                 audioManager.instance.playSpatialSFX(audioManager.instance.enemyHit, transform.position, audioManager.instance.enemyHitVol);
             else
                 audioManager.instance.playSpatialSFX(audioManager.instance.wallHit, transform.position, audioManager.instance.wallHitVol);

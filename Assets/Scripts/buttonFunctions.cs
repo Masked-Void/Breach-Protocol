@@ -19,6 +19,18 @@ public class buttonFunctions : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void homeNav()
+{
+    audioManager.instance.playButtonClick();
+    
+    if (gameManager.instance != null)
+    {
+        gameManager.instance.stateUnpause();
+    }
+
+    SceneManager.LoadScene(0);
+}
+
     public void sound()
     {
         audioManager.instance.playButtonClick();

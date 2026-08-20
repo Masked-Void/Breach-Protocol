@@ -10,7 +10,6 @@ public class pickWeapon : MonoBehaviour
         {
             weaponManager.instance.currentWeaponFromGround = true;
             pic.equipWeapon(weapon);
-            Destroy(gameObject);
         }
     }
 }

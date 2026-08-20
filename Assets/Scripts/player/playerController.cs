@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class playerController : MonoBehaviour, IPickWeapon
+public class playerController : MonoBehaviour, IPickWeapon, IDamage
 {
     [Header("Controller")]
     [SerializeField] CharacterController controller;
@@ -44,8 +44,7 @@ public class playerController : MonoBehaviour, IPickWeapon
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentStamina = maxStamina;
-        if(weaponManager.instance != null) weaponManager.instance.showActiveweapon(weaponHoldPos.transform);
+        currentStamina = maxStamina;;
     }
 
     // Update is called once per frame
@@ -145,7 +144,7 @@ public class playerController : MonoBehaviour, IPickWeapon
         }
     }
 
-    public void takeDamage()
+    public void takeDamage(int amount)
     {
         audioManager.instance.playHurt();
 

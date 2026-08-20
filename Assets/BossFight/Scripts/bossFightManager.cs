@@ -61,11 +61,11 @@ public class bossFightManager : MonoBehaviour
 
         curHealth = maxHealth;
 
-        Transform mask = findMark("Head");
+        /*Transform mask = findMark("Head");
         if (!mask.TryGetComponent(out shake))
         {
             Debug.LogError("bossFightManager: No maskShake component on boss",this);
-        }
+        }*/
         
     }
 
@@ -181,7 +181,7 @@ public class bossFightManager : MonoBehaviour
         waveManager.startP4();
     }
     // Looks through the bosses object's children for a marker with an exact name match
-    Transform findMark(string wanted)
+    /*Transform findMark(string wanted)
     {
         // Goes through each child of the boss object
         foreach (Transform child in boss.transform)
@@ -194,5 +194,5 @@ public class bossFightManager : MonoBehaviour
 
         // Returns null if nothing matched, Awake handles that error
         return null;
-    }
+    }*/
 }

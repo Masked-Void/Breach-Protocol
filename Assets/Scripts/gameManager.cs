@@ -1,5 +1,6 @@
 using System.Collections;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,42 +9,58 @@ public class gameManager : MonoBehaviour
 
     public static gameManager instance;
 
+    [Header("Menu")]
     [SerializeField] GameObject menuActive;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuSound;
-    public GameObject shopUI;
-    [SerializeField] timeManager timeManager;
 
+    [Header("Kills UI")]
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] TextMeshProUGUI pauseKills;
     [SerializeField] TextMeshProUGUI killCounter;
+
+    [Header("Wave UI")]
     [SerializeField] TextMeshProUGUI waveCounter;
     [SerializeField] TextMeshProUGUI waveCountdownText;
+    [SerializeField] TextMeshProUGUI waveCountdown;
+
+    [Header("Interaction UI")]
     public GameObject interactionUI;
     public TMP_Text interactionText;
     public TMP_Text interactionKey;
+
+    [Header("Player")]
     public Image playerStaminaBar;
-    public GameObject checkpointPopup;
-    [SerializeField]  TextMeshProUGUI bytesText;
-    public GameObject shopMessage;
-    
     public GameObject playerSpawnPos;
-
-    int currentKill = 0;
-    int previousWave = -1;
-
-
-    [Header("Screen Flash")]
-    public GameObject damageFlashUI;
-
-    public bool isPaused;
-    public GameObject player;
-    public playerController playerScript;
+    public GameObject checkpointPopup;
 
     [Header("Currency")]
     [SerializeField] public int totalBytes = 0;
     [SerializeField] public int totalFiles = 0;
+    [SerializeField] TextMeshProUGUI bytesText;
+
+    [Header("Shop")]
+    public GameObject shopMessage;
+    public GameObject shopUI;
+
+    [Header("Screen Flash")]
+    public GameObject damageFlashUI;
+
+    [Header("Weapon UI")]
+    public TextMeshProUGUI magAmmoUI;
+    public TextMeshProUGUI totalAmmoUI;
+    public Image activeWeapon;
+
+    [Header("Runtime: Do not Change")]
+    public bool isPaused;
+    public GameObject player;
+    public playerController playerScript;
+
+
+    int currentKill = 0;
+    int previousWave = -1;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -75,11 +92,11 @@ public class gameManager : MonoBehaviour
     {
         bytesText.text = "Bytes: " + totalBytes.ToString();
         if (FindAnyObjectByType<playerInteraction>().shopOpen)
-        { 
+        {
             menuActive = shopUI;
             return;
         }
-        
+
         if (!FindAnyObjectByType<playerInteraction>().shopOpen && Input.GetButtonDown("Cancel"))
         {
             if (audioManager.instance != null) audioManager.instance.playButtonClick();
@@ -98,10 +115,15 @@ public class gameManager : MonoBehaviour
                 openPauseMenu();
             }
 
-        }    
-        
+        }
+
 
         updateUI();
+
+        if (weaponManager.instance != null && weaponManager.instance.activeWeapon != null)
+        {
+            magAmmoUI.text = weaponManager.instance.getCurrentAmmo().ToString();
+        }
     }
 
     // Pause the game
@@ -119,7 +141,7 @@ public class gameManager : MonoBehaviour
     public void stateUnpause()
     {
         isPaused = false;
-        if (timeManager != null) timeManager.unpauseTime();
+        if (timeManager.instance != null) timeManager.instance.unpauseTime();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         if (menuActive != null)
@@ -157,8 +179,12 @@ public class gameManager : MonoBehaviour
         menuActive = menuLose;
         menuActive.SetActive(true);
         scoreText.text = currentKill.ToString("f0");
-        upgradeManager.instance.files += totalFiles;
-        upgradeManager.instance.SaveUpgrades();
+        if(upgradeManager.instance != null)
+        {
+            upgradeManager.instance.files += totalFiles;
+            upgradeManager.instance.SaveUpgrades();
+        }
+
     }
 
     public void addKill()
@@ -170,26 +196,17 @@ public class gameManager : MonoBehaviour
     {
         if (waveManager.instance == null) return;
 
-        int currentWave = waveManager.instance.getCurrentWave();
-        
+        waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
+        StartCoroutine(AnimateWaveText());
 
-        if (currentWave != previousWave)
-        {
-            previousWave = currentWave;
-
-            waveCounter.text = currentWave.ToString("f0");
-
-            StartCoroutine(AnimateWaveText());
-        }
-
-        killCounter.text = currentKill.ToString("f0");
+        killCounter.text = "Kills: " + currentKill;
 
         if (waveManager.instance.isWaitingForNextWave())
         {
             int secondsLeft = waveManager.instance.getSecondsUntilNextWave();
 
-            waveCountdownText.text = "Next Wave Starts In: " + secondsLeft;
             waveCountdownText.gameObject.SetActive(true);
+            waveCountdown.text = "" + secondsLeft;
         }
         else
         {
@@ -199,13 +216,13 @@ public class gameManager : MonoBehaviour
 
     public IEnumerator WarningText()
     {
-        if (gameManager.instance.shopMessage != null)
-            gameManager.instance.shopMessage.SetActive(true);
+        if (shopMessage != null)
+            shopMessage.SetActive(true);
 
         yield return new WaitForSecondsRealtime(5);
 
-        if (gameManager.instance.shopMessage != null)
-            gameManager.instance.shopMessage.SetActive(false);
+        if (shopMessage != null)
+            shopMessage.SetActive(false);
     }
 
     public void showShopWarning()
@@ -216,11 +233,11 @@ public class gameManager : MonoBehaviour
 
     IEnumerator AnimateWaveText()
     {
-        RectTransform rect = waveCounter.rectTransform;
+        RectTransform rect = waveCountdown.rectTransform;
 
         Vector3 originalScale = Vector3.one;
 
-        float duration = 0.25f;
+        float duration = .1f;
         float timer = 0f;
 
         rect.localScale = originalScale * 1.3f;

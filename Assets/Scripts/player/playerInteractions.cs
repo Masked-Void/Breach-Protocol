@@ -5,6 +5,8 @@ public class playerInteraction : MonoBehaviour
     [Header("Raycast Settings")]
     [Range(1f, 5)][SerializeField] private float maxDistance = 2f;
     [SerializeField] LayerMask interactLayer;
+    [SerializeField] KeyCode throwKey;
+    [SerializeField] KeyCode switchKey;
 
     private Camera mainCam;
     private IPickWeapon picker;
@@ -37,8 +39,8 @@ public class playerInteraction : MonoBehaviour
         if (Input.GetButtonDown("Fire1") && weaponManager.instance != null)
             weaponManager.instance.attack();
 
-        if (Input.GetKeyDown(KeyCode.Keypad8) && weaponManager.instance != null)
-            weaponManager.instance.Throw();
+        if (Input.GetKeyDown(throwKey) && weaponManager.instance != null)
+            weaponManager.instance.throwWeapon();
 
         handleInteraction();
     }
@@ -53,7 +55,7 @@ public class playerInteraction : MonoBehaviour
             {
                 gameManager.instance.interactionText.text = "Pick Up!";
                 setInteractionUI(true);
-                if (Input.GetButtonDown("Interact"))
+                if (Input.GetButtonDown("Interact") || Input.GetKeyDown(KeyCode.E))
                 {
                     weaponPickup.interact(picker);
                     Destroy(hit.collider.gameObject);

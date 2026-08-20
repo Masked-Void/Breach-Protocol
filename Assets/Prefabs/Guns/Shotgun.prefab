@@ -333,7 +333,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2882416504792515310}
   - component: {fileID: 4863825239290623286}
-  - component: {fileID: 8343291599818358487}
+  - component: {fileID: 1731717635085444953}
   m_Layer: 8
   m_Name: Shotgun
   m_TagString: Untagged
@@ -376,8 +376,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::pickWeapon
   weapon: {fileID: 11400000, guid: 390a74157b59cac4e8536a3f2d61b51c, type: 2}
---- !u!136 &8343291599818358487
-CapsuleCollider:
+--- !u!65 &1731717635085444953
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -394,11 +394,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.08
-  m_Height: 1.26
-  m_Direction: 2
-  m_Center: {x: 0, y: 0, z: 0.21}
+  serializedVersion: 3
+  m_Size: {x: 0.16425666, y: 0.2701854, z: 1.3001437}
+  m_Center: {x: -0.004018169, y: -0.02629971, z: 0.20793128}
 --- !u!1 &2056705170315943731
 GameObject:
   m_ObjectHideFlags: 0
