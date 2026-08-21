@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum pillarColor { Red, Blue, Green, Yellow };
@@ -93,9 +94,6 @@ public class laserArrayManager : MonoBehaviour {
 
 
     [Header("Rotation")]
-    [Tooltip("parent object all four pillars sit under. rotation goes through this, never the lasers themselves")]
-    [SerializeField] private Transform arrayPivot;
-
     [Tooltip("degrees per second for the continuous spin. direction comes from the startSpin call, not from here")]
     [SerializeField] private float spinSpeed = 45f;
 
@@ -104,6 +102,10 @@ public class laserArrayManager : MonoBehaviour {
 
     [Tooltip("how close to the target angle counts as arrived. keep it above one frame of travel or it overshoots forever")]
     [SerializeField] private float angleEpsilon = 0.5f;
+
+    private laserArray[] spinTargets;
+    private Quaternion[] spinBaseRots;
+    private float spinAngle;
 
     [Header("Patterns")]
     [Tooltip("all the firing sequences. the boss controller calls these by index")]
@@ -124,6 +126,7 @@ public class laserArrayManager : MonoBehaviour {
     // stitch the four inspector fields into something indexable
     // has to match the pillarColor enum order or the colors get swapped
     private void Awake() {
+
         pillars = new laserArray[4][];
 
         pillars[0] = pillarRed;
@@ -134,6 +137,44 @@ public class laserArrayManager : MonoBehaviour {
         for (int i = 0 ; i < pillars.Length ; i++) {
             if (pillars[i] == null || pillars[i].Length == 0) {
                 Debug.LogWarning("laserArrayManager: the "+(pillarColor)i+" pillar has no laserArrays, it will be skipped",this);
+            }
+        }
+
+        buildSpinTargets();
+    }
+
+    private void buildSpinTargets() {
+        
+        List<laserArray> found = new List<laserArray>();
+
+        for (int pillarIndex = 0 ; pillarIndex < pillars.Length ; pillarIndex++) {
+            if (pillars[pillarIndex] == null) {
+                continue;
+            }
+
+            for (int laserIndex = 0 ; laserIndex < pillars[pillarIndex].Length ; laserIndex++) {
+                if (pillars[pillarIndex][laserIndex] != null) {
+                    found.Add(pillars[pillarIndex][laserIndex]);
+                }
+            }
+        }
+
+        spinTargets = found.ToArray();
+        spinBaseRots = new Quaternion[spinTargets.Length];
+
+        for (int i = 0 ; i < spinTargets.Length ; i++) {
+            spinBaseRots[i] = spinTargets[i].transform.localRotation;
+        }
+
+        spinAngle = 0f;
+    }
+
+    private void applySpinAngle() {
+        Quaternion offset = Quaternion.Euler(0f , spinAngle , 0f);
+
+        for (int i = 0 ; i < spinTargets.Length ; i++) {
+            if (spinTargets[i] != null) {
+                spinTargets[i].transform.localRotation = spinBaseRots[i] * offset;
             }
         }
     }
@@ -316,9 +357,11 @@ public class laserArrayManager : MonoBehaviour {
     // starts the group spinning forever, direction is 1 or -1
     // kills whatever rotation was already running first
     public void startSpin(int direction) {
-
-        if (arrayPivot == null)
+        
+        if (spinTargets == null || spinTargets.Length == 0) {
+            Debug.LogError("laserArrayManager: no laserArrays to spin" , this);
             return;
+        }
 
         stopRotation();
 
@@ -332,7 +375,19 @@ public class laserArrayManager : MonoBehaviour {
         int dir = direction < 0 ? -1 : 1;
 
         while (true) {
-            arrayPivot.Rotate(0f , spinSpeed * dir * Time.unscaledDeltaTime , 0f);
+
+            float step = Mathf.Min(Time.unscaledDeltaTime , 0.05f);
+
+            spinAngle += spinSpeed * dir * step;
+
+            if (spinAngle >= 360f) {
+                spinAngle -= 360f;
+            }else if(spinAngle < -360f) {
+                spinAngle += 360f;
+            }
+
+            applySpinAngle();
+
             yield return null;
         }
     }
@@ -340,8 +395,11 @@ public class laserArrayManager : MonoBehaviour {
     // rotates the group to a set angle and stops there
     // shares the rotate handle with the spin so calling this cancels a spin for free
     public void sweepTo(float angle) {
-        if (arrayPivot == null)
+        
+        if (spinTargets == null || spinTargets.Length == 0) {
+            Debug.LogError("laserArrayManager: no laserArrays to spin" , this);
             return;
+        }
 
         stopRotation();
         rotateRoutine = StartCoroutine(sweepRoutine(angle));
@@ -350,25 +408,34 @@ public class laserArrayManager : MonoBehaviour {
     // normalize the current angle first or the accumulated spin makes the math wrong
     // then pick whichever direction is shorter, rotate until past the target, snap exact
     private IEnumerator sweepRoutine(float target) {
-        float remaining = Mathf.DeltaAngle(arrayPivot.eulerAngles.y , target);
+
+        // a speed of 0 never closes the gap and the loop would run for the rest of the fight
+        if (sweepSpeed <= 0f) {
+            Debug.LogError("laserArrayManager: sweepSpeed is 0, snapping to the angle instead" , this);
+            spinAngle = target;
+            applySpinAngle();
+            rotateRoutine = null;
+            yield break;
+        }
+
+        float remaining = Mathf.DeltaAngle(spinAngle , target);
 
         while (Mathf.Abs(remaining) > angleEpsilon) {
             // dont overshoot on the last frame, only move as far as whats left
-            float step = sweepSpeed * Time.unscaledDeltaTime;
+            float step = sweepSpeed * Mathf.Min(Time.unscaledDeltaTime,0.05f);
             step = Mathf.Min(step , Mathf.Abs(remaining)) * Mathf.Sign(remaining);
 
-            arrayPivot.Rotate(0f , step , 0f);
+            spinAngle += step;
+            applySpinAngle();
 
-            // recalculate off the actual transform instead of subtracting, keeps it honest
-            remaining = Mathf.DeltaAngle(arrayPivot.eulerAngles.y , target);
+            remaining = Mathf.DeltaAngle(spinAngle , target);
 
             yield return null;
         }
 
         // snap so we end on an exact angle, not epsilon short of one
-        Vector3 finalAngles = arrayPivot.eulerAngles;
-        finalAngles.y = target;
-        arrayPivot.eulerAngles = finalAngles;
+        spinAngle = target;
+        applySpinAngle();
 
         // clear our own handle, otherwise getIsSpinning reports true forever
         rotateRoutine = null;
@@ -387,6 +454,106 @@ public class laserArrayManager : MonoBehaviour {
     // just a null check, the handle being alive means its rotating
     public bool getIsSpinning() {
         return rotateRoutine != null;
+    }
+
+    [ContextMenu("Test Spin Clockwise")]
+    private void testSpinClockwise() {
+        if (spinSpeed <= 0f) {
+            Debug.LogError("laserArrayManager:spinSpeed is 0" , this);
+            return;
+        }
+
+        startSpin(1);
+        Debug.Log("laserArrayManager: spinning clockwise at " + spinSpeed + " deg per sec" , this);
+    }
+
+    [ContextMenu("Test Spin Counter Clockwise")]
+    private void testSpinCounterClockwise() {
+        if (spinSpeed <= 0f) {
+            Debug.LogError("laserArrayManager: spinSpeed is 0" , this);
+            return;
+        }
+
+        startSpin(-1);
+        Debug.Log("laserArrayManager: spinning counter clockwise at " + spinSpeed + " deg per sec" , this);
+    }
+
+    [ContextMenu("Test Sweep to 90")]
+    private void testSweep() {
+        if (sweepSpeed <= 0f) {
+            Debug.LogError("laserArrayManager: sweepSpeed is 0, loop would never finish" , this);
+            return;
+        }
+
+        Debug.Log("laserArrayManager: sweeping from "+ spinAngle +" to 90",this);
+        sweepTo(90);
+    }
+
+    [ContextMenu("Stop Rotation")]
+    private void testStopRotation() {
+        stopRotation();
+        Debug.Log("laserArrayManager: rotation stopped at " +  spinAngle , this);
+    }
+
+    [ContextMenu("Reset Pivot Rotation")]
+    private void resetPivot() {
+        stopRotation();
+        spinAngle = 0f;
+        applySpinAngle();
+
+        Debug.Log("laserArrayManager: pivot reset to 0" , this);
+    }
+
+
+    [ContextMenu("Check Rotation Setup")]
+    // prints everything the spin depends on, use this before blaming the code
+    private void checkRotationSetup() {
+        int count = spinTargets == null ? 0 : spinTargets.Length;
+
+        Debug.Log("laserArrayManager rotation setup:"
+            + "\n   arrays registered: " + count
+            + "\n   spinSpeed: " + spinSpeed
+            + "\n   sweepSpeed: " + sweepSpeed
+            + "\n   currently rotating: " + getIsSpinning()
+            + "\n   spinAngle: " + spinAngle.ToString("F1") , this);
+
+        if (count == 0) {
+            Debug.LogError("laserArrayManager: no arrays registered, check the four pillar lists" , this);
+            return;
+        }
+
+        // eight is what the arena has, anything less means a pillar list lost an entry in a merge
+        if (count != 8)
+            Debug.LogWarning("laserArrayManager: expected 8 arrays, found " + count , this);
+
+        if (spinSpeed <= 0f)
+            Debug.LogError("laserArrayManager: spinSpeed is 0, the arrays rotate by 0 every frame" , this);
+
+        if (sweepSpeed <= 0f)
+            Debug.LogError("laserArrayManager: sweepSpeed is 0, sweepRoutine would loop forever and block every later rotation call" , this);
+
+        // if an array isnt sitting where applySpinAngle put it, something else is writing
+        // to that transform and fighting the spin
+        Quaternion expected = Quaternion.Euler(0f , spinAngle , 0f);
+        int drifted = 0;
+
+        for (int i = 0 ; i < spinTargets.Length ; i++) {
+            if (spinTargets[i] == null) {
+                Debug.LogError("laserArrayManager: array slot " + i + " is empty" , this);
+                continue;
+            }
+
+            float off = Quaternion.Angle(spinTargets[i].transform.localRotation , spinBaseRots[i] * expected);
+
+            if (off > 1f) {
+                Debug.LogError("laserArrayManager: '" + spinTargets[i].name + "' is " + off.ToString("F1")
+                    + " degrees off where the spin put it, something else is moving it" , spinTargets[i]);
+                drifted++;
+            }
+        }
+
+        if (drifted == 0)
+            Debug.Log("laserArrayManager: all " + count + " arrays are where the spin expects them" , this);
     }
 
     // runs one of the authored patterns by index, cancels any pattern already going

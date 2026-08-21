@@ -18,7 +18,7 @@ public class bossHitbox : MonoBehaviour, IDamage
     }
 
     public void takeDamage(int amount) {
-        Debug.Log("Damage Taken");
+
         if (fightManager == null) {
             return;
         }
