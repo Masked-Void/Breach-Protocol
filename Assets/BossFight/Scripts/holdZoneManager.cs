@@ -135,10 +135,11 @@ public class holdZoneManager : MonoBehaviour {
         if (immuneZone != null)
             immuneZone.deactivate();
 
-        for (int i = 0 ; i < damagePoints.Length ; i++)
-            if (damagePoints[i] != null)
-                damagePoints[i].deactivate();
-
+        if (damagePoints != null) {
+            for (int i = 0 ; i < damagePoints.Length ; i++)
+                if (damagePoints[i] != null)
+                    damagePoints[i].deactivate();
+        }
         activeZone = null;
         if (hudObj != null)
             hudObj.SetActive(false);

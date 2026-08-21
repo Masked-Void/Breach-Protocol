@@ -169,7 +169,7 @@ public class bossFightManager : MonoBehaviour,IDamage {
             }
             isImmune = true;
             phaseImmuned[endingPhase] = true;
-            if (immuneBar != null) {
+            if (immuneBarObj != null) {
                 immuneBarObj.SetActive(true);
             }
 

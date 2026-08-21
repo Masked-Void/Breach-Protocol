@@ -56,12 +56,14 @@ public class platformManager : MonoBehaviour {
 
     // grabs the start position of every platform and works out how far it has to travel
     void cacheStages() {
+
+        stageRoutines = new Coroutine[stages.Length];
+
         if (stageBase == null) {
             Debug.LogError("platformManager: No stage base marker given" , this);
             return;
         }
 
-        stageRoutines = new Coroutine[stages.Length];
 
         for (int i = 0 ; i < stages.Length ; i++) {
             platformStage stage = stages[i];
