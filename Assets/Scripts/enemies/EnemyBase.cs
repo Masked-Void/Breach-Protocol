@@ -48,6 +48,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     protected weaponStats lastDamageWeapon;
     protected bool lastDamageFromGround;
 
+    // small compatibility state used by the scorestreak system
+    private bool isDead;
+    private bool suppressKillRewards;
+
+    public bool IsDead => isDead;
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -126,6 +131,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     public void takeDamage(int amount)
     {
+        if (isDead || amount <= 0)
+            return;
+
         currentHP -= amount;
         if (gameManager.instance?.player != null)
             agent.SetDestination(gameManager.instance.player.transform.position);
@@ -155,22 +163,44 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     public virtual void die()
     {
-        gameManager.instance.AddBytes(byteValue);
-        // REPORT TO CHALLENGE SYSTEM
-        if (lastDamageWeapon != null)
+        if (isDead)
+            return;
+
+        isDead = true;
+
+        // ForceKill(false) is used by scorestreaks such as Data Purge.
+        // Those kills still need to reduce the wave enemy count, but they
+        // should not count as normal player kills/rewards.
+        bool awardKillRewards = !suppressKillRewards;
+        suppressKillRewards = false;
+
+        if (awardKillRewards && lastDamageWeapon != null)
         {
-            challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
+            challengeManager.instance?.ReportKill(
+                lastDamageWeapon,
+                lastDamageFromGround
+            );
         }
+
+        if (waveManager.instance != null)
+        {
             waveManager.instance.enemyKilled();
-        if (gameManager.instance != null)
-        {
-            gameManager.instance.addKill();
-            gameManager.instance.AddBytes(byteValue);
         }
-        if (killChainManager.instance != null)
+
+        if (awardKillRewards)
         {
-            killChainManager.instance.RegisterKill();
+            if (gameManager.instance != null)
+            {
+                gameManager.instance.addKill();
+                gameManager.instance.AddBytes(byteValue);
+            }
+
+            if (killChainManager.instance != null)
+            {
+                killChainManager.instance.RegisterKill();
+            }
         }
+
         Destroy(gameObject);
     }
 
@@ -189,6 +219,35 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     protected abstract void attack();
 
+    protected bool tryMeleeHit()
+    {
+        agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
+        float dist = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
+        if (dist > attackRange || attackTimer <= attackRate) return false;
+
+        attackTimer = 0;
+        gameManager.instance.player.GetComponent<IDamage>()?.takeDamage(attackDamage);
+        return true;
+    }
+
+    // Chain Reaction uses this so secondary damage has a clear entry point.
+    // Right now it intentionally behaves like normal enemy damage.
+    public void TakeSecondaryDamage(int amount)
+    {
+        takeDamage(amount);
+    }
+
+    // Existing code can still call ForceKill() with no arguments.
+    // Scorestreak/environment kills can pass false to suppress player rewards.
+    public void ForceKill(bool countAsPlayerKill = true)
+    {
+        if (isDead)
+            return;
+
+        suppressKillRewards = !countAsPlayerKill;
+        currentHP = 0;
+        die();
+    }
 
     public void throwWeapon(GameObject spawnedWeaponModel, Transform pivot)
     {
