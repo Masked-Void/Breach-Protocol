@@ -535,11 +535,4 @@ public class waveManager : MonoBehaviour,IWaveHost
     }
 
 
-    private void OnDestroy()
-    {
-        if (instance == this)
-        {
-            instance = null;
-        }
-    }
 }

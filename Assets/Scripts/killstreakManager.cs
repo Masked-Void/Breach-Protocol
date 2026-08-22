@@ -441,10 +441,5 @@ public class killstreakManager : MonoBehaviour
         text.text = "[" + key + "] " + name;
     }
 
-    private void OnDestroy()
-    {
-        if (instance == this)
-            instance = null;
-    }
 }
 
