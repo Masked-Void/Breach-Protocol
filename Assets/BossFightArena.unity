@@ -1395,6 +1395,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hold Point (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 5729008587024705659, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
+      propertyPath: fillTime
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7178859931032461499, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 14.190002
@@ -3445,8 +3449,11 @@ MonoBehaviour:
   lavaObject: {fileID: 228730642}
   lowMarkerName: Low
   highMarkerName: High
-  riseTime: 2
+  riseTime: 12
   drainTime: 4
+  damageRate: 1
+  damageDepth: 0.2
+  playerTag: Player
 --- !u!1 &55921347
 GameObject:
   m_ObjectHideFlags: 0
@@ -10468,6 +10475,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hold Point (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 5729008587024705659, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
+      propertyPath: fillTime
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7178859931032461499, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 14.190002
@@ -13647,13 +13658,13 @@ MonoBehaviour:
   laserOutMarkerName: laserOut
   beamMarkerName: beam
   deployTime: 1.5
-  stagger: 0
+  stagger: 0.08
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
     m_Bits: 1089
   beamDamage: 1
-  beamRate: 0.5
+  beamRate: 1
   beamStartOffset: 0.1
 --- !u!4 &234829215
 Transform:
@@ -20982,13 +20993,13 @@ MonoBehaviour:
   laserOutMarkerName: laserOut
   beamMarkerName: beam
   deployTime: 1.5
-  stagger: 0
+  stagger: 0.08
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
     m_Bits: 1089
   beamDamage: 1
-  beamRate: 0.5
+  beamRate: 1
   beamStartOffset: 0.1
 --- !u!4 &350755922
 Transform:
@@ -71092,13 +71103,13 @@ MonoBehaviour:
   laserOutMarkerName: laserOut
   beamMarkerName: beam
   deployTime: 1.5
-  stagger: 0
+  stagger: 0.08
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
     m_Bits: 1089
   beamDamage: 1
-  beamRate: 0.5
+  beamRate: 1
   beamStartOffset: 0.1
 --- !u!4 &594193827
 Transform:
@@ -82737,6 +82748,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hold Point (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 5729008587024705659, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
+      propertyPath: radius
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7178859931032461499, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.33333334
@@ -88299,13 +88314,13 @@ MonoBehaviour:
   laserOutMarkerName: laserOut
   beamMarkerName: beam
   deployTime: 1.5
-  stagger: 0
+  stagger: 0.08
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
     m_Bits: 1089
   beamDamage: 1
-  beamRate: 0.5
+  beamRate: 1
   beamStartOffset: 0.1
 --- !u!4 &877577437
 Transform:
@@ -107172,13 +107187,13 @@ MonoBehaviour:
   laserOutMarkerName: laserOut
   beamMarkerName: beam
   deployTime: 1.5
-  stagger: 0
+  stagger: 0.08
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
     m_Bits: 1089
   beamDamage: 1
-  beamRate: 0.5
+  beamRate: 1
   beamStartOffset: 0.1
 --- !u!4 &1186976979
 Transform:
@@ -121734,8 +121749,8 @@ MonoBehaviour:
   pillarYellow:
   - {fileID: 350755921}
   - {fileID: 1705942495}
-  spinSpeed: 15
-  sweepSpeed: 15
+  spinSpeed: 20
+  sweepSpeed: 120
   angleEpsilon: 0.5
   patterns:
   - patternName: 
@@ -121751,7 +121766,7 @@ MonoBehaviour:
     stepsEasy: {x: 3, y: 5}
     stepsHard: {x: 6, y: 10}
     delayEasy: {x: 0.8, y: 1.6}
-    delayHard: {x: 0.25, y: 0.7}
+    delayHard: {x: 0.4, y: 0.9}
     retractEasy: 0.55
     retractHard: 0.25
     wholePillarEasy: 0.05
@@ -138958,13 +138973,13 @@ MonoBehaviour:
   laserOutMarkerName: laserOut
   beamMarkerName: beam
   deployTime: 1.5
-  stagger: 0
+  stagger: 0.08
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
     m_Bits: 1089
   beamDamage: 1
-  beamRate: 0.5
+  beamRate: 1
   beamStartOffset: 0.1
 --- !u!4 &1705942496
 Transform:
@@ -144321,13 +144336,13 @@ MonoBehaviour:
   laserOutMarkerName: laserOut
   beamMarkerName: beam
   deployTime: 1.5
-  stagger: 0
+  stagger: 0.08
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
     m_Bits: 1089
   beamDamage: 1
-  beamRate: 0.5
+  beamRate: 1
   beamStartOffset: 0.1
 --- !u!4 &1778142224
 Transform:
@@ -159682,6 +159697,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hold Point (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5729008587024705659, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
+      propertyPath: fillTime
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7178859931032461499, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -39.309998
@@ -165882,13 +165901,13 @@ MonoBehaviour:
   laserOutMarkerName: laserOut
   beamMarkerName: beam
   deployTime: 1.5
-  stagger: 0
+  stagger: 0.08
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
     m_Bits: 1089
   beamDamage: 1
-  beamRate: 0.5
+  beamRate: 1
   beamStartOffset: 0.1
 --- !u!4 &2141418241
 Transform:
@@ -166380,6 +166399,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 786853951}
     - target: {fileID: 3018863977292105427, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: repeatDamageHolds
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3018863977292105427, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: 'damageZones.Array.data[0]'
       value: 
       objectReference: {fileID: 1927598219}
@@ -166481,7 +166504,7 @@ PrefabInstance:
       objectReference: {fileID: 152370931}
     - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: maxHealth
-      value: 10
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: healthBarObj
@@ -166503,6 +166526,42 @@ PrefabInstance:
       propertyPath: laserManager
       value: 
       objectReference: {fileID: 1415254406}
+    - target: {fileID: 5824588057710585167, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: p2_p3.lavaLevel
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5824588057710585167, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: p4.cycleInterval
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490373206905493497, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: p1.maxSpawnCount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490373206905493497, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: p2.maxSpawnCount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490373206905493497, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: p3.maxSpawnCount
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490373206905493497, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: p4.maxSpawnCount
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490373206905493497, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: p1_p2.maxSpawnCount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490373206905493497, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: p2_p3.maxSpawnCount
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490373206905493497, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: p3_p4.maxSpawnCount
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6490373206905493497, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: 'roamPointTransforms.Array.data[0]'
       value: 
@@ -166932,25 +166991,73 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1722493881}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[0].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[0].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[0].topMarker
       value: 
       objectReference: {fileID: 228487467}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[1].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[1].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[1].topMarker
       value: 
       objectReference: {fileID: 482978380}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[2].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[2].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[2].topMarker
       value: 
       objectReference: {fileID: 344804721}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[3].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[3].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[3].topMarker
       value: 
       objectReference: {fileID: 748883092}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[4].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[4].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[4].topMarker
       value: 
       objectReference: {fileID: 323358248}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[5].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[5].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[5].topMarker
       value: 
@@ -167362,6 +167469,10 @@ PrefabInstance:
     - target: {fileID: 5548196045612611762, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
       propertyPath: m_Name
       value: Hold Point
+      objectReference: {fileID: 0}
+    - target: {fileID: 5729008587024705659, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
+      propertyPath: fillTime
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7178859931032461499, guid: b19ca631d70f160469b9785c46f5fbd9, type: 3}
       propertyPath: m_LocalPosition.x
