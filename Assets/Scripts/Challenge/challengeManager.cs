@@ -55,6 +55,11 @@ public class challengeManager : MonoBehaviour
         if (instance == this) instance = null;
     }
 
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
+    }
+
     void InstantiateList()
     {
         weaponChallengeLookup.Clear();

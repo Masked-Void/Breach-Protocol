@@ -20,8 +20,13 @@ public class upgradeManager : MonoBehaviour
     public List<string> purchasedUpgrades = new List<string>();
     void Awake()
     {
-        if (instance != null && instance != this) { Destroy(gameObject); return; }
+        if (instance != null&& instance != this) {
+            Destroy(gameObject);
+            return;
+        }
+
         instance = this;
+        
         LoadUpgrades();
     }
 
@@ -124,5 +129,10 @@ public class upgradeManager : MonoBehaviour
         PlayerPrefs.DeleteKey("UnlockedUpgrades");
         unlockedUpgrades.Clear();
         purchasedUpgrades.Clear();
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
     }
 }

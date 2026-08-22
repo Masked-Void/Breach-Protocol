@@ -11,12 +11,21 @@ public class shopManager : MonoBehaviour
 
     private void Awake()
     {
+        if (instance == null|| instance != this) {
+            Destroy(gameObject);
+            return;
+        } 
         instance = this;
     }
 
     private void Start()
     {
         PopulateShop();
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
     }
 
     private void PopulateShop()

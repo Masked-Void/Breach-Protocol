@@ -20,10 +20,6 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     [Range(.1f, 5)][SerializeField] public float attackRate = 1.5f;
     [Range(1, 20)][SerializeField] public float attackRange = 2f;
     [Range(1, 20)][SerializeField] public int attackDamage = 1;
-    [Range(15, 180)][SerializeField] float FOV = 90f;
-    [Range(.1f, 5)][SerializeField] public float attackRate = 1.5f;
-    [Range(1, 20)][SerializeField] public float attackRange = 2f;
-    [Range(1, 20)][SerializeField] public int attackDamage = 1;
 
     [Header("Roaming")]
     [SerializeField] float roamWaitTime = 1.1f;
@@ -31,11 +27,6 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     public Transform roamTarget;
     [SerializeField] float roamArriveDistance = 0.1f;
     [SerializeField] float roamChance = .1f;
-
-    [Header("Footsteps")]
-    [SerializeField] float stepInterval = 0.5f;
-    [SerializeField] float movementThreshold = 0.1f;
-    float stepTimer;
 
     [Header("Currency")]
     int byteValue = 5;
@@ -56,6 +47,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     [Header("Challenge")]
     protected weaponStats lastDamageWeapon;
     protected bool lastDamageFromGround;
+
+    [Header("Footsteps")]
+    [SerializeField] float stepInterval = 0.5f;
+    [SerializeField] float movementThreshold = 0.1f;
+    float stepTimer;
 
     // small compatibility state used by the scorestreak system
     private bool isDead;
@@ -84,16 +80,16 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (!willRoam)
         {
             // Heavy / Basic: finish first roam point, then b-line player forever
-           // if (roamTarget != null) removed this so melee enemies will go straight to player
-            
+            if (roamTarget != null)
+            {
                 if (AtRoamTarget())
                 {
-                    waveManager.instance?.releaseRoamPoint(gameObject);
+                    waveHost.active?.releaseRoamPoint(gameObject);
                     roamTarget = null;
                     agent.stoppingDistance = stoppingDistOrig;
                 }
-            
-            if (gameManager.instance?.player != null)
+            }
+            else if (gameManager.instance?.player != null)
             {
                 agent.SetDestination(gameManager.instance.player.transform.position);
                 playerDir = gameManager.instance.player.transform.position - transform.position;
@@ -117,7 +113,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             // Ranged: roaming � only look around while stopped at a roam point
             roam();
 
-            if (playerInTrigger) // adjusted this so Ranged enemies will attack if they run into player while on the way to roam point.
+            if (roamTarget == null && playerInTrigger)
             {
                 if (tryAttackFromCurrentPosition())
                 {
@@ -141,7 +137,6 @@ public abstract class enemyBase : MonoBehaviour, IDamage
                 if (audioManager.instance != null && audioManager.instance.enemySteps != null)
                 {
                     audioManager.instance.playSpatialSFX(audioManager.instance.enemySteps, transform.position, audioManager.instance.enemyStepsVol, 3f, 20f);
-
                 }
             }
         }
@@ -198,27 +193,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     void pickRoamPoint()
     {
-        if (waveManager.instance == null) return;
+        if (waveHost.active == null) return;
 
-        waveManager.instance.releaseRoamPoint(gameObject);
+        waveHost.active.releaseRoamPoint(gameObject);
 
-        Transform nextRoamPoint = waveManager.instance.claimRoamPoint(gameObject);
-
-        if (nextRoamPoint == null) return;
-
-        roamTarget = nextRoamPoint;
-        agent.stoppingDistance = 0f;
-        agent.SetDestination(roamTarget.position);
-        return false;
-    }
-
-    void pickRoamPoint()
-    {
-        if (waveManager.instance == null) return;
-
-        waveManager.instance.releaseRoamPoint(gameObject);
-
-        Transform nextRoamPoint = waveManager.instance.claimRoamPoint(gameObject);
+        Transform nextRoamPoint = waveHost.active.claimRoamPoint(gameObject);
 
         if (nextRoamPoint == null) return;
 
@@ -228,20 +207,10 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     }
 
     public virtual void roam()
-    public virtual void roam()
     {
         if (roamTarget != null && AtRoamTarget())
         {
-            waveManager.instance?.releaseRoamPoint(gameObject);
-            roamTarget = null;
-            roamTimer = 0f;
-            return;
-        }
-
-        if (roamTarget == null)
-        if (roamTarget != null && AtRoamTarget())
-        {
-            waveManager.instance?.releaseRoamPoint(gameObject);
+            waveHost.active?.releaseRoamPoint(gameObject);
             roamTarget = null;
             roamTimer = 0f;
             return;
@@ -250,16 +219,6 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (roamTarget == null)
         {
             roamTimer += Time.deltaTime;
-            if (roamTimer < roamWaitTime) return;
-            roamTimer = 0f;
-            if (Random.Range(0f, 1f) > roamChance) return;
-            pickRoamPoint();
-        }
-    }
-    bool AtRoamTarget()
-    {
-        if (roamTarget == null) return false;
-        return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + roamArriveDistance;
             if (roamTimer < roamWaitTime) return;
             roamTimer = 0f;
             if (Random.Range(0f, 1f) > roamChance) return;
@@ -289,11 +248,6 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         lastDamageWeapon = weapon;
         lastDamageFromGround = fromGround;
     }
-    public void RegisterDamageSource(weaponStats weapon, bool fromGround)
-    {
-        lastDamageWeapon = weapon;
-        lastDamageFromGround = fromGround;
-    }
     public void takeDamage(int amount)
     {
         if (isDead || amount <= 0) return;
@@ -310,21 +264,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
                 agent.stoppingDistance = stoppingDistOrig;
             }
         }
-        {
-            if (!willRoam)
-                agent.SetDestination(gameManager.instance.player.transform.position);
-            else
-            {
-                isEngaged = true;
-                agent.stoppingDistance = stoppingDistOrig;
-            }
-        }
 
         if (currentHP <= 0)
         {
-            // die() handles the byte award so it only ever happens once
+            // die() owns the byte award so it only ever fires once
             die();
-            gameManager.instance.AddBytes(byteValue);
         }
         else if (model != null)
         {
@@ -351,9 +295,10 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
         }
 
-        if (waveManager.instance != null)
+        // enemies talk to the wave through waveHost, not the singleton
+        if (waveHost.active != null)
         {
-            waveManager.instance.enemyKilled();
+            waveHost.active.enemyKilled();
         }
 
         if (awardKillRewards)

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using UnityEngine;
 
 public class audioManager : MonoBehaviour
@@ -101,6 +102,11 @@ public class audioManager : MonoBehaviour
         {
             sfxSource.volume = isMuted ? 0f : (sfxVolume * masterVolume);
         }
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
     }
 
     public void setMasterVolume(float vol)

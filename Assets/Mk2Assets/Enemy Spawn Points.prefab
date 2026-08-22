@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5194727811529557761}
   - component: {fileID: 2609249443246989812}
   - component: {fileID: 2337454817469706757}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy Spawn Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 8484596782893322128}
   - component: {fileID: 8400762228361649475}
   - component: {fileID: 6849132081467256552}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy Spawn Point (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 7495123944808753992}
   - component: {fileID: 5935575285597986828}
   - component: {fileID: 8887847110298078738}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy Spawn Point (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,7 +354,7 @@ GameObject:
   - component: {fileID: 4748946060296550577}
   - component: {fileID: 8303270361845746635}
   - component: {fileID: 4316986023063406294}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy Spawn Point (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -468,7 +468,7 @@ GameObject:
   - component: {fileID: 6727041585633548758}
   - component: {fileID: 1513498615654996705}
   - component: {fileID: 6732933369739568171}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy Spawn Point (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -582,7 +582,7 @@ GameObject:
   - component: {fileID: 3777665086871170508}
   - component: {fileID: 5176473974753259702}
   - component: {fileID: 3833933200651153673}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy Spawn Point (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -696,7 +696,7 @@ GameObject:
   - component: {fileID: 759181895225155513}
   - component: {fileID: 2557112544174707382}
   - component: {fileID: 5606800082059076768}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy Spawn Point (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -810,7 +810,7 @@ GameObject:
   - component: {fileID: 270175812973929535}
   - component: {fileID: 6702465458529053837}
   - component: {fileID: 4317345863948506926}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy Spawn Point (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -936,7 +936,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7762193059208583261}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3, y: 1, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
