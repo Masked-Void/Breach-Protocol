@@ -22,7 +22,10 @@ public class audioManager : MonoBehaviour
     
     [SerializeField] public AudioClip steps;
     [Range(0, 1)][SerializeField] public float stepsVol = .3f;
-    
+
+    [SerializeField] public AudioClip enemySteps;
+    [Range(0, 1)][SerializeField] public float enemyStepsVol = .3f;
+
     [SerializeField] public AudioClip enemyHit;
     [Range(0, 1)][SerializeField] public float enemyHitVol = .8f;
     

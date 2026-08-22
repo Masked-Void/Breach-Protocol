@@ -16,19 +16,25 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     int currentHP;
     [Range(1, 50)][SerializeField] int maxHP;
     [Range(1, 30)][SerializeField] float faceTargetSpeed = 8f;
-    [Range(15, 180)][SerializeField] protected float FOV = 90f;
-    [Range(.1f, 5)] public float attackRate = 1.5f;
-    [Range(1, 20)] public float attackRange = 2f;
-    [Range(1, 20)] public int attackDamage = 1;
+    [Range(15, 180)][SerializeField] float FOV = 90f;
+    [Range(.1f, 5)][SerializeField] public float attackRate = 1.5f;
+    [Range(1, 20)][SerializeField] public float attackRange = 2f;
+    [Range(1, 20)][SerializeField] public int attackDamage = 1;
 
     [Header("Roaming")]
-    [SerializeField] float roamDist = 10f;
     [SerializeField] float roamWaitTime = 1.1f;
     float roamTimer;
-    Vector3 startingPos;
+    public Transform roamTarget;
+    [SerializeField] float roamArriveDistance = 0.1f;
+    [SerializeField] float roamChance = .1f;
+
+    [Header("Footsteps")]
+    [SerializeField] float stepInterval = 0.5f;
+    [SerializeField] float movementThreshold = 0.1f;
+    float stepTimer;
 
     [Header("Currency")]
-    [SerializeField] int byteValue = 5;
+    int byteValue = 5;
 
 
     protected bool playerInTrigger;
@@ -43,7 +49,6 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     public bool willRoam = false;
     [SerializeField] GameObject roamPoint;
     protected bool isEngaged = false;
-
     [Header("Challenge")]
     protected weaponStats lastDamageWeapon;
     protected bool lastDamageFromGround;
@@ -57,8 +62,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         agent = GetComponent<NavMeshAgent>();
         currentHP = maxHP;
-        startingPos = transform.position;
         stoppingDistOrig = agent.stoppingDistance;
+
+        pickRoamPoint();
 
         if (model != null)
             colorOrig = model.material.color;
@@ -68,13 +74,102 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         if (gameManager.instance != null && gameManager.instance.isPaused) return;
         attackTimer += Time.unscaledDeltaTime;
-        if (playerInTrigger && canSeePlayer())
+
+        HandleFootSteps();
+
+        if (!willRoam)
         {
+            // Heavy / Basic: finish first roam point, then b-line player forever
+           // if (roamTarget != null) removed this so melee enemies will go straight to player
+            
+                if (AtRoamTarget())
+                {
+                    waveManager.instance?.releaseRoamPoint(gameObject);
+                    roamTarget = null;
+                    agent.stoppingDistance = stoppingDistOrig;
+                }
+            
+            if (gameManager.instance?.player != null)
+            {
+                agent.SetDestination(gameManager.instance.player.transform.position);
+                playerDir = gameManager.instance.player.transform.position - transform.position;
+                faceTarget();
+                attack();
+            }
+        }
+        else if (isEngaged)
+        {
+            // Ranged: now chasing the player
+            if (gameManager.instance?.player != null)
+            {
+                agent.SetDestination(gameManager.instance.player.transform.position);
+                playerDir = gameManager.instance.player.transform.position - transform.position;
+                faceTarget();
+                attack();
+            }
         }
         else
         {
-            checkRoam();
+            // Ranged: roaming � only look around while stopped at a roam point
+            roam();
+
+            if (playerInTrigger) // adjusted this so Ranged enemies will attack if they run into player while on the way to roam point.
+            {
+                if (tryAttackFromCurrentPosition())
+                {
+                    isEngaged = true;
+                    agent.stoppingDistance = stoppingDistOrig;
+                }
+            }
         }
+    }
+
+    void HandleFootSteps()
+    {
+        if (agent.velocity.magnitude > movementThreshold)
+        {
+            stepTimer += Time.deltaTime;
+
+            if (stepTimer >= stepInterval)
+            {
+                stepTimer = 0f;
+
+                if (audioManager.instance != null && audioManager.instance.enemySteps != null)
+                {
+                    audioManager.instance.playSpatialSFX(audioManager.instance.enemySteps, transform.position, audioManager.instance.enemyStepsVol, 3f, 20f);
+
+                }
+            }
+        }
+        else
+        {
+            stepTimer = 0f;
+        }
+    }
+
+    // Attempt to see and attack the player without changing the agent's destination.
+    // Returns true if the player was visible and an attack/face action was triggered.
+    protected bool tryAttackFromCurrentPosition()
+    {
+        if (gameManager.instance == null || gameManager.instance.player == null) return false;
+
+        Vector3 dir = gameManager.instance.player.transform.position - transform.position;
+        float angle = Vector3.Angle(dir, transform.forward);
+
+        if (angle > FOV) return false;
+
+        if (Physics.Raycast(transform.position, dir, out RaycastHit hit))
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                playerDir = dir;
+                faceTarget();
+                attack();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public virtual bool canSeePlayer()
@@ -94,27 +189,48 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             }
         }
         agent.stoppingDistance = 0;
-        return true;
+        return false;
     }
 
-    public virtual void checkRoam()
+    void pickRoamPoint()
     {
-        if (agent.remainingDistance < 0.01f)
-        {
-            roamTimer += Time.deltaTime;
-            if (roamTimer > roamWaitTime) roam();
-        }
+        if (waveManager.instance == null) return;
+
+        waveManager.instance.releaseRoamPoint(gameObject);
+
+        Transform nextRoamPoint = waveManager.instance.claimRoamPoint(gameObject);
+
+        if (nextRoamPoint == null) return;
+
+        roamTarget = nextRoamPoint;
+        agent.stoppingDistance = 0f;
+        agent.SetDestination(roamTarget.position);
     }
 
     public virtual void roam()
     {
-        roamTimer = 0;
-        agent.stoppingDistance = 0;
-        Vector3 ranPos = Random.insideUnitSphere * roamDist + startingPos;
-        if (NavMesh.SamplePosition(ranPos, out NavMeshHit hit, roamDist, 1))
-            agent.SetDestination(hit.position);
-    }
+        if (roamTarget != null && AtRoamTarget())
+        {
+            waveManager.instance?.releaseRoamPoint(gameObject);
+            roamTarget = null;
+            roamTimer = 0f;
+            return;
+        }
 
+        if (roamTarget == null)
+        {
+            roamTimer += Time.deltaTime;
+            if (roamTimer < roamWaitTime) return;
+            roamTimer = 0f;
+            if (Random.Range(0f, 1f) > roamChance) return;
+            pickRoamPoint();
+        }
+    }
+    bool AtRoamTarget()
+    {
+        if (roamTarget == null) return false;
+        return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + roamArriveDistance;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player")) playerInTrigger = true;
@@ -128,37 +244,37 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             playerInTrigger = false;
         }
     }
-
+    public void RegisterDamageSource(weaponStats weapon, bool fromGround)
+    {
+        lastDamageWeapon = weapon;
+        lastDamageFromGround = fromGround;
+    }
     public void takeDamage(int amount)
     {
-        if (isDead || amount <= 0)
-            return;
+        if (isDead || amount <= 0) return;
 
         currentHP -= amount;
+
         if (gameManager.instance?.player != null)
-            agent.SetDestination(gameManager.instance.player.transform.position);
+        {
+            if (!willRoam)
+                agent.SetDestination(gameManager.instance.player.transform.position);
+            else
+            {
+                isEngaged = true;
+                agent.stoppingDistance = stoppingDistOrig;
+            }
+        }
 
         if (currentHP <= 0)
         {
+            // die() handles the byte award so it only ever happens once
             die();
         }
         else if (model != null)
         {
             StartCoroutine(FlashBlack());
         }
-    }
-
-    public void ForceKill()
-    {
-        die();
-    }
-
-    
-
-    public void RegisterDamageSource(weaponStats weapon, bool fromGround)
-    {
-        lastDamageWeapon = weapon;
-        lastDamageFromGround = fromGround;
     }
 
     public virtual void die()
@@ -174,12 +290,10 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         bool awardKillRewards = !suppressKillRewards;
         suppressKillRewards = false;
 
+        // REPORT TO CHALLENGE SYSTEM
         if (awardKillRewards && lastDamageWeapon != null)
         {
-            challengeManager.instance?.ReportKill(
-                lastDamageWeapon,
-                lastDamageFromGround
-            );
+            challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
         }
 
         if (waveManager.instance != null)
@@ -204,7 +318,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         Destroy(gameObject);
     }
 
-    IEnumerator FlashBlack() //when enemy gets damaged they flash black
+    IEnumerator FlashBlack()
     {
         model.material.color = Color.black;
         yield return new WaitForSecondsRealtime(.1f);
