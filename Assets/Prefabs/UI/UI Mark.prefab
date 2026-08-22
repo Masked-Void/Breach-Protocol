@@ -200,6 +200,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7988224382461475512, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: maxTimeScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7988224382461475512, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: minTimeScale
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 7988224382461475512, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: moveMaxTimeScale
+      value: 0.85
+      objectReference: {fileID: 0}
     - target: {fileID: 8492635337672450541, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: enemySteps
       value: 

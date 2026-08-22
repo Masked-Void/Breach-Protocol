@@ -22,6 +22,7 @@ public class timeManager : MonoBehaviour
     [Tooltip("How quickly the world responds to time scale changes.")]
     [SerializeField] private float timeScaleSmoothing = 10f;
 
+
     private float currentTimeScale;
     private float baseFixedDeltaTime;
 
@@ -43,6 +44,7 @@ public class timeManager : MonoBehaviour
         currentTimeScale = minTimeScale;
 
         ApplyTimeScale(currentTimeScale);
+
     }
 
     private void Update()
@@ -110,6 +112,8 @@ public class timeManager : MonoBehaviour
             targetTimeScale,
             blend
         );
+
+        
 
         ApplyTimeScale(currentTimeScale);
     }
