@@ -15,13 +15,14 @@ public class bossFightManager : MonoBehaviour,IDamage {
 
     [Header("UI")]
     [SerializeField] private GameObject immuneBarObj;
+    [SerializeField] private GameObject healthBarObj;
     [SerializeField] private Image healthBar;
     [Tooltip("fills 0 to 1 as the hold progresses, so set the art to fill in that direction")]
     [SerializeField] private Image immuneBar;
 
     [Header("Health")]
     [SerializeField] private float maxHealth = 1000f;
-    [Range(0f , 1f)][SerializeField] private float bulletDamageMult = 1f;
+    [Range(0f , 10f)][SerializeField] private float bulletDamageMult = 1f;
     [Range(0f , 1f)][SerializeField] private float p1EndHealthPerc = .75f;
     [Range(0f , 1f)][SerializeField] private float p2EndHealthPerc = .5f;
     [Range(0f , 1f)][SerializeField] private float p3EndHealthPerc = .25f;
@@ -98,6 +99,10 @@ public class bossFightManager : MonoBehaviour,IDamage {
         if (!mask.TryGetComponent(out shake)) {
             Debug.LogError("bossFightManager: no maskShake component on the boss head" , this);
         }
+
+        if (healthBarObj != null) {
+            healthBarObj.SetActive(true);
+        }
     }
 
 
@@ -138,6 +143,7 @@ public class bossFightManager : MonoBehaviour,IDamage {
         }
 
         healthBar.fillAmount = Mathf.Clamp01(curHealth / Mathf.Max(1f , maxHealth));
+        
     }
 
 
@@ -185,6 +191,7 @@ public class bossFightManager : MonoBehaviour,IDamage {
             } else {
                 while (!holdManager.immuneHoldDone) {
                     if (immuneBar != null) {
+                        immuneBar.enabled = true;
                         immuneBar.fillAmount = holdManager.immuneProgress;
                     }
                     yield return null;
@@ -195,6 +202,11 @@ public class bossFightManager : MonoBehaviour,IDamage {
 
             if (shake != null)
                 shake.doShake = false;
+
+            if(immuneBar != null) {
+                immuneBar.fillAmount = 0f;
+            }
+
             if (immuneBarObj != null) { 
                 immuneBarObj.SetActive(false);
             }
@@ -227,6 +239,9 @@ public class bossFightManager : MonoBehaviour,IDamage {
             gameManager.instance.stateWin();
         }
 
+        if (healthBarObj != null) {
+            healthBarObj.SetActive(false);
+        }
 
     }
 

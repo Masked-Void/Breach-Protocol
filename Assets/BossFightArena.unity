@@ -13651,7 +13651,7 @@ MonoBehaviour:
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
-    m_Bits: 1088
+    m_Bits: 1089
   beamDamage: 1
   beamRate: 0.5
   beamStartOffset: 0.1
@@ -20986,7 +20986,7 @@ MonoBehaviour:
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
-    m_Bits: 1088
+    m_Bits: 1089
   beamDamage: 1
   beamRate: 0.5
   beamStartOffset: 0.1
@@ -71096,7 +71096,7 @@ MonoBehaviour:
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
-    m_Bits: 1088
+    m_Bits: 1089
   beamDamage: 1
   beamRate: 0.5
   beamStartOffset: 0.1
@@ -88303,7 +88303,7 @@ MonoBehaviour:
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
-    m_Bits: 1088
+    m_Bits: 1089
   beamDamage: 1
   beamRate: 0.5
   beamStartOffset: 0.1
@@ -104777,6 +104777,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1133683204}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1134121040 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 912177803640787988, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+  m_PrefabInstance: {fileID: 1223683357797229282}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1134472554 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7010438804866259179, guid: 1ec14d984be92cb4db4dd79858b074fd, type: 3}
@@ -107171,7 +107176,7 @@ MonoBehaviour:
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
-    m_Bits: 1088
+    m_Bits: 1089
   beamDamage: 1
   beamRate: 0.5
   beamStartOffset: 0.1
@@ -121729,9 +121734,8 @@ MonoBehaviour:
   pillarYellow:
   - {fileID: 350755921}
   - {fileID: 1705942495}
-  arrayPivot: {fileID: 1415254405}
-  spinSpeed: 0
-  sweepSpeed: 0
+  spinSpeed: 15
+  sweepSpeed: 15
   angleEpsilon: 0.5
   patterns:
   - patternName: 
@@ -137338,6 +137342,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1684271138}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1685329788 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6277091821552300990, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+  m_PrefabInstance: {fileID: 1223683357797229282}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1689023531
 GameObject:
   m_ObjectHideFlags: 0
@@ -138953,7 +138962,7 @@ MonoBehaviour:
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
-    m_Bits: 1088
+    m_Bits: 1089
   beamDamage: 1
   beamRate: 0.5
   beamStartOffset: 0.1
@@ -144316,7 +144325,7 @@ MonoBehaviour:
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
-    m_Bits: 1088
+    m_Bits: 1089
   beamDamage: 1
   beamRate: 0.5
   beamStartOffset: 0.1
@@ -165877,7 +165886,7 @@ MonoBehaviour:
   maxBeamLength: 1000
   beamMask:
     serializedVersion: 2
-    m_Bits: 1088
+    m_Bits: 1089
   beamDamage: 1
   beamRate: 0.5
   beamStartOffset: 0.1
@@ -166474,6 +166483,14 @@ PrefabInstance:
       propertyPath: maxHealth
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: healthBarObj
+      value: 
+      objectReference: {fileID: 1134121040}
+    - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: immuneBarObj
+      value: 
+      objectReference: {fileID: 1685329788}
     - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: bulletDamageMult
       value: 1
