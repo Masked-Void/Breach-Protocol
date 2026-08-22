@@ -60,7 +60,7 @@ public class platformManager : MonoBehaviour
     {
         if (stageBase == null)
         {
-            Debug.LogError("platformManager: No stage base marker given", this);
+            //Debug.LogError("platformManager: No stage base marker given", this);
             return;
         }
 
@@ -75,13 +75,13 @@ public class platformManager : MonoBehaviour
             // catches a fat fingered array size in the inspector, checked before anything allocates
             if (stage.platforms == null || stage.platforms.Length > 256)
             {
-                Debug.LogError("stage " + i + " has a bad platforms array, check the array size", this);
+                //Debug.LogError("stage " + i + " has a bad platforms array, check the array size", this);
                 continue;
             }
 
             if (stage.topMarker == null)
             {
-                Debug.LogError("stage " + i + " has no top marker", this);
+                //Debug.LogError("stage " + i + " has no top marker", this);
                 continue;
             }
 

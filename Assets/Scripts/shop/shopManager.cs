@@ -21,7 +21,7 @@ public class shopManager : MonoBehaviour
 
     private void PopulateShop()
     {
-        Debug.Log("Unlocked upgrades: " + string.Join(", ", upgradeManager.instance.unlockedUpgrades));
+        //Debug.Log("Unlocked upgrades: " + string.Join(", ", upgradeManager.instance.unlockedUpgrades));
         var unlockedIds = upgradeManager.instance.unlockedUpgrades;
 
         int slotIndex = 0;
@@ -42,7 +42,7 @@ public class shopManager : MonoBehaviour
     {
         foreach (var upgrade in allUpgrades)
         {
-            Debug.Log("In-game upgrade available: " + upgrade.Id);
+            //Debug.Log("In-game upgrade available: " + upgrade.Id);
             if (upgrade.Id == id)
             {
                 return upgrade;
@@ -59,7 +59,7 @@ public class shopManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("Upgrade Bought: " + upgrade.UpgradeName);
+        //Debug.Log("Upgrade Bought: " + upgrade.UpgradeName);
         gameManager.instance.totalBytes -= upgrade.Cost;
         upgradeManager.instance.PurchaseUpgrade(upgrade.Id);
         upgrade.applyUpgrade();

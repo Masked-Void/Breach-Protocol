@@ -389,7 +389,7 @@ public class waveManager : MonoBehaviour
         gameManager.instance.AddFiles(5);
         upgradeManager.instance.files += gameManager.instance.totalFiles;
         upgradeManager.instance.SaveUpgrades();
-        Debug.Log("Current Files: " + gameManager.instance.totalFiles);
+        //Debug.Log("Current Files: " + gameManager.instance.totalFiles);
 
     }
 
@@ -465,7 +465,7 @@ public class waveManager : MonoBehaviour
 
         if (spawnPointTransforms.Length == 0)
         {
-            Debug.LogError("waveManager: no spawn points assigned");
+            //Debug.LogError("waveManager: no spawn points assigned");
         }
     }
 
@@ -485,7 +485,7 @@ public class waveManager : MonoBehaviour
 
         if (roamPointTransforms.Length == 0)
         {
-            Debug.LogError("waveManager: no roam points assigned");
+            //Debug.LogError("waveManager: no roam points assigned");
         }
     }
 }

@@ -160,8 +160,8 @@ public class laserArray : MonoBehaviour
             // Makes sure both markers exist, one missing marker kills the whole array
             if (newUnit.laserInPos == null || newUnit.laserOutPos == null)
             {
-                Debug.LogError("laserArray: '" + laser.name + "' needs two children named '"
-                + laserInMarkerName + "' and '" + laserOutMarkerName + "'.", laser);
+                //Debug.LogError("laserArray: '" + laser.name + "' needs two children named '"
+                //+ laserInMarkerName + "' and '" + laserOutMarkerName + "'.", laser);
 
                 // Blanks the array so nothing can walk into the half filled entries later
                 lasers = new laserUnit[0];
@@ -200,8 +200,8 @@ public class laserArray : MonoBehaviour
                 // Warning for if more than one child matches, it keeps the first one and stops looking
                 if (found != null)
                 {
-                    Debug.LogWarning("laserArray: '" + laser.name + "' has more than one child matching '"
-                        + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first.", laser);
+                    //Debug.LogWarning("laserArray: '" + laser.name + "' has more than one child matching '"
+                        //+ wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first.", laser);
                     break;
                 }
 
