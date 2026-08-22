@@ -6,7 +6,6 @@ public class playerInteraction : MonoBehaviour
     [Range(1f, 5)][SerializeField] private float maxDistance = 2f;
     [SerializeField] LayerMask interactLayer;
     [SerializeField] KeyCode throwKey;
-    [SerializeField] KeyCode switchKey;
 
     private Camera mainCam;
     private IPickWeapon picker;

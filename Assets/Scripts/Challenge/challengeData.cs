@@ -15,7 +15,6 @@ public class challengeData : ScriptableObject
     [Header("Info")]
     [SerializeField] public challengeStruct[] challengesList;
     public string description;      // e.g. "Kill 200 enemies with kunais you picked up"
-
     [Header("Requirements")]
     public weaponStats weapon;
     public bool requireGroundPickup = true;
