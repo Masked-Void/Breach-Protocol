@@ -18,6 +18,16 @@ public class lavaManager : MonoBehaviour {
     [Tooltip("Seconds for a full drain.")]
     [SerializeField] float drainTime = 4f;
 
+    [Header("Damage")]
+    [SerializeField] private float damageRate = 2f;
+    [SerializeField] private float damageDepth = 0.2f;
+    [SerializeField] private string playerTag = "Player";
+
+    private Transform player;
+    private IDamage playerDamage;
+    private float nextTick;
+    private Renderer lavaSurface;
+
     // The drained (0) and full (1) points the lava lerps between
     private Transform lowPos;
     private Transform highPos;
@@ -62,9 +72,6 @@ public class lavaManager : MonoBehaviour {
         }
     }
 
-
-
-
     void Awake() {
 
         // Makes sure the lava object exists
@@ -90,11 +97,60 @@ public class lavaManager : MonoBehaviour {
         lowPos.SetParent(transform , true);
         highPos.SetParent(transform , true);
 
+        lavaSurface = lavaObject.GetComponentInChildren<Renderer>();
+
+        GameObject playerObj = GameObject.FindGameObjectWithTag(playerTag);
+        if (playerObj!= null) {
+            player = playerObj.transform;
+            playerDamage = playerObj.GetComponent<IDamage>();
+        }
+
+        if (playerDamage == null) {
+            Debug.LogError("lavaManager: nothing tagged '" + playerTag + "' with an IDamage on it" , this);
+        }
+
         // Puts the lava at whatever currentProgress starts at
         placeLava();
     }
 
 
+    void Update() {
+        if (playerDamage == null) {
+            return;
+        }
+
+        if (!checkInLava()) {
+            nextTick = 0f;
+            return;
+        }
+
+        if (Time.unscaledTime < nextTick) {
+            return;
+        }
+
+        nextTick = Time.unscaledTime + (1f / Mathf.Max(0.01f , damageRate));
+        playerDamage.takeDamage(1);
+    }
+
+    bool checkInLava() {
+        if (player.position.y > getCurrentSurfaceY - damageDepth) {
+            return false;
+        }
+
+        if (lavaSurface != null) {
+            Bounds bound = lavaSurface.bounds;
+
+            if (player.position.x < bound.min.x || player.position.x > bound.max.x) {
+                return false;
+            }
+
+            if (player.position.z < bound.min.z||player.position.z> bound.max.z) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     // Looks through the lava object's children for one whose name contains 'wanted'
     Transform findMark(string wanted) {
