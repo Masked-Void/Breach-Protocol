@@ -33,7 +33,11 @@ public class basicEnemy : enemyBase
         float distToPlayer = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
         if (katanaTransform != null && attackRange > distToPlayer)
         {
-            StartCoroutine(katanaSwing());
+            if (tryMeleeHit())
+            {
+                StartCoroutine(katanaSwing());
+
+            }
         }
     }
 

@@ -16,10 +16,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     int currentHP;
     [Range(1, 50)][SerializeField] int maxHP;
     [Range(1, 30)][SerializeField] float faceTargetSpeed = 8f;
-    [Range(15, 180)][SerializeField] float FOV = 90f;
+    [Range(15, 180)][SerializeField] float FOV = 120f;
     [Range(.1f, 5)][SerializeField] public float attackRate = 1.5f;
     [Range(1, 20)][SerializeField] public float attackRange = 2f;
     [Range(1, 20)][SerializeField] public int attackDamage = 1;
+    [Range(1, 20)][SerializeField] public float rangedEnemeyAttackRange = 15f;
 
     [Header("Roaming")]
     [SerializeField] float roamWaitTime = 1.1f;
@@ -53,6 +54,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     [SerializeField] float movementThreshold = 0.1f;
     float stepTimer;
 
+    [Header("Ranged AI Settings")]
+    [Range(5f, 30f)][SerializeField] float maxRoamDistanceFromPlayer = 15f; // distance ranged ai should stay within player
+
     // small compatibility state used by the scorestreak system
     private bool isDead;
     private bool suppressKillRewards;
@@ -63,8 +67,10 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         agent = GetComponent<NavMeshAgent>();
         currentHP = maxHP;
         stoppingDistOrig = agent.stoppingDistance;
-
-        pickRoamPoint();
+       if (willRoam)
+        {
+            pickRoamPoint();
+        }
 
         if (model != null)
             colorOrig = model.material.color;
@@ -94,6 +100,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             */
             if (gameManager.instance?.player != null)
             {
+                agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
                 agent.SetDestination(gameManager.instance.player.transform.position);
                 playerDir = gameManager.instance.player.transform.position - transform.position;
                 faceTarget();
@@ -106,7 +113,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             if (gameManager.instance?.player != null)
             {
                 //check to disengage
-                if (!playerInTrigger && !canStillSeePlayer())
+                if (!canStillSeePlayer())
                 {
                     isEngaged = false;
                     agent.stoppingDistance = 0;
@@ -122,7 +129,15 @@ public abstract class enemyBase : MonoBehaviour, IDamage
                 agent.SetDestination(gameManager.instance.player.transform.position);
                 playerDir = gameManager.instance.player.transform.position - transform.position;
                 faceTarget();
-                attack();
+
+
+                float distance = playerDir.magnitude;
+              
+                
+                if (distance <= rangedEnemeyAttackRange)
+                {
+                 attack();
+                }
             }
         }
         else
@@ -130,16 +145,68 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             // Ranged: roaming � only look around while stopped at a roam point
             roam();
 
-            if (playerInTrigger) //Removed check for roamTarget == null because ranged AI should attack you if you walk in front of them
-            {
+            
                 if (tryAttackFromCurrentPosition())
                 {
                     isEngaged = true;
                     agent.stoppingDistance = stoppingDistOrig;
                 }
-            }
+            
         }
     }
+
+    void pickRoamPoint()
+    {
+        if (waveHost.active == null) return;
+
+        waveHost.active.releaseRoamPoint(gameObject);
+
+        if (willRoam && gameManager.instance?.player != null)
+        {
+            Transform nextRoamPoint = findNearestRoamPointToPlayer();
+
+            if (nextRoamPoint != null)
+            {
+                roamTarget = nextRoamPoint;
+                agent.stoppingDistance = 0f;
+                agent.SetDestination(roamTarget.position);
+            }
+            return;
+        }
+    }
+    Transform findNearestRoamPointToPlayer()
+    {
+        if(waveHost.active == null) return null;
+
+        Vector3 playerPos = gameManager.instance.player.transform.position;
+        Transform closestPoint = null;
+        float closestDistance = float.MaxValue;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Transform candidatePoint = waveHost.active.claimRoamPoint(gameObject);
+            if (candidatePoint == null) break;
+
+            float distToPlayer = Vector3.Distance(candidatePoint.position , playerPos);
+
+            if (distToPlayer <= maxRoamDistanceFromPlayer && distToPlayer < closestDistance)
+            {
+                if (closestPoint != null)
+                {
+                    //need to check this
+                }
+                closestPoint= candidatePoint;
+                closestDistance= distToPlayer;
+            }
+            else
+            {
+                waveHost.active.releaseRoamPoint(gameObject);
+            }
+        }
+        return closestPoint;
+    }
+
+
 
     void HandleFootSteps()
     {
@@ -168,14 +235,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         if (gameManager.instance == null || gameManager.instance.player == null) return false;
 
-        Vector3 dir = gameManager.instance.player.transform.position - transform.position;
-        float angle = Vector3.Angle(dir, transform.forward);
+        Vector3 dirToPlayer = gameManager.instance.player.transform.position - transform.position;
 
-        if (angle > FOV) return false;
-        
-        if (Physics.Raycast(transform.position, dir, out RaycastHit hit))
+        if (Physics.Raycast(transform.position, dirToPlayer.normalized, out RaycastHit hit, rangedEnemeyAttackRange))
         {
-            return hit.collider.CompareTag("Player");
+            return hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player");
         }
         return false;
     }
@@ -186,37 +250,27 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         if (gameManager.instance == null || gameManager.instance.player == null) return false;
 
-        Vector3 dir = gameManager.instance.player.transform.position - transform.position;
-        float distance = dir.magnitude;
-
-        if (distance < 3f)
+        Vector3 dirToPlayer = gameManager.instance.player.transform.position - transform.position;
+        float distance = dirToPlayer.magnitude;
+        if (willRoam && distance > rangedEnemeyAttackRange)
         {
-            playerDir = dir;
-            faceTarget();
-            attack();
-            return true;
+            return false;
         }
 
-
-
-        float angle = Vector3.Angle(dir, transform.forward);
-
-        if (angle > FOV) return false;
-
-        if (Physics.Raycast(transform.position, dir, out RaycastHit hit))
+        if (Physics.Raycast(transform.position,dirToPlayer.normalized, out RaycastHit hit, rangedEnemeyAttackRange))
         {
-            if (hit.collider.CompareTag("Player"))
-            {
-                playerDir = dir;
+            
+                playerDir = dirToPlayer;
                 faceTarget();
                 attack();
                 return true;
-            }
+            
         }
 
         return false;
     }
 
+    // ensures player is within a range or FOV so they can be seen
     public virtual bool canSeePlayer()
     {
         playerDir = gameManager.instance.player.transform.position - transform.position;
@@ -237,23 +291,33 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         return false;
     }
 
-    void pickRoamPoint()
-    {
-        if (waveHost.active == null) return;
-
-        waveHost.active.releaseRoamPoint(gameObject);
-
-        Transform nextRoamPoint = waveHost.active.claimRoamPoint(gameObject);
-
-        if (nextRoamPoint == null) return;
-
-        roamTarget = nextRoamPoint;
-        agent.stoppingDistance = 0f;
-        agent.SetDestination(roamTarget.position);
-    }
-
+  
     public virtual void roam()
     {
+
+        //Check distance from player
+        if (gameManager.instance?.player != null)
+        {
+            float distToPlayer = Vector3.Distance(transform.position,gameManager.instance.player.transform.position);
+
+            // if too far hunt them down
+            if (distToPlayer > rangedEnemeyAttackRange)
+            {
+                agent.SetDestination(gameManager.instance.player.transform.position);
+                agent.stoppingDistance = 0f;
+
+                //clear roam target to hunt
+                if (roamTarget != null)
+                {
+                    waveHost.active?.releaseRoamPoint(gameObject);
+                    roamTarget = null;
+                }
+                return;
+            }
+        }
+
+        // within range is normal roaming
+
         if (roamTarget != null && AtRoamTarget())
         {
             waveHost.active?.releaseRoamPoint(gameObject);
@@ -381,7 +445,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     protected bool tryMeleeHit()
     {
-        agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
+        agent.stoppingDistance = Mathf.Max(0.5f, attackRange);
         float dist = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
         if (dist > attackRange || attackTimer <= attackRate) return false;
 
