@@ -27,22 +27,22 @@ public class gunStats : weaponStats
 
     public override void Attack()
     {
-        
+
         Transform gunBarrel = weaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
 
         audioManager.instance.playSFX(shootSound, shootSoundVol);
-     
-        int shotsToFire = (gunType == GunType.Shotgun || gunType == GunType.Kunai) ? pelletCount : 1;
+
+        bool hasKunaiSpread = upgradeManager.instance != null &&
+                      upgradeManager.instance.IsUpgradeActive("kunai_spread");
+
+        int shotsToFire = (gunType == GunType.Shotgun) ? pelletCount : 1;
         float spreadToUse = (gunType == GunType.Shotgun) ? spreadAngle : 0f;
 
-        //Upgrade Check
-        if (gunType == GunType.Kunai && FindAnyObjectByType<playerController>().kunaiSpread)
+        if (gunType == GunType.Kunai && hasKunaiSpread)
         {
-            int boostedPelletCount = 3;
-            int boostedSpreadAngle = 15;
-            shotsToFire += boostedPelletCount;
-            spreadAngle += boostedSpreadAngle;
+            shotsToFire = 3;
+            spreadToUse = 15f;
         }
 
         if (bullet != null)
@@ -55,29 +55,17 @@ public class gunStats : weaponStats
 
                 // Combine the barrel's base rotation with our random offset angles
                 Quaternion spreadRotation = gunBarrel.rotation * Quaternion.Euler(randomSpreadX, randomSpreadY, 0);
-                
 
                 // Spawn the bullet projectile flying out into its offset trajectory
-                Transform spawnedBullet =MonoBehaviour.Instantiate(bullet, gunBarrel.position, spreadRotation);
-                
-                //Upgrade Check
-                if (FindAnyObjectByType<playerController>().explodingBullets)
+                Transform spawnedBullet = Instantiate(bullet, gunBarrel.position, spreadRotation);
+                if (upgradeManager.instance != null && upgradeManager.instance.IsUpgradeActive("exploding_bullets"))
                 {
-                    damage dmg = spawnedBullet.GetComponent<damage>();
-                    dmg.isExplosive = true;
-
-
-                }
-                // PASS CHALLENGE DATA TO BULLET
-                damage challengeDmg = spawnedBullet.GetComponent<damage>();
-                if (challengeDmg != null)
-                {
-                    challengeDmg.sourceWeapon = weaponManager.instance.activeWeapon;
-                    challengeDmg.sourceWasGroundPickup = weaponManager.instance.currentWeaponFromGround;
+                    if (spawnedBullet.TryGetComponent<damage>(out damage dmg))
+                        dmg.isExplosive = true;
                 }
             }
         }
     }
 
- 
+
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using Autodesk.Fbx;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public abstract class enemyBase : MonoBehaviour, IDamage
@@ -49,6 +50,12 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     protected weaponStats lastDamageWeapon;
     protected bool lastDamageFromGround;
 
+    bool hasGameManager;
+    bool hasAudioManager;
+    bool hasWeaponManager;
+    bool hasChallengeManager;
+    bool hasUpgradeManager;
+
     [Header("Footsteps")]
     [SerializeField] float stepInterval = 0.5f;
     [SerializeField] float movementThreshold = 0.1f;
@@ -74,6 +81,12 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
         if (model != null)
             colorOrig = model.material.color;
+
+        hasAudioManager = audioManager.instance != null;
+        hasGameManager = gameManager.instance != null;
+        hasWeaponManager = weaponManager.instance != null;
+        hasChallengeManager = challengeManager.instance != null;
+        hasUpgradeManager = upgradeManager.instance != null;
     }
 
     void Update()
@@ -218,9 +231,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             {
                 stepTimer = 0f;
 
-                if (audioManager.instance != null && audioManager.instance.enemySteps != null)
+                if (audioManager.instance != null && audioManager.instance.enemySteps != null && audioManager.instance.enemySteps.Length > 0)
                 {
-                    audioManager.instance.playSpatialSFX(audioManager.instance.enemySteps, transform.position, audioManager.instance.enemyStepsVol, 3f, 20f);
+                    audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.enemySteps), transform.position, audioManager.instance.enemyStepsVol, 3f, 20f);
                 }
             }
         }
@@ -402,7 +415,8 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         // REPORT TO CHALLENGE SYSTEM
         if (awardKillRewards && lastDamageWeapon != null)
         {
-            challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
+            // challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
+            challengeManager.instance?.ReportKill(weaponManager.instance.activeWeapon);
         }
 
         // enemies talk to the wave through waveHost, not the singleton

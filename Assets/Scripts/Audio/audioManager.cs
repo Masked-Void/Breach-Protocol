@@ -1,4 +1,4 @@
-using System.ComponentModel;
+using System.Collections;
 using UnityEngine;
 
 public class audioManager : MonoBehaviour
@@ -15,50 +15,61 @@ public class audioManager : MonoBehaviour
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
     [Header("SFX")]
-    [SerializeField] public AudioClip jump;
-    [Range(0, 1)][SerializeField] public float jumpVol = .3f;
+    [SerializeField] AudioClip[] jump;
+    [Range(0, 1)][SerializeField] float jumpVol = .3f;
 
-    [SerializeField] public AudioClip hurt;
-    [Range(0, 1)][SerializeField] public float hurtVol = .3f;
-    
-    [SerializeField] public AudioClip steps;
-    [Range(0, 1)][SerializeField] public float stepsVol = .3f;
+    [SerializeField] AudioClip[] hurt;
+    [Range(0, 1)][SerializeField] float hurtVol = .3f;
 
-    [SerializeField] public AudioClip enemySteps;
+    [SerializeField] AudioClip[] steps;
+    [Range(0, 1)][SerializeField] float stepsVol = .3f;
+
+    [SerializeField] public AudioClip[] enemySteps;
     [Range(0, 1)][SerializeField] public float enemyStepsVol = .3f;
 
-    [SerializeField] public AudioClip enemyHit;
+    [SerializeField] public AudioClip[] enemyHit;
     [Range(0, 1)][SerializeField] public float enemyHitVol = .8f;
-    
-    [SerializeField] public AudioClip enemyShoot;
+
+    [SerializeField] public AudioClip[] enemyShoot;
     [Range(0, 1)][SerializeField] public float enemyShootVol = .8f;
-    
-    [SerializeField] public AudioClip wallHit;
+
+    [SerializeField] public AudioClip[] wallHit;
     [Range(0, 1)][SerializeField] public float wallHitVol = .8f;
-    
-    [SerializeField] public AudioClip equip;
+
+    [SerializeField] public AudioClip[] equip;
     [Range(0, 1)][SerializeField] public float equipVol = .8f;
 
-    [SerializeField] public AudioClip emptyMag;
+    [SerializeField] public AudioClip[] emptyMag;
     [Range(0, 1)][SerializeField] public float emptyMagVol = .8f;
-    
-    [SerializeField] public AudioClip bulletRicochet;
+
+    [SerializeField] public AudioClip[] bulletRicochet;
     [Range(0, 1)][SerializeField] public float bulletRicochetVol = .8f;
-    
-    [SerializeField] public AudioClip glass;
+
+    [SerializeField] public AudioClip[] glass;
     [Range(0, 1)][SerializeField] public float glassVol = .8f;
-    
-    [SerializeField] public AudioClip buttonClick;
+
+    [SerializeField] public AudioClip[] explosion;
+    [Range(0, 1)][SerializeField] public float explosionVol = .8f;
+
+    [SerializeField] public AudioClip[] buttonClick;
     [Range(0, 1)][SerializeField] public float buttonClickVol = .8f;
-    
-    [SerializeField] private AudioClip nukeSFX;
+
+    [SerializeField] AudioClip[] nukeSFX;
     [Range(0, 1)][SerializeField] public float nukeSFXVol = .8f;
+
+    [SerializeField] public AudioClip[] electricSFX;
+    [Range(0, 1)][SerializeField] public float electricSFXVol = .8f;
 
     [Header("Music")]
     [SerializeField] public AudioClip titleScreenSound;
+    [SerializeField] public AudioClip pauseMenuMusic;
+    [SerializeField] public AudioClip loseMenuMusic;
     [SerializeField] private AudioClip roundTransitionMusic;
 
-    public bool isMuted;
+    public bool isMuted = false;
+    AudioClip savedGameplayClip;
+    float savedGameplayTime;
+    private Coroutine pauseMusicRoutine;
 
     void Awake()
     {
@@ -71,7 +82,10 @@ public class audioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         sfxSource.spatialBlend = 0f;
+        loadSettings();
     }
+
+    public AudioClip pickRandomAudio(AudioClip[] audioList) => audioList[Random.Range(0, audioList.Length)];
 
     public void loadSettings()
     {
@@ -95,13 +109,9 @@ public class audioManager : MonoBehaviour
     public void updateAudioVolumes()
     {
         if (musicSource != null)
-        {
             musicSource.volume = isMuted ? 0f : (musicVolume * masterVolume);
-        }
         if (sfxSource != null)
-        {
             sfxSource.volume = isMuted ? 0f : (sfxVolume * masterVolume);
-        }
     }
 
     private void OnDestroy() {
@@ -169,35 +179,28 @@ public class audioManager : MonoBehaviour
 
     public void playMusic(AudioClip clip)
     {
+        stopPauseCoroutine();
         if (clip == null || musicSource == null) return;
 
         musicSource.clip = clip;
-        musicSource.volume = musicVolume * masterVolume;
+        musicSource.volume = isMuted ? 0f : musicVolume * masterVolume;
         musicSource.Play();
     }
 
     public void pauseMusic()
     {
-        if (musicSource != null && musicSource.isPlaying)
-        {
-            musicSource.Pause();
-        }
+        if (musicSource != null && musicSource.isPlaying) musicSource.Pause();
     }
 
     public void resumeMusic()
     {
-        if (musicSource != null)
-        {
-            musicSource.UnPause();
-        }
+        if (musicSource != null) musicSource.UnPause();
     }
 
     public void stopMusic()
     {
-        if (musicSource != null)
-        {
-            musicSource.Stop();
-        }
+        stopPauseCoroutine();
+        if (musicSource != null) musicSource.Stop();
     }
 
     public void unmute()
@@ -207,17 +210,68 @@ public class audioManager : MonoBehaviour
         saveSettings();
     }
 
-    public void playJump() => playSFX(jump, jumpVol);
-    public void playHurt() => playSFX(hurt, hurtVol);
-    public void playSteps() => playSFX(steps, stepsVol);
-    public void playEquip() => playSFX(equip, equipVol);
-    public void playEmptyMag() => playSFX(emptyMag, emptyMagVol);
-    public void playButtonClick() => playSFX(buttonClick, buttonClickVol);
-    public void playNuke() => playSFX(nukeSFX, nukeSFXVol);
+    public void playJump() => playSFX(pickRandomAudio(jump), jumpVol);
+    public void playHurt() => playSFX(pickRandomAudio(hurt), hurtVol);
+    public void playSteps() => playSFX(pickRandomAudio(steps), stepsVol);
+    public void playEquip() => playSFX(pickRandomAudio(equip), equipVol);
+    public void playEmptyMag() => playSFX(pickRandomAudio(emptyMag), emptyMagVol);
+    public void playButtonClick() => playSFX(pickRandomAudio(buttonClick), buttonClickVol);
+    public void playNuke() => playSFX(pickRandomAudio(nukeSFX), nukeSFXVol);
     public void playTitleScreenSound() => playMusic(titleScreenSound);
-    public void playRoundTransitionMusic()
+    public void playPauseMenuMusic()
     {
-        stopMusic();
-        playMusic(roundTransitionMusic);
+        if (musicSource != null && musicSource.clip != pauseMenuMusic)
+        {
+            savedGameplayClip = musicSource.clip;
+            savedGameplayTime = musicSource.time;
+        }
+        playMusic(pauseMenuMusic);
     }
+
+    public void restoreGameplayMusic()
+    {
+        stopPauseCoroutine();
+        if (musicSource == null) return;
+        if (musicSource.clip != pauseMenuMusic)
+        {
+            resumeMusic();
+            updateAudioVolumes();
+            return;
+        }
+        if (savedGameplayClip != null)
+        {
+            musicSource.clip = savedGameplayClip;
+            musicSource.time = savedGameplayTime;
+            musicSource.volume = isMuted ? 0f : (musicVolume * masterVolume);
+            musicSource.Play();
+        }
+        else
+        {
+            stopMusic();
+        }
+    }
+
+    public void playPauseMenuMusicWithDelay(float delaySeconds)
+    {
+        stopPauseCoroutine();
+        pauseMusicRoutine = StartCoroutine(PlayPauseMusicDelayed(delaySeconds));
+    }
+
+    private IEnumerator PlayPauseMusicDelayed(float delaySeconds)
+    {
+        yield return new WaitForSecondsRealtime(delaySeconds);
+        playPauseMenuMusic();
+        pauseMusicRoutine = null;
+    }
+
+    public void stopPauseCoroutine()
+    {
+        if (pauseMusicRoutine != null)
+        {
+            StopCoroutine(pauseMusicRoutine);
+            pauseMusicRoutine = null;
+        }
+    }
+    public void playLoseMenuMusic() { stopMusic(); playMusic(loseMenuMusic); }
+    public void playRoundTransitionMusic() { stopMusic(); playMusic(roundTransitionMusic); }
 }

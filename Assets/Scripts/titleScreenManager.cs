@@ -24,6 +24,7 @@ public class titleScreenManager : MonoBehaviour
 
     [SerializeField] private GameObject titleMenuPanel;
     [SerializeField] private GameObject soundMenu;
+    [SerializeField] private GameObject controlsMenu;
     [SerializeField] private Slider progressBar;
 
     void Start()
@@ -86,8 +87,16 @@ public class titleScreenManager : MonoBehaviour
         soundMenu.SetActive(true);
     }
 
+    public void controls()
+    {
+        audioManager.instance.playButtonClick();
+        deactivateAllSettings();
+        controlsMenu.SetActive(true);
+    }
+
     private IEnumerator LoadSceneAsync(String levelName)
     {
+        deactivateAllSettings();
         deactivateAllPanels();
 
         if (progressBar != null)
@@ -198,5 +207,6 @@ public class titleScreenManager : MonoBehaviour
     private void deactivateAllSettings()
     {
         soundMenu.SetActive(false);
+        controlsMenu.SetActive(false);
     }
 }

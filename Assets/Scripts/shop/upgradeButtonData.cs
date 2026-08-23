@@ -31,10 +31,10 @@ public class upgradeButtonData : MonoBehaviour
 
     // Handle weapon selection
     void Selected()
-    {
+    {   
         if (audioManager.instance != null)
             audioManager.instance.playButtonClick();
-            
+                     
         if (upgradeManager.instance != null && upgrade != null)
             upgradeManager.instance.displayUpgrades(upgrade);
     }

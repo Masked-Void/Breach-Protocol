@@ -8,7 +8,7 @@ public class pickWeapon : MonoBehaviour
     {
         if (pic != null)
         {
-            weaponManager.instance.currentWeaponFromGround = true;
+            weapon.isFromGround = true;
             pic.equipWeapon(weapon);
         }
     }

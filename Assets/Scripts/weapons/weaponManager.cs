@@ -7,12 +7,13 @@ public class weaponManager : MonoBehaviour
 
     [Header("Weapon")]
     public weaponStats activeWeapon;
+    public weaponStats starterWeapon;
     [SerializeField] private weaponStats[] allWeapons;
     public Sprite emptySlot;
 
 
-    [Header("Challenge")]
-    public bool currentWeaponFromGround = false;
+    // [Header("Challenge")]
+    // public bool currentWeaponFromGround = false;
 
     GameObject spawnedWeaponModel;
     Transform gunBarrel;
@@ -47,6 +48,10 @@ public class weaponManager : MonoBehaviour
                 activeWeapon = loadedWeapon;
             }
         }
+        else
+        {
+            if (starterWeapon != null) activeWeapon = starterWeapon;
+        }
 
         if (activeWeapon != null) spawnWeapon(activeWeapon);
     }
@@ -57,9 +62,10 @@ public class weaponManager : MonoBehaviour
         attackTimer += Time.unscaledDeltaTime;
     }
 
-    private void OnDestroy() {
-        if (instance == this)
-            instance = null;
+    void OnDestroy()
+    {
+        if (activeWeapon != null) activeWeapon.isFromGround = false;
+        if (instance == this) instance = null;
     }
 
     public void equipWeapon(weaponStats newWeapon)
@@ -109,6 +115,8 @@ public class weaponManager : MonoBehaviour
         if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
             projectileRb = spawnedWeaponModel.AddComponent<Rigidbody>();
 
+        activeWeapon.isFromGround = false;
+
         projectileRb.isKinematic = false;
         projectileRb.useGravity = true;
 
@@ -154,22 +162,27 @@ public class weaponManager : MonoBehaviour
         return null;
     }
 
+    public float getUpgradeFireRate()
+    {
+        if (activeWeapon == null) return 0f;
+        float rate = activeWeapon.attackRate;
+
+        // Check if fire rate upgrade is active
+        if (upgradeManager.instance != null && upgradeManager.instance.IsUpgradeActive("fire_rate"))
+            rate /= 1.5f;
+
+        return rate;
+    }
+
     public void attack()
     {
-        if (activeWeapon == null || attackTimer < activeWeapon.attackRate)
-            return;
+        if (activeWeapon == null || attackTimer < getUpgradeFireRate()) return;
         if (currentAmmo <= 0) { audioManager.instance.playEmptyMag(); return; }
+        if (heartbeatManager.instance != null) heartbeatManager.instance.playerShot();
 
         attackTimer = 0f;
         currentAmmo--;
-
-        if (heartbeatManager.instance != null)
-        {
-            heartbeatManager.instance.playerShot();
-        }
-
         activeWeapon.Attack();
-
     }
 
     void updateHUD()

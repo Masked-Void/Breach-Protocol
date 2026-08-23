@@ -16,45 +16,71 @@ public class damage : MonoBehaviour
     [SerializeField] float shatterForce = 350f;
     [SerializeField] LayerMask deflectLayer;
     [SerializeField] ParticleSystem hitEffect;
-    [SerializeField] ParticleSystem explodeEffect;
+
+    [Header("Explosion")]
+    [SerializeField] ParticleSystem explosionEffect;
+    [SerializeField] float explosionForce = 1000f;
+    [SerializeField] float explosionRadius = 5f;
+    [SerializeField] int explosionDamage = 50;
+
+    [Header("Explosion Shake")]
+    [SerializeField] float maxShakeDistance = 20f;
+    [SerializeField] float shakeDuration = 0.3f;
+    [SerializeField] Vector3 maxShakeStrength = new Vector3(0.25f, 0.25f, 0.25f);
+
+    [SerializeField] AudioSource sfxSource;
+    [SerializeField] AudioClip sfx;
+
+    public bool isExplosive;
+
 
     bool isDamaging;
-    private bool hasHit = false;
-    public bool isExplosive;
-    private float explosionRadius = 5f;
-    private int explosionDamage = 50;
+    bool hasHit = false;
+    int enemyLayer;
+    bool hasAudioManager;
 
+    // [Header("Challenge Source")]
+    // public weaponStats sourceWeapon;
+    // public bool sourceWasGroundPickup;
 
-    [Header("Challenge Source")]
-    public weaponStats sourceWeapon;
-    public bool sourceWasGroundPickup;
-
-    private int enemyLayer;
-    private bool hasAudioManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (rb == null && !TryGetComponent<Rigidbody>(out rb))
-            rb = gameObject.AddComponent<Rigidbody>();
-
         enemyLayer = LayerMask.NameToLayer("Enemy");
         hasAudioManager = audioManager.instance != null;
-    }
-
-    private void FixedUpdate()
-    {
 
         if (type == DamageType.bullet)
-        {
+            if (rb == null && !TryGetComponent<Rigidbody>(out rb))
+                rb = gameObject.AddComponent<Rigidbody>();
 
+        if (type == DamageType.DOT && hasAudioManager)
+        {
+            if (sfx != null)
+            {
+                sfxSource = gameObject.AddComponent<AudioSource>();
+                sfxSource.clip = sfx;
+                sfxSource.volume = .4f * audioManager.instance.masterVolume;
+                sfxSource.loop = true;
+                sfxSource.spatialBlend = 1f;
+                sfxSource.minDistance = 1f;
+                sfxSource.maxDistance = 25f;
+                sfxSource.Play();
+            }
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (type == DamageType.bullet)
+        {
             rb.useGravity = false;
             rb.linearVelocity = transform.forward * bulletSpeed;
             Destroy(gameObject, bulletDestroyTime);
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
         if (type != DamageType.throwable || hasHit) return;
 
@@ -64,13 +90,12 @@ public class damage : MonoBehaviour
         hasHit = true;
         Vector3 hitPoint = collision.contacts[0].point;
         handleGlassShatter(other, hitPoint);
-        handleDamageAndEffects(other, hitPoint);
+        handleDamageAndEffects(other);
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.isTrigger)
-            return;
+        if (other.isTrigger) return;
 
         if (type == DamageType.bullet && ((1 << other.gameObject.layer) & deflectLayer) != 0)
         {
@@ -78,56 +103,38 @@ public class damage : MonoBehaviour
             return;
         }
 
-        Vector3 hitPoint = other.ClosestPoint(transform.position);
-        handleGlassShatter(other, hitPoint);
-        handleDamageAndEffects(other, hitPoint);
-
         if (type == DamageType.bullet)
         {
-
-            if (isExplosive)
-            {
-                explode();
-                if (hitEffect != null) Instantiate(explodeEffect, transform.position, Quaternion.identity);
-
-            }
-            else if (hitEffect != null)
-                Instantiate(hitEffect, transform.position, Quaternion.identity);
-
-            Destroy(gameObject);
+            if (isExplosive) explode();
+            else if (hitEffect != null) Instantiate(hitEffect, transform.position, Quaternion.identity);
         }
+
+        Vector3 hitPoint = other.ClosestPoint(transform.position);
+        handleGlassShatter(other, hitPoint);
+        handleDamageAndEffects(other);
+        if (type != DamageType.DOT && type != DamageType.stationary)
+            Destroy(gameObject);
     }
 
-    private void handleGlassShatter(Collider other, Vector3 hitPoint)
+    void handleGlassShatter(Collider other, Vector3 hitPoint)
     {
         glassShatter glass = other.GetComponent<glassShatter>() ?? other.GetComponentInParent<glassShatter>();
         if (glass != null)
         {
             glass.Shatter(hitPoint, transform.forward, shatterForce);
             if (hasAudioManager)
-            {
-                audioManager.instance.playSpatialSFX(audioManager.instance.glass, transform.position, audioManager.instance.glassVol);
-            }
+                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.glass), transform.position, audioManager.instance.glassVol);
         }
     }
 
-    private void handleDamageAndEffects(Collider other, Vector3 hitPoint)
+    void handleDamageAndEffects(Collider other)
     {
-        // Register damage source for challenge progression
-        enemyBase eb = other.GetComponent<enemyBase>();
-        if (eb != null && sourceWeapon != null)
-        {
-            eb.RegisterDamageSource(sourceWeapon, sourceWasGroundPickup);
-        }
-
         // Deal damage
         if (type != DamageType.DOT)
         {
             IDamage dmg = other.GetComponent<IDamage>();
             if (dmg != null)
-            {
                 dmg.takeDamage(damageAmount);
-            }
         }
 
         // Play SFX
@@ -135,21 +142,16 @@ public class damage : MonoBehaviour
         {
             bool isEnemy = other.gameObject.layer == enemyLayer;
             if (isEnemy)
-            {
-                audioManager.instance.playSpatialSFX(audioManager.instance.enemyHit, transform.position, audioManager.instance.enemyHitVol);
-            }
+                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.enemyHit), transform.position, audioManager.instance.enemyHitVol);
             else
-            {
-                audioManager.instance.playSpatialSFX(audioManager.instance.wallHit, transform.position, audioManager.instance.wallHitVol);
-            }
+                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.wallHit), transform.position, audioManager.instance.wallHitVol);
         }
     }
 
     // DOT damage, we do not use it right now
-    private void OnTriggerStay(Collider other)
+    void OnTriggerStay(Collider other)
     {
-        if (other.isTrigger)
-            return;
+        if (other.isTrigger) return;
 
         IDamage dmg = other.GetComponent<IDamage>();
         if (dmg != null && type == DamageType.DOT && !isDamaging)
@@ -167,7 +169,7 @@ public class damage : MonoBehaviour
         isDamaging = false;
     }
 
-    private void DeflectBullet(Collider other)
+    void DeflectBullet(Collider other)
     {
         Vector3 direction = rb.linearVelocity.normalized;
         Ray ray = new Ray(transform.position - direction, direction);
@@ -176,7 +178,7 @@ public class damage : MonoBehaviour
             // Calculate the reflection vector based on current velocity and surface normal
             Vector3 reflectedVelocity = Vector3.Reflect(rb.linearVelocity, hit.normal);
             if (hasAudioManager)
-                audioManager.instance.playSpatialSFX(audioManager.instance.bulletRicochet, transform.position, audioManager.instance.bulletRicochetVol);
+                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.bulletRicochet), transform.position, audioManager.instance.bulletRicochetVol);
 
             transform.forward = reflectedVelocity.normalized;
 
@@ -185,20 +187,59 @@ public class damage : MonoBehaviour
         }
     }
 
-    public void setExplosive()
+    void explode()
     {
-        isExplosive = FindAnyObjectByType<playerController>()?.explodingBullets ?? false;
-    }
-    private void explode()
-    {
-        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
-        foreach (Collider hit in hits)
+        if (hasAudioManager)
+            audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.explosion), transform.position, audioManager.instance.explosionVol);
+
+        // Spawn explosion particle effect
+        if (explosionEffect != null)
         {
-            IDamage dmg = hit.GetComponent<IDamage>();
-            if (dmg != null)
+            ParticleSystem explodeFx = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            Destroy(explodeFx.gameObject, 1.9f);
+        }
+
+        Camera mainCam = Camera.main;
+        if (mainCam != null)
+        {
+            float distance = Vector3.Distance(transform.position, mainCam.transform.position);
+            if (distance < maxShakeDistance)
             {
-                dmg.takeDamage(explosionDamage);
+                // Intensity drops off linearly as distance increases
+                float intensity = 1f - (distance / maxShakeDistance);
+                StartCoroutine(ApplyCameraShake(mainCam, maxShakeStrength * intensity, shakeDuration));
             }
         }
+
+        // Query nearby colliders within explosion radius
+        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
+
+        foreach (Collider hit in hits)
+        {
+            //Apply physics knockback force
+            Rigidbody targetRb = hit.GetComponent<Rigidbody>();
+            if (targetRb != null)
+                targetRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+        }
+    }
+
+    private IEnumerator ApplyCameraShake(Camera cam, Vector3 strength, float duration)
+    {
+        Vector3 originalPos = cam.transform.localPosition;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float percentComplete = elapsed / duration;
+            float damper = 1.0f - Mathf.Clamp01(percentComplete); // Smooth fade out
+
+            Vector3 randomOffset = Vector3.Scale(Random.insideUnitSphere, strength) * damper;
+            cam.transform.localPosition = originalPos + randomOffset;
+
+            yield return null;
+        }
+
+        cam.transform.localPosition = originalPos;
     }
 }

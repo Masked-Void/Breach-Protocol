@@ -5,51 +5,95 @@ public class buttonFunctions : MonoBehaviour
 {
     public void resume()
     {
-        audioManager.instance.playButtonClick();
-        gameManager.instance.stateUnpause();
+        if (audioManager.instance != null) audioManager.instance.playButtonClick();
+        if (gameManager.instance != null) gameManager.instance.stateUnpause();
     }
 
     public void restart()
     {
-        if (audioManager.instance != null)
-        {
-            audioManager.instance.playButtonClick();
-        }
-        gameManager.instance.stateUnpause();
+        if (audioManager.instance != null) audioManager.instance.playButtonClick();
+        if (gameManager.instance != null) gameManager.instance.stateUnpause();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void homeNav()
-{
-    audioManager.instance.playButtonClick();
-    
-    if (gameManager.instance != null)
+    public void home()
     {
-        gameManager.instance.stateUnpause();
+        if (audioManager.instance != null) audioManager.instance.playButtonClick();
+        if (gameManager.instance != null) gameManager.instance.stateUnpause();
+        SceneManager.LoadScene(0);
     }
 
-    SceneManager.LoadScene(0);
-}
+    public void challenge()
+    {
+        deactivateAllPanels();
+        if (gameManager.instance.challengesCanvas != null) gameManager.instance.challengesCanvas.SetActive(true);
+    }
+
+    public void upgrade()
+    {
+        deactivateAllPanels();
+        if (gameManager.instance.upgradesCanvas != null) gameManager.instance.upgradesCanvas.SetActive(true);
+    }
+
+    public void options()
+    {
+        if (audioManager.instance != null) audioManager.instance.playButtonClick();
+        deactivateAllPanels();
+        if (gameManager.instance.backButton != null) gameManager.instance.backButton.SetActive(true);
+        if (gameManager.instance.navTab != null) gameManager.instance.navTab.SetActive(true);
+        if (gameManager.instance.settingsCanvas != null) gameManager.instance.settingsCanvas.SetActive(true);
+    }
+
+    public void settings()
+    {
+        if (audioManager.instance != null) audioManager.instance.playButtonClick();
+        deactivateAllPanels();
+        if (gameManager.instance.settingsCanvas != null) gameManager.instance.settingsCanvas.SetActive(true);
+    }
 
     public void sound()
     {
-        audioManager.instance.playButtonClick();
-        gameManager.instance.openSoundMenu();
+        if (audioManager.instance != null) audioManager.instance.playButtonClick();
+        if (gameManager.instance.controlsMenu != null) gameManager.instance.controlsMenu.SetActive(false);
+        if (gameManager.instance.soundMenu != null) gameManager.instance.soundMenu.SetActive(true);
     }
 
-    public void soundBack()
+    public void controls()
     {
-        audioManager.instance.playButtonClick();
-        gameManager.instance.openPauseMenu();
+        if (audioManager.instance != null) audioManager.instance.playButtonClick();
+        if (gameManager.instance.soundMenu != null) gameManager.instance.soundMenu.SetActive(false);
+        if (gameManager.instance.controlsMenu != null) gameManager.instance.controlsMenu.SetActive(true);
+    }
+
+    public void pauseBack()
+    {
+        if (audioManager.instance != null) audioManager.instance.playButtonClick();
+        deactivateAllPanels();
+        if (gameManager.instance.backButton != null) gameManager.instance.backButton.SetActive(false);
+        if (gameManager.instance.navTab != null) gameManager.instance.navTab.SetActive(false);
+        if (gameManager.instance.buttons != null) gameManager.instance.buttons.SetActive(true);
+        if (gameManager.instance.pauseScorePanel != null) gameManager.instance.pauseScorePanel.SetActive(true);
+    }
+
+    private void deactivateAllPanels()
+    {
+        if (gameManager.instance == null) return;
+        if (gameManager.instance.challengesCanvas != null) gameManager.instance.challengesCanvas.SetActive(false);
+        if (gameManager.instance.settingsCanvas != null) gameManager.instance.settingsCanvas.SetActive(false);
+        if (gameManager.instance.upgradesCanvas != null) gameManager.instance.upgradesCanvas.SetActive(false);
+        if (gameManager.instance.soundMenu != null) gameManager.instance.soundMenu.SetActive(false);
+        if (gameManager.instance.controlsMenu != null) gameManager.instance.controlsMenu.SetActive(false);
+        if (gameManager.instance.buttons != null) gameManager.instance.buttons.SetActive(false);
+        if (gameManager.instance.pauseScorePanel != null) gameManager.instance.pauseScorePanel.SetActive(false);
     }
 
     public void quit()
     {
-        audioManager.instance.playButtonClick();
+        if (audioManager.instance != null) audioManager.instance.playButtonClick();
         #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
         #else
-                Application.Quit();
+            Application.Quit();
         #endif
     }
 }

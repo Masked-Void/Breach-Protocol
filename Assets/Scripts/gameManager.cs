@@ -16,9 +16,27 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuSound;
 
+    [Header("UI Pages")]
+    public GameObject challengesCanvas;
+    public GameObject settingsCanvas;
+    public GameObject upgradesCanvas;
+
+    [Header("Top Navigation Buttons")]
+    public GameObject navTab;
+    public Button navChallengesButton;
+    public Button navSettingsButton;
+    public Button navUpgradesButton;
+    public GameObject buttons;
+    public GameObject backButton;
+
+    [Header("Settings Menu")]
+    [SerializeField] public GameObject soundMenu;
+    [SerializeField] public GameObject controlsMenu;
+
     [Header("Kills UI")]
-    [SerializeField] private TMP_Text scoreText;
-    [SerializeField] TextMeshProUGUI pauseKills;
+    [SerializeField] public GameObject pauseScorePanel;
+    [SerializeField] private TMP_Text pauseScoreText;
+    [SerializeField] private TMP_Text loseSoreText;
     [SerializeField] TextMeshProUGUI killCounter;
 
     [Header("Wave UI")]
@@ -61,7 +79,6 @@ public class gameManager : MonoBehaviour
 
 
     int currentKill = 0;
-    int previousWave = -1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -103,13 +120,13 @@ public class gameManager : MonoBehaviour
     void Update()
     {
         bytesText.text = "Bytes: " + totalBytes.ToString();
-        if (FindAnyObjectByType<playerInteraction>().shopOpen)
-        {
-            menuActive = shopUI;
-            return;
-        }
+        // if (FindAnyObjectByType<playerInteraction>().shopOpen)
+        // {
+        //     menuActive = shopUI;
+        //     return;
+        // }
 
-        if (!FindAnyObjectByType<playerInteraction>().shopOpen && Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonDown("Cancel"))
         {
             if (audioManager.instance != null) audioManager.instance.playButtonClick();
             if (menuActive == null)
@@ -122,20 +139,13 @@ public class gameManager : MonoBehaviour
             {
                 stateUnpause();
             }
-            else if (menuActive == menuSound)
-            {
-                openPauseMenu();
-            }
-
         }
 
 
         updateUI();
 
         if (weaponManager.instance != null && weaponManager.instance.activeWeapon != null)
-        {
             magAmmoUI.text = weaponManager.instance.getCurrentAmmo().ToString();
-        }
     }
 
     // Pause the game
@@ -145,8 +155,26 @@ public class gameManager : MonoBehaviour
         timeManager.instance.pauseTime();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        pauseKills.text = currentKill.ToString("f0");
-        if (audioManager.instance != null) audioManager.instance.pauseMusic();
+        pauseScoreText.text = currentKill.ToString("f0");
+        resetPauseUI();
+        if (audioManager.instance != null)
+        {
+            audioManager.instance.pauseMusic();
+            audioManager.instance.playPauseMenuMusicWithDelay(4.0f);
+        }
+    }
+
+    public void resetPauseUI()
+    {
+        if (challengesCanvas != null) challengesCanvas.SetActive(false);
+        if (settingsCanvas != null) settingsCanvas.SetActive(false);
+        if (upgradesCanvas != null) upgradesCanvas.SetActive(false);
+        if (soundMenu != null) soundMenu.SetActive(false);
+        if (controlsMenu != null) controlsMenu.SetActive(false);
+        if (backButton != null) backButton.SetActive(false);
+        if (navTab != null) navTab.SetActive(false);
+        if (buttons != null) buttons.SetActive(true);
+        if (pauseScorePanel != null) pauseScorePanel.SetActive(true);
     }
 
     // Unpause the game
@@ -161,27 +189,7 @@ public class gameManager : MonoBehaviour
             menuActive.SetActive(false);
             menuActive = null;
         }
-        if (audioManager.instance != null) audioManager.instance.resumeMusic();
-    }
-
-    public void openSoundMenu()
-    {
-        if (menuActive != null)
-        {
-            menuActive.SetActive(false);
-        }
-        menuActive = menuSound;
-        menuActive.SetActive(true);
-    }
-
-    public void openPauseMenu()
-    {
-        if (menuActive != null)
-        {
-            menuActive.SetActive(false);
-        }
-        menuActive = menuPause;
-        menuActive.SetActive(true);
+        if (audioManager.instance != null) audioManager.instance.restoreGameplayMusic();
     }
 
     // Handle the lose state
@@ -204,13 +212,19 @@ public class gameManager : MonoBehaviour
             endMenu.SetActive(true);
         }
 
-        if (scoreText != null) {
-            scoreText.text = currentKill.ToString("f0");
+        if (loseSoreText != null) {
+            loseSoreText.text = currentKill.ToString("f0");
         }
 
         if (upgradeManager.instance != null) {
             upgradeManager.instance.files += totalFiles;
             upgradeManager.instance.SaveUpgrades();
+        }
+
+        // lose screen gets its own music cue
+        if (endMenu == menuLose && audioManager.instance != null)
+        {
+            audioManager.instance.playLoseMenuMusic();
         }
     }
     public void addKill()
@@ -245,13 +259,9 @@ public class gameManager : MonoBehaviour
 
     public IEnumerator WarningText()
     {
-        if (shopMessage != null)
-            shopMessage.SetActive(true);
-
+        if (shopMessage != null) shopMessage.SetActive(true);
         yield return new WaitForSecondsRealtime(5);
-
-        if (shopMessage != null)
-            shopMessage.SetActive(false);
+        if (shopMessage != null) shopMessage.SetActive(false);
     }
 
     public void showShopWarning()
@@ -263,27 +273,24 @@ public class gameManager : MonoBehaviour
     IEnumerator AnimateWaveText()
     {
         RectTransform rect = waveCountdown.rectTransform;
-
         Vector3 originalScale = Vector3.one;
-
         float duration = .1f;
         float timer = 0f;
-
         rect.localScale = originalScale * 1.3f;
-
         while (timer < duration)
         {
             timer += Time.unscaledDeltaTime;
-
-            float t = timer / duration;
-
-            t = Mathf.SmoothStep(0f, 1f, t);
-
+            float t = Mathf.SmoothStep(0f, 1f, timer / duration);
             rect.localScale = Vector3.Lerp(originalScale * 1.3f, originalScale, t);
-
             yield return null;
         }
 
         rect.localScale = originalScale;
     }
+
+    // Currency Stuff
+    public void AddBytes(int amount) { totalBytes += amount; }
+    public void AddFiles(int amount) { totalFiles += amount; }
+    public void SubtractBytes(int amount) { totalBytes -= amount; }
+    public void SubtractFiles(int amount) { totalFiles -= amount; }
 }

@@ -7,25 +7,25 @@ public class populateShop : MonoBehaviour
 {
     
     
-    [SerializeField] Image icon;
-    [SerializeField] TMP_Text nameText;
-    [SerializeField] TMP_Text descriptionText;
-    [SerializeField] TMP_Text costText;
+    // [SerializeField] Image icon;
+    // [SerializeField] TMP_Text nameText;
+    // [SerializeField] TMP_Text descriptionText;
+    // [SerializeField] TMP_Text costText;
     
-    private upgradeData currentUpgrade;
+    // private upgradeData currentUpgrade;
 
-    public void populateShopUI(upgradeData Upgrade)
-    {
-        currentUpgrade = Upgrade;
+    // public void populateShopUI(upgradeData Upgrade)
+    // {
+    //     currentUpgrade = Upgrade;
 
-        icon.sprite = Upgrade.icon;
-        nameText.text = Upgrade.UpgradeName;
-        descriptionText.text = Upgrade.Description;
-        costText.text = "Bytes: " + Upgrade.Cost.ToString();
-    }
+    //     icon.sprite = Upgrade.icon;
+    //     nameText.text = Upgrade.UpgradeName;
+    //     descriptionText.text = Upgrade.Description;
+    //     costText.text = "Bytes: " + Upgrade.Cost.ToString();
+    // }
 
-    public void BuyUpgrade()
-    {
-        shopManager.instance.buyUpgrade(currentUpgrade);
-    }
+    // public void BuyUpgrade()
+    // {
+    //     shopManager.instance.buyUpgrade(currentUpgrade);
+    // }
 }

@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::weaponManager
   activeWeapon: {fileID: 0}
+  starterWeapon: {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
   allWeapons:
   - {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
   - {fileID: 11400000, guid: 390a74157b59cac4e8536a3f2d61b51c, type: 2}
@@ -52,4 +53,3 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ef7a53a17b68b474aa996e4a59d58c49, type: 2}
   - {fileID: 11400000, guid: 5769f53383e30824aba5454d741e75d8, type: 2}
   emptySlot: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
-  currentWeaponFromGround: 0

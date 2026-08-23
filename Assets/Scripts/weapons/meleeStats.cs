@@ -40,25 +40,22 @@ public class meleeStats : weaponStats
     }
     public override void Attack()
     {
-
-        if (weaponManager.instance.activeWeapon.weaponModel.CompareTag("Katana" ))
-        {
-        }
         Transform gunBarrel = weaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
 
 
         audioManager.instance.playSFX(swingSound, swingSoundVol);
+        //StartCoroutine(katanaSwing());
 
         RaycastHit hit;
         if (Physics.Raycast(gunBarrel.position, gunBarrel.forward, out hit, attackDist))
         {
-            //register source for challenge manager
-            enemyBase eb = hit.transform.GetComponent<enemyBase>();
-            if (eb != null)
-            {
-                eb.RegisterDamageSource(weaponManager.instance.activeWeapon, weaponManager.instance.currentWeaponFromGround);
-            }
+            // //register source for challenge manager
+            // enemyBase eb = hit.transform.GetComponent<enemyBase>();
+            // if (eb != null)
+            // {
+            //     eb.RegisterDamageSource(weaponManager.instance.activeWeapon, weaponManager.instance.currentWeaponFromGround);
+            // }
             IDamage dmg = hit.transform.GetComponent<IDamage>();
             if (dmg != null)
             {
