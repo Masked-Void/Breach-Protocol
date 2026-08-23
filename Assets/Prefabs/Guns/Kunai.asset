@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4636424b6eb53a499a9a76a72d3ba85, type: 3}
   m_Name: Kunai
   m_EditorClassIdentifier: Assembly-CSharp::gunStats
-  weaponID: Kunai
+  Name: Kunai
   weaponModel: {fileID: 1838565329862472463, guid: 3a25a65e33ae85f4f8ef8f1659fe79e4, type: 3}
+  sprite: {fileID: 0}
+  cost: 200
   attackRate: 0.1
   gunType: 3
   bullet: {fileID: 4840384255211066881, guid: e2815fde45934d24781b12168eb66311, type: 3}
@@ -21,5 +23,6 @@ MonoBehaviour:
   Rotation: {x: 0, y: 0, z: 0}
   pelletCount: 1
   spreadAngle: 0.2
+  startingBullets: 3
   shootSound: {fileID: 8300000, guid: 5d921690d16c48042a8344ae886177fa, type: 3}
   shootSoundVol: 0.8

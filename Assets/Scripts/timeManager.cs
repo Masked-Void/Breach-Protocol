@@ -42,6 +42,7 @@ public class timeManager : MonoBehaviour
 
         currentTimeScale = Mathf.Clamp(minTimeScale, 0.001f, maxTimeScale);
         ApplyTimeScale(currentTimeScale);
+
     }
 
     private void Update()
@@ -95,6 +96,8 @@ public class timeManager : MonoBehaviour
             targetTimeScale,
             blend
         );
+
+        
 
         ApplyTimeScale(currentTimeScale);
     }

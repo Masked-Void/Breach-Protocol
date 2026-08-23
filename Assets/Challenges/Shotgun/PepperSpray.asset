@@ -12,11 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162886db7513b5c4694b9e2fed4e9df8, type: 3}
   m_Name: PepperSpray
   m_EditorClassIdentifier: Assembly-CSharp::challengeData
-  challengeID: shotgun_5
-  displayName: Pepper Spray
-  description: 
-  progress: 0
-  targetWeaponID: Shotgun
-  killCount: 5
+  challengesList:
+  - challengeID: shotgun_5
+    displayName: Pepper Spray I
+    killCount: 5
+  - challengeID: shotgun_20
+    displayName: Pepper Spray II
+    killCount: 20
+  - challengeID: shotgun_100
+    displayName: Pepper Spray III
+    killCount: 100
+  description: Get kills with a picked up shotgun
+  weapon: {fileID: 11400000, guid: 390a74157b59cac4e8536a3f2d61b51c, type: 2}
   requireGroundPickup: 1
-  rewardWeaponID: 

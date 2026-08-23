@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using UnityEngine;
 
 public class audioManager : MonoBehaviour
@@ -22,7 +23,10 @@ public class audioManager : MonoBehaviour
     
     [SerializeField] public AudioClip steps;
     [Range(0, 1)][SerializeField] public float stepsVol = .3f;
-    
+
+    [SerializeField] public AudioClip enemySteps;
+    [Range(0, 1)][SerializeField] public float enemyStepsVol = .3f;
+
     [SerializeField] public AudioClip enemyHit;
     [Range(0, 1)][SerializeField] public float enemyHitVol = .8f;
     
@@ -54,6 +58,7 @@ public class audioManager : MonoBehaviour
     [SerializeField] public AudioClip titleScreenSound;
     [SerializeField] private AudioClip roundTransitionMusic;
 
+    public bool isMuted;
 
     void Awake()
     {
@@ -68,19 +73,68 @@ public class audioManager : MonoBehaviour
         sfxSource.spatialBlend = 0f;
     }
 
+    public void loadSettings()
+    {
+        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        isMuted = PlayerPrefs.GetInt("IsMuted", 0) == 1;
+
+        updateAudioVolumes();
+    }
+
+    public void saveSettings()
+    {
+        PlayerPrefs.SetFloat("MasterVolume", masterVolume);
+        PlayerPrefs.SetFloat("MusicVolume", musicVolume);
+        PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
+        PlayerPrefs.SetInt("IsMuted", isMuted ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public void updateAudioVolumes()
+    {
+        if (musicSource != null)
+        {
+            musicSource.volume = isMuted ? 0f : (musicVolume * masterVolume);
+        }
+        if (sfxSource != null)
+        {
+            sfxSource.volume = isMuted ? 0f : (sfxVolume * masterVolume);
+        }
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
+    }
+
     public void setMasterVolume(float vol)
     {
-        masterVolume = vol;
+        masterVolume = Mathf.Clamp01(vol);
+        updateAudioVolumes();
+        saveSettings();
     }
 
     public void setMusicVolume(float vol)
     {
-        musicVolume = vol;
+        musicVolume = Mathf.Clamp01(vol);
+        updateAudioVolumes();
+        saveSettings();
     }
 
     public void setSFXVolume(float vol)
     {
-        sfxVolume = vol;
+        sfxVolume = Mathf.Clamp01(vol);
+        updateAudioVolumes();
+        saveSettings();
+    }
+
+    public void toggleMute()
+    {
+        isMuted = !isMuted;
+        updateAudioVolumes();
+        saveSettings();
     }
 
     public void playSFX(AudioClip clip, float localVolumeMod = 1f)
@@ -146,46 +200,21 @@ public class audioManager : MonoBehaviour
         }
     }
 
-    public void playJump()
+    public void unmute()
     {
-        playSFX(jump, jumpVol);
+        isMuted = false;
+        updateAudioVolumes();
+        saveSettings();
     }
 
-    public void playHurt()
-    {
-        playSFX(hurt, hurtVol);
-    }
-
-    public void playSteps()
-    {
-        playSFX(steps, stepsVol);
-    }
-
-    public void playEquip()
-    {
-        playSFX(equip, equipVol);
-    }
-
-    public void playEmptyMag()
-    {
-        playSFX(emptyMag, emptyMagVol);
-    }
-
-    public void playButtonClick()
-    {
-        playSFX(buttonClick, buttonClickVol);
-    }
-
-    public void playTitleScreenSound()
-    {
-        playMusic(titleScreenSound);
-    }
-
-    public void playNuke()
-    {
-        playSFX(nukeSFX, nukeSFXVol);
-    }
-
+    public void playJump() => playSFX(jump, jumpVol);
+    public void playHurt() => playSFX(hurt, hurtVol);
+    public void playSteps() => playSFX(steps, stepsVol);
+    public void playEquip() => playSFX(equip, equipVol);
+    public void playEmptyMag() => playSFX(emptyMag, emptyMagVol);
+    public void playButtonClick() => playSFX(buttonClick, buttonClickVol);
+    public void playNuke() => playSFX(nukeSFX, nukeSFXVol);
+    public void playTitleScreenSound() => playMusic(titleScreenSound);
     public void playRoundTransitionMusic()
     {
         stopMusic();

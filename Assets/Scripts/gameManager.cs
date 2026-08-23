@@ -13,6 +13,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuActive;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
+    [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuSound;
 
     [Header("Kills UI")]
@@ -48,6 +49,7 @@ public class gameManager : MonoBehaviour
     public GameObject damageFlashUI;
 
     [Header("Weapon UI")]
+    public GameObject ammoPanel;
     public TextMeshProUGUI magAmmoUI;
     public TextMeshProUGUI totalAmmoUI;
     public Image activeWeapon;
@@ -64,20 +66,30 @@ public class gameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        if (instance != null && instance != this) {
+            Destroy(gameObject);
+            return;
+        }
         instance = this;
         player = GameObject.FindWithTag("Player");
         playerScript = player.GetComponent<playerController>();
     }
+
+    void OnDestroy() {
+        if (instance == this)
+            instance = null;
+    }
+
     //Currency Stuff
     public void AddBytes(int amount)
     {
         totalBytes += amount;
-        Debug.Log("Current Bytes: " + totalBytes);
+        //Debug.Log("Current Bytes: " + totalBytes);
     }
     public void AddFiles(int amount)
     {
         totalFiles += amount;
-        Debug.Log("Current Files: " + totalFiles);
+        //Debug.Log("Current Files: " + totalFiles);
     }
     public void SubtractBytes(int amount)
     {
@@ -175,18 +187,32 @@ public class gameManager : MonoBehaviour
     // Handle the lose state
     public void stateLose()
     {
+        endRun(menuLose);
+    }
+
+    //Handes the win state aka when the boss dies
+    public void stateWin() {
+        endRun(menuWin);
+    }
+
+    // Simple method so simplify states
+    void endRun(GameObject endMenu) {
         statePause();
-        menuActive = menuLose;
-        menuActive.SetActive(true);
-        scoreText.text = currentKill.ToString("f0");
-        if(upgradeManager.instance != null)
-        {
+
+        if (endMenu != null) {
+            menuActive = endMenu;
+            endMenu.SetActive(false);
+        }
+
+        if (scoreText != null) {
+            scoreText.text = currentKill.ToString("f0");
+        }
+
+        if (upgradeManager.instance != null) {
             upgradeManager.instance.files += totalFiles;
             upgradeManager.instance.SaveUpgrades();
         }
-
     }
-
     public void addKill()
     {
         currentKill++;
@@ -196,21 +222,24 @@ public class gameManager : MonoBehaviour
     {
         if (waveManager.instance == null) return;
 
-        waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
-        StartCoroutine(AnimateWaveText());
+        if (waveCounter != null) {
+            waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
+            StartCoroutine(AnimateWaveText());
 
-        killCounter.text = "Kills: " + currentKill;
+            killCounter.text = "Kills: " + currentKill;
+        }
 
-        if (waveManager.instance.isWaitingForNextWave())
-        {
+        if (waveManager.instance.isWaitingForNextWave()) {
             int secondsLeft = waveManager.instance.getSecondsUntilNextWave();
 
-            waveCountdownText.gameObject.SetActive(true);
-            waveCountdown.text = "" + secondsLeft;
-        }
-        else
-        {
-            waveCountdownText.gameObject.SetActive(false);
+            if (waveCountdownText != null) {
+                waveCountdownText.gameObject.SetActive(true);
+                waveCountdown.text = "" + secondsLeft;
+            }
+        } else {
+            if (waveCountdown != null) {
+                waveCountdownText.gameObject.SetActive(false);
+            }
         }
     }
 

@@ -26,11 +26,11 @@ public class spawnPoint
 
     public bool isFree(float cooldown)
     {
-        return Time.time - lastUsed >= cooldown;
+         return (Time.unscaledTime - lastUsed >= cooldown);
     }
 }
 
-public class waveManager : MonoBehaviour
+public class waveManager : MonoBehaviour,IWaveHost
 {
     public static waveManager instance;
 
@@ -94,6 +94,8 @@ public class waveManager : MonoBehaviour
 
         instance = this;
 
+        waveHost.active = this;
+
         assignSpawnPoints(spawnPointTransforms);
         assignRoamPoints(roamPointTransforms);
     }
@@ -125,7 +127,14 @@ public class waveManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
 
+        if (ReferenceEquals(waveHost.active , this)) {
+            waveHost.active = null;
+        }
+    }
     private IEnumerator spawn()
     {
         int amountToSpawn = Mathf.RoundToInt(
@@ -161,7 +170,7 @@ public class waveManager : MonoBehaviour
                 }
             }
 
-            point.lastUsed = Time.time;
+            point.lastUsed = Time.unscaledTime;
 
             enemiesAlive++;
 
@@ -397,10 +406,14 @@ public class waveManager : MonoBehaviour
         {
             gameManager.instance.AddFiles(5);
 
-            Debug.Log(
-                "Current Files: " +
-                gameManager.instance.totalFiles
-            );
+            // keep the upgrade currency in sync after every wave
+            if (upgradeManager.instance != null)
+            {
+                upgradeManager.instance.files += gameManager.instance.totalFiles;
+                upgradeManager.instance.SaveUpgrades();
+            }
+
+            //Debug.Log("Current Files: " + gameManager.instance.totalFiles);
         }
 
         queueNextWave();
@@ -494,9 +507,7 @@ public class waveManager : MonoBehaviour
 
         if (spawnPoints.Length == 0)
         {
-            Debug.LogError(
-                "waveManager: no spawn points assigned"
-            );
+            //Debug.LogError("waveManager: no spawn points assigned");
         }
     }
 
@@ -519,18 +530,9 @@ public class waveManager : MonoBehaviour
 
         if (roamPoints.Length == 0)
         {
-            Debug.LogError(
-                "waveManager: no roam points assigned"
-            );
+            //Debug.LogError("waveManager: no roam points assigned");
         }
     }
 
 
-    private void OnDestroy()
-    {
-        if (instance == this)
-        {
-            instance = null;
-        }
-    }
 }

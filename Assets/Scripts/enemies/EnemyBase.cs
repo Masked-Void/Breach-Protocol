@@ -48,6 +48,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     protected weaponStats lastDamageWeapon;
     protected bool lastDamageFromGround;
 
+    [Header("Footsteps")]
+    [SerializeField] float stepInterval = 0.5f;
+    [SerializeField] float movementThreshold = 0.1f;
+    float stepTimer;
+
     // small compatibility state used by the scorestreak system
     private bool isDead;
     private bool suppressKillRewards;
@@ -68,7 +73,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     void Update()
     {
         if (gameManager.instance != null && gameManager.instance.isPaused) return;
-        attackTimer += Time.deltaTime;
+        attackTimer += Time.unscaledDeltaTime;
+
+        HandleFootSteps();
 
         if (!willRoam)
         {
@@ -77,7 +84,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             {
                 if (AtRoamTarget())
                 {
-                    waveManager.instance?.releaseRoamPoint(gameObject);
+                    waveHost.active?.releaseRoamPoint(gameObject);
                     roamTarget = null;
                     agent.stoppingDistance = stoppingDistOrig;
                 }
@@ -103,7 +110,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         }
         else
         {
-            // Ranged: roaming   only look around while stopped at a roam point
+            // Ranged: roaming � only look around while stopped at a roam point
             roam();
 
             if (roamTarget == null && playerInTrigger)
@@ -114,6 +121,28 @@ public abstract class enemyBase : MonoBehaviour, IDamage
                     agent.stoppingDistance = stoppingDistOrig;
                 }
             }
+        }
+    }
+
+    void HandleFootSteps()
+    {
+        if (agent.velocity.magnitude > movementThreshold)
+        {
+            stepTimer += Time.deltaTime;
+
+            if (stepTimer >= stepInterval)
+            {
+                stepTimer = 0f;
+
+                if (audioManager.instance != null && audioManager.instance.enemySteps != null)
+                {
+                    audioManager.instance.playSpatialSFX(audioManager.instance.enemySteps, transform.position, audioManager.instance.enemyStepsVol, 3f, 20f);
+                }
+            }
+        }
+        else
+        {
+            stepTimer = 0f;
         }
     }
 
@@ -142,7 +171,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         return false;
     }
 
-    bool canSeePlayer()
+    public virtual bool canSeePlayer()
     {
         playerDir = gameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
@@ -164,11 +193,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
     void pickRoamPoint()
     {
-        if (waveManager.instance == null) return;
+        if (waveHost.active == null) return;
 
-        waveManager.instance.releaseRoamPoint(gameObject);
+        waveHost.active.releaseRoamPoint(gameObject);
 
-        Transform nextRoamPoint = waveManager.instance.claimRoamPoint(gameObject);
+        Transform nextRoamPoint = waveHost.active.claimRoamPoint(gameObject);
 
         if (nextRoamPoint == null) return;
 
@@ -181,7 +210,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         if (roamTarget != null && AtRoamTarget())
         {
-            waveManager.instance?.releaseRoamPoint(gameObject);
+            waveHost.active?.releaseRoamPoint(gameObject);
             roamTarget = null;
             roamTimer = 0f;
             return;
@@ -221,8 +250,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     }
     public void takeDamage(int amount)
     {
-        if (isDead || amount <= 0)
-            return;
+        if (isDead || amount <= 0) return;
 
         currentHP -= amount;
 
@@ -239,6 +267,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
         if (currentHP <= 0)
         {
+            // die() owns the byte award so it only ever fires once
             die();
         }
         else if (model != null)
@@ -260,17 +289,16 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         bool awardKillRewards = !suppressKillRewards;
         suppressKillRewards = false;
 
+        // REPORT TO CHALLENGE SYSTEM
         if (awardKillRewards && lastDamageWeapon != null)
         {
-            challengeManager.instance?.ReportKill(
-                lastDamageWeapon,
-                lastDamageFromGround
-            );
+            challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
         }
 
-        if (waveManager.instance != null)
+        // enemies talk to the wave through waveHost, not the singleton
+        if (waveHost.active != null)
         {
-            waveManager.instance.enemyKilled();
+            waveHost.active.enemyKilled();
         }
 
         if (awardKillRewards)

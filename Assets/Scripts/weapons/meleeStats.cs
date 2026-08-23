@@ -53,6 +53,7 @@ public class meleeStats : weaponStats
         RaycastHit hit;
         if (Physics.Raycast(gunBarrel.position, gunBarrel.forward, out hit, attackDist))
         {
+            //register source for challenge manager
             enemyBase eb = hit.transform.GetComponent<enemyBase>();
             if (eb != null)
             {

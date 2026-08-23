@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class weaponManager : MonoBehaviour
@@ -6,6 +7,7 @@ public class weaponManager : MonoBehaviour
 
     [Header("Weapon")]
     public weaponStats activeWeapon;
+    [SerializeField] private weaponStats[] allWeapons;
     public Sprite emptySlot;
 
 
@@ -24,16 +26,28 @@ public class weaponManager : MonoBehaviour
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
+            return;
         }
-        else
-        {
-            instance = this;
-        }
+        instance = this;
     }
 
     void Start()
     {
+        if (gameManager.instance == null || gameManager.instance.playerScript == null) return;
+
         weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
+
+        // Load saved weapon
+        string savedWeaponName = PlayerPrefs.GetString("EquippedWeapon", "");
+        if (!string.IsNullOrEmpty(savedWeaponName) && allWeapons != null)
+        {
+            weaponStats loadedWeapon = System.Array.Find(allWeapons, w => w != null && w.Name == savedWeaponName);
+            if (loadedWeapon != null)
+            {
+                activeWeapon = loadedWeapon;
+            }
+        }
+
         if (activeWeapon != null) spawnWeapon(activeWeapon);
     }
 
@@ -43,10 +57,22 @@ public class weaponManager : MonoBehaviour
         attackTimer += Time.unscaledDeltaTime;
     }
 
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
+    }
+
     public void equipWeapon(weaponStats newWeapon)
     {
-        if (newWeapon == null) return;
+        StartCoroutine(equip(newWeapon));
+    }
+
+    IEnumerator equip(weaponStats newWeapon)
+    {
+        if (newWeapon == null) yield return null;
         if (spawnedWeaponModel != null) throwWeapon();
+        yield return new WaitForSeconds(1.5f);
+        audioManager.instance.playEquip();
         spawnWeapon(newWeapon);
     }
 
@@ -55,6 +81,7 @@ public class weaponManager : MonoBehaviour
         activeWeapon = newWeapon;
 
         if (activeWeapon is gunStats gun) currentAmmo = gun.startingBullets;
+        if (activeWeapon is meleeStats melee) currentAmmo = 10_000;
 
         spawnedWeaponModel = Instantiate(activeWeapon.weaponModel, weaponHolder, false);
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
@@ -63,6 +90,7 @@ public class weaponManager : MonoBehaviour
         if (spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody rb)) rb.isKinematic = true;
         if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
         if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<damage>(out damage thrownDamage)) thrownDamage.enabled = false;
 
         string targetName = (activeWeapon is gunStats) ? "Muzzle" : "HitPoint";
         gunBarrel = FindDeepChild(spawnedWeaponModel.transform, targetName);
@@ -105,6 +133,7 @@ public class weaponManager : MonoBehaviour
         projectileRb.AddTorque(Camera.main.transform.right * 10f, ForceMode.Impulse);
 
         if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider)) weaponCollider.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<damage>(out damage thrownDamage)) thrownDamage.enabled = true;
 
         activeWeapon = null;
         spawnedWeaponModel = null;
@@ -146,14 +175,14 @@ public class weaponManager : MonoBehaviour
     void updateHUD()
     {
         if (gameManager.instance == null) return;
-        if (activeWeapon != null)
+
+        if (activeWeapon != null && activeWeapon is gunStats)
         {
+            gameManager.instance.ammoPanel.SetActive(true);
             gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
         }
         else
-        {
-            gameManager.instance.magAmmoUI.text = "0";
-        }
+            gameManager.instance.ammoPanel.SetActive(activeWeapon is gunStats);
 
         updateWeaponIcons();
     }
@@ -168,7 +197,14 @@ public class weaponManager : MonoBehaviour
         }
         else
         {
+            gameManager.instance.magAmmoUI.text = "0";
             gameManager.instance.activeWeapon.sprite = emptySlot;
         }
+    }
+
+    [ContextMenu("Reset Saved Weapon")]
+    public void ResetWeapon()
+    {
+        PlayerPrefs.DeleteKey("EquippedWeapon");
     }
 }

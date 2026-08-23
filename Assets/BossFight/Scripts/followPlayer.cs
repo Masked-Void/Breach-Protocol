@@ -1,9 +1,7 @@
-using Newtonsoft.Json.Bson;
 using UnityEngine;
 
 // Aims the whole boss at the player, maskShake will do the shaking for the mask only
-public class followPlayer : MonoBehaviour
-{
+public class followPlayer : MonoBehaviour {
     [Header("Target")]
     [Tooltip("This is what the boss looks at, if left empty it will grab the object tagged 'Player' on start.")]
     [SerializeField] private Transform followedObject;
@@ -16,26 +14,22 @@ public class followPlayer : MonoBehaviour
     [Tooltip("Boss tracks the player while on.")]
     public bool follow = true;
 
-    void Awake()
-    {
+    void Awake() {
         // Fall back to player tag for error avoidance
-        if(followedObject == null)
-        {
+        if (followedObject == null) {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null )
-            {
+            if (player != null) {
                 followedObject = player.transform;
             }
-            
+
         }
     }
 
 
 
-    private void Update()
-    {
+    private void Update() {
         if (!follow || followedObject == null) { return; }
-        
+
         Vector3 objDir = followedObject.position - transform.position;
 
         // LookRotation errors on a zero vector. this justs avoids that error
@@ -45,12 +39,11 @@ public class followPlayer : MonoBehaviour
 
         // Damping to avoid drift
         float lerpAmount = 1f - Mathf.Exp(-turnSpeed * Time.unscaledDeltaTime);
-        transform.rotation = Quaternion.Slerp(transform.rotation, target, lerpAmount);
+        transform.rotation = Quaternion.Slerp(transform.rotation , target , lerpAmount);
     }
 
     // Change for follow, still incase we need it.
-    public void setFollow (bool on)
-    {
+    public void setFollow(bool on) {
         follow = on;
     }
 }

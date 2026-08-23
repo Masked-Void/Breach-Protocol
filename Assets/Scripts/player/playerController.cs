@@ -159,10 +159,7 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
     public void equipWeapon(weaponStats weapon)
     {
         if (weaponManager.instance != null)
-        {
-            audioManager.instance.playEquip();
             weaponManager.instance.equipWeapon(weapon);
-        }
     }
 
     public float getSpeedPercent()

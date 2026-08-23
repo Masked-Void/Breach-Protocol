@@ -3,18 +3,19 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Challenge", menuName = "Weapons/Challenge")]
 public class challengeData : ScriptableObject
 {
+    [System.Serializable]
+    public struct challengeStruct
+    {
+        public string challengeID;      // unique key, e.g. "kunai_200"
+        public string displayName;      // e.g. "Kunai Collector"
+        int progress;
+        public int killCount;
+    }
+
     [Header("Info")]
-    public string challengeID;      // unique key, e.g. "kunai_200"
-    public string displayName;      // e.g. "Kunai Collector"
+    [SerializeField] public challengeStruct[] challengesList;
     public string description;      // e.g. "Kill 200 enemies with kunais you picked up"
-    public int progress;
-    
     [Header("Requirements")]
-    public string targetWeaponID;   // must match weaponStats.weaponID
-    public int killCount;
+    public weaponStats weapon;
     public bool requireGroundPickup = true;
-
-    [Header("Reward")]
-    public string rewardWeaponID;   // what the shop unlocks
-
 }

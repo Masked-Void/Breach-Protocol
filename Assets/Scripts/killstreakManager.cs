@@ -58,8 +58,7 @@ public class killstreakManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null && instance != this)
-        {
+        if (instance != null && instance != this) {
             Destroy(gameObject);
             return;
         }
@@ -72,6 +71,12 @@ public class killstreakManager : MonoBehaviour
         ResolveAmmoRefundReceiver();
         UpdateAllSlotUI();
     }
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
+    }
+
+    // Start removed — no initialization required here
 
     private void Update()
     {
@@ -436,10 +441,5 @@ public class killstreakManager : MonoBehaviour
         text.text = "[" + key + "] " + name;
     }
 
-    private void OnDestroy()
-    {
-        if (instance == this)
-            instance = null;
-    }
 }
 

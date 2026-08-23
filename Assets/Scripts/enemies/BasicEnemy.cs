@@ -31,7 +31,7 @@ public class basicEnemy : enemyBase
     protected override void attack()
     {
         float distToPlayer = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
-        if (katanaTransform != null && tryMeleeHit() && attackRange > distToPlayer)
+        if (katanaTransform != null && attackRange > distToPlayer)
         {
             StartCoroutine(katanaSwing());
         }
@@ -64,6 +64,7 @@ public class basicEnemy : enemyBase
     public override void die()
     {
         throwWeapon(spawnedWeapon, handPos);
+        katanaTransform = null; 
         base.die();
     }
 }

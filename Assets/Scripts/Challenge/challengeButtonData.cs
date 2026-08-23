@@ -1,30 +1,52 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class challengeButtonData : MonoBehaviour
 {
-    public challengeData[] challenges;
+    public challengeData challenge;
     Button button;
+    public GameObject lockIcon;
     [SerializeField] private bool selectOnEnable = false;
 
-    void Awake()
+    void Start()
     {
         button = GetComponent<Button>();
         button.onClick.AddListener(Selected);
     }
 
-    void OnEnable()
+    IEnumerator initButton()
     {
-        // Whenever the challenge panel opens, auto-click this button if marked as default
+        yield return null;
+        updateLockstate();
         if (selectOnEnable)
         {
             Selected();
         }
     }
 
+    void updateLockstate()
+    {
+        if (challengeManager.instance == null || challenge == null) return;
+        bool allcomplete = challengeManager.instance.areAllChallengesComplete(challenge);
+        if (lockIcon != null)
+        {
+            lockIcon.SetActive(!allcomplete);
+        }
+    }
+
+    void OnEnable()
+    {
+        // Whenever the challenge panel opens, auto-click this button if marked as default
+        StartCoroutine(initButton());
+    }
+
     void Selected()
     {
-        if (challengeManager.instance != null && challenges.Length != 0)
-            challengeManager.instance.displayWeaponChallenges(challenges);
+        if (audioManager.instance != null)
+            audioManager.instance.playButtonClick();
+            
+        if (challengeManager.instance != null && challenge != null)
+            challengeManager.instance.displayWeaponChallenges(challenge);
     }
 }
