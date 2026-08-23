@@ -65,7 +65,9 @@ MonoBehaviour:
   explosionForce: 1000
   explosionRadius: 5
   explosionDamage: 50
-  isExplosive: 1
+  sfxSource: {fileID: 0}
+  sfx: {fileID: 0}
+  isExplosive: 0
 --- !u!33 &7603304608557851629
 MeshFilter:
   m_ObjectHideFlags: 0

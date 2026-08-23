@@ -116,7 +116,7 @@ public class weaponManager : MonoBehaviour
         if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
         if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
             projectileRb = spawnedWeaponModel.AddComponent<Rigidbody>();
-        
+
         activeWeapon.isFromGround = false;
 
         projectileRb.isKinematic = false;
@@ -164,22 +164,27 @@ public class weaponManager : MonoBehaviour
         return null;
     }
 
+    public float getUpgradeFireRate()
+    {
+        if (activeWeapon == null) return 0f;
+        float rate = activeWeapon.attackRate;
+
+        // Check if fire rate upgrade is active
+        if (upgradeManager.instance != null && upgradeManager.instance.IsUpgradeActive("fire_rate"))
+            rate /= 1.5f;
+
+        return rate;
+    }
+
     public void attack()
     {
-        if (activeWeapon == null || attackTimer < activeWeapon.attackRate)
-            return;
+        if (activeWeapon == null || attackTimer < getUpgradeFireRate()) return;
         if (currentAmmo <= 0) { audioManager.instance.playEmptyMag(); return; }
+        if (heartbeatManager.instance != null) heartbeatManager.instance.playerShot();
 
         attackTimer = 0f;
         currentAmmo--;
-
-        if (heartbeatManager.instance != null)
-        {
-            heartbeatManager.instance.playerShot();
-        }
-
         activeWeapon.Attack();
-
     }
 
     void updateHUD()
