@@ -80,16 +80,19 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (!willRoam)
         {
             // Heavy / Basic: finish first roam point, then b-line player forever
-            if (roamTarget != null)
-            {
-                if (AtRoamTarget())
-                {
-                    waveHost.active?.releaseRoamPoint(gameObject);
-                    roamTarget = null;
-                    agent.stoppingDistance = stoppingDistOrig;
-                }
-            }
-            else if (gameManager.instance?.player != null)
+            /* if (roamTarget != null)
+             {
+                 if (AtRoamTarget())
+                 {
+                     waveHost.active?.releaseRoamPoint(gameObject);
+                     roamTarget = null;
+                     agent.stoppingDistance = stoppingDistOrig;
+
+                     -Blocked out this line of code. With this commented out melee AI go straight for player
+                 }
+             }
+            */
+            if (gameManager.instance?.player != null)
             {
                 agent.SetDestination(gameManager.instance.player.transform.position);
                 playerDir = gameManager.instance.player.transform.position - transform.position;
@@ -102,6 +105,20 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             // Ranged: now chasing the player
             if (gameManager.instance?.player != null)
             {
+                //check to disengage
+                if (!playerInTrigger && !canStillSeePlayer())
+                {
+                    isEngaged = false;
+                    agent.stoppingDistance = 0;
+
+                    //clear old roam point so pick a new one
+                    if (roamTarget != null)
+                    {
+                        waveHost.active?.releaseRoamPoint(gameObject);
+                        roamTarget = null;
+                    }
+                    return;
+                }
                 agent.SetDestination(gameManager.instance.player.transform.position);
                 playerDir = gameManager.instance.player.transform.position - transform.position;
                 faceTarget();
@@ -113,7 +130,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             // Ranged: roaming � only look around while stopped at a roam point
             roam();
 
-            if (roamTarget == null && playerInTrigger)
+            if (playerInTrigger) //Removed check for roamTarget == null because ranged AI should attack you if you walk in front of them
             {
                 if (tryAttackFromCurrentPosition())
                 {
@@ -146,6 +163,23 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         }
     }
 
+    // need this so ai goes back to roaming after losing sight. 
+    private bool canStillSeePlayer()
+    {
+        if (gameManager.instance == null || gameManager.instance.player == null) return false;
+
+        Vector3 dir = gameManager.instance.player.transform.position - transform.position;
+        float angle = Vector3.Angle(dir, transform.forward);
+
+        if (angle > FOV) return false;
+        
+        if (Physics.Raycast(transform.position, dir, out RaycastHit hit))
+        {
+            return hit.collider.CompareTag("Player");
+        }
+        return false;
+    }
+
     // Attempt to see and attack the player without changing the agent's destination.
     // Returns true if the player was visible and an attack/face action was triggered.
     protected bool tryAttackFromCurrentPosition()
@@ -153,6 +187,18 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (gameManager.instance == null || gameManager.instance.player == null) return false;
 
         Vector3 dir = gameManager.instance.player.transform.position - transform.position;
+        float distance = dir.magnitude;
+
+        if (distance < 3f)
+        {
+            playerDir = dir;
+            faceTarget();
+            attack();
+            return true;
+        }
+
+
+
         float angle = Vector3.Angle(dir, transform.forward);
 
         if (angle > FOV) return false;
