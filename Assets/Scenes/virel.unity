@@ -60233,7 +60233,6 @@ GameObject:
   - component: {fileID: 619991291}
   - component: {fileID: 619991290}
   - component: {fileID: 619991289}
-  - component: {fileID: 619991292}
   m_Layer: 6
   m_Name: AlienB
   m_TagString: Untagged
@@ -60335,18 +60334,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 619991287}
   m_Mesh: {fileID: 4300000, guid: 6eda59de8c172b04c844511105d5ff4b, type: 3}
---- !u!114 &619991292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619991287}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 274e1a9c9c1c36d41901087948728899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::rotate
 --- !u!1 &620231438
 GameObject:
   m_ObjectHideFlags: 0
@@ -77213,6 +77200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274e1a9c9c1c36d41901087948728899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::rotate
+  speed: 0
 --- !u!1 &792825696
 GameObject:
   m_ObjectHideFlags: 0
@@ -131494,6 +131482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274e1a9c9c1c36d41901087948728899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::rotate
+  speed: 0
 --- !u!1 &1371433594
 GameObject:
   m_ObjectHideFlags: 0
@@ -150692,6 +150681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274e1a9c9c1c36d41901087948728899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::rotate
+  speed: 25
 --- !u!1001 &1542301101
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -153720,6 +153710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274e1a9c9c1c36d41901087948728899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::rotate
+  speed: 25
 --- !u!1 &1574752826
 GameObject:
   m_ObjectHideFlags: 0
@@ -164646,6 +164637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274e1a9c9c1c36d41901087948728899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::rotate
+  speed: 0
 --- !u!1 &1689939965
 GameObject:
   m_ObjectHideFlags: 0
@@ -170326,6 +170318,7 @@ GameObject:
   - component: {fileID: 1737986898}
   - component: {fileID: 1737986897}
   - component: {fileID: 1737986896}
+  - component: {fileID: 1737986899}
   m_Layer: 6
   m_Name: Part2
   m_TagString: Untagged
@@ -170430,6 +170423,28 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737986894}
   m_Mesh: {fileID: 4300002, guid: c27e33772a8cb3941bb3399488238b27, type: 3}
+--- !u!95 &1737986899
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737986894}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f7093df7624b5f545be11af290dbd790, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1738470235
 GameObject:
   m_ObjectHideFlags: 0
