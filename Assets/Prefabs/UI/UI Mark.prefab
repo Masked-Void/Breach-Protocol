@@ -28,6 +28,30 @@ PrefabInstance:
       propertyPath: m_fontColor32.rgba
       value: 4281413846
       objectReference: {fileID: 0}
+    - target: {fileID: 559364392139182244, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 559364392139182244, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 559364392139182244, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 559364392139182244, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 559364392139182244, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -65
+      objectReference: {fileID: 0}
+    - target: {fileID: 559364392139182244, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -122.70001
+      objectReference: {fileID: 0}
     - target: {fileID: 2328305766212295201, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_fontColor.b
       value: 0.19215688
@@ -79,6 +103,10 @@ PrefabInstance:
     - target: {fileID: 3136144643366654131, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: roamPointTransforms.Array.size
       value: 59
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914343037504967081, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5398059572705969386, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_fontColor.b
@@ -228,9 +256,13 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4425952871445845886, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+    - {fileID: 9102029155579315717, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+    - {fileID: 6882778174617672838, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1328115815631699168, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+    - {fileID: 1420167975373854790, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
