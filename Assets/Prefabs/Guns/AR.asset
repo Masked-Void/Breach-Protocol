@@ -17,6 +17,7 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 953b0c6774422534497f1829aa42f79c, type: 3}
   cost: 500
   attackRate: 0.1
+  isFromGround: 0
   gunType: 1
   bullet: {fileID: 6785665511576398920, guid: d7a56a45ac2dccc428d4ccc0215f14bd, type: 3}
   Position: {x: 0, y: -0.27, z: 0.63}

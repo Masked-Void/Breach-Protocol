@@ -41,14 +41,14 @@ public class upgradeData : ScriptableObject
                 weaponManager.instance.activeWeapon.attackRate /= value;
                 break;
 
-            case UpgradeType.ExplodingBullets:
-                FindAnyObjectByType<playerController>().explodingBullets = true;
-                break;
+            // case UpgradeType.ExplodingBullets:
+            //     FindAnyObjectByType<playerController>().explodingBullets = true;
+            //     break;
 
-            case UpgradeType.KunaiSpread:
-                playerController player = FindAnyObjectByType<playerController>();
-                player.kunaiSpread = true;
-                break;
+            // case UpgradeType.KunaiSpread:
+            //     playerController player = FindAnyObjectByType<playerController>();
+            //     player.kunaiSpread = true;
+            //     break;
         }
     }
 }

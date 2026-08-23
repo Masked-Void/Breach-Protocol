@@ -43,6 +43,9 @@ public class audioManager : MonoBehaviour
     
     [SerializeField] public AudioClip glass;
     [Range(0, 1)][SerializeField] public float glassVol = .8f;
+
+    [SerializeField] public AudioClip[] explosion;
+    [Range(0, 1)][SerializeField] public float explosionVol = .8f;
     
     [SerializeField] public AudioClip buttonClick;
     [Range(0, 1)][SerializeField] public float buttonClickVol = .8f;
@@ -68,6 +71,8 @@ public class audioManager : MonoBehaviour
 
         sfxSource.spatialBlend = 0f;
     }
+
+    public AudioClip pickRandomAudio(AudioClip[] audioList) => audioList[Random.Range(0, audioList.Length)];
 
     public void loadSettings()
     {

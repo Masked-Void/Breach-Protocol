@@ -88,7 +88,7 @@ public class challengeManager : MonoBehaviour
         return weapon != null && !string.IsNullOrEmpty(weapon.Name) && purchasedWeapons.Contains(weapon.Name);
     }
 
-    public void ReportKill(weaponStats weapon, bool fromGround)
+    public void ReportKill(weaponStats weapon)
     {
         if (weapon == null || !weaponChallengeLookup.TryGetValue(weapon, out var associatedChallenges)) return;
         bool hasProgressChanged = false;
@@ -96,7 +96,7 @@ public class challengeManager : MonoBehaviour
         foreach (var cData in associatedChallenges)
         {
             if (cData == null || cData.challengesList == null) continue;
-            if (cData.requireGroundPickup && !fromGround) continue;
+            // if (cData.requireGroundPickup && !fromGround) continue;
 
             foreach (var subchallenge in cData.challengesList)
             {

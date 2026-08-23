@@ -16,21 +16,25 @@ public class damage : MonoBehaviour
     [SerializeField] float shatterForce = 350f;
     [SerializeField] LayerMask deflectLayer;
     [SerializeField] ParticleSystem hitEffect;
-    [SerializeField] ParticleSystem explodeEffect;
+
+    [Header("Explosion")]
+    [SerializeField] ParticleSystem explosionEffect;
+    [SerializeField] float explosionForce = 1000f;
+    [SerializeField] float explosionRadius = 5f;
+    [SerializeField] int explosionDamage = 50;
+
+    public bool isExplosive;
+
 
     bool isDamaging;
-    private bool hasHit = false;
-    public bool isExplosive;
-    private float explosionRadius = 5f;
-    private int explosionDamage = 50;
+    bool hasHit = false;
+    int enemyLayer;
+    bool hasAudioManager;
 
+    // [Header("Challenge Source")]
+    // public weaponStats sourceWeapon;
+    // public bool sourceWasGroundPickup;
 
-    [Header("Challenge Source")]
-    public weaponStats sourceWeapon;
-    public bool sourceWasGroundPickup;
-
-    private int enemyLayer;
-    private bool hasAudioManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -42,19 +46,17 @@ public class damage : MonoBehaviour
         hasAudioManager = audioManager.instance != null;
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-
         if (type == DamageType.bullet)
         {
-
             rb.useGravity = false;
             rb.linearVelocity = transform.forward * bulletSpeed;
             Destroy(gameObject, bulletDestroyTime);
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
         if (type != DamageType.throwable || hasHit) return;
 
@@ -67,10 +69,9 @@ public class damage : MonoBehaviour
         handleDamageAndEffects(other, hitPoint);
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.isTrigger)
-            return;
+        if (other.isTrigger) return;
 
         if (type == DamageType.bullet && ((1 << other.gameObject.layer) & deflectLayer) != 0)
         {
@@ -84,13 +85,8 @@ public class damage : MonoBehaviour
 
         if (type == DamageType.bullet)
         {
-
             if (isExplosive)
-            {
                 explode();
-                if (hitEffect != null) Instantiate(explodeEffect, transform.position, Quaternion.identity);
-
-            }
             else if (hitEffect != null)
                 Instantiate(hitEffect, transform.position, Quaternion.identity);
 
@@ -98,7 +94,7 @@ public class damage : MonoBehaviour
         }
     }
 
-    private void handleGlassShatter(Collider other, Vector3 hitPoint)
+    void handleGlassShatter(Collider other, Vector3 hitPoint)
     {
         glassShatter glass = other.GetComponent<glassShatter>() ?? other.GetComponentInParent<glassShatter>();
         if (glass != null)
@@ -111,23 +107,21 @@ public class damage : MonoBehaviour
         }
     }
 
-    private void handleDamageAndEffects(Collider other, Vector3 hitPoint)
+    void handleDamageAndEffects(Collider other, Vector3 hitPoint)
     {
         // Register damage source for challenge progression
-        enemyBase eb = other.GetComponent<enemyBase>();
-        if (eb != null && sourceWeapon != null)
-        {
-            eb.RegisterDamageSource(sourceWeapon, sourceWasGroundPickup);
-        }
+        // enemyBase eb = other.GetComponent<enemyBase>();
+        // if (eb != null && sourceWeapon != null)
+        // {
+        //     eb.RegisterDamageSource(sourceWeapon, sourceWasGroundPickup);
+        // }
 
         // Deal damage
         if (type != DamageType.DOT)
         {
             IDamage dmg = other.GetComponent<IDamage>();
             if (dmg != null)
-            {
                 dmg.takeDamage(damageAmount);
-            }
         }
 
         // Play SFX
@@ -135,27 +129,20 @@ public class damage : MonoBehaviour
         {
             bool isEnemy = other.gameObject.layer == enemyLayer;
             if (isEnemy)
-            {
                 audioManager.instance.playSpatialSFX(audioManager.instance.enemyHit, transform.position, audioManager.instance.enemyHitVol);
-            }
             else
-            {
                 audioManager.instance.playSpatialSFX(audioManager.instance.wallHit, transform.position, audioManager.instance.wallHitVol);
-            }
         }
     }
 
     // DOT damage, we do not use it right now
-    private void OnTriggerStay(Collider other)
+    void OnTriggerStay(Collider other)
     {
-        if (other.isTrigger)
-            return;
+        if (other.isTrigger) return;
 
         IDamage dmg = other.GetComponent<IDamage>();
         if (dmg != null && type == DamageType.DOT && !isDamaging)
-        {
             StartCoroutine(damageOther(dmg));
-        }
     }
 
     // Coroutine to handle damage over time, we do not use it right now
@@ -167,7 +154,7 @@ public class damage : MonoBehaviour
         isDamaging = false;
     }
 
-    private void DeflectBullet(Collider other)
+    void DeflectBullet(Collider other)
     {
         Vector3 direction = rb.linearVelocity.normalized;
         Ray ray = new Ray(transform.position - direction, direction);
@@ -185,20 +172,33 @@ public class damage : MonoBehaviour
         }
     }
 
-    public void setExplosive()
+    void explode()
     {
-        isExplosive = FindAnyObjectByType<playerController>()?.explodingBullets ?? false;
-    }
-    private void explode()
-    {
+        if (hasAudioManager)
+            audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.explosion), transform.position, audioManager.instance.explosionVol);
+
+        // Spawn explosion particle effect
+        if (explosionEffect != null)
+        {
+            ParticleSystem explodeFx = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            Destroy(explodeFx, 1.9f);
+        }
+
+        // Query nearby colliders within explosion radius
         Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
+
         foreach (Collider hit in hits)
         {
+            //Apply physics knockback force
+            Rigidbody targetRb = hit.GetComponent<Rigidbody>();
+            if (targetRb != null)
+                targetRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+
+            // Apply damage to valid targets
             IDamage dmg = hit.GetComponent<IDamage>();
             if (dmg != null)
-            {
                 dmg.takeDamage(explosionDamage);
-            }
+
         }
     }
 }

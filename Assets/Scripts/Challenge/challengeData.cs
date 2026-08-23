@@ -8,7 +8,6 @@ public class challengeData : ScriptableObject
     {
         public string challengeID;      // unique key, e.g. "kunai_200"
         public string displayName;      // e.g. "Kunai Collector"
-        int progress;
         public int killCount;
     }
 
@@ -17,5 +16,5 @@ public class challengeData : ScriptableObject
     public string description;      // e.g. "Kill 200 enemies with kunais you picked up"
     [Header("Requirements")]
     public weaponStats weapon;
-    public bool requireGroundPickup = true;
+    // public bool requireGroundPickup = true;
 }

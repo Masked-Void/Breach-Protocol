@@ -15,5 +15,8 @@ public abstract class weaponStats : ScriptableObject
     [Header("Damage")]
     [Range(.1f, 5)][SerializeField] public float attackRate;
 
+    [Header("Challenge Source")]
+    public bool isFromGround = false;
+
     public abstract void Attack();
 }

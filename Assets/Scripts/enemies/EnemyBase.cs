@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using Autodesk.Fbx;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public abstract class enemyBase : MonoBehaviour, IDamage
@@ -44,9 +45,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     [SerializeField] GameObject roamPoint;
     protected bool isEngaged = false;
 
-    [Header("Challenge")]
-    protected weaponStats lastDamageWeapon;
-    protected bool lastDamageFromGround;
+    bool hasGameManager;
+    bool hasAudioManager;
+    bool hasWeaponManager;
+    bool hasChallengeManager;
+    bool hasUpgradeManager;
 
     protected virtual void Start()
     {
@@ -57,6 +60,12 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
         if (model != null)
             colorOrig = model.material.color;
+
+        hasAudioManager = audioManager.instance != null;
+        hasGameManager = gameManager.instance != null;
+        hasWeaponManager = weaponManager.instance != null;
+        hasChallengeManager = challengeManager.instance != null;
+        hasUpgradeManager = upgradeManager.instance != null;
     }
 
     void Update()
@@ -145,24 +154,24 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         die();
     }
 
-    
 
-    public void RegisterDamageSource(weaponStats weapon, bool fromGround)
-    {
-        lastDamageWeapon = weapon;
-        lastDamageFromGround = fromGround;
-    }
+
+    // public void RegisterDamageSource(weaponStats weapon, bool fromGround)
+    // {
+    //     lastDamageWeapon = weapon;
+    //     lastDamageFromGround = fromGround;
+    // }
 
     public virtual void die()
     {
-        gameManager.instance.AddBytes(byteValue);
         // REPORT TO CHALLENGE SYSTEM
-        if (lastDamageWeapon != null)
+        if (hasChallengeManager && hasWeaponManager && weaponManager.instance.activeWeapon.isFromGround)
         {
-            challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
+            // challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
+            challengeManager.instance?.ReportKill(weaponManager.instance.activeWeapon);
         }
-            waveManager.instance.enemyKilled();
-        if (gameManager.instance != null)
+        waveManager.instance.enemyKilled();
+        if (hasGameManager)
         {
             gameManager.instance.addKill();
             gameManager.instance.AddBytes(byteValue);

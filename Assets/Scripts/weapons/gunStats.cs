@@ -37,13 +37,13 @@ public class gunStats : weaponStats
         float spreadToUse = (gunType == GunType.Shotgun) ? spreadAngle : 0f;
 
         //Upgrade Check
-        if (gunType == GunType.Kunai && FindAnyObjectByType<playerController>().kunaiSpread)
-        {
-            int boostedPelletCount = 3;
-            int boostedSpreadAngle = 15;
-            shotsToFire += boostedPelletCount;
-            spreadAngle += boostedSpreadAngle;
-        }
+        // if (gunType == GunType.Kunai && FindAnyObjectByType<playerController>().kunaiSpread)
+        // {
+        //     int boostedPelletCount = 3;
+        //     int boostedSpreadAngle = 15;
+        //     shotsToFire += boostedPelletCount;
+        //     spreadAngle += boostedSpreadAngle;
+        // }
 
         if (bullet != null)
         {
@@ -58,23 +58,23 @@ public class gunStats : weaponStats
                 
 
                 // Spawn the bullet projectile flying out into its offset trajectory
-                Transform spawnedBullet =MonoBehaviour.Instantiate(bullet, gunBarrel.position, spreadRotation);
+                Transform spawnedBullet =Instantiate(bullet, gunBarrel.position, spreadRotation);
                 
-                //Upgrade Check
-                if (FindAnyObjectByType<playerController>().explodingBullets)
-                {
-                    damage dmg = spawnedBullet.GetComponent<damage>();
-                    dmg.isExplosive = true;
+                // //Upgrade Check
+                // if (FindAnyObjectByType<playerController>().explodingBullets)
+                // {
+                //     damage dmg = spawnedBullet.GetComponent<damage>();
+                //     dmg.isExplosive = true;
 
 
-                }
-                // PASS CHALLENGE DATA TO BULLET
-                damage challengeDmg = spawnedBullet.GetComponent<damage>();
-                if (challengeDmg != null)
-                {
-                    challengeDmg.sourceWeapon = weaponManager.instance.activeWeapon;
-                    challengeDmg.sourceWasGroundPickup = weaponManager.instance.currentWeaponFromGround;
-                }
+                // }
+                // // PASS CHALLENGE DATA TO BULLET
+                // damage challengeDmg = spawnedBullet.GetComponent<damage>();
+                // if (challengeDmg != null)
+                // {
+                //     challengeDmg.sourceWeapon = weaponManager.instance.activeWeapon;
+                //     challengeDmg.sourceWasGroundPickup = weaponManager.instance.currentWeaponFromGround;
+                // }
             }
         }
     }

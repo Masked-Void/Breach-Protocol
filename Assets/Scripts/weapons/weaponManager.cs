@@ -7,12 +7,13 @@ public class weaponManager : MonoBehaviour
 
     [Header("Weapon")]
     public weaponStats activeWeapon;
+    public weaponStats starterWeapon;
     [SerializeField] private weaponStats[] allWeapons;
     public Sprite emptySlot;
 
 
-    [Header("Challenge")]
-    public bool currentWeaponFromGround = false;
+    // [Header("Challenge")]
+    // public bool currentWeaponFromGround = false;
 
     GameObject spawnedWeaponModel;
     Transform gunBarrel;
@@ -49,6 +50,10 @@ public class weaponManager : MonoBehaviour
                 activeWeapon = loadedWeapon;
             }
         }
+        else
+        {
+            if (starterWeapon != null) activeWeapon = starterWeapon;
+        }
 
         if (activeWeapon != null) spawnWeapon(activeWeapon);
     }
@@ -57,6 +62,12 @@ public class weaponManager : MonoBehaviour
     {
 
         attackTimer += Time.unscaledDeltaTime;
+    }
+
+    void OnDestroy()
+    {
+        activeWeapon.isFromGround = false;
+        if (instance == this) instance = null;
     }
 
     public void equipWeapon(weaponStats newWeapon)
@@ -105,6 +116,8 @@ public class weaponManager : MonoBehaviour
         if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
         if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
             projectileRb = spawnedWeaponModel.AddComponent<Rigidbody>();
+        
+        activeWeapon.isFromGround = false;
 
         projectileRb.isKinematic = false;
         projectileRb.useGravity = true;
