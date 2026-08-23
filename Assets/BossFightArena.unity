@@ -166394,6 +166394,10 @@ PrefabInstance:
       propertyPath: 'spawnPointTransforms.Array.data[7]'
       value: 
       objectReference: {fileID: 1890452167}
+    - target: {fileID: 616581581724976018, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: ammoPanel
+      value: 
+      objectReference: {fileID: 1223683357797229283}
     - target: {fileID: 3018863977292105427, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: immuneZone
       value: 
@@ -167232,6 +167236,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+--- !u!1 &1223683357797229283 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7378922434430392145, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+  m_PrefabInstance: {fileID: 1223683357797229282}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1294978764098996807 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1038052993355617610, guid: 98aefc4236308d140854904a1b3cc6cc, type: 3}
