@@ -441,8 +441,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5370053836847469726, guid: 8415e0c5b58296046ac8c06eb5b29035, type: 3}
+      propertyPath: maxWaves
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5370053836847469726, guid: 8415e0c5b58296046ac8c06eb5b29035, type: 3}
+      propertyPath: basicEnemyPercent
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5370053836847469726, guid: 8415e0c5b58296046ac8c06eb5b29035, type: 3}
+      propertyPath: heavyEnemyPercent
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5370053836847469726, guid: 8415e0c5b58296046ac8c06eb5b29035, type: 3}
+      propertyPath: rangedEnemyPercent
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5370053836847469726, guid: 8415e0c5b58296046ac8c06eb5b29035, type: 3}
       propertyPath: enemyIncreaseMultiplier
-      value: 1.25
+      value: 1.15
       objectReference: {fileID: 0}
     - target: {fileID: 5370053836847469726, guid: 8415e0c5b58296046ac8c06eb5b29035, type: 3}
       propertyPath: roamPointTransforms.Array.size
