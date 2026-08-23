@@ -39,11 +39,6 @@ public class damage : MonoBehaviour
     int enemyLayer;
     bool hasAudioManager;
 
-    // [Header("Challenge Source")]
-    // public weaponStats sourceWeapon;
-    // public bool sourceWasGroundPickup;
-
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -66,6 +61,23 @@ public class damage : MonoBehaviour
                 sfxSource.minDistance = 1f;
                 sfxSource.maxDistance = 25f;
                 sfxSource.Play();
+            }
+        }
+    }
+
+    void Update()
+    {
+        if (sfxSource != null && type == DamageType.DOT)
+        {
+            if (gameManager.instance != null && gameManager.instance.isPaused)
+            {
+                if (sfxSource.isPlaying)
+                    sfxSource.Pause();
+            }
+            else
+            {
+                if (!sfxSource.isPlaying && sfxSource.time > 0)
+                    sfxSource.UnPause();
             }
         }
     }
@@ -99,7 +111,7 @@ public class damage : MonoBehaviour
 
         if (type == DamageType.bullet && ((1 << other.gameObject.layer) & deflectLayer) != 0)
         {
-            DeflectBullet(other);
+            deflectBullet(other);
             return;
         }
 
@@ -169,7 +181,7 @@ public class damage : MonoBehaviour
         isDamaging = false;
     }
 
-    void DeflectBullet(Collider other)
+    void deflectBullet(Collider other)
     {
         Vector3 direction = rb.linearVelocity.normalized;
         Ray ray = new Ray(transform.position - direction, direction);
@@ -207,7 +219,7 @@ public class damage : MonoBehaviour
             {
                 // Intensity drops off linearly as distance increases
                 float intensity = 1f - (distance / maxShakeDistance);
-                StartCoroutine(ApplyCameraShake(mainCam, maxShakeStrength * intensity, shakeDuration));
+                StartCoroutine(cameraShake(mainCam, maxShakeStrength * intensity, shakeDuration));
             }
         }
 
@@ -223,7 +235,7 @@ public class damage : MonoBehaviour
         }
     }
 
-    private IEnumerator ApplyCameraShake(Camera cam, Vector3 strength, float duration)
+    IEnumerator cameraShake(Camera cam, Vector3 strength, float duration)
     {
         Vector3 originalPos = cam.transform.localPosition;
         float elapsed = 0f;
