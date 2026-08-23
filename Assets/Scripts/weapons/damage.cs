@@ -23,6 +23,11 @@ public class damage : MonoBehaviour
     [SerializeField] float explosionRadius = 5f;
     [SerializeField] int explosionDamage = 50;
 
+    [Header("Explosion Shake")]
+    [SerializeField] float maxShakeDistance = 20f;
+    [SerializeField] float shakeDuration = 0.3f;
+    [SerializeField] Vector3 maxShakeStrength = new Vector3(0.25f, 0.25f, 0.25f);
+
     [SerializeField] AudioSource sfxSource;
     [SerializeField] AudioClip sfx;
 
@@ -194,6 +199,18 @@ public class damage : MonoBehaviour
             Destroy(explodeFx.gameObject, 1.9f);
         }
 
+        Camera mainCam = Camera.main;
+        if (mainCam != null)
+        {
+            float distance = Vector3.Distance(transform.position, mainCam.transform.position);
+            if (distance < maxShakeDistance)
+            {
+                // Intensity drops off linearly as distance increases
+                float intensity = 1f - (distance / maxShakeDistance);
+                StartCoroutine(ApplyCameraShake(mainCam, maxShakeStrength * intensity, shakeDuration));
+            }
+        }
+
         // Query nearby colliders within explosion radius
         Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
 
@@ -204,5 +221,25 @@ public class damage : MonoBehaviour
             if (targetRb != null)
                 targetRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
         }
+    }
+
+    private IEnumerator ApplyCameraShake(Camera cam, Vector3 strength, float duration)
+    {
+        Vector3 originalPos = cam.transform.localPosition;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float percentComplete = elapsed / duration;
+            float damper = 1.0f - Mathf.Clamp01(percentComplete); // Smooth fade out
+
+            Vector3 randomOffset = Vector3.Scale(Random.insideUnitSphere, strength) * damper;
+            cam.transform.localPosition = originalPos + randomOffset;
+
+            yield return null;
+        }
+
+        cam.transform.localPosition = originalPos;
     }
 }

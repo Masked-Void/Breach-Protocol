@@ -19,8 +19,6 @@ public class cameraController : MonoBehaviour
     {
         if(!gameManager.instance.isPaused)
         {
-
-
             float mouseX = Input.GetAxisRaw("Mouse X") * sens;
             float mouseY = Input.GetAxisRaw("Mouse Y") * sens;
 
@@ -29,7 +27,6 @@ public class cameraController : MonoBehaviour
             transform.localRotation = Quaternion.Euler(camRotX, 0, 0);
 
             transform.parent.Rotate(Vector3.up * mouseX);
-    
         }
     }
 }

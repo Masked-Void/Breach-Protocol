@@ -63,7 +63,7 @@ public class audioManager : MonoBehaviour
     [SerializeField] public AudioClip loseMenuMusic;
     [SerializeField] private AudioClip roundTransitionMusic;
 
-    public bool isMuted;
+    public bool isMuted = false;
     AudioClip savedGameplayClip;
     float savedGameplayTime;
     private Coroutine pauseMusicRoutine;
@@ -79,6 +79,7 @@ public class audioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         sfxSource.spatialBlend = 0f;
+        loadSettings();
     }
 
     public AudioClip pickRandomAudio(AudioClip[] audioList) => audioList[Random.Range(0, audioList.Length)];
@@ -105,13 +106,9 @@ public class audioManager : MonoBehaviour
     public void updateAudioVolumes()
     {
         if (musicSource != null)
-        {
             musicSource.volume = isMuted ? 0f : (musicVolume * masterVolume);
-        }
         if (sfxSource != null)
-        {
             sfxSource.volume = isMuted ? 0f : (sfxVolume * masterVolume);
-        }
     }
 
     public void setMasterVolume(float vol)
@@ -178,7 +175,7 @@ public class audioManager : MonoBehaviour
         if (clip == null || musicSource == null) return;
 
         musicSource.clip = clip;
-        musicSource.volume = musicVolume * masterVolume;
+        musicSource.volume = isMuted ? 0f : musicVolume * masterVolume;
         musicSource.Play();
     }
 
@@ -189,7 +186,7 @@ public class audioManager : MonoBehaviour
 
     public void resumeMusic()
     {
-        if (musicSource != null)musicSource.UnPause();
+        if (musicSource != null) musicSource.UnPause();
     }
 
     public void stopMusic()
@@ -226,11 +223,18 @@ public class audioManager : MonoBehaviour
     public void restoreGameplayMusic()
     {
         stopPauseCoroutine();
-        if (musicSource != null && savedGameplayClip != null)
+        if (musicSource == null) return;
+        if (musicSource.clip != pauseMenuMusic)
+        {
+            resumeMusic();
+            updateAudioVolumes();
+            return;
+        }
+        if (savedGameplayClip != null)
         {
             musicSource.clip = savedGameplayClip;
             musicSource.time = savedGameplayTime;
-            musicSource.volume = musicVolume * masterVolume;
+            musicSource.volume = isMuted ? 0f : (musicVolume * masterVolume);
             musicSource.Play();
         }
         else
@@ -242,13 +246,14 @@ public class audioManager : MonoBehaviour
     public void playPauseMenuMusicWithDelay(float delaySeconds)
     {
         stopPauseCoroutine();
-        StartCoroutine(PlayPauseMusicDelayed(delaySeconds));
+        pauseMusicRoutine = StartCoroutine(PlayPauseMusicDelayed(delaySeconds));
     }
 
     private IEnumerator PlayPauseMusicDelayed(float delaySeconds)
     {
         yield return new WaitForSecondsRealtime(delaySeconds);
         playPauseMenuMusic();
+        pauseMusicRoutine = null;
     }
 
     public void stopPauseCoroutine()
