@@ -13,11 +13,28 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuActive;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
-    [SerializeField] GameObject menuSound;
+
+    [Header("UI Pages")]
+    public GameObject challengesCanvas;
+    public GameObject settingsCanvas;
+    public GameObject upgradesCanvas;
+
+    [Header("Top Navigation Buttons")]
+    public GameObject navTab;
+    public Button navChallengesButton;
+    public Button navSettingsButton;
+    public Button navUpgradesButton;
+    public GameObject buttons;
+    public GameObject backButton;
+
+    [Header("Settings Menu")]
+    [SerializeField] public GameObject soundMenu;
+    [SerializeField] public GameObject controlsMenu;
 
     [Header("Kills UI")]
-    [SerializeField] private TMP_Text scoreText;
-    [SerializeField] TextMeshProUGUI pauseKills;
+    [SerializeField] public GameObject pauseScorePanel;
+    [SerializeField] private TMP_Text pauseScoreText;
+    [SerializeField] private TMP_Text loseSoreText;
     [SerializeField] TextMeshProUGUI killCounter;
 
     [Header("Wave UI")]
@@ -60,7 +77,6 @@ public class gameManager : MonoBehaviour
 
 
     int currentKill = 0;
-    int previousWave = -1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -69,36 +85,18 @@ public class gameManager : MonoBehaviour
         player = GameObject.FindWithTag("Player");
         playerScript = player.GetComponent<playerController>();
     }
-    //Currency Stuff
-    public void AddBytes(int amount)
-    {
-        totalBytes += amount;
-        Debug.Log("Current Bytes: " + totalBytes);
-    }
-    public void AddFiles(int amount)
-    {
-        totalFiles += amount;
-        Debug.Log("Current Files: " + totalFiles);
-    }
-    public void SubtractBytes(int amount)
-    {
-        totalBytes -= amount;
-    }
-    public void SubtractFiles(int amount)
-    {
-        totalFiles -= amount;
-    }
+
     // Update is called once per frame
     void Update()
     {
         bytesText.text = "Bytes: " + totalBytes.ToString();
-        if (FindAnyObjectByType<playerInteraction>().shopOpen)
-        {
-            menuActive = shopUI;
-            return;
-        }
+        // if (FindAnyObjectByType<playerInteraction>().shopOpen)
+        // {
+        //     menuActive = shopUI;
+        //     return;
+        // }
 
-        if (!FindAnyObjectByType<playerInteraction>().shopOpen && Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonDown("Cancel"))
         {
             if (audioManager.instance != null) audioManager.instance.playButtonClick();
             if (menuActive == null)
@@ -111,20 +109,13 @@ public class gameManager : MonoBehaviour
             {
                 stateUnpause();
             }
-            else if (menuActive == menuSound)
-            {
-                openPauseMenu();
-            }
-
         }
 
 
         updateUI();
 
         if (weaponManager.instance != null && weaponManager.instance.activeWeapon != null)
-        {
             magAmmoUI.text = weaponManager.instance.getCurrentAmmo().ToString();
-        }
     }
 
     // Pause the game
@@ -134,8 +125,15 @@ public class gameManager : MonoBehaviour
         timeManager.instance.pauseTime();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        pauseKills.text = currentKill.ToString("f0");
+        pauseScoreText.text = currentKill.ToString("f0");
         if (audioManager.instance != null) audioManager.instance.pauseMusic();
+        StartCoroutine(playAudioDelay());
+    }
+
+    IEnumerator playAudioDelay()
+    {
+        yield return new WaitForSeconds(5);
+        if (audioManager.instance != null) audioManager.instance.playPauseMenuMusic();
     }
 
     // Unpause the game
@@ -150,27 +148,7 @@ public class gameManager : MonoBehaviour
             menuActive.SetActive(false);
             menuActive = null;
         }
-        if (audioManager.instance != null) audioManager.instance.resumeMusic();
-    }
-
-    public void openSoundMenu()
-    {
-        if (menuActive != null)
-        {
-            menuActive.SetActive(false);
-        }
-        menuActive = menuSound;
-        menuActive.SetActive(true);
-    }
-
-    public void openPauseMenu()
-    {
-        if (menuActive != null)
-        {
-            menuActive.SetActive(false);
-        }
-        menuActive = menuPause;
-        menuActive.SetActive(true);
+        if (audioManager.instance != null) audioManager.instance.restoreGameplayMusic();
     }
 
     // Handle the lose state
@@ -179,19 +157,16 @@ public class gameManager : MonoBehaviour
         statePause();
         menuActive = menuLose;
         menuActive.SetActive(true);
-        scoreText.text = currentKill.ToString("f0");
-        if(upgradeManager.instance != null)
+        loseSoreText.text = currentKill.ToString("f0");
+        if (upgradeManager.instance != null)
         {
             upgradeManager.instance.files += totalFiles;
             upgradeManager.instance.SaveUpgrades();
         }
-
+        if (audioManager.instance != null) audioManager.instance.playLoseMenuMusic();
     }
 
-    public void addKill()
-    {
-        currentKill++;
-    }
+    public void addKill() => currentKill++;
 
     void updateUI()
     {
@@ -217,13 +192,9 @@ public class gameManager : MonoBehaviour
 
     public IEnumerator WarningText()
     {
-        if (shopMessage != null)
-            shopMessage.SetActive(true);
-
+        if (shopMessage != null) shopMessage.SetActive(true);
         yield return new WaitForSecondsRealtime(5);
-
-        if (shopMessage != null)
-            shopMessage.SetActive(false);
+        if (shopMessage != null) shopMessage.SetActive(false);
     }
 
     public void showShopWarning()
@@ -235,27 +206,24 @@ public class gameManager : MonoBehaviour
     IEnumerator AnimateWaveText()
     {
         RectTransform rect = waveCountdown.rectTransform;
-
         Vector3 originalScale = Vector3.one;
-
         float duration = .1f;
         float timer = 0f;
-
         rect.localScale = originalScale * 1.3f;
-
         while (timer < duration)
         {
             timer += Time.unscaledDeltaTime;
-
-            float t = timer / duration;
-
-            t = Mathf.SmoothStep(0f, 1f, t);
-
+             float t = Mathf.SmoothStep(0f, 1f, timer / duration);
             rect.localScale = Vector3.Lerp(originalScale * 1.3f, originalScale, t);
-
             yield return null;
         }
 
         rect.localScale = originalScale;
     }
+     
+    // Currency Stuff
+    public void AddBytes(int amount) { totalBytes += amount; }
+    public void AddFiles(int amount) { totalFiles += amount; }
+    public void SubtractBytes(int amount) { totalBytes -= amount; }
+    public void SubtractFiles(int amount) { totalFiles -= amount; }
 }

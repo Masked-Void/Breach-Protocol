@@ -102,7 +102,7 @@ public class damage : MonoBehaviour
             glass.Shatter(hitPoint, transform.forward, shatterForce);
             if (hasAudioManager)
             {
-                audioManager.instance.playSpatialSFX(audioManager.instance.glass, transform.position, audioManager.instance.glassVol);
+                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.glass), transform.position, audioManager.instance.glassVol);
             }
         }
     }
@@ -129,9 +129,9 @@ public class damage : MonoBehaviour
         {
             bool isEnemy = other.gameObject.layer == enemyLayer;
             if (isEnemy)
-                audioManager.instance.playSpatialSFX(audioManager.instance.enemyHit, transform.position, audioManager.instance.enemyHitVol);
+                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.enemyHit), transform.position, audioManager.instance.enemyHitVol);
             else
-                audioManager.instance.playSpatialSFX(audioManager.instance.wallHit, transform.position, audioManager.instance.wallHitVol);
+                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.wallHit), transform.position, audioManager.instance.wallHitVol);
         }
     }
 
@@ -163,7 +163,7 @@ public class damage : MonoBehaviour
             // Calculate the reflection vector based on current velocity and surface normal
             Vector3 reflectedVelocity = Vector3.Reflect(rb.linearVelocity, hit.normal);
             if (hasAudioManager)
-                audioManager.instance.playSpatialSFX(audioManager.instance.bulletRicochet, transform.position, audioManager.instance.bulletRicochetVol);
+                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.bulletRicochet), transform.position, audioManager.instance.bulletRicochetVol);
 
             transform.forward = reflectedVelocity.normalized;
 

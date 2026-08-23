@@ -55,25 +55,37 @@ MonoBehaviour:
   masterVolume: 0.4
   musicVolume: 1
   sfxVolume: 0.5
-  jump: {fileID: 8300000, guid: 77415bad760d3d743afa89db262c9cc1, type: 3}
+  jump:
+  - {fileID: 8300000, guid: 77415bad760d3d743afa89db262c9cc1, type: 3}
   jumpVol: 0.3
-  hurt: {fileID: 8300000, guid: 432d416c9a14b254fa6d0d233fd93017, type: 3}
+  hurt:
+  - {fileID: 8300000, guid: 432d416c9a14b254fa6d0d233fd93017, type: 3}
   hurtVol: 0.3
-  steps: {fileID: 8300000, guid: e2a29f4ad523d3742b9a5342cbbe73d5, type: 3}
+  steps:
+  - {fileID: 8300000, guid: e2a29f4ad523d3742b9a5342cbbe73d5, type: 3}
   stepsVol: 0.3
-  enemyHit: {fileID: 8300000, guid: d483768ad177d2c4dbbc90ae30c85327, type: 3}
+  enemyHit:
+  - {fileID: 8300000, guid: d483768ad177d2c4dbbc90ae30c85327, type: 3}
   enemyHitVol: 0.8
-  enemyShoot: {fileID: 8300000, guid: 339021f1d8d145e4ea02cbf93c6cffba, type: 3}
+  enemyShoot:
+  - {fileID: 8300000, guid: 339021f1d8d145e4ea02cbf93c6cffba, type: 3}
   enemyShootVol: 0.5
-  wallHit: {fileID: 8300000, guid: 7f3fe80791f58ae408f23d76e0138cf3, type: 3}
+  wallHit:
+  - {fileID: 8300000, guid: 7f3fe80791f58ae408f23d76e0138cf3, type: 3}
   wallHitVol: 0.8
-  equip: {fileID: 8300000, guid: 06edc8a6e8fcf114797064b83ee4a7be, type: 3}
+  equip:
+  - {fileID: 8300000, guid: 06edc8a6e8fcf114797064b83ee4a7be, type: 3}
+  - {fileID: 8300000, guid: 2bd75c15fc78ed345b3b9d125b95c570, type: 3}
   equipVol: 0.3
-  emptyMag: {fileID: 8300000, guid: dc83a2314fcc87e4fb1e4cbf062f6220, type: 3}
+  emptyMag:
+  - {fileID: 8300000, guid: dc83a2314fcc87e4fb1e4cbf062f6220, type: 3}
   emptyMagVol: 0.8
-  bulletRicochet: {fileID: 8300000, guid: 12d8f22461e7f7f4489efa2585c4742f, type: 3}
+  bulletRicochet:
+  - {fileID: 8300000, guid: 12d8f22461e7f7f4489efa2585c4742f, type: 3}
   bulletRicochetVol: 0.8
-  glass: {fileID: 8300000, guid: 064f6eb1c89a99047bc18e56d841f40e, type: 3}
+  glass:
+  - {fileID: 8300000, guid: afe3e4bc7a23b5847bb80b1c653432f3, type: 3}
+  - {fileID: 8300000, guid: 064f6eb1c89a99047bc18e56d841f40e, type: 3}
   glassVol: 0.8
   explosion:
   - {fileID: 8300000, guid: 23e3ae2caa4bde14194849d75cc7e61a, type: 3}
@@ -81,11 +93,15 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e262cc0dfd8e298439f7d5574ab71637, type: 3}
   - {fileID: 8300000, guid: 1f9ac129312ae3d41a9d838a093cf41d, type: 3}
   explosionVol: 1
-  buttonClick: {fileID: 8300000, guid: f66757fd35ee0bb45a025cac81547dd1, type: 3}
+  buttonClick:
+  - {fileID: 8300000, guid: f66757fd35ee0bb45a025cac81547dd1, type: 3}
   buttonClickVol: 1
-  nukeSFX: {fileID: 8300000, guid: 003e3a41207320949840adce9a780e5c, type: 3}
+  nukeSFX:
+  - {fileID: 8300000, guid: 003e3a41207320949840adce9a780e5c, type: 3}
   nukeSFXVol: 1
   titleScreenSound: {fileID: 8300000, guid: 84496aa4bc46db04986777a887be754c, type: 3}
+  pauseMenuMusic: {fileID: 0}
+  loseMenuMusic: {fileID: 0}
   roundTransitionMusic: {fileID: 8300000, guid: 77253b1172eea45488ff30839199db26, type: 3}
   isMuted: 0
 --- !u!82 &3832314194105392896

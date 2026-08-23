@@ -40,7 +40,7 @@ public class rangedEnemy : enemyBase
         currentAmmo--;
         attackTimer = 0f;
         if (audioManager.instance != null)
-            audioManager.instance.playSpatialSFX(audioManager.instance.enemyShoot, gunBarrel.position, audioManager.instance.enemyShootVol);
+            audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.enemyShoot), gunBarrel.position, audioManager.instance.enemyShootVol);
 
         if (activeGun.bullet != null && gunPivot != null)
             Instantiate(activeGun.bullet, gunBarrel.position, gunPivot.rotation);
