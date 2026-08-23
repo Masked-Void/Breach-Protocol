@@ -99,8 +99,11 @@ MonoBehaviour:
   nukeSFX:
   - {fileID: 8300000, guid: 003e3a41207320949840adce9a780e5c, type: 3}
   nukeSFXVol: 1
+  electricSFX:
+  - {fileID: 8300000, guid: 2e91f0d0ad64e7549b7358712c7e0816, type: 3}
+  electricSFXVol: 0.4
   titleScreenSound: {fileID: 8300000, guid: 84496aa4bc46db04986777a887be754c, type: 3}
-  pauseMenuMusic: {fileID: 0}
+  pauseMenuMusic: {fileID: 8300000, guid: 6e34e63803feb954eb96198bd60614da, type: 3}
   loseMenuMusic: {fileID: 0}
   roundTransitionMusic: {fileID: 8300000, guid: 77253b1172eea45488ff30839199db26, type: 3}
   isMuted: 0

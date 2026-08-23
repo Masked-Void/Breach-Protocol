@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class audioManager : MonoBehaviour
@@ -14,14 +15,14 @@ public class audioManager : MonoBehaviour
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
     [Header("SFX")]
-    [SerializeField] public AudioClip[] jump;
-    [Range(0, 1)][SerializeField] public float jumpVol = .3f;
+    [SerializeField] AudioClip[] jump;
+    [Range(0, 1)][SerializeField] float jumpVol = .3f;
 
-    [SerializeField] public AudioClip[] hurt;
-    [Range(0, 1)][SerializeField] public float hurtVol = .3f;
+    [SerializeField] AudioClip[] hurt;
+    [Range(0, 1)][SerializeField] float hurtVol = .3f;
 
-    [SerializeField] public AudioClip[] steps;
-    [Range(0, 1)][SerializeField] public float stepsVol = .3f;
+    [SerializeField] AudioClip[] steps;
+    [Range(0, 1)][SerializeField] float stepsVol = .3f;
 
     [SerializeField] public AudioClip[] enemyHit;
     [Range(0, 1)][SerializeField] public float enemyHitVol = .8f;
@@ -50,8 +51,11 @@ public class audioManager : MonoBehaviour
     [SerializeField] public AudioClip[] buttonClick;
     [Range(0, 1)][SerializeField] public float buttonClickVol = .8f;
 
-    [SerializeField] private AudioClip[] nukeSFX;
+    [SerializeField] AudioClip[] nukeSFX;
     [Range(0, 1)][SerializeField] public float nukeSFXVol = .8f;
+
+    [SerializeField] public AudioClip[] electricSFX;
+    [Range(0, 1)][SerializeField] public float electricSFXVol = .8f;
 
     [Header("Music")]
     [SerializeField] public AudioClip titleScreenSound;
@@ -62,6 +66,7 @@ public class audioManager : MonoBehaviour
     public bool isMuted;
     AudioClip savedGameplayClip;
     float savedGameplayTime;
+    private Coroutine pauseMusicRoutine;
 
     void Awake()
     {
@@ -169,6 +174,7 @@ public class audioManager : MonoBehaviour
 
     public void playMusic(AudioClip clip)
     {
+        stopPauseCoroutine();
         if (clip == null || musicSource == null) return;
 
         musicSource.clip = clip;
@@ -178,26 +184,18 @@ public class audioManager : MonoBehaviour
 
     public void pauseMusic()
     {
-        if (musicSource != null && musicSource.isPlaying)
-        {
-            musicSource.Pause();
-        }
+        if (musicSource != null && musicSource.isPlaying) musicSource.Pause();
     }
 
     public void resumeMusic()
     {
-        if (musicSource != null)
-        {
-            musicSource.UnPause();
-        }
+        if (musicSource != null)musicSource.UnPause();
     }
 
     public void stopMusic()
     {
-        if (musicSource != null)
-        {
-            musicSource.Stop();
-        }
+        stopPauseCoroutine();
+        if (musicSource != null) musicSource.Stop();
     }
 
     public void unmute()
@@ -227,6 +225,7 @@ public class audioManager : MonoBehaviour
 
     public void restoreGameplayMusic()
     {
+        stopPauseCoroutine();
         if (musicSource != null && savedGameplayClip != null)
         {
             musicSource.clip = savedGameplayClip;
@@ -240,6 +239,26 @@ public class audioManager : MonoBehaviour
         }
     }
 
+    public void playPauseMenuMusicWithDelay(float delaySeconds)
+    {
+        stopPauseCoroutine();
+        StartCoroutine(PlayPauseMusicDelayed(delaySeconds));
+    }
+
+    private IEnumerator PlayPauseMusicDelayed(float delaySeconds)
+    {
+        yield return new WaitForSecondsRealtime(delaySeconds);
+        playPauseMenuMusic();
+    }
+
+    public void stopPauseCoroutine()
+    {
+        if (pauseMusicRoutine != null)
+        {
+            StopCoroutine(pauseMusicRoutine);
+            pauseMusicRoutine = null;
+        }
+    }
     public void playLoseMenuMusic() { stopMusic(); playMusic(loseMenuMusic); }
     public void playRoundTransitionMusic() { stopMusic(); playMusic(roundTransitionMusic); }
 }

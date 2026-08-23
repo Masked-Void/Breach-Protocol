@@ -126,14 +126,25 @@ public class gameManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         pauseScoreText.text = currentKill.ToString("f0");
-        if (audioManager.instance != null) audioManager.instance.pauseMusic();
-        StartCoroutine(playAudioDelay());
+        resetPauseUI();
+        if (audioManager.instance != null)
+        {
+            audioManager.instance.pauseMusic();
+            audioManager.instance.playPauseMenuMusicWithDelay(4.0f);
+        }
     }
 
-    IEnumerator playAudioDelay()
+    public void resetPauseUI()
     {
-        yield return new WaitForSeconds(5);
-        if (audioManager.instance != null) audioManager.instance.playPauseMenuMusic();
+        if (challengesCanvas != null) challengesCanvas.SetActive(false);
+        if (settingsCanvas != null) settingsCanvas.SetActive(false);
+        if (upgradesCanvas != null) upgradesCanvas.SetActive(false);
+        if (soundMenu != null) soundMenu.SetActive(false);
+        if (controlsMenu != null) controlsMenu.SetActive(false);
+        if (backButton != null) backButton.SetActive(false);
+        if (navTab != null) navTab.SetActive(false);
+        if (buttons != null) buttons.SetActive(true);
+        if (pauseScorePanel != null) pauseScorePanel.SetActive(true);
     }
 
     // Unpause the game
@@ -213,14 +224,14 @@ public class gameManager : MonoBehaviour
         while (timer < duration)
         {
             timer += Time.unscaledDeltaTime;
-             float t = Mathf.SmoothStep(0f, 1f, timer / duration);
+            float t = Mathf.SmoothStep(0f, 1f, timer / duration);
             rect.localScale = Vector3.Lerp(originalScale * 1.3f, originalScale, t);
             yield return null;
         }
 
         rect.localScale = originalScale;
     }
-     
+
     // Currency Stuff
     public void AddBytes(int amount) { totalBytes += amount; }
     public void AddFiles(int amount) { totalFiles += amount; }

@@ -25,14 +25,12 @@ public class buttonFunctions : MonoBehaviour
 
     public void challenge()
     {
-        if (audioManager.instance != null) audioManager.instance.playButtonClick();
         deactivateAllPanels();
         if (gameManager.instance.challengesCanvas != null) gameManager.instance.challengesCanvas.SetActive(true);
     }
 
     public void upgrade()
     {
-        if (audioManager.instance != null) audioManager.instance.playButtonClick();
         deactivateAllPanels();
         if (gameManager.instance.upgradesCanvas != null) gameManager.instance.upgradesCanvas.SetActive(true);
     }
@@ -56,12 +54,14 @@ public class buttonFunctions : MonoBehaviour
     public void sound()
     {
         if (audioManager.instance != null) audioManager.instance.playButtonClick();
+        if (gameManager.instance.controlsMenu != null) gameManager.instance.controlsMenu.SetActive(false);
         if (gameManager.instance.soundMenu != null) gameManager.instance.soundMenu.SetActive(true);
     }
 
     public void controls()
     {
         if (audioManager.instance != null) audioManager.instance.playButtonClick();
+        if (gameManager.instance.soundMenu != null) gameManager.instance.soundMenu.SetActive(false);
         if (gameManager.instance.controlsMenu != null) gameManager.instance.controlsMenu.SetActive(true);
     }
 
