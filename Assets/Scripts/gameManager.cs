@@ -201,7 +201,7 @@ public class gameManager : MonoBehaviour
 
         if (endMenu != null) {
             menuActive = endMenu;
-            endMenu.SetActive(false);
+            endMenu.SetActive(true);
         }
 
         if (scoreText != null) {
