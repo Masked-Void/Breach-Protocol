@@ -23,6 +23,9 @@ public class damage : MonoBehaviour
     [SerializeField] float explosionRadius = 5f;
     [SerializeField] int explosionDamage = 50;
 
+    [SerializeField] AudioSource sfxSource;
+    [SerializeField] AudioClip sfx;
+
     public bool isExplosive;
 
 
@@ -39,11 +42,27 @@ public class damage : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (rb == null && !TryGetComponent<Rigidbody>(out rb))
-            rb = gameObject.AddComponent<Rigidbody>();
-
         enemyLayer = LayerMask.NameToLayer("Enemy");
         hasAudioManager = audioManager.instance != null;
+
+        if (type == DamageType.bullet)
+            if (rb == null && !TryGetComponent<Rigidbody>(out rb))
+                rb = gameObject.AddComponent<Rigidbody>();
+
+        if (type == DamageType.DOT && hasAudioManager)
+        {
+            if (sfx != null)
+            {
+                sfxSource = gameObject.AddComponent<AudioSource>();
+                sfxSource.clip = sfx;
+                sfxSource.volume = .4f * audioManager.instance.masterVolume;
+                sfxSource.loop = true;
+                sfxSource.spatialBlend = 1f;
+                sfxSource.minDistance = 1f;
+                sfxSource.maxDistance = 25f;
+                sfxSource.Play();
+            }
+        }
     }
 
     void FixedUpdate()
@@ -66,7 +85,7 @@ public class damage : MonoBehaviour
         hasHit = true;
         Vector3 hitPoint = collision.contacts[0].point;
         handleGlassShatter(other, hitPoint);
-        handleDamageAndEffects(other, hitPoint);
+        handleDamageAndEffects(other);
     }
 
     void OnTriggerEnter(Collider other)
@@ -79,19 +98,17 @@ public class damage : MonoBehaviour
             return;
         }
 
-        Vector3 hitPoint = other.ClosestPoint(transform.position);
-        handleGlassShatter(other, hitPoint);
-        handleDamageAndEffects(other, hitPoint);
-
         if (type == DamageType.bullet)
         {
-            if (isExplosive)
-                explode();
-            else if (hitEffect != null)
-                Instantiate(hitEffect, transform.position, Quaternion.identity);
-
-            Destroy(gameObject);
+            if (isExplosive) explode();
+            else if (hitEffect != null) Instantiate(hitEffect, transform.position, Quaternion.identity);
         }
+
+        Vector3 hitPoint = other.ClosestPoint(transform.position);
+        handleGlassShatter(other, hitPoint);
+        handleDamageAndEffects(other);
+        if (type != DamageType.DOT && type != DamageType.stationary)
+            Destroy(gameObject);
     }
 
     void handleGlassShatter(Collider other, Vector3 hitPoint)
@@ -101,21 +118,12 @@ public class damage : MonoBehaviour
         {
             glass.Shatter(hitPoint, transform.forward, shatterForce);
             if (hasAudioManager)
-            {
                 audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.glass), transform.position, audioManager.instance.glassVol);
-            }
         }
     }
 
-    void handleDamageAndEffects(Collider other, Vector3 hitPoint)
+    void handleDamageAndEffects(Collider other)
     {
-        // Register damage source for challenge progression
-        // enemyBase eb = other.GetComponent<enemyBase>();
-        // if (eb != null && sourceWeapon != null)
-        // {
-        //     eb.RegisterDamageSource(sourceWeapon, sourceWasGroundPickup);
-        // }
-
         // Deal damage
         if (type != DamageType.DOT)
         {
@@ -142,7 +150,9 @@ public class damage : MonoBehaviour
 
         IDamage dmg = other.GetComponent<IDamage>();
         if (dmg != null && type == DamageType.DOT && !isDamaging)
+        {
             StartCoroutine(damageOther(dmg));
+        }
     }
 
     // Coroutine to handle damage over time, we do not use it right now
@@ -181,7 +191,7 @@ public class damage : MonoBehaviour
         if (explosionEffect != null)
         {
             ParticleSystem explodeFx = Instantiate(explosionEffect, transform.position, Quaternion.identity);
-            Destroy(explodeFx, 1.9f);
+            Destroy(explodeFx.gameObject, 1.9f);
         }
 
         // Query nearby colliders within explosion radius
@@ -193,12 +203,6 @@ public class damage : MonoBehaviour
             Rigidbody targetRb = hit.GetComponent<Rigidbody>();
             if (targetRb != null)
                 targetRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
-
-            // Apply damage to valid targets
-            IDamage dmg = hit.GetComponent<IDamage>();
-            if (dmg != null)
-                dmg.takeDamage(explosionDamage);
-
         }
     }
 }
