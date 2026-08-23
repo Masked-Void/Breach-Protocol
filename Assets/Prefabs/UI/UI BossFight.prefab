@@ -61,6 +61,8 @@ MonoBehaviour:
   hurtVol: 0.3
   steps: {fileID: 8300000, guid: e2a29f4ad523d3742b9a5342cbbe73d5, type: 3}
   stepsVol: 0.3
+  enemySteps: {fileID: 0}
+  enemyStepsVol: 0.3
   enemyHit: {fileID: 8300000, guid: d483768ad177d2c4dbbc90ae30c85327, type: 3}
   enemyHitVol: 0.8
   enemyShoot: {fileID: 8300000, guid: 339021f1d8d145e4ea02cbf93c6cffba, type: 3}
@@ -81,6 +83,7 @@ MonoBehaviour:
   nukeSFXVol: 1
   titleScreenSound: {fileID: 8300000, guid: 84496aa4bc46db04986777a887be754c, type: 3}
   roundTransitionMusic: {fileID: 8300000, guid: 77253b1172eea45488ff30839199db26, type: 3}
+  isMuted: 0
 --- !u!82 &1704527338208233751
 AudioSource:
   m_ObjectHideFlags: 0
@@ -463,6 +466,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::weaponManager
   activeWeapon: {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
+  allWeapons: []
   emptySlot: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
   currentWeaponFromGround: 0
 --- !u!1 &3005597609291378204
@@ -622,6 +626,7 @@ MonoBehaviour:
   maxWaves: 5
   waitingForNextWave: 0
   currentWave: 0
+  enemiesAlive: 0
 --- !u!1 &3157083100008093845
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,6 +731,7 @@ MonoBehaviour:
   holdManager: {fileID: 3018863977292105427}
   trapManager: {fileID: 5824588057710585167}
   immuneBarObj: {fileID: 912177803640787988}
+  healthBarObj: {fileID: 0}
   healthBar: {fileID: 6392262081991152592}
   immuneBar: {fileID: 366645286060098370}
   maxHealth: 1000
@@ -960,8 +966,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a83c07dad81b5c4bb01978d1b8a874e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::killstreakManager
-  killstreakChance: 0
-  killstreaks: []
+  streakPool: []
+  allowStacking: 0
+  slot3Text: {fileID: 0}
+  slot4Text: {fileID: 0}
+  slot5Text: {fileID: 0}
+  emptySlotText: EMPTY
+  ammoRefundReceiverSource: {fileID: 0}
+  rootAccessActive: 0
+  chainReactionActive: 0
+  invulnerableActive: 0
+  ghostProtocolActive: 0
+  packetLeechActive: 0
+  enemiesJammed: 0
+  chainReactionRadius: 4
+  chainReactionDamagePercent: 0.5
+  ghostAimErrorDegrees: 12
+  ammoRefundPerKill: 1
 --- !u!1 &7541871362785683565
 GameObject:
   m_ObjectHideFlags: 0
@@ -1040,6 +1061,7 @@ MonoBehaviour:
   shopMessage: {fileID: 0}
   shopUI: {fileID: 5630077855558466646}
   damageFlashUI: {fileID: 5129635263756173633}
+  ammoPanel: {fileID: 0}
   magAmmoUI: {fileID: 7851538014898282958}
   totalAmmoUI: {fileID: 387281522253062215}
   activeWeapon: {fileID: 4414258154742376737}
@@ -1069,6 +1091,8 @@ MonoBehaviour:
   nearMissStress: 5
   killStressReduction: 5
   waveStressReduction: 20
+  heartRateText: {fileID: 0}
+  bpmSuffix: ' BPM'
 --- !u!114 &2385870179351207787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1082,6 +1106,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::challengeManager
   weaponName: {fileID: 0}
+  description: {fileID: 0}
+  statsPanel: {fileID: 0}
+  actionButton: {fileID: 0}
+  actionText: {fileID: 0}
   challengeSlots: []
   challenges:
   - {fileID: 11400000, guid: 9ded1e8600c288e46b7581c1ebf8a2a0, type: 2}
@@ -1130,11 +1158,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::timeManager
   minTimeScale: 1.06
-  moveMaxTimeScale: 1.3
   maxTimeScale: 3.5
+  moveMaxTimeScale: 1.3
   movementCurvePower: 1.35
   bpmInfluence: 1
   timeScaleSmoothing: 1
+  hasTimeScaleOverride: 0
+  overrideTimeScale: 0
 --- !u!1 &8780413800556966254
 GameObject:
   m_ObjectHideFlags: 0
@@ -1359,7 +1389,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI BossFight
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4425952871445845886, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+    - {fileID: 9102029155579315717, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+    - {fileID: 6882778174617672838, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
     m_RemovedGameObjects:
     - {fileID: 8265081172895264960, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
     - {fileID: 1328115815631699168, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}

@@ -1,6 +1,6 @@
 using System.Collections;
 using TMPro;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -201,7 +201,7 @@ public class gameManager : MonoBehaviour
 
         if (endMenu != null) {
             menuActive = endMenu;
-            endMenu.SetActive(false);
+            endMenu.SetActive(true);
         }
 
         if (scoreText != null) {
