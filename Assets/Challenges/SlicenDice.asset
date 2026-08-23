@@ -18,10 +18,9 @@ MonoBehaviour:
     killCount: 5
   - challengeID: katana_20
     displayName: Slice'n'Dice II
-    killCount: 20
+    killCount: 5
   - challengeID: katana_100
     displayName: Slice'n'Dice III
-    killCount: 100
+    killCount: 5
   description: Get kills with a picked up katana
   weapon: {fileID: 11400000, guid: 763d647bb6b08d84ead259df0be17567, type: 2}
-  requireGroundPickup: 1

@@ -18,10 +18,9 @@ MonoBehaviour:
     killCount: 5
   - challengeID: pistol_20
     displayName: Pistol whipper II
-    killCount: 20
+    killCount: 5
   - challengeID: pistol_100
     displayName: Pistol whipper III
-    killCount: 100
+    killCount: 5
   description: Get kills with a picked up pistol
   weapon: {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
-  requireGroundPickup: 1
