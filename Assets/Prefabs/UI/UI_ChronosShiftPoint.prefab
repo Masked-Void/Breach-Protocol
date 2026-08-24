@@ -555,6 +555,10 @@ PrefabInstance:
       propertyPath: damageFlashUI
       value: 
       objectReference: {fileID: 5622820856843244832}
+    - target: {fileID: 2852678577532276898, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: spawnPointTransforms.Array.size
+      value: 38
+      objectReference: {fileID: 0}
     - target: {fileID: 4421167819060007651, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 0
