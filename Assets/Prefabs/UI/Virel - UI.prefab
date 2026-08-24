@@ -543,10 +543,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c21cfd330308a64eaf63d4bda733ffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::populateShop
-  icon: {fileID: 6199063359476299374}
-  nameText: {fileID: 8727696304203709233}
-  descriptionText: {fileID: 1985152638900594899}
-  costText: {fileID: 6071973241208900097}
 --- !u!1 &230426016335929810
 GameObject:
   m_ObjectHideFlags: 0
@@ -640,18 +636,6 @@ MonoBehaviour:
       - m_Target: {fileID: 273237904850601238}
         m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
         m_MethodName: quit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainMenuLogic, Assembly-CSharp
-        m_MethodName: ExitGameButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6172,10 +6156,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c21cfd330308a64eaf63d4bda733ffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::populateShop
-  icon: {fileID: 6503618889468151977}
-  nameText: {fileID: 3672493725295993845}
-  descriptionText: {fileID: 530152691454432593}
-  costText: {fileID: 7985467079326962908}
 --- !u!1 &1660232808680051504
 GameObject:
   m_ObjectHideFlags: 0
@@ -6367,13 +6347,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3f15d1d3b913f04d957a4321f26719a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::shopManager
-  shopSlots:
-  - {fileID: 3398039936303978218}
-  - {fileID: 3316769138960458297}
-  - {fileID: 1667556965752815542}
-  allUpgrades:
-  - {fileID: 11400000, guid: 9714ef29f9c76a14b804b4789721289b, type: 2}
-  - {fileID: 11400000, guid: e82ff3cbc1f58f54eb8f84f690188672, type: 2}
 --- !u!222 &376257930847920838
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15100,8 +15073,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::killChainManager
   chainTimeLimit: 5
-  killsPerStreakRoll: 3
   killChainCountUI: {fileID: 4895783205309072070}
+  chainAnnouncementUI: {fileID: 0}
   killChainCount: 0
   killChainTimer: 0
 --- !u!114 &273237904850601238
@@ -17752,10 +17725,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c21cfd330308a64eaf63d4bda733ffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::populateShop
-  icon: {fileID: 1364784003480461883}
-  nameText: {fileID: 4900061669051042792}
-  descriptionText: {fileID: 1917360235077353240}
-  costText: {fileID: 7972667751519213296}
 --- !u!1 &4672628479491581332
 GameObject:
   m_ObjectHideFlags: 0
@@ -28921,6 +28890,7 @@ MonoBehaviour:
   menuActive: {fileID: 0}
   menuPause: {fileID: 3688417849886448037}
   menuLose: {fileID: 5372704760630694561}
+  menuWin: {fileID: 0}
   challengesCanvas: {fileID: 7093893995623311335}
   settingsCanvas: {fileID: 2992686335668658384}
   upgradesCanvas: {fileID: 3830351706634729352}
@@ -28942,8 +28912,8 @@ MonoBehaviour:
   interactionUI: {fileID: 2813920847113862592}
   interactionText: {fileID: 5093360542766523186}
   interactionKey: {fileID: 5251123565928842603}
-  playerStaminaBar: {fileID: 5786753524944234791}
   playerSpawnPos: {fileID: 0}
+  playerStaminaBar: {fileID: 5786753524944234791}
   checkpointPopup: {fileID: 0}
   totalBytes: 0
   totalFiles: 0
@@ -28975,13 +28945,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4c0d36467b605d04f935e444e8f9f80f, type: 2}
   - {fileID: 11400000, guid: d4f15f201b49659428ccec6c72b07427, type: 2}
   upgradeName: {fileID: 1026477764546967663}
+  upgradeIcon: {fileID: 0}
   upgradeDescription: {fileID: 8253828268182478178}
   upgradeCost: {fileID: 6979171736770027237}
+  upgradeValue: {fileID: 0}
   buyButton: {fileID: 5449788658397137373}
   buyButtonText: {fileID: 2182031520699103547}
   files: 0
-  unlockedUpgrades: []
   purchasedUpgrades: []
+  activeUpgrades: []
 --- !u!114 &650501291214872143
 MonoBehaviour:
   m_ObjectHideFlags: 0

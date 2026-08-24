@@ -56,7 +56,7 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("Mark"));
+        StartCoroutine(LoadSceneAsync("dclevel"));
     }
     public void openLevelMark()
     {

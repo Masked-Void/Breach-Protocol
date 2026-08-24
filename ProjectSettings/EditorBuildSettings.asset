@@ -21,7 +21,7 @@ EditorBuildSettings:
     path: Assets/Scenes/virel.unity
     guid: 65dab558ed098b94ba06546813721774
   - enabled: 1
-    path: Assets/BossFightArena.unity
+    path: Assets/Scenes/BossFightArena.unity
     guid: 2336dbee05504274881603b520af207a
   - enabled: 1
     path: Assets/Scenes/ColdStorage/ColdStorage.unity
@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelCreation-Virel.unity
     guid: c920d20eeb30a7e4688fcf71724a1481
+  - enabled: 1
+    path: Assets/Scenes/dclevel.unity
+    guid: 0ed2f9732ec1a9a419a8eaefd712baa0
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
