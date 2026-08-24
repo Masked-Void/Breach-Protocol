@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
-using Autodesk.Fbx;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public abstract class enemyBase : MonoBehaviour, IDamage

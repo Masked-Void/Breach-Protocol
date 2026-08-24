@@ -7307,6 +7307,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4315279849307942, guid: 48fa9cd2701e918478266d22109c7aac, type: 3}
   m_PrefabInstance: {fileID: 1182116478}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1200458134 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1913825247639601927, guid: db40e8a1f49c9af49aa46d563fd0bab8, type: 3}
+  m_PrefabInstance: {fileID: 177558871}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1221923980
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13751,6 +13756,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2852678577532276898, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: 'spawnPointTransforms.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1200458134}
+    - target: {fileID: 2852678577532276898, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: 'spawnPointTransforms.Array.data[1]'
+      value: 
+      objectReference: {fileID: 220421687}
     - target: {fileID: 4096508094699609070, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Pivot.x
       value: 0

@@ -8,6 +8,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2852678577532276898, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: maxWaves
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2852678577532276898, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: roamPointTransforms.Array.size
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 2852678577532276898, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: spawnPointTransforms.Array.size
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 5278266127367784136, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_Name
+      value: UI Samuel
+      objectReference: {fileID: 0}
+    - target: {fileID: 5377844142893437602, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6599758309366795801, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: maxBPM
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 6599758309366795801, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: heartRateText
+      value: 
+      objectReference: {fileID: 158633054060264470}
     - target: {fileID: 6785670985224404860, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -97,3 +125,14 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+--- !u!114 &158633054060264470 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7147215360486078523, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+  m_PrefabInstance: {fileID: 6990590942371202093}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
