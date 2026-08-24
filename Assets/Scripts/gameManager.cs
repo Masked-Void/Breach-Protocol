@@ -14,7 +14,6 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuWin;
-    [SerializeField] GameObject menuSound;
 
     [Header("UI Pages")]
     public GameObject challengesCanvas;
@@ -42,9 +41,6 @@ public class gameManager : MonoBehaviour
     [Header("Wave UI")]
     [SerializeField] TextMeshProUGUI waveCounter;
     [SerializeField] TextMeshProUGUI waveCountdownText;
-    [SerializeField] public GameObject pickUpUI;
-    [SerializeField] public Image playerStaminaBar;
-    [SerializeField] public GameObject checkpointPopup;
     [SerializeField] TextMeshProUGUI waveCountdown;
 
     [Header("Interaction UI")]
@@ -54,9 +50,9 @@ public class gameManager : MonoBehaviour
 
     [Header("Player")]
     public GameObject playerSpawnPos;
+    [SerializeField] public Image playerStaminaBar;
+    [SerializeField] public GameObject checkpointPopup;
 
-    [SerializeField] TMP_Text gameGoalCountText;
-    int gameGoalCount;
     [Header("Currency")]
     [SerializeField] public int totalBytes = 0;
     [SerializeField] public int totalFiles = 0;
