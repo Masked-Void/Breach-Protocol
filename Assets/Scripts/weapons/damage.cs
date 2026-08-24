@@ -232,7 +232,16 @@ public class damage : MonoBehaviour
             Rigidbody targetRb = hit.GetComponent<Rigidbody>();
             if (targetRb != null)
                 targetRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+
+            IDamage dmg = hit.GetComponent<IDamage>();
+            if(dmg != null) StartCoroutine(delayDamage(dmg));
         }
+    }
+
+    IEnumerator delayDamage(IDamage dmg)
+    {
+        yield return new WaitForFixedUpdate();
+        dmg.takeDamage(explosionDamage);
     }
 
     IEnumerator cameraShake(Camera cam, Vector3 strength, float duration)

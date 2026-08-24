@@ -49,7 +49,7 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("MK2"));
+        StartCoroutine(LoadSceneAsync("Devin"));
     }
     public void openLevelDevinC()
     {
@@ -70,14 +70,14 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("Virel"));
+        StartCoroutine(LoadSceneAsync("ColdStorage"));
     }
     public void openLevelVirel()
     {
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("Virel"));
+        StartCoroutine(LoadSceneAsync("LevelCreation-Virel"));
     }
 
     public void openSettings()
@@ -150,13 +150,11 @@ public class titleScreenManager : MonoBehaviour
     }
     public void switchToChallenge()
     {
-        audioManager.instance.playButtonClick();
         deactivateAllPanels();
         challengePanel.SetActive(true);
     }
     public void switchToWeapon()
     {
-        audioManager.instance.playButtonClick();
         deactivateAllPanels();
         weaponPanel.SetActive(true);
     }

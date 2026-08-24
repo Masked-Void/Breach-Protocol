@@ -55,7 +55,6 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
     {
         if (gameManager.instance != null && gameManager.instance.isPaused)
         {
-            gameManager.instance.pickUpUI.SetActive(false);
             gameManager.instance.interactionUI.SetActive(false);
             return;
         }

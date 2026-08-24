@@ -242,8 +242,6 @@ public class gameManager : MonoBehaviour
         if (waveCounter != null) {
             waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
             StartCoroutine(AnimateWaveText());
-
-            killCounter.text = "Kills: " + currentKill;
         }
 
         if (waveManager.instance.isWaitingForNextWave()) {

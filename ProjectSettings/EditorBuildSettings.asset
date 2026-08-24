@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tilte.unity
     guid: a59d527e58788bc468acd2024ab7bf45
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestScene.unity
     guid: 5bd592e33ea87554e9e36289b4f3faaa
   - enabled: 1
@@ -17,12 +17,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mark.unity
     guid: 1bf211b6109c3524b8edd35e15176054
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/virel.unity
     guid: 65dab558ed098b94ba06546813721774
   - enabled: 1
     path: Assets/BossFightArena.unity
     guid: 2336dbee05504274881603b520af207a
+  - enabled: 1
+    path: Assets/Scenes/ColdStorage/ColdStorage.unity
+    guid: bacba614b7d010349b59da1fbab83970
+  - enabled: 1
+    path: Assets/Scenes/Devin.unity
+    guid: f760746c82d3030419dfaf3124bc2e87
+  - enabled: 1
+    path: Assets/Scenes/LevelCreation-Virel.unity
+    guid: c920d20eeb30a7e4688fcf71724a1481
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
