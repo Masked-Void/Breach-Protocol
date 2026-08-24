@@ -194,10 +194,7 @@ public class gameManager : MonoBehaviour
     // Handle the lose state
     public void stateLose()
     {
-        statePause();
-        menuActive = menuLose;
-        menuActive.SetActive(true);
-        loseSoreText.text = waveManager.instance.getEnemiesKilled().ToString("f0");
+
         endRun(menuLose);
     }
 
@@ -209,17 +206,30 @@ public class gameManager : MonoBehaviour
     // Simple method so simplify states
     void endRun(GameObject endMenu) {
         statePause();
-
-        if (endMenu != null) {
-            menuActive = endMenu;
-            endMenu.SetActive(true);
+        
+        if (menuActive != null && menuActive != endMenu)
+        {
+            menuActive.SetActive(false);
         }
 
-        if (loseSoreText != null) {
+        if (menuPause != null && menuPause != endMenu)
+        {
+            menuPause.SetActive(false);
+        }
+
+        menuActive = endMenu;
+
+        if (menuActive != null)
+        {
+            menuActive.SetActive(true);
+        }
+
+        if (loseSoreText != null)
+        {
             loseSoreText.text = currentKill.ToString("f0");
         }
-
-        if (upgradeManager.instance != null) {
+        if (upgradeManager.instance != null)
+        {
             upgradeManager.instance.files += totalFiles;
             upgradeManager.instance.SaveUpgrades();
         }

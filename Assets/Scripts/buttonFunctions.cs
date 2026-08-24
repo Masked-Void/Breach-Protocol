@@ -87,6 +87,7 @@ public class buttonFunctions : MonoBehaviour
         if (gameManager.instance.pauseScorePanel != null) gameManager.instance.pauseScorePanel.SetActive(false);
     }
 
+  
     public void quit()
     {
         if (audioManager.instance != null) audioManager.instance.playButtonClick();
