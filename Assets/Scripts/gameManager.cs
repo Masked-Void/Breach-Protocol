@@ -288,9 +288,4 @@ public class gameManager : MonoBehaviour
         rect.localScale = originalScale;
     }
 
-    // Currency Stuff
-    public void AddBytes(int amount) { totalBytes += amount; }
-    public void AddFiles(int amount) { totalFiles += amount; }
-    public void SubtractBytes(int amount) { totalBytes -= amount; }
-    public void SubtractFiles(int amount) { totalFiles -= amount; }
 }
