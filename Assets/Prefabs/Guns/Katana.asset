@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4e8a83ce7379b0449562a0669445577, type: 3}
   m_Name: Katana
   m_EditorClassIdentifier: Assembly-CSharp::meleeStats
-  weaponModel: {fileID: 0}
+  Name: Katana
+  weaponModel: {fileID: 6413440490822234159, guid: a04645d8876d1a448ad847390068b125, type: 3}
+  sprite: {fileID: 21300000, guid: d75294202048e40428535f8c96a5bd3f, type: 3}
+  cost: 400
   attackRate: 0.1
-  throwForce: 25
   attackDamage: 1
   attackDist: 5
   swingSound: {fileID: 0}

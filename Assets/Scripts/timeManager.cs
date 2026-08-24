@@ -2,121 +2,190 @@ using UnityEngine;
 
 public class timeManager : MonoBehaviour
 {
-
     public static timeManager instance;
 
-
     [Header("Time Scale Range")]
-    [SerializeField] float minTimeScale;
-    [SerializeField] float maxTimeScale;
-    [SerializeField] float moveMaxTimeScale;
+    [SerializeField] private float minTimeScale = 0.05f;
+    [SerializeField] private float maxTimeScale = 1f;
+    [SerializeField] private float moveMaxTimeScale = 0.85f;
 
-    [SerializeField] float timeScaleSmoothing;
+    [Header("Movement Influence")]
+    [Tooltip("Higher values require more movement before time speeds up strongly.")]
+    [SerializeField] private float movementCurvePower = 1.35f;
 
     [Header("Heartbeat Influence")]
-    [SerializeField] float bpmInfluence;
+    [Range(0f, 1f)]
+    [SerializeField] private float bpmInfluence = 0.40f;
 
-    float currentTimeScale;
+    [Header("Smoothing")]
+    [SerializeField] private float timeScaleSmoothing = 10f;
 
-    private float? overrideTimeScale = null;
-    private float overrideFixedDeltaTime;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    [Header("Runtime Override")]
+    [SerializeField] private bool hasTimeScaleOverride;
+    [SerializeField] private float overrideTimeScale;
+
+    private float currentTimeScale;
+    private float baseFixedDeltaTime;
+
+    private void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         instance = this;
-        Time.timeScale = minTimeScale;
-        Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        currentTimeScale = Time.timeScale;
+
+        // Preserve the project's normal physics step.
+        baseFixedDeltaTime = Time.fixedDeltaTime / Mathf.Max(Time.timeScale, 0.0001f);
+
+        currentTimeScale = Mathf.Clamp(minTimeScale, 0.001f, maxTimeScale);
+        ApplyTimeScale(currentTimeScale);
+
     }
 
     private void Update()
     {
-        if (gameManager.instance == null || gameManager.instance.isPaused) return;
-        // If a killstreak owns time, lock it and skip normal scaling logic.
-        if (overrideTimeScale.HasValue)
-        {
-            if (!Mathf.Approximately(Time.timeScale, overrideTimeScale.Value))
-            {
-                Time.timeScale = overrideTimeScale.Value;
-                Time.fixedDeltaTime = overrideFixedDeltaTime;
-            }
-            currentTimeScale = Time.timeScale;
+        if (gameManager.instance != null && gameManager.instance.isPaused)
             return;
-        }
-        // Get the player's speed percentage and calculate the target time scale based on it.
-        float playerSpeedPercent = gameManager.instance.playerScript.getSpeedPercent();
-        float target = Mathf.Lerp(minTimeScale, moveMaxTimeScale, playerSpeedPercent);
 
+        float targetTimeScale;
 
-        // If the heartbeatManager instance exists, get the stress percentage and adjust the target time scale accordingly.
-        if (heartbeatManager.instance != null)
+        if (hasTimeScaleOverride)
         {
-            float stressPercent = heartbeatManager.instance.getStressPercent();
-            target += stressPercent * bpmInfluence;
-            target = Mathf.Clamp(target, minTimeScale, maxTimeScale);
+            // Scorestreaks such as Adrenaline temporarily take full control
+            // over world speed. Movement and heartbeat cannot fight it.
+            targetTimeScale = overrideTimeScale;
+        }
+        else
+        {
+            if (gameManager.instance == null || gameManager.instance.playerScript == null)
+                return;
+
+            float movement01 = Mathf.Clamp01(
+                gameManager.instance.playerScript.getSpeedPercent()
+            );
+
+            movement01 = Mathf.Pow(movement01, movementCurvePower);
+
+            float movementScale = Mathf.Lerp(
+                minTimeScale,
+                moveMaxTimeScale,
+                movement01
+            );
+
+            float stress01 = heartbeatManager.instance != null
+                ? heartbeatManager.instance.getStressPercent()
+                : 0f;
+
+            float heartbeatInfluence = Mathf.Clamp01(stress01 * bpmInfluence);
+
+            targetTimeScale = Mathf.Lerp(
+                movementScale,
+                maxTimeScale,
+                heartbeatInfluence
+            );
         }
 
-        // Smoothly interpolate the current time scale towards the target time scale using Mathf.Lerp for a gradual transition.
-        float smoothed = Mathf.Lerp(Time.timeScale, target, timeScaleSmoothing * Time.unscaledDeltaTime);
-        setTimeScale(smoothed);
+        // Frame-rate-independent exponential smoothing.
+        float blend = 1f - Mathf.Exp(-timeScaleSmoothing * Time.unscaledDeltaTime);
+
+        currentTimeScale = Mathf.Lerp(
+            currentTimeScale,
+            targetTimeScale,
+            blend
+        );
+
         
+
+        ApplyTimeScale(currentTimeScale);
     }
 
+    private void ApplyTimeScale(float newTimeScale)
+    {
+        newTimeScale = Mathf.Clamp(newTimeScale, minTimeScale, maxTimeScale);
+
+        if (Mathf.Abs(Time.timeScale - newTimeScale) < 0.0001f)
+            return;
+
+        Time.timeScale = newTimeScale;
+        Time.fixedDeltaTime = baseFixedDeltaTime * newTimeScale;
+    }
+
+    // Sets the normal world speed immediately. Persistent effects should
+    // use setTimeScaleOverride instead so Update() does not overwrite them.
     public void setTimeScale(float newTimeScale)
     {
-        if (gameManager.instance != null && gameManager.instance.isPaused) return;
-        if (overrideTimeScale.HasValue) return; // blocked while killstreak owns time
-        Time.timeScale = newTimeScale;
-        // Adjust the fixedDeltaTime based on the new time scale for consistent physics updates like bullets and player movement. This ensures that physics calculations remain stable regardless of the time scale.
-        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        if (gameManager.instance != null && gameManager.instance.isPaused)
+            return;
 
-        currentTimeScale = Time.timeScale;
+        currentTimeScale = Mathf.Clamp(newTimeScale, minTimeScale, maxTimeScale);
+        ApplyTimeScale(currentTimeScale);
     }
-    public void setTimeScaleOverride(float worldTimeScale)
+
+    // Used by Adrenaline and future scorestreaks.
+
+    public void setTimeScaleOverride(float newTimeScale)
     {
-        if (!overrideTimeScale.HasValue)
-        {
-            currentTimeScale = Time.timeScale; // remember where we were
-        }
+        overrideTimeScale = Mathf.Clamp(newTimeScale, minTimeScale, maxTimeScale);
+        hasTimeScaleOverride = true;
 
-        overrideTimeScale = Mathf.Clamp(worldTimeScale, 0.01f, maxTimeScale);
-        overrideFixedDeltaTime = 0.02f * overrideTimeScale.Value;
+        // Adrenaline should feel immediate rather than taking several frames
+        // Apply it instantly on activation.
+        currentTimeScale = overrideTimeScale;
 
-        Time.timeScale = overrideTimeScale.Value;
-        Time.fixedDeltaTime = overrideFixedDeltaTime;
+        if (gameManager.instance == null || !gameManager.instance.isPaused)
+            ApplyTimeScale(currentTimeScale);
     }
+
     public void clearTimeScaleOverride()
     {
-        overrideTimeScale = null;
-        Time.timeScale = currentTimeScale;
-        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        hasTimeScaleOverride = false;
+
+        // Do not snap back here. The regular Update formula smoothly returns
+        // from the override to movement + heartbeat controlled time.
     }
 
-    public bool isTimeOverridden()
+    public bool hasActiveTimeScaleOverride()
     {
-        return overrideTimeScale.HasValue;
+        return hasTimeScaleOverride;
     }
+
     public float getTimeScale()
     {
-        return Time.timeScale;
+        return currentTimeScale;
     }
 
     public void pauseTime()
     {
-        Time.timeScale = 0;
+        if (Time.timeScale > 0f)
+            currentTimeScale = Time.timeScale;
+
+        Time.timeScale = 0f;
     }
 
     public void unpauseTime()
     {
-        if (overrideTimeScale.HasValue)
-        {
-            Time.timeScale = overrideTimeScale.Value;
-            Time.fixedDeltaTime = overrideFixedDeltaTime;
-        }
-        else
-        {
-            Time.timeScale = currentTimeScale;
-            Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        }
+        ApplyTimeScale(currentTimeScale);
+    }
+
+    private void OnValidate()
+    {
+        minTimeScale = Mathf.Max(0.001f, minTimeScale);
+        maxTimeScale = Mathf.Max(minTimeScale, maxTimeScale);
+        moveMaxTimeScale = Mathf.Clamp(moveMaxTimeScale, minTimeScale, maxTimeScale);
+        movementCurvePower = Mathf.Max(0.01f, movementCurvePower);
+        timeScaleSmoothing = Mathf.Max(0f, timeScaleSmoothing);
+        bpmInfluence = Mathf.Clamp01(bpmInfluence);
+
+        if (hasTimeScaleOverride)
+            overrideTimeScale = Mathf.Clamp(overrideTimeScale, minTimeScale, maxTimeScale);
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+            instance = null;
     }
 }

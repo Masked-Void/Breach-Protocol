@@ -27,26 +27,92 @@
  * - audioManager
  */
 
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
-public class waveManager : MonoBehaviour
+public enum enemyType
+{
+    basic,
+    heavy,
+    ranged
+}
+
+public class roamPoint
+{
+    public Transform point;
+    public GameObject claimedBy;
+
+    public bool isFree
+    {
+        get { return claimedBy == null; }
+    }
+}
+
+public class spawnPoint
+{
+    public Transform point;
+    public float lastUsed;
+
+    public bool isFree(float cooldown)
+    {
+         return (Time.unscaledTime - lastUsed >= cooldown);
+    }
+}
+
+public class waveManager : MonoBehaviour,IWaveHost
 {
     public static waveManager instance;
 
-    [Header("Wave Settings")]
-    [SerializeField] private int currentWave;
-    [SerializeField] private int maxWaves;
-    [SerializeField] private float timeBetweenWaves;
+    [Header("Weapon Prefabs")]
+    [SerializeField] GameObject[] basicWeaponPrefabs;
+    [SerializeField] GameObject[] heavyWeaponPrefabs;
+    [SerializeField] GameObject[] rangedWeaponPrefabs;
 
     private int enemiesAlive;
     private int enemiesKilled;
     private bool waveInProgress;
+    [Header("Enemy Prefabs")]
+    [SerializeField] GameObject basicEnemyPrefabs;
+    [SerializeField] GameObject heavyEnemyPrefabs;
+    [SerializeField] GameObject rangedEnemyPrefabs;
 
-    private bool waitingForNextWave;
-    private float waveTimer;
+    [Header("Roam and Spawn Points")]
+    [SerializeField] Transform[] roamPointTransforms;
+    [SerializeField] Transform[] spawnPointTransforms;
 
-    private List<spawner> spawners = new List<spawner>();
+    private roamPoint[] roamPoints;
+    private spawnPoint[] spawnPoints;
+
+    [Header("Roam Settings")]
+    [Tooltip("Chance that a ranged enemy will roam before engaging.")]
+    [SerializeField] float giveWillRoamChance;
+
+    [Header("Spawn Settings")]
+    [SerializeField] int enemiesToSpawnAtWave0;
+    [SerializeField] float enemyIncreaseMultiplier;
+
+    [HideInInspector] enemyType typeSpawned;
+
+    [Header("Enemy Percent To Spawn")]
+    [SerializeField] int basicEnemyPercent;
+    [SerializeField] int heavyEnemyPercent;
+    [SerializeField] int rangedEnemyPercent;
+
+    [Header("Timers")]
+    [SerializeField] float timeBetweenSpawns;
+    [SerializeField] int timeBetweenWaves;
+    [SerializeField] float waveTimer;
+    [SerializeField] float spawnPointCooldown = 5f;
+
+    [Header("Misc")]
+    [SerializeField] int maxWaves;
+    [SerializeField] bool waitingForNextWave;
+
+    [Header("Wave Tracking")]
+    [SerializeField] private int currentWave = 0;
+
+    private Coroutine spawnRoutine;
+
     private int spawnersStillSpawning;
 
     void Awake()
@@ -58,47 +124,175 @@ public class waveManager : MonoBehaviour
         }
 
         instance = this;
+
+        waveHost.active = this;
+
+        assignSpawnPoints(spawnPointTransforms);
+        assignRoamPoints(roamPointTransforms);
     }
+
 
     void Start()
     {
         queueNextWave();
     }
 
+
     void Update()
     {
-        if (waitingForNextWave)
+        if (gameManager.instance != null &&
+            gameManager.instance.isPaused)
         {
-            // Unscaled so the countdown is always real seconds, regardless
-            // of Time.timeScale (slow-mo, hit-stop, etc.).
-            waveTimer += Time.unscaledDeltaTime;
+            return;
+        }
 
-            if (waveTimer >= timeBetweenWaves)
+        if (!waitingForNextWave)
+            return;
+
+        waveTimer += Time.unscaledDeltaTime;
+
+        if (waveTimer >= timeBetweenWaves)
+        {
+            waitingForNextWave = false;
+            startWave();
+        }
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
+
+        if (ReferenceEquals(waveHost.active , this)) {
+            waveHost.active = null;
+        }
+    }
+    private IEnumerator spawn()
+    {
+        int amountToSpawn = Mathf.RoundToInt(
+            enemiesToSpawnAtWave0 *
+            Mathf.Pow(enemyIncreaseMultiplier, currentWave)
+        );
+
+        for (int i = 0; i < amountToSpawn; i++)
+        {
+            GameObject enemyPrefab = chooseEnemyPrefab();
+
+            if (enemyPrefab == null)
+                continue;
+
+            spawnPoint point = getSpawnPoint();
+
+            if (point == null)
+                break;
+
+            GameObject enemy = Instantiate(
+                enemyPrefab,
+                point.point.position,
+                point.point.rotation
+            );
+
+            if (typeSpawned == enemyType.ranged)
             {
-                waitingForNextWave = false;
-                startWave();
+                if (enemy.TryGetComponent<enemyBase>(
+                    out enemyBase enemyScript))
+                {
+                    enemyScript.willRoam =
+                        Random.Range(0f, 1f) <= giveWillRoamChance;
+                }
+            }
+
+            point.lastUsed = Time.unscaledTime;
+
+            enemiesAlive++;
+
+            yield return new WaitForSeconds(timeBetweenSpawns);
+        }
+
+        spawnRoutine = null;
+
+        if (enemiesAlive <= 0)
+        {
+            completeWave();
+        }
+    }
+
+
+    GameObject chooseEnemyPrefab()
+    {
+        float totalPercent =
+            rangedEnemyPercent +
+            basicEnemyPercent +
+            heavyEnemyPercent;
+
+        if (totalPercent <= 0)
+            return null;
+
+        float randomValue = Random.Range(0f, totalPercent);
+
+        if (randomValue < rangedEnemyPercent)
+        {
+            typeSpawned = enemyType.ranged;
+            return rangedEnemyPrefabs;
+        }
+
+        randomValue -= rangedEnemyPercent;
+
+        if (randomValue < basicEnemyPercent)
+        {
+            typeSpawned = enemyType.basic;
+            return basicEnemyPrefabs;
+        }
+
+        typeSpawned = enemyType.heavy;
+        return heavyEnemyPrefabs;
+    }
+
+
+    private spawnPoint getSpawnPoint()
+    {
+        if (spawnPoints == null || spawnPoints.Length == 0)
+            return null;
+
+        int startIndex = Random.Range(0, spawnPoints.Length);
+
+        for (int i = 0; i < spawnPoints.Length; i++)
+        {
+            spawnPoint candidate =
+                spawnPoints[(startIndex + i) % spawnPoints.Length];
+
+            if (candidate.isFree(spawnPointCooldown))
+            {
+                return candidate;
             }
         }
+
+        return spawnPoints[startIndex];
     }
 
-    // Called once by each spawner (in its own Start) so waveManager
-    // knows it exists and should be included in wave coordination.
-    public void RegisterSpawner(spawner sp)
+
+    private void startWave()
     {
-        if (!spawners.Contains(sp))
+        if (audioManager.instance != null)
         {
-            spawners.Add(sp);
+            audioManager.instance.stopMusic();
         }
+
+        waveInProgress = true;
+        enemiesAlive = 0;
+
+        if (spawnRoutine != null)
+        {
+            StopCoroutine(spawnRoutine);
+        }
+
+        spawnRoutine = StartCoroutine(spawn());
     }
 
-    public void UnregisterSpawner(spawner sp)
-    {
-        spawners.Remove(sp);
-    }
 
-    void queueNextWave()
+    private void queueNextWave()
     {
         currentWave++;
+        enemiesAlive = 0;
 
         if (currentWave > maxWaves)
         {
@@ -108,60 +302,102 @@ public class waveManager : MonoBehaviour
 
         if (waveLightController.instance != null)
         {
-            waveLightController.instance.FlashWarningLights(timeBetweenWaves);
+            waveLightController.instance
+                .FlashWarningLights(timeBetweenWaves);
         }
 
         if (audioManager.instance != null)
         {
-            audioManager.instance.playRoundTransitionMusic();
+            audioManager.instance
+                .playRoundTransitionMusic();
         }
 
         waveTimer = 0f;
         waitingForNextWave = true;
     }
 
-    void startWave()
+
+    public Transform claimRoamPoint(GameObject askingEnemy)
     {
-        if (audioManager.instance != null)
+        if (askingEnemy == null)
+            return null;
+
+        if (roamPoints == null || roamPoints.Length == 0)
+            return null;
+
+        int startIndex = Random.Range(0, roamPoints.Length);
+
+        for (int i = 0; i < roamPoints.Length; i++)
         {
-            audioManager.instance.stopMusic();
+            roamPoint candidate =
+                roamPoints[(startIndex + i) % roamPoints.Length];
+
+            if (!candidate.isFree)
+                continue;
+
+            candidate.claimedBy = askingEnemy;
+
+            return candidate.point;
         }
 
-        waveInProgress = true;
-        enemiesAlive = 0;
-        spawnersStillSpawning = spawners.Count;
+        return null;
+    }
 
-        // Every spawn point runs its own count/pacing/prefab logic and just
-        // reports back how many enemies it committed to spawning this wave.
-        foreach (spawner sp in spawners)
-        {
-            enemiesAlive += sp.BeginWave(currentWave);
-        }
 
-        // Edge case: no spawn points registered, or every spawn point had
-        // nothing to spawn this wave - don't get stuck forever waiting.
-        if (spawners.Count == 0 || (spawnersStillSpawning <= 0 && enemiesAlive <= 0))
+    public void releaseRoamPoint(GameObject askingEnemy)
+    {
+        if (askingEnemy == null || roamPoints == null)
+            return;
+
+        for (int i = 0; i < roamPoints.Length; i++)
         {
-            completeWave();
+            if (roamPoints[i].claimedBy == askingEnemy)
+            {
+                roamPoints[i].claimedBy = null;
+            }
         }
     }
 
-    // Called by a spawner once it has finished spawning its quota for the
-    // current wave (this means "done spawning", not "all its enemies died").
-    public void SpawnerFinishedSpawning(spawner sp)
+
+    private GameObject getWeaponPrefab(enemyType type, int index)
     {
-        spawnersStillSpawning--;
+        GameObject[] weaponPrefabList = null;
 
-        if (spawnersStillSpawning < 0)
+        switch (type)
         {
-            spawnersStillSpawning = 0;
+            case enemyType.basic:
+                weaponPrefabList = basicWeaponPrefabs;
+                break;
+
+            case enemyType.heavy:
+                weaponPrefabList = heavyWeaponPrefabs;
+                break;
+
+            case enemyType.ranged:
+                weaponPrefabList = rangedWeaponPrefabs;
+                break;
         }
 
-        if (spawnersStillSpawning <= 0 && enemiesAlive <= 0)
+        if (weaponPrefabList == null ||
+            weaponPrefabList.Length == 0)
         {
-            completeWave();
+            return null;
         }
+
+        if (index < 0 || index >= weaponPrefabList.Length)
+        {
+            index = Random.Range(0, weaponPrefabList.Length);
+        }
+
+        return weaponPrefabList[index];
     }
+
+
+    public int getCurrentWave()
+    {
+        return currentWave;
+    }
+
 
     public void enemyKilled()
     {
@@ -178,18 +414,18 @@ public class waveManager : MonoBehaviour
             heartbeatManager.instance.enemyKilled();
         }
 
-        if (spawnersStillSpawning <= 0 && enemiesAlive <= 0)
+        // Don't finish while more enemies are still scheduled to spawn.
+        if (enemiesAlive <= 0 && spawnRoutine == null)
         {
             completeWave();
         }
     }
 
+
     void completeWave()
     {
         if (!waveInProgress)
-        {
             return;
-        }
 
         waveInProgress = false;
 
@@ -198,22 +434,32 @@ public class waveManager : MonoBehaviour
             heartbeatManager.instance.waveCompleted();
         }
 
+        if (gameManager.instance != null)
+        {
+            gameManager.instance.AddFiles(5);
+
+            // keep the upgrade currency in sync after every wave
+            if (upgradeManager.instance != null)
+            {
+                upgradeManager.instance.files += gameManager.instance.totalFiles;
+                upgradeManager.instance.SaveUpgrades();
+            }
+
+            //Debug.Log("Current Files: " + gameManager.instance.totalFiles);
+        }
+
         queueNextWave();
     }
+
 
     void playerWins()
     {
         if (gameManager.instance != null)
         {
-            // Add this once your gameManager has a win menu.
             // gameManager.instance.stateWin();
         }
     }
 
-    public int getCurrentWave()
-    {
-        return currentWave;
-    }
 
     public int getEnemiesAlive()
     {
@@ -230,14 +476,99 @@ public class waveManager : MonoBehaviour
         return waveInProgress;
     }
 
+
     public bool isWaitingForNextWave()
     {
         return waitingForNextWave;
     }
 
+
     public int getSecondsUntilNextWave()
     {
-        float remaining = timeBetweenWaves - waveTimer;
-        return Mathf.Max(0, Mathf.CeilToInt(remaining));
+        float remaining =
+            timeBetweenWaves - waveTimer;
+
+        return Mathf.Max(
+            0,
+            Mathf.CeilToInt(remaining)
+        );
     }
+
+
+    public Transform[] cleanList(Transform[] source)
+    {
+        if (source == null)
+            return new Transform[0];
+
+        int counted = 0;
+
+        for (int i = 0; i < source.Length; i++)
+        {
+            if (source[i] != null)
+                counted++;
+        }
+
+        Transform[] cleaned = new Transform[counted];
+
+        int write = 0;
+
+        for (int i = 0; i < source.Length; i++)
+        {
+            if (source[i] == null)
+                continue;
+
+            cleaned[write] = source[i];
+            write++;
+        }
+
+        return cleaned;
+    }
+
+
+    private void assignSpawnPoints(Transform[] points)
+    {
+        Transform[] cleaned = cleanList(points);
+
+        spawnPoints = new spawnPoint[cleaned.Length];
+
+        for (int i = 0; i < cleaned.Length; i++)
+        {
+            spawnPoint newPoint = new spawnPoint();
+
+            newPoint.point = cleaned[i];
+            newPoint.lastUsed = 0f;
+
+            spawnPoints[i] = newPoint;
+        }
+
+        if (spawnPoints.Length == 0)
+        {
+            //Debug.LogError("waveManager: no spawn points assigned");
+        }
+    }
+
+
+    private void assignRoamPoints(Transform[] points)
+    {
+        Transform[] cleaned = cleanList(points);
+
+        roamPoints = new roamPoint[cleaned.Length];
+
+        for (int i = 0; i < cleaned.Length; i++)
+        {
+            roamPoint newPoint = new roamPoint();
+
+            newPoint.point = cleaned[i];
+            newPoint.claimedBy = null;
+
+            roamPoints[i] = newPoint;
+        }
+
+        if (roamPoints.Length == 0)
+        {
+            //Debug.LogError("waveManager: no roam points assigned");
+        }
+    }
+
+
 }

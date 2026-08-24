@@ -195,19 +195,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::playerController
   controller: {fileID: 8618862431611356904}
-  HP: 100
-  speed: 3
+  speed: 4
   sprintMod: 2
   jumpSpeed: 10
   jumpMax: 1
   gravity: 35
   pushbackFriction: 5
+  throwForce: 8
+  throwUpwardForce: 2
   playerShield: {fileID: 1163693913067826184}
+  explodingBullets: 0
+  kunaiSpread: 0
   maxStamina: 50
   staminaDrainRate: 11
   staminaRegenRate: 6
   sprintForwardOnly: 1
   stepInterval: 0.8
+  weaponHoldPos: {fileID: 4204048334989622671}
 --- !u!114 &7039411983326474933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,7 +227,10 @@ MonoBehaviour:
   maxDistance: 3
   interactLayer:
     serializedVersion: 2
-    m_Bits: 2304
+    m_Bits: 6400
+  throwKey: 116
+  switchKey: 9
+  shopOpen: 0
 --- !u!33 &8426663965172706110
 MeshFilter:
   m_ObjectHideFlags: 0

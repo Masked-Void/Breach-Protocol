@@ -8,8 +8,8 @@ public class pickWeapon : MonoBehaviour
     {
         if (pic != null)
         {
-            pic.weaponStats(weapon);
-            Destroy(gameObject);
+            weapon.isFromGround = true;
+            pic.equipWeapon(weapon);
         }
     }
 }

@@ -11,6 +11,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestScene.unity
     guid: 5bd592e33ea87554e9e36289b4f3faaa
+  - enabled: 1
+    path: Assets/Scenes/Mk2.unity
+    guid: c46685812c56a7844902250915e740dd
+  - enabled: 1
+    path: Assets/Scenes/Mark.unity
+    guid: 1bf211b6109c3524b8edd35e15176054
+  - enabled: 1
+    path: Assets/Scenes/virel.unity
+    guid: 65dab558ed098b94ba06546813721774
+  - enabled: 1
+    path: Assets/BossFightArena.unity
+    guid: 2336dbee05504274881603b520af207a
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

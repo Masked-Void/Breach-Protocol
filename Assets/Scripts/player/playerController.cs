@@ -1,21 +1,20 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-public class playerController : MonoBehaviour, IDamage, IPickWeapon
+public class playerController : MonoBehaviour, IPickWeapon, IDamage
 {
     [Header("Controller")]
     [SerializeField] CharacterController controller;
 
     [Header("Player Settings")]
-    [SerializeField] int HP;
     [SerializeField] int speed;
     [SerializeField] int sprintMod;
     [SerializeField] int jumpSpeed;
     [SerializeField] int jumpMax;
     [SerializeField] int gravity;
     [SerializeField] float pushbackFriction = 5f;
+    public float throwForce = 5f;
+    public float throwUpwardForce = 5f;
     [SerializeField] GameObject playerShield;
 
     [Header("Stamina Settings")]
@@ -31,17 +30,15 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
     float stepTimer;
 
     int jumpCount;
-    //int HPOriginal;
 
     Vector3 moveDir;
     Vector3 playerVel;
-
+    public GameObject weaponHoldPos;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //HPOriginal = HP;
-        currentStamina = maxStamina;
+        currentStamina = maxStamina;;
     }
 
     // Update is called once per frame
@@ -58,8 +55,8 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
     {
         if (gameManager.instance != null && gameManager.instance.isPaused)
         {
-            gameManager.instance.weaponStatsUI.SetActive(false);
             gameManager.instance.pickUpUI.SetActive(false);
+            gameManager.instance.interactionUI.SetActive(false);
             return;
         }
 
@@ -120,7 +117,7 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
         if (controller.isGrounded && isMoving)
         {
             stepTimer -= Time.unscaledDeltaTime;
-            if (stepTimer <= 0f)
+            if (stepTimer <= 0f && audioManager.instance != null)
             {
                 audioManager.instance.playSteps();
                 stepTimer = isSprinting ? (stepInterval / sprintMod) : stepInterval;
@@ -154,13 +151,10 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
         }
     }
 
-    public void weaponStats(weaponStats weapon)
+    public void equipWeapon(weaponStats weapon)
     {
         if (weaponManager.instance != null)
-        {
-            audioManager.instance.playEquip();
             weaponManager.instance.equipWeapon(weapon);
-        }
     }
 
     public float getSpeedPercent()
@@ -183,7 +177,7 @@ public class playerController : MonoBehaviour, IDamage, IPickWeapon
     IEnumerator flashDamage()
     {
         gameManager.instance.damageFlashUI.SetActive(true);
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSecondsRealtime(.1f);
         gameManager.instance.damageFlashUI.SetActive(false);
     }
 

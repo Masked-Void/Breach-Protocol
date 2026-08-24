@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162886db7513b5c4694b9e2fed4e9df8, type: 3}
+  m_Name: PistolWhipper
+  m_EditorClassIdentifier: Assembly-CSharp::challengeData
+  challengesList:
+  - challengeID: pistol_5
+    displayName: Pistol whipper I
+    killCount: 5
+  - challengeID: pistol_20
+    displayName: Pistol whipper II
+    killCount: 5
+  - challengeID: pistol_100
+    displayName: Pistol whipper III
+    killCount: 5
+  description: Get kills with a picked up pistol
+  weapon: {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}

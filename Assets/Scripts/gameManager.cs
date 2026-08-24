@@ -1,4 +1,6 @@
+using System.Collections;
 using TMPro;
+//using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,48 +9,129 @@ public class gameManager : MonoBehaviour
 
     public static gameManager instance;
 
+    [Header("Menu")]
     [SerializeField] GameObject menuActive;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
+    [SerializeField] GameObject menuWin;
     [SerializeField] GameObject menuSound;
-    [SerializeField] timeManager timeManager;
 
-    [SerializeField] private TMP_Text scoreText;
-    [SerializeField] TextMeshProUGUI pauseKills;
+    [Header("UI Pages")]
+    public GameObject challengesCanvas;
+    public GameObject settingsCanvas;
+    public GameObject upgradesCanvas;
+
+    [Header("Top Navigation Buttons")]
+    public GameObject navTab;
+    public Button navChallengesButton;
+    public Button navSettingsButton;
+    public Button navUpgradesButton;
+    public GameObject buttons;
+    public GameObject backButton;
+
+    [Header("Settings Menu")]
+    [SerializeField] public GameObject soundMenu;
+    [SerializeField] public GameObject controlsMenu;
+
+    [Header("Kills UI")]
+    [SerializeField] public GameObject pauseScorePanel;
+    [SerializeField] private TMP_Text pauseScoreText;
+    [SerializeField] private TMP_Text loseSoreText;
     [SerializeField] TextMeshProUGUI killCounter;
+
+    [Header("Wave UI")]
     [SerializeField] TextMeshProUGUI waveCounter;
     [SerializeField] TextMeshProUGUI waveCountdownText;
     [SerializeField] public GameObject pickUpUI;
-    [SerializeField] public GameObject weaponStatsUI;
     [SerializeField] public Image playerStaminaBar;
     [SerializeField] public GameObject checkpointPopup;
+    [SerializeField] TextMeshProUGUI waveCountdown;
+
+    [Header("Interaction UI")]
+    public GameObject interactionUI;
+    public TMP_Text interactionText;
+    public TMP_Text interactionKey;
+
+    [Header("Player")]
     public GameObject playerSpawnPos;
 
     [SerializeField] TMP_Text gameGoalCountText;
     int gameGoalCount;
+    [Header("Currency")]
+    [SerializeField] public int totalBytes = 0;
+    [SerializeField] public int totalFiles = 0;
+    [SerializeField] TextMeshProUGUI bytesText;
+
+    [Header("Shop")]
+    public GameObject shopMessage;
+    public GameObject shopUI;
 
     [Header("Screen Flash")]
     public GameObject damageFlashUI;
 
+    [Header("Weapon UI")]
+    public GameObject ammoPanel;
+    public TextMeshProUGUI magAmmoUI;
+    public TextMeshProUGUI totalAmmoUI;
+    public Image activeWeapon;
+
+    [Header("Runtime: Do not Change")]
     public bool isPaused;
     public GameObject player;
     public playerController playerScript;
 
+
+    int currentKill = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        if (instance != null && instance != this) {
+            Destroy(gameObject);
+            return;
+        }
         instance = this;
         player = GameObject.FindWithTag("Player");
-
         playerScript = player.GetComponent<playerController>();
     }
 
+    void OnDestroy() {
+        if (instance == this)
+            instance = null;
+    }
+
+    //Currency Stuff
+    public void AddBytes(int amount)
+    {
+        totalBytes += amount;
+        //Debug.Log("Current Bytes: " + totalBytes);
+    }
+    public void AddFiles(int amount)
+    {
+        totalFiles += amount;
+        //Debug.Log("Current Files: " + totalFiles);
+    }
+    public void SubtractBytes(int amount)
+    {
+        totalBytes -= amount;
+    }
+    public void SubtractFiles(int amount)
+    {
+        totalFiles -= amount;
+    }
     // Update is called once per frame
     void Update()
     {
+        bytesText.text = "Bytes: " + totalBytes.ToString();
+        // if (FindAnyObjectByType<playerInteraction>().shopOpen)
+        // {
+        //     menuActive = shopUI;
+        //     return;
+        // }
+
         if (Input.GetButtonDown("Cancel"))
         {
-            audioManager.instance.playButtonClick();
+            if (audioManager.instance != null) audioManager.instance.playButtonClick();
             if (menuActive == null)
             {
                 statePause();
@@ -59,62 +142,57 @@ public class gameManager : MonoBehaviour
             {
                 stateUnpause();
             }
-            else if (menuActive == menuSound)
-            {
-                openPauseMenu();
-            }
         }
 
+
         updateUI();
+
+        if (weaponManager.instance != null && weaponManager.instance.activeWeapon != null)
+            magAmmoUI.text = weaponManager.instance.getCurrentAmmo().ToString();
     }
 
     // Pause the game
     public void statePause()
     {
         isPaused = true;
-        timeManager.pauseTime();
+        timeManager.instance.pauseTime();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        pauseKills.text = waveManager.instance.getEnemiesKilled().ToString("f0");
-        if (audioManager.instance != null) audioManager.instance.pauseMusic();
+        pauseScoreText.text = currentKill.ToString("f0");
+        resetPauseUI();
+        if (audioManager.instance != null)
+        {
+            audioManager.instance.pauseMusic();
+            audioManager.instance.playPauseMenuMusicWithDelay(4.0f);
+        }
+    }
+
+    public void resetPauseUI()
+    {
+        if (challengesCanvas != null) challengesCanvas.SetActive(false);
+        if (settingsCanvas != null) settingsCanvas.SetActive(false);
+        if (upgradesCanvas != null) upgradesCanvas.SetActive(false);
+        if (soundMenu != null) soundMenu.SetActive(false);
+        if (controlsMenu != null) controlsMenu.SetActive(false);
+        if (backButton != null) backButton.SetActive(false);
+        if (navTab != null) navTab.SetActive(false);
+        if (buttons != null) buttons.SetActive(true);
+        if (pauseScorePanel != null) pauseScorePanel.SetActive(true);
     }
 
     // Unpause the game
     public void stateUnpause()
     {
         isPaused = false;
-        timeManager.unpauseTime();
+        if (timeManager.instance != null) timeManager.instance.unpauseTime();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        menuActive.SetActive(false);
-        menuActive = null;
-        if (audioManager.instance != null) audioManager.instance.resumeMusic();
-    }
-
-    public void openSoundMenu()
-    {
         if (menuActive != null)
         {
             menuActive.SetActive(false);
+            menuActive = null;
         }
-        menuActive = menuSound;
-        menuActive.SetActive(true);
-    }
-
-    public void openPauseMenu()
-    {
-        if (menuActive != null)
-        {
-            menuActive.SetActive(false);
-        }
-        menuActive = menuPause;
-        menuActive.SetActive(true);
-    }
-
-    // Update the heart rate in UI only, moving it to just heartBeatManager
-    public void updateHeartRate(int bpm)
-    {
-        // Update the heart rate in the UI (not implemented here)
+        if (audioManager.instance != null) audioManager.instance.restoreGameplayMusic();
     }
 
     // Handle the lose state
@@ -123,35 +201,98 @@ public class gameManager : MonoBehaviour
         statePause();
         menuActive = menuLose;
         menuActive.SetActive(true);
-        scoreText.text = waveManager.instance.getEnemiesKilled().ToString("f0");
+        loseSoreText.text = waveManager.instance.getEnemiesKilled().ToString("f0");
+        endRun(menuLose);
     }
 
-    public void updateGameGoal(int amount)
-    {
-        gameGoalCount += amount;
-        //gameGoalCountText.text = gameGoalCount.ToString("f0");
+    //Handes the win state aka when the boss dies
+    public void stateWin() {
+        endRun(menuWin);
+    }
 
-        if (gameGoalCount <= 0)
-        {
+    // Simple method so simplify states
+    void endRun(GameObject endMenu) {
+        statePause();
+
+        if (endMenu != null) {
+            menuActive = endMenu;
+            endMenu.SetActive(true);
         }
+
+        if (loseSoreText != null) {
+            loseSoreText.text = currentKill.ToString("f0");
+        }
+
+        if (upgradeManager.instance != null) {
+            upgradeManager.instance.files += totalFiles;
+            upgradeManager.instance.SaveUpgrades();
+        }
+
+        // lose screen gets its own music cue
+        if (endMenu == menuLose && audioManager.instance != null)
+        {
+            audioManager.instance.playLoseMenuMusic();
+        }
+    }
+    public void addKill()
+    {
+        currentKill++;
     }
 
     void updateUI()
     {
-        int currentWave = waveManager.instance.getCurrentWave();
+        if (waveManager.instance == null) return;
 
-        waveCounter.text = currentWave.ToString("f0");
-        killCounter.text = "Kills: " + waveManager.instance.getEnemiesKilled();
+        if (waveCounter != null) {
+            waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
+            StartCoroutine(AnimateWaveText());
 
-        if (waveManager.instance.isWaitingForNextWave())
-        {
-            int secondsLeft = waveManager.instance.getSecondsUntilNextWave();
-            waveCountdownText.text = "Next Wave starts in " + secondsLeft;
-            waveCountdownText.gameObject.SetActive(true);
+            killCounter.text = "Kills: " + currentKill;
         }
-        else
-        {
-            waveCountdownText.gameObject.SetActive(false);
+
+        if (waveManager.instance.isWaitingForNextWave()) {
+            int secondsLeft = waveManager.instance.getSecondsUntilNextWave();
+
+            if (waveCountdownText != null) {
+                waveCountdownText.gameObject.SetActive(true);
+                waveCountdown.text = "" + secondsLeft;
+            }
+        } else {
+            if (waveCountdown != null) {
+                waveCountdownText.gameObject.SetActive(false);
+            }
         }
     }
+
+    public IEnumerator WarningText()
+    {
+        if (shopMessage != null) shopMessage.SetActive(true);
+        yield return new WaitForSecondsRealtime(5);
+        if (shopMessage != null) shopMessage.SetActive(false);
+    }
+
+    public void showShopWarning()
+    {
+        StopCoroutine(nameof(WarningText));
+        StartCoroutine(WarningText());
+    }
+
+    IEnumerator AnimateWaveText()
+    {
+        RectTransform rect = waveCountdown.rectTransform;
+        Vector3 originalScale = Vector3.one;
+        float duration = .1f;
+        float timer = 0f;
+        rect.localScale = originalScale * 1.3f;
+        while (timer < duration)
+        {
+            timer += Time.unscaledDeltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, timer / duration);
+            rect.localScale = Vector3.Lerp(originalScale * 1.3f, originalScale, t);
+            yield return null;
+        }
+
+        rect.localScale = originalScale;
+    }
+
 }

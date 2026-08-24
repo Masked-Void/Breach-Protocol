@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using Autodesk.Fbx;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public abstract class EnemyBase : MonoBehaviour, IDamage
+public abstract class enemyBase : MonoBehaviour, IDamage
 {
     [Header("Visuals")]
     [SerializeField] public Renderer model;
@@ -16,16 +17,22 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     int currentHP;
     [Range(1, 50)][SerializeField] int maxHP;
     [Range(1, 30)][SerializeField] float faceTargetSpeed = 8f;
-    [Range(15, 180)][SerializeField] float FOV = 90f;
+    [Range(15, 180)][SerializeField] float FOV = 120f;
     [Range(.1f, 5)][SerializeField] public float attackRate = 1.5f;
     [Range(1, 20)][SerializeField] public float attackRange = 2f;
     [Range(1, 20)][SerializeField] public int attackDamage = 1;
+    [Range(1, 20)][SerializeField] public float rangedEnemeyAttackRange = 15f;
 
     [Header("Roaming")]
-    [SerializeField] float roamDist = 10f;
     [SerializeField] float roamWaitTime = 1.1f;
     float roamTimer;
-    Vector3 startingPos;
+    public Transform roamTarget;
+    [SerializeField] float roamArriveDistance = 0.1f;
+    [SerializeField] float roamChance = .1f;
+
+    [Header("Currency")]
+    int byteValue = 5;
+
 
     protected bool playerInTrigger;
     protected float angleToPlayer;
@@ -33,37 +40,254 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     protected float attackTimer;
 
     protected Vector3 playerDir;
-    public bool hasLeftSpawnRoom = false;
 
+    [Header("Spawn and Roam")]
+    public bool hasLeftSpawnRoom = false;
+    public bool willRoam = false;
+    [SerializeField] GameObject roamPoint;
+    protected bool isEngaged = false;
+    [Header("Challenge")]
+    protected weaponStats lastDamageWeapon;
+    protected bool lastDamageFromGround;
+
+    bool hasGameManager;
+    bool hasAudioManager;
+    bool hasWeaponManager;
+    bool hasChallengeManager;
+    bool hasUpgradeManager;
+
+    [Header("Footsteps")]
+    [SerializeField] float stepInterval = 0.5f;
+    [SerializeField] float movementThreshold = 0.1f;
+    float stepTimer;
+
+    [Header("Ranged AI Settings")]
+    [Range(5f, 30f)][SerializeField] float maxRoamDistanceFromPlayer = 15f; // distance ranged ai should stay within player
+
+    // small compatibility state used by the scorestreak system
+    private bool isDead;
+    private bool suppressKillRewards;
+
+    public bool IsDead => isDead;
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         currentHP = maxHP;
-        startingPos = transform.position;
         stoppingDistOrig = agent.stoppingDistance;
+       if (willRoam)
+        {
+            pickRoamPoint();
+        }
 
         if (model != null)
             colorOrig = model.material.color;
+
+        hasAudioManager = audioManager.instance != null;
+        hasGameManager = gameManager.instance != null;
+        hasWeaponManager = weaponManager.instance != null;
+        hasChallengeManager = challengeManager.instance != null;
+        hasUpgradeManager = upgradeManager.instance != null;
     }
 
     void Update()
     {
-        if(gameManager.instance != null && gameManager.instance.isPaused) return;
+        if (gameManager.instance != null && gameManager.instance.isPaused) return;
         attackTimer += Time.unscaledDeltaTime;
-        if (playerInTrigger && canSeePlayer())
+
+        HandleFootSteps();
+
+        if (!willRoam)
         {
+            // Heavy / Basic: finish first roam point, then b-line player forever
+            /* if (roamTarget != null)
+             {
+                 if (AtRoamTarget())
+                 {
+                     waveHost.active?.releaseRoamPoint(gameObject);
+                     roamTarget = null;
+                     agent.stoppingDistance = stoppingDistOrig;
+
+                     -Blocked out this line of code. With this commented out melee AI go straight for player
+                 }
+             }
+            */
+            if (gameManager.instance?.player != null)
+            {
+                agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
+                agent.SetDestination(gameManager.instance.player.transform.position);
+                playerDir = gameManager.instance.player.transform.position - transform.position;
+                faceTarget();
+                attack();
+            }
+        }
+        else if (isEngaged)
+        {
+            // Ranged: now chasing the player
+            if (gameManager.instance?.player != null)
+            {
+                //check to disengage
+                if (!canStillSeePlayer())
+                {
+                    isEngaged = false;
+                    agent.stoppingDistance = 0;
+
+                    //clear old roam point so pick a new one
+                    if (roamTarget != null)
+                    {
+                        waveHost.active?.releaseRoamPoint(gameObject);
+                        roamTarget = null;
+                    }
+                    return;
+                }
+                agent.SetDestination(gameManager.instance.player.transform.position);
+                playerDir = gameManager.instance.player.transform.position - transform.position;
+                faceTarget();
+
+
+                float distance = playerDir.magnitude;
+              
+                
+                if (distance <= rangedEnemeyAttackRange)
+                {
+                 attack();
+                }
+            }
         }
         else
         {
-            checkRoam();
+            // Ranged: roaming � only look around while stopped at a roam point
+            roam();
+
+            
+                if (tryAttackFromCurrentPosition())
+                {
+                    isEngaged = true;
+                    agent.stoppingDistance = stoppingDistOrig;
+                }
+            
         }
     }
 
-    bool canSeePlayer()
+    void pickRoamPoint()
+    {
+        if (waveHost.active == null) return;
+
+        waveHost.active.releaseRoamPoint(gameObject);
+
+        if (willRoam && gameManager.instance?.player != null)
+        {
+            Transform nextRoamPoint = findNearestRoamPointToPlayer();
+
+            if (nextRoamPoint != null)
+            {
+                roamTarget = nextRoamPoint;
+                agent.stoppingDistance = 0f;
+                agent.SetDestination(roamTarget.position);
+            }
+            return;
+        }
+    }
+    Transform findNearestRoamPointToPlayer()
+    {
+        if(waveHost.active == null) return null;
+
+        Vector3 playerPos = gameManager.instance.player.transform.position;
+        Transform closestPoint = null;
+        float closestDistance = float.MaxValue;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Transform candidatePoint = waveHost.active.claimRoamPoint(gameObject);
+            if (candidatePoint == null) break;
+
+            float distToPlayer = Vector3.Distance(candidatePoint.position , playerPos);
+
+            if (distToPlayer <= maxRoamDistanceFromPlayer && distToPlayer < closestDistance)
+            {
+                if (closestPoint != null)
+                {
+                    //need to check this
+                }
+                closestPoint= candidatePoint;
+                closestDistance= distToPlayer;
+            }
+            else
+            {
+                waveHost.active.releaseRoamPoint(gameObject);
+            }
+        }
+        return closestPoint;
+    }
+
+
+
+    void HandleFootSteps()
+    {
+        if (agent.velocity.magnitude > movementThreshold)
+        {
+            stepTimer += Time.deltaTime;
+
+            if (stepTimer >= stepInterval)
+            {
+                stepTimer = 0f;
+
+                if (audioManager.instance != null && audioManager.instance.enemySteps != null && audioManager.instance.enemySteps.Length > 0)
+                {
+                    audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.enemySteps), transform.position, audioManager.instance.enemyStepsVol, 3f, 20f);
+                }
+            }
+        }
+        else
+        {
+            stepTimer = 0f;
+        }
+    }
+
+    // need this so ai goes back to roaming after losing sight. 
+    private bool canStillSeePlayer()
+    {
+        if (gameManager.instance == null || gameManager.instance.player == null) return false;
+
+        Vector3 dirToPlayer = gameManager.instance.player.transform.position - transform.position;
+
+        if (Physics.Raycast(transform.position, dirToPlayer.normalized, out RaycastHit hit, rangedEnemeyAttackRange))
+        {
+            return hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player");
+        }
+        return false;
+    }
+
+    // Attempt to see and attack the player without changing the agent's destination.
+    // Returns true if the player was visible and an attack/face action was triggered.
+    protected bool tryAttackFromCurrentPosition()
+    {
+        if (gameManager.instance == null || gameManager.instance.player == null) return false;
+
+        Vector3 dirToPlayer = gameManager.instance.player.transform.position - transform.position;
+        float distance = dirToPlayer.magnitude;
+        if (willRoam && distance > rangedEnemeyAttackRange)
+        {
+            return false;
+        }
+
+        if (Physics.Raycast(transform.position,dirToPlayer.normalized, out RaycastHit hit, rangedEnemeyAttackRange))
+        {
+            
+                playerDir = dirToPlayer;
+                faceTarget();
+                attack();
+                return true;
+            
+        }
+
+        return false;
+    }
+
+    // ensures player is within a range or FOV so they can be seen
+    public virtual bool canSeePlayer()
     {
         playerDir = gameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
-        // Debug.DrawRay(transform.position, playerDir);
 
         if (Physics.Raycast(transform.position, playerDir, out RaycastHit hit))
         {
@@ -77,27 +301,58 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             }
         }
         agent.stoppingDistance = 0;
-        return true;
+        return false;
     }
 
-    void checkRoam()
+  
+    public virtual void roam()
     {
-        if (agent.remainingDistance < 0.01f)
+
+        //Check distance from player
+        if (gameManager.instance?.player != null)
+        {
+            float distToPlayer = Vector3.Distance(transform.position,gameManager.instance.player.transform.position);
+
+            // if too far hunt them down
+            if (distToPlayer > rangedEnemeyAttackRange)
+            {
+                agent.SetDestination(gameManager.instance.player.transform.position);
+                agent.stoppingDistance = 0f;
+
+                //clear roam target to hunt
+                if (roamTarget != null)
+                {
+                    waveHost.active?.releaseRoamPoint(gameObject);
+                    roamTarget = null;
+                }
+                return;
+            }
+        }
+
+        // within range is normal roaming
+
+        if (roamTarget != null && AtRoamTarget())
+        {
+            waveHost.active?.releaseRoamPoint(gameObject);
+            roamTarget = null;
+            roamTimer = 0f;
+            return;
+        }
+
+        if (roamTarget == null)
         {
             roamTimer += Time.deltaTime;
-            if (roamTimer > roamWaitTime) roam();
+            if (roamTimer < roamWaitTime) return;
+            roamTimer = 0f;
+            if (Random.Range(0f, 1f) > roamChance) return;
+            pickRoamPoint();
         }
     }
-
-    void roam()
+    bool AtRoamTarget()
     {
-        roamTimer = 0;
-        agent.stoppingDistance = 0;
-        Vector3 ranPos = Random.insideUnitSphere * roamDist + startingPos;
-        if (NavMesh.SamplePosition(ranPos, out NavMeshHit hit, roamDist, 1))
-            agent.SetDestination(hit.position);
+        if (roamTarget == null) return false;
+        return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + roamArriveDistance;
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player")) playerInTrigger = true;
@@ -111,19 +366,32 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             playerInTrigger = false;
         }
     }
-
+    public void RegisterDamageSource(weaponStats weapon, bool fromGround)
+    {
+        lastDamageWeapon = weapon;
+        lastDamageFromGround = fromGround;
+    }
     public void takeDamage(int amount)
     {
+        if (isDead || amount <= 0) return;
+
         currentHP -= amount;
+
         if (gameManager.instance?.player != null)
-            agent.SetDestination(gameManager.instance.player.transform.position);
+        {
+            if (!willRoam)
+                agent.SetDestination(gameManager.instance.player.transform.position);
+            else
+            {
+                isEngaged = true;
+                agent.stoppingDistance = stoppingDistOrig;
+            }
+        }
 
         if (currentHP <= 0)
         {
-            waveManager.instance.enemyKilled();
-            FindAnyObjectByType<killChainManager>()?.RegisterKill();
-            //gameManager.updateGameGoal(-1);
-            Destroy(gameObject);
+            // die() owns the byte award so it only ever fires once
+            die();
         }
         else if (model != null)
         {
@@ -131,10 +399,53 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         }
     }
 
+    public virtual void die()
+    {
+        if (isDead)
+            return;
+
+        isDead = true;
+
+        // ForceKill(false) is used by scorestreaks such as Data Purge.
+        // Those kills still need to reduce the wave enemy count, but they
+        // should not count as normal player kills/rewards.
+        bool awardKillRewards = !suppressKillRewards;
+        suppressKillRewards = false;
+
+        // REPORT TO CHALLENGE SYSTEM
+        if (awardKillRewards && lastDamageWeapon != null)
+        {
+            // challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
+            challengeManager.instance?.ReportKill(weaponManager.instance.activeWeapon);
+        }
+
+        // enemies talk to the wave through waveHost, not the singleton
+        if (waveHost.active != null)
+        {
+            waveHost.active.enemyKilled();
+        }
+
+        if (awardKillRewards)
+        {
+            if (gameManager.instance != null)
+            {
+                gameManager.instance.addKill();
+                gameManager.instance.AddBytes(byteValue);
+            }
+
+            if (killChainManager.instance != null)
+            {
+                killChainManager.instance.RegisterKill();
+            }
+        }
+
+        Destroy(gameObject);
+    }
+
     IEnumerator FlashBlack()
     {
         model.material.color = Color.black;
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSecondsRealtime(.1f);
         model.material.color = colorOrig;
     }
 
@@ -146,10 +457,62 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
     protected abstract void attack();
 
-    public void ForceKill()
+    protected bool tryMeleeHit()
     {
-        waveManager.instance.enemyKilled();
-        FindAnyObjectByType<killChainManager>()?.RegisterKill();
-        Destroy(gameObject);
+        agent.stoppingDistance = Mathf.Max(0.5f, attackRange);
+        float dist = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
+        if (dist > attackRange || attackTimer <= attackRate) return false;
+
+        attackTimer = 0;
+        gameManager.instance.player.GetComponent<IDamage>()?.takeDamage(attackDamage);
+        return true;
+    }
+
+    // Chain Reaction uses this so secondary damage has a clear entry point.
+    // Right now it intentionally behaves like normal enemy damage.
+    public void TakeSecondaryDamage(int amount)
+    {
+        takeDamage(amount);
+    }
+
+    // Existing code can still call ForceKill() with no arguments.
+    // Scorestreak/environment kills can pass false to suppress player rewards.
+    public void ForceKill(bool countAsPlayerKill = true)
+    {
+        if (isDead)
+            return;
+
+        suppressKillRewards = !countAsPlayerKill;
+        currentHP = 0;
+        die();
+    }
+
+    public void throwWeapon(GameObject spawnedWeaponModel, Transform pivot)
+    {
+        if (spawnedWeaponModel == null) return;
+        spawnedWeaponModel.transform.SetParent(null);
+        if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out var picker)) picker.enabled = true;
+
+        if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
+        {
+            projectileRb = spawnedWeaponModel.AddComponent<Rigidbody>();
+        }
+
+        projectileRb.isKinematic = false;
+        projectileRb.useGravity = true;
+
+        // Calculate directional trajectory
+        Vector3 forceDirection = pivot.forward.normalized;
+
+        // Apply forward and upward force
+        Vector3 forceToAdd = forceDirection * 2f + transform.up * 0;
+        projectileRb.AddForce(forceToAdd, ForceMode.Impulse);
+        // Add subtle spin for realistic throwing physics
+        projectileRb.AddTorque(transform.right * 0.3f, ForceMode.Impulse);
+
+        if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider)) weaponCollider.enabled = true;
+
+        spawnedWeaponModel = null;
     }
 }

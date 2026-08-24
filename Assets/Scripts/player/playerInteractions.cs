@@ -1,62 +1,105 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class playerInteraction : MonoBehaviour
 {
     [Header("Raycast Settings")]
     [Range(1f, 5)][SerializeField] private float maxDistance = 2f;
     [SerializeField] LayerMask interactLayer;
-    GameObject weaponCard;
 
+    [SerializeField] KeyCode throwKey;
 
     private Camera mainCam;
     private IPickWeapon picker;
+    public bool shopOpen = false;
+    private bool isShowingUI = false;
 
     void Start()
     {
         mainCam = Camera.main;
         TryGetComponent(out picker);
-        weaponCard = gameManager.instance.weaponStatsUI;
     }
 
     private void Update()
     {
-        if (gameManager.instance != null && gameManager.instance.isPaused) return;
+        if (shopOpen)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                closeShop();
+            }
+            return;
+        }
 
-        if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.LeftControl))
+        if (gameManager.instance != null && gameManager.instance.isPaused)
+        {
+            setInteractionUI(false);
+            return;
+        }
+
+        if (Input.GetButtonDown("Fire1") && weaponManager.instance != null)
             weaponManager.instance.attack();
 
-        Ray ray = new Ray(mainCam.transform.position, mainCam.transform.forward);
-        RaycastHit hit;
+        if (Input.GetKeyDown(throwKey) && weaponManager.instance != null)
+            weaponManager.instance.throwWeapon();
 
-        if (Physics.Raycast(ray, out hit, maxDistance, interactLayer))
+        handleInteraction();
+    }
+
+    private void handleInteraction()
+    {
+        Ray ray = new Ray(mainCam.transform.position, mainCam.transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactLayer))
         {
-            if (hit.collider.TryGetComponent<pickWeapon>(out var weaponPickup))
+            if (hit.collider.TryGetComponent<pickWeapon>(out var weaponPickup) && weaponPickup.enabled)
             {
-                gameManager.instance.pickUpUI.SetActive(true);
-                showWeaponStats(weaponPickup.weapon);
-                setWeaponCardScale(hit.distance);
-                if (Input.GetKeyDown(KeyCode.E) && picker != null)
+                gameManager.instance.interactionText.text = "Pick Up!";
+                setInteractionUI(true);
+                if (Input.GetButtonDown("Interact") || Input.GetKeyDown(KeyCode.E))
                 {
                     weaponPickup.interact(picker);
-                    gameManager.instance.pickUpUI.SetActive(false);
-                    gameManager.instance.weaponStatsUI.SetActive(false);
+                    Destroy(hit.collider.gameObject);
+                    setInteractionUI(false);
                 }
                 return;
             }
+
+            if (hit.collider.CompareTag("Shop"))
+            {
+                gameManager.instance.interactionText.text = "Open Shop!";
+                setInteractionUI(true);
+                if (Input.GetKeyDown(KeyCode.E)) openShop();
+
+                return;
+            }
         }
-        gameManager.instance.pickUpUI.SetActive(false);
-        gameManager.instance.weaponStatsUI.SetActive(false);
+        setInteractionUI(false);
     }
 
-    void showWeaponStats(weaponStats weapon)
+    private void openShop()
     {
-        weaponCard.SetActive(true);
+        setInteractionUI(false);
+        gameManager.instance.statePause();
+        shopOpen = true;
+        if (gameManager.instance.shopUI != null) gameManager.instance.shopUI.SetActive(true);
     }
 
-    void setWeaponCardScale(float dist)
+    private void closeShop()
     {
-        float clampedDist = Mathf.Clamp(dist, .7f, 1.3f);
-        weaponCard.transform.GetChild(0).localScale = new Vector2(clampedDist, clampedDist);
+        gameManager.instance.stateUnpause();
+        shopOpen = false;
+        if (gameManager.instance.shopUI != null) gameManager.instance.shopUI.SetActive(false);
+        setInteractionUI(false);
+    }
+
+    void setInteractionUI(bool active)
+    {
+        if (isShowingUI == active) return;
+        isShowingUI = active;
+
+        if (gameManager.instance != null && gameManager.instance.interactionUI != null)
+        {
+            gameManager.instance.interactionUI.SetActive(active);
+        }
     }
 }

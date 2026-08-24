@@ -16,6 +16,10 @@ TagManager:
   - Weapon Holder
   - Clipper
   - Player Spawn Pos
+  - Shop
+  - Destructable
+  - Kunai
+  - Katana
   layers:
   - Default
   - TransparentFX
@@ -29,11 +33,11 @@ TagManager:
   - Projectile
   - Player
   - Melee
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Shop Terminal
+  - Player Barrier
+  - See Through
+  - DOT
+  - Teleporter
   - 
   - 
   - 
