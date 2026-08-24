@@ -188,11 +188,10 @@ public class upgradeManager : MonoBehaviour
     }
 
     [ContextMenu("Reset Saved Upgrades")]
-    public void ResetUpgrades()
-    {
+    public void ResetUpgrades() {
         PlayerPrefs.DeleteKey("UnlockedUpgrades");
-        unlockedUpgrades.Clear();
         purchasedUpgrades.Clear();
+        activeUpgrades.Clear();
     }
 
     private void OnDestroy() {

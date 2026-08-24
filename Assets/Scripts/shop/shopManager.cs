@@ -9,29 +9,20 @@ public class shopManager : MonoBehaviour
     // [SerializeField] private upgradeData[] allUpgrades;
 
 
-    private void Awake()
-    {
-        if (instance != null && instance != this) {
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
-    }
+    // private void Awake()
+    // {
+    //     instance = this;
+    // }
 
     // private void Start()
     // {
     //     PopulateShop();
     // }
 
-    private void OnDestroy() {
-        if (instance == this)
-            instance = null;
-    }
-
-    private void PopulateShop()
-    {
-        //Debug.Log("Unlocked upgrades: " + string.Join(", ", upgradeManager.instance.unlockedUpgrades));
-        var unlockedIds = upgradeManager.instance.unlockedUpgrades;
+    // private void PopulateShop()
+    // {
+    //     Debug.Log("Unlocked upgrades: " + string.Join(", ", upgradeManager.instance.unlockedUpgrades));
+    //     var unlockedIds = upgradeManager.instance.unlockedUpgrades;
 
     //     int slotIndex = 0;
 
@@ -47,18 +38,18 @@ public class shopManager : MonoBehaviour
     //     }
     // }
 
-    private upgradeData FindUpgradeById(string id)
-    {
-        foreach (var upgrade in allUpgrades)
-        {
-            //Debug.Log("In-game upgrade available: " + upgrade.Id);
-            if (upgrade.Id == id)
-            {
-                return upgrade;
-            }
-        }
-        return null;
-    }
+    // private upgradeData FindUpgradeById(string id)
+    // {
+    //     foreach (var upgrade in allUpgrades)
+    //     {
+    //         Debug.Log("In-game upgrade available: " + upgrade.Id);
+    //         if (upgrade.Id == id)
+    //         {
+    //             return upgrade;
+    //         }
+    //     }
+    //     return null;
+    // }
 
     // public void buyUpgrade(upgradeData upgrade)
     // {
@@ -68,11 +59,11 @@ public class shopManager : MonoBehaviour
     //         return;
     //     }
 
-        //Debug.Log("Upgrade Bought: " + upgrade.UpgradeName);
-        gameManager.instance.totalBytes -= upgrade.Cost;
-        //upgradeManager.instance.PurchaseUpgrade(upgrade.Id);
-        upgrade.applyUpgrade();
-    }
+    //     Debug.Log("Upgrade Bought: " + upgrade.UpgradeName);
+    //     gameManager.instance.totalBytes -= upgrade.Cost;
+    //     //upgradeManager.instance.PurchaseUpgrade(upgrade.Id);
+    //     upgrade.applyUpgrade();
+    // }
 
     
 
