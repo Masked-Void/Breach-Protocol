@@ -273,6 +273,7 @@ public class trapManager : MonoBehaviour {
         p4 = makeSetup(true , -1 , true , 1f , -1 , true , 0.85f , true , true , 8f);
     }
 
+    // Makes a setup based on given values
     private trapSetup makeSetup(bool lasers , int pattern , bool generate , float difficulty , int spin , bool lavaOn , float level , bool platforms , bool cycle , float interval) {
         trapSetup setup = new trapSetup();
 
