@@ -34,23 +34,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4018874512343320, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5
+      value: -30
       objectReference: {fileID: 0}
     - target: {fileID: 4018874512343320, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.000000104308114
       objectReference: {fileID: 0}
     - target: {fileID: 4018874512343320, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4018874512343320, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 4018874512343320, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4018874512343320, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -58,7 +58,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4018874512343320, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -180
       objectReference: {fileID: 0}
     - target: {fileID: 4018874512343320, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -99,6 +99,10 @@ PrefabInstance:
     - target: {fileID: 2923335209295420164, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3276509316426623448, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
+      propertyPath: m_Layer
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 6723810246147535577, guid: 592d3c4e653d3b34db1e8c6a0d75671d, type: 3}
       propertyPath: m_Materials.Array.size
