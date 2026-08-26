@@ -1,4 +1,4 @@
 public interface IPickWeapon
 {
-    public void equipWeapon(weaponStats weapon);
+    void equipWeapon(weaponStats weapon, int ammoOverride = -1);
 }
