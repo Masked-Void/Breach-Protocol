@@ -168020,6 +168020,34 @@ PrefabInstance:
       propertyPath: 'spawnPointTransforms.Array.data[63]'
       value: 
       objectReference: {fileID: 1656931563}
+    - target: {fileID: 7858023976258925408, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7858023976258925408, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7858023976258925408, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7858023976258925408, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7858023976258925408, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -65
+      objectReference: {fileID: 0}
+    - target: {fileID: 7858023976258925408, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -120.188385
+      objectReference: {fileID: 0}
+    - target: {fileID: 8111069761681196447, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stageBase
       value: 
