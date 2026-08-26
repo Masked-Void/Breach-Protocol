@@ -10,7 +10,7 @@ public class weaponManager : MonoBehaviour
     public weaponStats starterWeapon;
     [SerializeField] private weaponStats[] allWeapons;
     public Sprite emptySlot;
-
+    bool isEquipping;
 
     // [Header("Challenge")]
     // public bool currentWeaponFromGround = false;
@@ -75,13 +75,15 @@ public class weaponManager : MonoBehaviour
 
     IEnumerator equip(weaponStats newWeapon)
     {
-        if (newWeapon == null) yield return null;
-        if (spawnedWeaponModel != null) throwWeapon();
-        yield return new WaitForSeconds(1.5f);
-        audioManager.instance.playEquip();
-        spawnWeapon(newWeapon);
-    }
+        if (newWeapon == null || isEquipping) yield break;
 
+        isEquipping = true;
+        if (spawnedWeaponModel != null) throwWeapon();
+        yield return new WaitForSecondsRealtime(0.01f);
+        if (audioManager.instance != null) audioManager.instance.playEquip();
+        spawnWeapon(newWeapon);
+        isEquipping = false;
+    }
     private void spawnWeapon(weaponStats newWeapon)
     {
         activeWeapon = newWeapon;
@@ -109,9 +111,10 @@ public class weaponManager : MonoBehaviour
 
     public void throwWeapon()
     {
+        if (spawnedWeaponModel == null) return;
         spawnedWeaponModel.transform.SetParent(null);
         if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = false;
-        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = true;
         if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
             projectileRb = spawnedWeaponModel.AddComponent<Rigidbody>();
 
