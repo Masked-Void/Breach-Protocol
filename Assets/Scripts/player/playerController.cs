@@ -150,12 +150,11 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
         }
     }
 
-    public void equipWeapon(weaponStats weapon)
+    public void equipWeapon(weaponStats weapon, int ammoOverride = -1)
     {
         if (weaponManager.instance != null)
-            weaponManager.instance.equipWeapon(weapon);
+            weaponManager.instance.equipWeapon(weapon, ammoOverride);
     }
-
     public float getSpeedPercent()
     {
         // Returns a value between 0 and 1 representing how fast the player is moving relative to their max speed.

@@ -11,7 +11,8 @@ public class weaponManager : MonoBehaviour
     [SerializeField] private weaponStats[] allWeapons;
     public Sprite emptySlot;
     bool isEquipping;
-
+    [Header("Dropped Weapons")]
+    [SerializeField] LayerMask groundLayers = ~0;
     // [Header("Challenge")]
     // public bool currentWeaponFromGround = false;
 
@@ -68,28 +69,30 @@ public class weaponManager : MonoBehaviour
         if (instance == this) instance = null;
     }
 
-    public void equipWeapon(weaponStats newWeapon)
+    public void equipWeapon(weaponStats newWeapon, int ammoOverride = -1)
     {
-        StartCoroutine(equip(newWeapon));
+        StartCoroutine(equip(newWeapon, ammoOverride));
     }
 
-    IEnumerator equip(weaponStats newWeapon)
+    IEnumerator equip(weaponStats newWeapon, int ammoOverride)
     {
         if (newWeapon == null || isEquipping) yield break;
 
         isEquipping = true;
         if (spawnedWeaponModel != null) throwWeapon();
-        yield return new WaitForSecondsRealtime(0.01f);
+        yield return new WaitForSecondsRealtime(.01f);
         if (audioManager.instance != null) audioManager.instance.playEquip();
-        spawnWeapon(newWeapon);
+        spawnWeapon(newWeapon, ammoOverride);
         isEquipping = false;
     }
-    private void spawnWeapon(weaponStats newWeapon)
+    private void spawnWeapon(weaponStats newWeapon, int ammoOverride = -1)
     {
         activeWeapon = newWeapon;
 
-        if (activeWeapon is gunStats gun) currentAmmo = gun.startingBullets;
-        if (activeWeapon is meleeStats melee) currentAmmo = 10_000;
+        if (activeWeapon is gunStats gun)
+            currentAmmo = ammoOverride >= 0 ? ammoOverride : gun.startingBullets;
+        else if (activeWeapon is meleeStats)
+            currentAmmo = 10_000;
 
         spawnedWeaponModel = Instantiate(activeWeapon.weaponModel, weaponHolder, false);
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
@@ -114,7 +117,12 @@ public class weaponManager : MonoBehaviour
         if (spawnedWeaponModel == null) return;
         spawnedWeaponModel.transform.SetParent(null);
         if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = false;
-        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker))
+        {
+            picker.weapon = activeWeapon;
+            picker.remainingAmmo = (activeWeapon is gunStats) ? currentAmmo : -1;
+            picker.enabled = true;
+        }
         if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
             projectileRb = spawnedWeaponModel.AddComponent<Rigidbody>();
 
@@ -146,6 +154,10 @@ public class weaponManager : MonoBehaviour
         if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider)) weaponCollider.enabled = true;
         if (spawnedWeaponModel.TryGetComponent<damage>(out damage thrownDamage)) thrownDamage.enabled = true;
 
+        if (!spawnedWeaponModel.TryGetComponent<droppedWeapon>(out droppedWeapon dropped))
+            dropped = spawnedWeaponModel.AddComponent<droppedWeapon>();
+
+        dropped.groundLayers = groundLayers;
         activeWeapon = null;
         spawnedWeaponModel = null;
         gunBarrel = null;
