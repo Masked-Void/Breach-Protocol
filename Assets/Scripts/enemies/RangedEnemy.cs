@@ -39,11 +39,30 @@ public class rangedEnemy : enemyBase
     {
         currentAmmo--;
         attackTimer = 0f;
-        if (audioManager.instance != null)
-            audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.enemyShoot), gunBarrel.position, audioManager.instance.enemyShootVol);
 
-        if (activeGun.bullet != null && gunPivot != null)
-            Instantiate(activeGun.bullet, gunBarrel.position, gunPivot.rotation);
+        if (audioManager.instance != null)
+            audioManager.instance.playSpatialSFX(
+                audioManager.instance.pickRandomAudio(audioManager.instance.enemyShoot),
+                gunBarrel.position,
+                audioManager.instance.enemyShootVol);
+
+        if (activeGun == null || activeGun.bullet == null || gunPivot == null || gunBarrel == null)
+            return;
+
+        bool isShotgun = activeGun.gunType == gunStats.GunType.Shotgun;
+
+        int shotsToFire = isShotgun ? Mathf.Max(1, activeGun.pelletCount) : 1;
+        float spread = isShotgun ? activeGun.spreadAngle : 0f;
+
+        for (int i = 0; i < shotsToFire; i++)
+        {
+            float spreadX = Random.Range(-spread, spread);
+            float spreadY = Random.Range(-spread, spread);
+
+            Quaternion shotRotation = gunPivot.rotation * Quaternion.Euler(spreadX, spreadY, 0f);
+
+            Instantiate(activeGun.bullet, gunBarrel.position, shotRotation);
+        }
     }
 
     void rotateGun()
@@ -62,12 +81,14 @@ public class rangedEnemy : enemyBase
         if (spawnedWeaponModel.TryGetComponent<clip>(out var weaponClip)) weaponClip.enabled = true;
         if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out var picker)) picker.enabled = false;
 
-        // Locate the barrel or hitpoint
         string targetName = (selectedGun is gunStats) ? "Muzzle" : "HitPoint";
         gunBarrel = weaponManager.instance.FindDeepChild(spawnedWeaponModel.transform, targetName);
         activeGun = (gunStats)selectedGun;
-    }
 
+        // each weapon sets its own pacing
+        if (activeGun.attackRate > 0f)
+            attackRate = activeGun.attackRate;
+    }
     public override void die()
     {
         throwWeapon(spawnedWeaponModel, gunModel.transform);
