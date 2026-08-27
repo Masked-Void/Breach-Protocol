@@ -39,6 +39,11 @@ public class weaponManager : MonoBehaviour
 
         weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
 
+        if (gameManager.instance!=null && gameManager.instance.ammoPanel == gameObject) {
+            Debug.LogError("weaponManager: ammoPanel is wired to the weapon manager, fix reference on gameManager" , this);
+            gameManager.instance.ammoPanel = null;
+        }
+
         // Load saved weapon
         string savedWeaponName = PlayerPrefs.GetString("EquippedWeapon", "");
         if (!string.IsNullOrEmpty(savedWeaponName) && allWeapons != null)
@@ -67,6 +72,11 @@ public class weaponManager : MonoBehaviour
     {
         if (activeWeapon != null) activeWeapon.isFromGround = false;
         if (instance == this) instance = null;
+    }
+
+    // logs when something turns this off and what kind of off it is
+    void OnDisable() {
+        Debug.Log($"weaponManager disabled | activeSelf {gameObject.activeSelf} | enabled {enabled}" , gameObject);
     }
 
     public void equipWeapon(weaponStats newWeapon, int ammoOverride = -1)
@@ -204,13 +214,14 @@ public class weaponManager : MonoBehaviour
     {
         if (gameManager.instance == null) return;
 
-        if (activeWeapon != null && activeWeapon is gunStats)
-        {
-            gameManager.instance.ammoPanel.SetActive(true);
+        bool isGun = activeWeapon is gunStats;
+        if (gameManager.instance.ammoPanel != null) {
+            gameManager.instance.ammoPanel.SetActive(isGun);
+        }
+
+        if (isGun && gameManager.instance.magAmmoUI!=null){
             gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
         }
-        else
-            gameManager.instance.ammoPanel.SetActive(activeWeapon is gunStats);
 
         updateWeaponIcons();
     }

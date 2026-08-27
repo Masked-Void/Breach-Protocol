@@ -29332,6 +29332,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5823155691512026692, guid: a03f92438df5b1b4bba09a706388c871, type: 3}
   m_PrefabInstance: {fileID: 496855514}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &497602537 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 76195771759330023, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+  m_PrefabInstance: {fileID: 1223683357797229282}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &498658765
 GameObject:
   m_ObjectHideFlags: 0
@@ -74400,6 +74411,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4443674754182192490, guid: 5d794ae67151375409f71d91fe277007, type: 3}
   m_PrefabInstance: {fileID: 639956492}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &639970580 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2002964284098541488, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+  m_PrefabInstance: {fileID: 1223683357797229282}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &640449231
 GameObject:
   m_ObjectHideFlags: 0
@@ -105393,11 +105415,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1133683204}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1134121040 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 912177803640787988, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
-  m_PrefabInstance: {fileID: 1223683357797229282}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1134472554 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7010438804866259179, guid: 1ec14d984be92cb4db4dd79858b074fd, type: 3}
@@ -122971,6 +122988,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1038052993355617610, guid: 98aefc4236308d140854904a1b3cc6cc, type: 3}
   m_PrefabInstance: {fileID: 138375869}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1419485664 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8260515315701839081, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+  m_PrefabInstance: {fileID: 1223683357797229282}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1420110119
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -138270,11 +138292,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1684271138}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1685329788 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6277091821552300990, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
-  m_PrefabInstance: {fileID: 1223683357797229282}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1689023531
 GameObject:
   m_ObjectHideFlags: 0
@@ -163379,17 +163396,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9052313350287944961, guid: c86a67b0c5e834742bd49b453e4e54e2, type: 3}
   m_PrefabInstance: {fileID: 826542602}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2072760799 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6612763163208644421, guid: c86a67b0c5e834742bd49b453e4e54e2, type: 3}
-  m_PrefabInstance: {fileID: 826542602}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 760366304}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f69645cf1307b346824214832b60b26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::playerController
 --- !u!1 &2072921021
 GameObject:
   m_ObjectHideFlags: 0
@@ -166560,6 +166566,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4358230280167610, guid: 3675b6e5066676a47a7a574b107f5065, type: 3}
   m_PrefabInstance: {fileID: 2133753865}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2135010130 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 340536567351263711, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+  m_PrefabInstance: {fileID: 1223683357797229282}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &2135891731
 GameObject:
   m_ObjectHideFlags: 0
@@ -167482,14 +167499,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3018863977292105427, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
-      propertyPath: immuneZone
+    - target: {fileID: 616581581724976018, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: ammoPanel
       value: 
-      objectReference: {fileID: 786853951}
-    - target: {fileID: 3018863977292105427, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
-      propertyPath: 'damageZones.Array.data[0]'
+      objectReference: {fileID: 1419485664}
+    - target: {fileID: 616581581724976018, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: totalAmmoUI
       value: 
-      objectReference: {fileID: 2072760799}
+      objectReference: {fileID: 639970580}
+    - target: {fileID: 616581581724976018, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: activeWeapon
+      value: 
+      objectReference: {fileID: 497602537}
+    - target: {fileID: 616581581724976018, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: interactionKey
+      value: 
+      objectReference: {fileID: 2135010130}
     - target: {fileID: 616581581724976018, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: playerSpawnPos
       value: 
@@ -167605,11 +167630,11 @@ PrefabInstance:
     - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: healthBarObj
       value: 
-      objectReference: {fileID: 1134121040}
+      objectReference: {fileID: 0}
     - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: immuneBarObj
       value: 
-      objectReference: {fileID: 1685329788}
+      objectReference: {fileID: 0}
     - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: bulletDamageMult
       value: 1
@@ -168042,6 +168067,14 @@ PrefabInstance:
       propertyPath: 'spawnPointTransforms.Array.data[63]'
       value: 
       objectReference: {fileID: 1656931563}
+    - target: {fileID: 6872002912267281957, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: activeWeapon
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6872002912267281957, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: starterWeapon
+      value: 
+      objectReference: {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
     - target: {fileID: 7858023976258925408, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -168312,16 +168345,9 @@ PrefabInstance:
       objectReference: {fileID: 794819198}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_RemovedGameObjects:
-    - {fileID: 3005597609291378204, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
---- !u!1 &1223683357797229283 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7378922434430392145, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
-  m_PrefabInstance: {fileID: 1223683357797229282}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1294978764098996807 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1038052993355617610, guid: 98aefc4236308d140854904a1b3cc6cc, type: 3}
