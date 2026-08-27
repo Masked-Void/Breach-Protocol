@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 786708945531392282}
   - component: {fileID: 1003586422269921168}
   - component: {fileID: 8459632656415040803}
+  - component: {fileID: 7454600761267845835}
   - component: {fileID: 1244918064876712605}
   m_Layer: 0
   m_Name: WallLargeB
@@ -93,6 +94,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &7454600761267845835
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3594600378412152578}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10.000003, y: 3, z: 0.40000486}
+  m_Center: {x: 5.0000014, y: 1.5, z: -0.20000052}
 --- !u!64 &1244918064876712605
 MeshCollider:
   m_ObjectHideFlags: 0
