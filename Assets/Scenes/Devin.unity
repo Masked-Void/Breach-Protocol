@@ -13848,43 +13848,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI Devin (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 7454913951237791456, guid: 81addca55442ea84b842d33d965069ec, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7766641290443009814, guid: 81addca55442ea84b842d33d965069ec, type: 3}
-      propertyPath: m_text
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856378595390531615, guid: 81addca55442ea84b842d33d965069ec, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856378595390531615, guid: 81addca55442ea84b842d33d965069ec, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856378595390531615, guid: 81addca55442ea84b842d33d965069ec, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856378595390531615, guid: 81addca55442ea84b842d33d965069ec, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856378595390531615, guid: 81addca55442ea84b842d33d965069ec, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -65
-      objectReference: {fileID: 0}
-    - target: {fileID: 8856378595390531615, guid: 81addca55442ea84b842d33d965069ec, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -129.25818
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 59662008964705647, guid: 81addca55442ea84b842d33d965069ec, type: 3}
-    - {fileID: 266906471622725121, guid: 81addca55442ea84b842d33d965069ec, type: 3}
-    - {fileID: 2214586633962849113, guid: 81addca55442ea84b842d33d965069ec, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81addca55442ea84b842d33d965069ec, type: 3}

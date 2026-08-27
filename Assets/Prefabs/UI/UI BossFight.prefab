@@ -1057,6 +1057,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ef7a53a17b68b474aa996e4a59d58c49, type: 2}
   - {fileID: 11400000, guid: 390a74157b59cac4e8536a3f2d61b51c, type: 2}
   emptySlot: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &3157083100008093845
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,11 +1163,11 @@ MonoBehaviour:
   waveManager: {fileID: 6490373206905493497}
   holdManager: {fileID: 3018863977292105427}
   trapManager: {fileID: 5824588057710585167}
-  immuneBarObj: {fileID: 5926890969735759755}
-  healthBarObj: {fileID: 2006278940020187542}
+  immuneBarObj: {fileID: 0}
+  healthBarObj: {fileID: 0}
   healthBar: {fileID: 2102894170525281386}
   immuneBar: {fileID: 1041694100287316428}
-  maxHealth: 2000
+  maxHealth: 1000
   bulletDamageMult: 1
   p1EndHealthPerc: 0.75
   p2EndHealthPerc: 0.5
@@ -2306,6 +2309,34 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -300
       objectReference: {fileID: 0}
+    - target: {fileID: 8038231713725385165, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -65
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -120.188385
+      objectReference: {fileID: 0}
     - target: {fileID: 8525187160557472781, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Name
       value: UI BossFight
@@ -2399,17 +2430,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 558823684141505675, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
   m_PrefabInstance: {fileID: 2242167949748735058}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2006278940020187542 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 345224446674087364, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-  m_PrefabInstance: {fileID: 2242167949748735058}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2102894170525281386 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 158537231545147448, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
   m_PrefabInstance: {fileID: 2242167949748735058}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2006278940020187542}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -2510,11 +2536,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!1 &5926890969735759755 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5574695690079570905, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
-  m_PrefabInstance: {fileID: 2242167949748735058}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6374277520902979018 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5145429081548386712, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
