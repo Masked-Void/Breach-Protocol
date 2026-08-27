@@ -80,7 +80,7 @@ public class weaponManager : MonoBehaviour
 
         isEquipping = true;
         if (spawnedWeaponModel != null) throwWeapon();
-        yield return new WaitForSecondsRealtime(.01f);
+        yield return new WaitForSecondsRealtime(1f);
         if (audioManager.instance != null) audioManager.instance.playEquip();
         spawnWeapon(newWeapon, ammoOverride);
         isEquipping = false;

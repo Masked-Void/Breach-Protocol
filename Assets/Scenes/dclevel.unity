@@ -498,38 +498,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 157428447090323257, guid: 07b9b3be922198243803b7f4378fddf7, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 157428447090323257, guid: 07b9b3be922198243803b7f4378fddf7, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 157428447090323257, guid: 07b9b3be922198243803b7f4378fddf7, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 157428447090323257, guid: 07b9b3be922198243803b7f4378fddf7, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 157428447090323257, guid: 07b9b3be922198243803b7f4378fddf7, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -65
-      objectReference: {fileID: 0}
-    - target: {fileID: 157428447090323257, guid: 07b9b3be922198243803b7f4378fddf7, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -129.95581
-      objectReference: {fileID: 0}
-    - target: {fileID: 1373534272685647920, guid: 07b9b3be922198243803b7f4378fddf7, type: 3}
-      propertyPath: m_text
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 2283973189327247814, guid: 07b9b3be922198243803b7f4378fddf7, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4143293754465818307, guid: 07b9b3be922198243803b7f4378fddf7, type: 3}
       propertyPath: m_Name
       value: UI_ChronosShiftPoint

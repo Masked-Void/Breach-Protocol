@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 54144829906750510, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: groundLayers.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 378518867278977609, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -272,6 +276,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7147215360486078523, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_text
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 7988224382461475512, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: maxTimeScale
       value: 1
@@ -283,6 +291,34 @@ PrefabInstance:
     - target: {fileID: 7988224382461475512, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: moveMaxTimeScale
       value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 8038231713725385165, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -65
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219219896519655218, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -127.72327
       objectReference: {fileID: 0}
     - target: {fileID: 8492635337672450541, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
       propertyPath: enemySteps
@@ -307,6 +343,9 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 1328115815631699168, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
     - {fileID: 1420167975373854790, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+    - {fileID: 588656388892080706, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+    - {fileID: 814196742216161580, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
+    - {fileID: 1604248305048441972, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77e32fdbe83271647ad52d09908fa58f, type: 3}
