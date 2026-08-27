@@ -58,9 +58,12 @@ public class gunStats : weaponStats
 
                 // Spawn the bullet projectile flying out into its offset trajectory
                 Transform spawnedBullet = Instantiate(bullet, gunBarrel.position, spreadRotation);
-                if (upgradeManager.instance != null && upgradeManager.instance.IsUpgradeActive("exploding_bullets"))
+
+                if (spawnedBullet.TryGetComponent<damage>(out damage dmg))
                 {
-                    if (spawnedBullet.TryGetComponent<damage>(out damage dmg))
+                    dmg.sourceWeapon = this;
+
+                    if (upgradeManager.instance != null && upgradeManager.instance.IsUpgradeActive("exploding_bullets"))
                         dmg.isExplosive = true;
                 }
             }
