@@ -15,7 +15,9 @@ public class meleeStats : weaponStats
     [Range(0, 1)] public float hitFleshVol = 1f;
     public AudioClip hitWallSound;
     [Range(0, 1)] public float hitWallVol = 1f;
-    private IEnumerator katanaSwing()
+    public AudioClip hitShieldSound;
+    [Range(0,1)] public float hitShieldVol = 1f;
+    /*private IEnumerator katanaSwing()
     {
         float duration = 0.1f;
         float t = 0f;
@@ -37,12 +39,15 @@ public class meleeStats : weaponStats
             katanaTransform.localRotation = Quaternion.Lerp(endRot, startRot, t);
             yield return null;
         }
-    }
+    } cant call this coroutine from non monobehaviour script
+    */
     public override void Attack()
     {
         Transform gunBarrel = weaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
 
+        weaponManager.instance.PlayMeleeSwing();
+        audioManager.instance.playSFX(swingSound, swingSoundVol);
 
         audioManager.instance.playSFX(swingSound, swingSoundVol);
         //StartCoroutine(katanaSwing());
