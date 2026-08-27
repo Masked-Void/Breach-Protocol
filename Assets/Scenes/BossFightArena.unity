@@ -105393,6 +105393,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1133683204}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1134121040 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 912177803640787988, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+  m_PrefabInstance: {fileID: 1223683357797229282}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1134472554 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7010438804866259179, guid: 1ec14d984be92cb4db4dd79858b074fd, type: 3}
@@ -138265,6 +138270,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1684271138}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1685329788 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6277091821552300990, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+  m_PrefabInstance: {fileID: 1223683357797229282}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1689023531
 GameObject:
   m_ObjectHideFlags: 0
@@ -167472,12 +167482,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 616581581724976018, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
-      propertyPath: player
+    - target: {fileID: 3018863977292105427, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: immuneZone
       value: 
-      objectReference: {fileID: 760366304}
-    - target: {fileID: 616581581724976018, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
-      propertyPath: playerScript
+      objectReference: {fileID: 786853951}
+    - target: {fileID: 3018863977292105427, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: 'damageZones.Array.data[0]'
       value: 
       objectReference: {fileID: 2072760799}
     - target: {fileID: 616581581724976018, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
@@ -167588,6 +167598,22 @@ PrefabInstance:
       propertyPath: boss
       value: 
       objectReference: {fileID: 152370931}
+    - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: maxHealth
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: healthBarObj
+      value: 
+      objectReference: {fileID: 1134121040}
+    - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: immuneBarObj
+      value: 
+      objectReference: {fileID: 1685329788}
+    - target: {fileID: 4926456507022205012, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: bulletDamageMult
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5824588057710585167, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: lavaManager
       value: 
@@ -167596,10 +167622,6 @@ PrefabInstance:
       propertyPath: laserManager
       value: 
       objectReference: {fileID: 1415254406}
-    - target: {fileID: 6223390625915587226, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
-      propertyPath: m_Name
-      value: UI BossFight
-      objectReference: {fileID: 0}
     - target: {fileID: 6490373206905493497, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: 'roamPointTransforms.Array.data[0]'
       value: 
@@ -168053,25 +168075,73 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1722493881}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[0].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[0].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[0].topMarker
       value: 
       objectReference: {fileID: 228487467}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[1].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[1].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[1].topMarker
       value: 
       objectReference: {fileID: 482978380}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[2].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[2].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[2].topMarker
       value: 
       objectReference: {fileID: 344804721}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[3].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[3].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[3].topMarker
       value: 
       objectReference: {fileID: 748883092}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[4].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[4].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[4].topMarker
       value: 
       objectReference: {fileID: 323358248}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[5].fallSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+      propertyPath: stages.Array.data[5].riseSpeed
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 8773107891066057639, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
       propertyPath: stages.Array.data[5].topMarker
       value: 
@@ -168242,9 +168312,16 @@ PrefabInstance:
       objectReference: {fileID: 794819198}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3005597609291378204, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+--- !u!1 &1223683357797229283 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7378922434430392145, guid: 5b72276d9f6de40409ab190c940432c8, type: 3}
+  m_PrefabInstance: {fileID: 1223683357797229282}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1294978764098996807 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1038052993355617610, guid: 98aefc4236308d140854904a1b3cc6cc, type: 3}
