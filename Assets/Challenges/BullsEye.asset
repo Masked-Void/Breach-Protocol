@@ -18,9 +18,9 @@ MonoBehaviour:
     killCount: 5
   - challengeID: kunai_20
     displayName: Bulls Eye II
-    killCount: 5
+    killCount: 20
   - challengeID: kunai_100
     displayName: Bulls Eye III
-    killCount: 5
+    killCount: 100
   description: Get kills with a picked up kunai
   weapon: {fileID: 11400000, guid: ef7a53a17b68b474aa996e4a59d58c49, type: 2}

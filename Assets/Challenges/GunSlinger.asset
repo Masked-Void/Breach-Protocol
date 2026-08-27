@@ -18,9 +18,9 @@ MonoBehaviour:
     killCount: 5
   - challengeID: ar_20
     displayName: Gun Slinger II
-    killCount: 5
+    killCount: 20
   - challengeID: ar_100
     displayName: Gun Slinger III
-    killCount: 5
+    killCount: 100
   description: Get kills with a picked up AR
   weapon: {fileID: 11400000, guid: 5769f53383e30824aba5454d741e75d8, type: 2}
