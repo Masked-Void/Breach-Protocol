@@ -415,7 +415,8 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (awardKillRewards && lastDamageWeapon != null)
         {
             // challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
-            challengeManager.instance?.ReportKill(weaponManager.instance.activeWeapon);
+            //challengeManager.instance?.ReportKill(weaponManager.instance.activeWeapon);
+            challengeManager.instance?.ReportKill(lastDamageWeapon);
         }
 
         // enemies talk to the wave through waveHost, not the singleton

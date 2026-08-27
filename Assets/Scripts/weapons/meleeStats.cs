@@ -51,11 +51,10 @@ public class meleeStats : weaponStats
         if (Physics.Raycast(gunBarrel.position, gunBarrel.forward, out hit, attackDist))
         {
             // //register source for challenge manager
-            // enemyBase eb = hit.transform.GetComponent<enemyBase>();
-            // if (eb != null)
-            // {
-            //     eb.RegisterDamageSource(weaponManager.instance.activeWeapon, weaponManager.instance.currentWeaponFromGround);
-            // }
+            enemyBase eb = hit.transform.GetComponent<enemyBase>();
+            if (eb == null) eb = hit.transform.GetComponentInParent<enemyBase>();
+            if (eb != null) eb.RegisterDamageSource(this, isFromGround);
+
             IDamage dmg = hit.transform.GetComponent<IDamage>();
             if (dmg != null)
             {

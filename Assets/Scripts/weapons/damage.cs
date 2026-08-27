@@ -31,6 +31,8 @@ public class damage : MonoBehaviour
     [SerializeField] AudioSource sfxSource;
     [SerializeField] AudioClip sfx;
 
+    [HideInInspector] public weaponStats sourceWeapon;
+
     public bool isExplosive;
 
 
@@ -144,6 +146,13 @@ public class damage : MonoBehaviour
         // Deal damage
         if (type != DamageType.DOT)
         {
+            if (sourceWeapon != null)
+            {
+                enemyBase eb = other.GetComponent<enemyBase>();
+                if (eb == null) eb = other.GetComponentInParent<enemyBase>();
+                if (eb != null) eb.RegisterDamageSource(sourceWeapon, sourceWeapon.isFromGround);
+            }
+
             IDamage dmg = other.GetComponent<IDamage>();
             if (dmg != null)
                 dmg.takeDamage(damageAmount);
