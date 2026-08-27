@@ -34203,6 +34203,7 @@ MonoBehaviour:
   maxShakeStrength: {x: 0.25, y: 0.25, z: 0.25}
   sfxSource: {fileID: 0}
   sfx: {fileID: 0}
+  sourceWeapon: {fileID: 0}
   isExplosive: 0
 --- !u!1 &347575998
 GameObject:
@@ -232197,6 +232198,9 @@ MonoBehaviour:
   starterWeapon: {fileID: 0}
   allWeapons: []
   emptySlot: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!64 &4545892546869610478
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -238546,6 +238550,7 @@ MonoBehaviour:
   maxShakeStrength: {x: 0.25, y: 0.25, z: 0.25}
   sfxSource: {fileID: 6189109762660744915}
   sfx: {fileID: 8300000, guid: 2e91f0d0ad64e7549b7358712c7e0816, type: 3}
+  sourceWeapon: {fileID: 0}
   isExplosive: 0
 --- !u!135 &6189109762660744914
 SphereCollider:
