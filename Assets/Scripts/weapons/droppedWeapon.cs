@@ -10,6 +10,7 @@ public class droppedWeapon : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("hit: " + collision.gameObject.name + " on layer " + LayerMask.LayerToName(collision.gameObject.layer));
         if (hasLanded) return;
 
         // Hitting an enemy shouldn't count as landing.
