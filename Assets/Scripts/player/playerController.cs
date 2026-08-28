@@ -49,7 +49,10 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
     }
     public void PushBack(Vector3 direction, float pushbackForce)
     {
+        float maxPushbackForce = 8f;
         playerVel += direction * pushbackForce;
+        //clamp a limit
+        playerVel = Vector3.ClampMagnitude(playerVel, maxPushbackForce);
     }
     void movement()
     {

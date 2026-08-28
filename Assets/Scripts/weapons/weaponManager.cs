@@ -13,6 +13,17 @@ public class weaponManager : MonoBehaviour
     bool isEquipping;
     [Header("Dropped Weapons")]
     [SerializeField] LayerMask groundLayers = ~0;
+
+
+    [Header("Melee Weapon Info")]
+    [SerializeField] float meleeSwingDuration = .08f;
+    [SerializeField] float meleeReturnDuration = .12f;
+    [SerializeField] Vector3 meleeSwingRotation = new Vector3(35f, -70f, 20f);
+    [SerializeField] Vector3 meleeSwingPosition = new Vector3(.08f, -.05f, .15f);
+
+    bool isMeleeSwinging;
+
+
     // [Header("Challenge")]
     // public bool currentWeaponFromGround = false;
 
@@ -234,5 +245,53 @@ public class weaponManager : MonoBehaviour
     public void ResetWeapon()
     {
         PlayerPrefs.DeleteKey("EquippedWeapon");
+    }
+
+    public void PlayMeleeSwing()
+    {
+        if (spawnedWeaponModel == null || isMeleeSwinging) return;
+
+        StartCoroutine(meleeSwing());
+    }
+
+    IEnumerator meleeSwing()
+    {
+        isMeleeSwinging = true;
+
+        Transform weaponTransform = spawnedWeaponModel.transform;
+        Quaternion startRotation = weaponTransform.localRotation;
+        Vector3 startPosition = weaponTransform.localPosition;
+
+        Quaternion swingRotation = startRotation * Quaternion.Euler(meleeSwingRotation);
+        Vector3 swingPosition = startPosition + meleeSwingPosition;
+
+        float timer = 0f;
+        while (timer < meleeSwingDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+            float t = timer / meleeSwingDuration;
+
+            weaponTransform.localRotation = Quaternion.Lerp(startRotation, swingRotation, t);
+            weaponTransform.localPosition = Vector3.Lerp(startPosition, swingPosition, t);
+
+            yield return null;
+        }
+
+        timer = 0f;
+
+        while (timer < meleeReturnDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+            float t = timer / meleeReturnDuration;
+
+            weaponTransform.localRotation = Quaternion.Lerp(swingRotation, startRotation, t);
+            weaponTransform.localPosition = Vector3.Lerp (startPosition, swingPosition, t);
+            yield return null;
+        }
+
+        weaponTransform.localRotation = startRotation;
+        weaponTransform.localPosition = startPosition;
+
+        isMeleeSwinging = false;
     }
 }

@@ -13,15 +13,19 @@ MonoBehaviour:
   m_Name: Katana
   m_EditorClassIdentifier: Assembly-CSharp::meleeStats
   Name: Katana
+  weaponName: 
   weaponModel: {fileID: 6413440490822234159, guid: a04645d8876d1a448ad847390068b125, type: 3}
   sprite: {fileID: 21300000, guid: d75294202048e40428535f8c96a5bd3f, type: 3}
   cost: 400
   attackRate: 0.1
+  isFromGround: 0
   attackDamage: 1
   attackDist: 5
-  swingSound: {fileID: 0}
+  swingSound: {fileID: 8300000, guid: f66757fd35ee0bb45a025cac81547dd1, type: 3}
   swingSoundVol: 1
-  hitFleshSound: {fileID: 0}
+  hitFleshSound: {fileID: 8300000, guid: d483768ad177d2c4dbbc90ae30c85327, type: 3}
   hitFleshVol: 1
-  hitWallSound: {fileID: 0}
+  hitWallSound: {fileID: 8300000, guid: 77b4b09bf30c8e7448468f7687cb1fce, type: 3}
   hitWallVol: 1
+  hitShieldSound: {fileID: 8300000, guid: de9fd9bf0fdae7b428dd8b598b1c1156, type: 3}
+  hitShieldVol: 1
