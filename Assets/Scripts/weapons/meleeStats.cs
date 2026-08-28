@@ -66,11 +66,15 @@ public class meleeStats : weaponStats
             {
                 dmg.takeDamage(attackDamage);
                 audioManager.instance.playSFX(hitFleshSound, hitFleshVol);
+            } else if (hit.collider.CompareTag("Shield"))
+            {
+                audioManager.instance.playSFX(hitShieldSound, hitShieldVol);
             }
             else
             {
                 audioManager.instance.playSFX(hitWallSound, hitWallVol);
             }
+            
         }
     }
 }
