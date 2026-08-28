@@ -25,6 +25,9 @@ public class challengeManager : MonoBehaviour
     public GameObject statsPanel;
     public Button actionButton;
     public TextMeshProUGUI actionText;
+    
+    [Header("Currency")]
+    public TextMeshProUGUI fileCountText;
 
     [SerializeField] ChallengeUISlot[] challengeSlots;
     [SerializeField] challengeData[] challenges;
@@ -147,6 +150,7 @@ public class challengeManager : MonoBehaviour
         if (statsPanel != null) statsPanel.SetActive(allComplete);
         if (weaponName != null && weaponChallenge.weapon != null) weaponName.text = weaponChallenge.weapon.Name;
         if (description != null) description.text = weaponChallenge.description;
+        if(fileCountText != null && upgradeManager.instance != null) fileCountText.text = "" + upgradeManager.instance.files;
 
         updateActionButton(weaponChallenge, isBought, isEquipped);
         displayProgressUI(weaponChallenge);

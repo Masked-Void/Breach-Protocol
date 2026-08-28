@@ -23,6 +23,9 @@ public class upgradeManager : MonoBehaviour
     public TextMeshProUGUI upgradeValue;
     public Button buyButton;
     public TextMeshProUGUI buyButtonText;
+    
+    [Header("Currency")]
+    public TextMeshProUGUI fileCountText;
     public int files;
 
     [Header("Required Challenges UI")]
@@ -34,13 +37,14 @@ public class upgradeManager : MonoBehaviour
 
     void Awake()
     {
-        if (instance != null&& instance != this) {
+        if (instance != null && instance != this)
+        {
             Destroy(gameObject);
             return;
         }
 
         instance = this;
-        
+
         LoadUpgrades();
     }
 
@@ -84,6 +88,7 @@ public class upgradeManager : MonoBehaviour
         }
         if (upgradeCost != null) upgradeCost.text = "" + upgrade.cost;
         if (upgradeValue != null) upgradeValue.text = "" + upgrade.value;
+        if (fileCountText != null) fileCountText.text = "" + files;
 
         displayRequiredChallenges(upgrade);
 
@@ -232,13 +237,15 @@ public class upgradeManager : MonoBehaviour
     }
 
     [ContextMenu("Reset Saved Upgrades")]
-    public void ResetUpgrades() {
+    public void ResetUpgrades()
+    {
         PlayerPrefs.DeleteKey("UnlockedUpgrades");
         purchasedUpgrades.Clear();
         activeUpgrades.Clear();
     }
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         if (instance == this)
             instance = null;
     }
