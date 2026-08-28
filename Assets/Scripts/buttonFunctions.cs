@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class buttonFunctions : MonoBehaviour
 {
+    [Header("Loading UI")]
+    [SerializeField] private GameObject loadingBackground;
     [SerializeField] private Slider progressBar;
 
     public void resume()
@@ -30,6 +32,9 @@ public class buttonFunctions : MonoBehaviour
 
     public IEnumerator LoadSceneAsync(String levelName)
     {
+        Time.timeScale = 1f;
+
+        if (loadingBackground != null) loadingBackground.SetActive(true);
 
         if (progressBar != null)
         {
@@ -52,16 +57,13 @@ public class buttonFunctions : MonoBehaviour
             yield return null;
         }
 
-        if (progressBar != null)
-        {
-            progressBar.value = 1f;
-        }
+        if (progressBar != null) progressBar.value = 1f;
 
         yield return new WaitForSecondsRealtime(0.2f);
 
         if (audioManager.instance != null) audioManager.instance.stopMusic();
-
         scene.allowSceneActivation = true;
+        //if (loadingBackground != null) loadingBackground.SetActive(false);
     }
 
     public void challenge()

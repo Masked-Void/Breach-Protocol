@@ -25,7 +25,7 @@ public class challengeManager : MonoBehaviour
     public GameObject statsPanel;
     public Button actionButton;
     public TextMeshProUGUI actionText;
-    
+
     [Header("Currency")]
     public TextMeshProUGUI fileCountText;
 
@@ -99,7 +99,6 @@ public class challengeManager : MonoBehaviour
         foreach (var cData in associatedChallenges)
         {
             if (cData == null || cData.challengesList == null) continue;
-            // if (cData.requireGroundPickup && !fromGround) continue;
 
             foreach (var subchallenge in cData.challengesList)
             {
