@@ -137,6 +137,8 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playButtonClick();
         #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
+        #elif UNITY_WEBGL
+            Application.OpenURL("about:blank");
         #else
             Application.Quit();
         #endif

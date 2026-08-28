@@ -119,13 +119,8 @@ public class gameManager : MonoBehaviour
     void Update()
     {
         bytesText.text = "Bytes: " + totalBytes.ToString();
-        // if (FindAnyObjectByType<playerInteraction>().shopOpen)
-        // {
-        //     menuActive = shopUI;
-        //     return;
-        // }
 
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.Escape))
         {
             if (audioManager.instance != null) audioManager.instance.playButtonClick();
             if (menuActive == null)

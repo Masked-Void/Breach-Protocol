@@ -204,8 +204,6 @@ MonoBehaviour:
   throwForce: 8
   throwUpwardForce: 2
   playerShield: {fileID: 1163693913067826184}
-  explodingBullets: 0
-  kunaiSpread: 0
   maxStamina: 50
   staminaDrainRate: 11
   staminaRegenRate: 6
@@ -229,7 +227,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 6400
   throwKey: 116
-  switchKey: 9
   shopOpen: 0
 --- !u!33 &8426663965172706110
 MeshFilter:

@@ -26,6 +26,9 @@ public class challengeManager : MonoBehaviour
     public Button actionButton;
     public TextMeshProUGUI actionText;
 
+    [Header("Currency")]
+    public TextMeshProUGUI fileCountText;
+
     [SerializeField] ChallengeUISlot[] challengeSlots;
     [SerializeField] challengeData[] challenges;
 
@@ -96,7 +99,6 @@ public class challengeManager : MonoBehaviour
         foreach (var cData in associatedChallenges)
         {
             if (cData == null || cData.challengesList == null) continue;
-            // if (cData.requireGroundPickup && !fromGround) continue;
 
             foreach (var subchallenge in cData.challengesList)
             {
@@ -147,6 +149,7 @@ public class challengeManager : MonoBehaviour
         if (statsPanel != null) statsPanel.SetActive(allComplete);
         if (weaponName != null && weaponChallenge.weapon != null) weaponName.text = weaponChallenge.weapon.Name;
         if (description != null) description.text = weaponChallenge.description;
+        if(fileCountText != null && upgradeManager.instance != null) fileCountText.text = "" + upgradeManager.instance.files;
 
         updateActionButton(weaponChallenge, isBought, isEquipped);
         displayProgressUI(weaponChallenge);
@@ -203,7 +206,7 @@ public class challengeManager : MonoBehaviour
                     : 0f;
 
                 if (challengeSlots[i].challengeName != null)
-                    challengeSlots[i].challengeName.text = challenge.displayName;
+                    challengeSlots[i].challengeName.text = challenge.displayName + $"   ({challenge.killCount} kills)";
 
                 if (challengeSlots[i].progressBar != null)
                     challengeSlots[i].progressBar.fillAmount = Mathf.Clamp01(progressRatio);

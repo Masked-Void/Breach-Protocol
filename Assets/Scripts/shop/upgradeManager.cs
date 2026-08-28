@@ -6,6 +6,14 @@ using UnityEngine.UI;
 public class upgradeManager : MonoBehaviour
 {
     public static upgradeManager instance;
+    [System.Serializable]
+    public struct RequiredChallengeUISlot
+    {
+        public GameObject slotRoot;
+        public TextMeshProUGUI challengeName;
+        public GameObject checkmark;
+    }
+
     [Header("Upgrade Info")]
     public upgradeData[] upgrades;
     public TextMeshProUGUI upgradeName;
@@ -15,7 +23,13 @@ public class upgradeManager : MonoBehaviour
     public TextMeshProUGUI upgradeValue;
     public Button buyButton;
     public TextMeshProUGUI buyButtonText;
+    
+    [Header("Currency")]
+    public TextMeshProUGUI fileCountText;
     public int files;
+
+    [Header("Required Challenges UI")]
+    [SerializeField] private RequiredChallengeUISlot[] requiredChallengeSlots;
 
     [HideInInspector]
     public List<string> purchasedUpgrades = new List<string>();
@@ -23,13 +37,14 @@ public class upgradeManager : MonoBehaviour
 
     void Awake()
     {
-        if (instance != null&& instance != this) {
+        if (instance != null && instance != this)
+        {
             Destroy(gameObject);
             return;
         }
 
         instance = this;
-        
+
         LoadUpgrades();
     }
 
@@ -73,6 +88,9 @@ public class upgradeManager : MonoBehaviour
         }
         if (upgradeCost != null) upgradeCost.text = "" + upgrade.cost;
         if (upgradeValue != null) upgradeValue.text = "" + upgrade.value;
+        if (fileCountText != null) fileCountText.text = "" + files;
+
+        displayRequiredChallenges(upgrade);
 
         bool isPurchased = purchasedUpgrades.Contains(upgrade.id);
         bool isUnlocked = IsUpgradeUnlocked(upgrade);
@@ -105,6 +123,37 @@ public class upgradeManager : MonoBehaviour
                     if (canApply)
                         buyButton.onClick.AddListener(() => toggleUpgrade(upgrade));
                 }
+            }
+        }
+    }
+
+    private void displayRequiredChallenges(upgradeData upgrade)
+    {
+        if (requiredChallengeSlots == null) return;
+
+        int reqCount = (upgrade != null && upgrade.requiredChallenges != null) ? upgrade.requiredChallenges.Length : 0;
+
+        for (int i = 0; i < requiredChallengeSlots.Length; i++)
+        {
+            if (requiredChallengeSlots[i].slotRoot == null) continue;
+
+            if (i < reqCount)
+            {
+                var reqData = upgrade.requiredChallenges[i];
+                requiredChallengeSlots[i].slotRoot.SetActive(true);
+
+                if (requiredChallengeSlots[i].challengeName != null && reqData != null)
+                    requiredChallengeSlots[i].challengeName.text = reqData.challengeName;
+
+                bool isCompleted = reqData != null && challengeManager.instance != null && challengeManager.instance.areAllChallengesComplete(reqData);
+
+                if (requiredChallengeSlots[i].checkmark != null)
+                    requiredChallengeSlots[i].checkmark.SetActive(isCompleted);
+            }
+            else
+            {
+                // Hide slot if this upgrade requires fewer challenges
+                requiredChallengeSlots[i].slotRoot.SetActive(false);
             }
         }
     }
@@ -188,13 +237,15 @@ public class upgradeManager : MonoBehaviour
     }
 
     [ContextMenu("Reset Saved Upgrades")]
-    public void ResetUpgrades() {
+    public void ResetUpgrades()
+    {
         PlayerPrefs.DeleteKey("UnlockedUpgrades");
         purchasedUpgrades.Clear();
         activeUpgrades.Clear();
     }
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         if (instance == this)
             instance = null;
     }

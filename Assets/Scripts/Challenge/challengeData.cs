@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Challenge", menuName = "Weapons/Challenge")]
 public class challengeData : ScriptableObject
 {
+    public string challengeName;
     [System.Serializable]
     public struct challengeStruct
     {
