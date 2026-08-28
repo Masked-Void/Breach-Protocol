@@ -2,12 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Scorestreak inventory and runtime effect state.
-/// The player can store exactly three streaks and activate them with 3, 4 and 5.
-/// </summary>
 public class killstreakManager : MonoBehaviour
 {
     public static killstreakManager instance;
@@ -19,10 +14,8 @@ public class killstreakManager : MonoBehaviour
     [Tooltip("Off by default. When false, only one timed/manual streak can be active at once.")]
     [SerializeField] private bool allowStacking = false;
 
-    [Header("3 / 4 / 5 Slot UI")]
+    [Header("Stored Scorestreak UI")]
     [SerializeField] private TMP_Text slot3Text;
-    [SerializeField] private TMP_Text slot4Text;
-    [SerializeField] private TMP_Text slot5Text;
     [SerializeField] private string emptySlotText = "EMPTY";
 
     [Header("Packet Leech")]
@@ -42,11 +35,16 @@ public class killstreakManager : MonoBehaviour
     [SerializeField] private float ghostAimErrorDegrees = 12f;
     [SerializeField] private int ammoRefundPerKill = 1;
 
-    private readonly killstreakBase[] slots = new killstreakBase[3];
-    private readonly HashSet<killstreakBase> activeStreaks = new HashSet<killstreakBase>();
-    private readonly HashSet<enemyBase> chainReactionVictims = new HashSet<enemyBase>();
+    private killstreakBase storedStreak;
 
-    private readonly Collider[] chainReactionBuffer = new Collider[64];
+    private readonly HashSet<killstreakBase> activeStreaks =
+        new HashSet<killstreakBase>();
+
+    private readonly HashSet<enemyBase> chainReactionVictims =
+        new HashSet<enemyBase>();
+
+    private readonly Collider[] chainReactionBuffer =
+        new Collider[64];
 
     private IAmmoRefundReceiver ammoRefundReceiver;
 
@@ -58,7 +56,8 @@ public class killstreakManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null && instance != this) {
+        if (instance != null && instance != this)
+        {
             Destroy(gameObject);
             return;
         }
@@ -69,14 +68,8 @@ public class killstreakManager : MonoBehaviour
     private void Start()
     {
         ResolveAmmoRefundReceiver();
-        UpdateAllSlotUI();
+        UpdateSlotUI();
     }
-    private void OnDestroy() {
-        if (instance == this)
-            instance = null;
-    }
-
-    // Start removed — no initialization required here
 
     private void Update()
     {
@@ -89,29 +82,24 @@ public class killstreakManager : MonoBehaviour
             return;
 
         if (keyboard.digit3Key.wasPressedThisFrame)
-            UseSlot(0);
-
-        if (keyboard.digit4Key.wasPressedThisFrame)
-            UseSlot(1);
-
-        if (keyboard.digit5Key.wasPressedThisFrame)
-            UseSlot(2);
+            UseStoredStreak();
     }
 
     public bool TryAwardRandomStreak()
     {
-        int emptySlot = FindFirstEmptySlot();
-
-        if (emptySlot < 0)
+        if (storedStreak != null)
             return false;
 
         if (streakPool == null || streakPool.Length == 0)
         {
-            Debug.LogWarning("killstreakManager: no scorestreaks are assigned to the pool.", this);
+            Debug.LogWarning(
+                "killstreakManager: no scorestreaks are assigned to the pool.",
+                this
+            );
+
             return false;
         }
 
-        // Prefer a program the player is not already holding or running.
         List<killstreakBase> candidates = new List<killstreakBase>();
 
         for (int i = 0; i < streakPool.Length; i++)
@@ -121,71 +109,64 @@ public class killstreakManager : MonoBehaviour
             if (candidate == null)
                 continue;
 
-            if (IsStored(candidate) || activeStreaks.Contains(candidate))
+            if (activeStreaks.Contains(candidate))
                 continue;
 
             candidates.Add(candidate);
         }
 
-        // If every available type is already represented, allow any non-active type.
-        if (candidates.Count == 0)
-        {
-            for (int i = 0; i < streakPool.Length; i++)
-            {
-                killstreakBase candidate = streakPool[i];
-
-                if (candidate != null && !activeStreaks.Contains(candidate))
-                    candidates.Add(candidate);
-            }
-        }
-
         if (candidates.Count == 0)
             return false;
 
-        killstreakBase awarded = candidates[Random.Range(0, candidates.Count)];
+        storedStreak =
+            candidates[Random.Range(0, candidates.Count)];
 
-        slots[emptySlot] = awarded;
-        UpdateSlotUI(emptySlot);
+        UpdateSlotUI();
 
         return true;
     }
 
-    // Backwards-compatible name so any leftover old call still compiles.
-    // New code should award streaks through scoreManager thresholds instead.
     public void tryRoll()
     {
         TryAwardRandomStreak();
     }
 
-    public bool UseSlot(int slotIndex)
+    public bool UseStoredStreak()
     {
-        if (slotIndex < 0 || slotIndex >= slots.Length)
-            return false;
-
-        killstreakBase streak = slots[slotIndex];
-
-        if (streak == null)
+        if (storedStreak == null)
             return false;
 
         if (!allowStacking && HasActiveStreak())
             return false;
 
-        slots[slotIndex] = null;
-        UpdateSlotUI(slotIndex);
+        killstreakBase streak = storedStreak;
+        storedStreak = null;
+
+        UpdateSlotUI();
 
         activeStreaks.Add(streak);
 
+        // scoreManager owns the GDD threshold increase.
         if (scoreManager.instance != null)
             scoreManager.instance.NotifyStreakActivated();
 
         streak.Activate();
 
-        // If the streak was instant, it has already called streakEnded().
-        // If it is timed/manual, it remains in activeStreaks.
+        // If enough score is already banked for the new requirement,
+        // award the next streak after this one is consumed.
         if (scoreManager.instance != null)
             scoreManager.instance.TryAwardPendingStreak();
 
         return true;
+    }
+
+    // Kept so any existing code that calls UseSlot(0) still works.
+    public bool UseSlot(int slotIndex)
+    {
+        if (slotIndex != 0)
+            return false;
+
+        return UseStoredStreak();
     }
 
     public void streakEnded(killstreakBase streak)
@@ -198,21 +179,22 @@ public class killstreakManager : MonoBehaviour
 
     public void cancelActiveStreak()
     {
-        if (activeStreaks.Count == 0)
-            return;
-
-        killstreakBase[] snapshot = new killstreakBase[activeStreaks.Count];
-        activeStreaks.CopyTo(snapshot);
-
-        for (int i = 0; i < snapshot.Length; i++)
+        if (activeStreaks.Count > 0)
         {
-            if (snapshot[i] != null && snapshot[i].isActive)
+            killstreakBase[] snapshot =
+                new killstreakBase[activeStreaks.Count];
+
+            activeStreaks.CopyTo(snapshot);
+
+            for (int i = 0; i < snapshot.Length; i++)
             {
-                snapshot[i].Deactivate();
+                if (snapshot[i] != null && snapshot[i].isActive)
+                    snapshot[i].Deactivate();
             }
+
+            activeStreaks.Clear();
         }
 
-        activeStreaks.Clear();
         ResetRuntimeEffects();
     }
 
@@ -220,16 +202,15 @@ public class killstreakManager : MonoBehaviour
     {
         cancelActiveStreak();
 
-        for (int i = 0; i < slots.Length; i++)
-            slots[i] = null;
+        storedStreak = null;
 
         ResetRuntimeEffects();
-        UpdateAllSlotUI();
+        UpdateSlotUI();
     }
 
     public bool HasOpenSlot()
     {
-        return FindFirstEmptySlot() >= 0;
+        return storedStreak == null;
     }
 
     public bool HasActiveStreak()
@@ -245,22 +226,21 @@ public class killstreakManager : MonoBehaviour
 
     public string GetSlotName(int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= slots.Length || slots[slotIndex] == null)
+        if (slotIndex != 0 || storedStreak == null)
             return string.Empty;
 
-        return slots[slotIndex].GetKillstreakName();
+        return storedStreak.GetKillstreakName();
     }
-
-    // =========================================================
-    // EFFECT STATE API
-    // =========================================================
 
     public void SetRootAccess(bool active)
     {
         rootAccessActive = active;
     }
 
-    public void SetChainReaction(bool active, float radius, float damagePercent)
+    public void SetChainReaction(
+        bool active,
+        float radius,
+        float damagePercent)
     {
         chainReactionActive = active;
         chainReactionRadius = Mathf.Max(0.1f, radius);
@@ -272,13 +252,17 @@ public class killstreakManager : MonoBehaviour
         invulnerableActive = active;
     }
 
-    public void SetGhostProtocol(bool active, float aimErrorDegrees)
+    public void SetGhostProtocol(
+        bool active,
+        float aimErrorDegrees)
     {
         ghostProtocolActive = active;
         ghostAimErrorDegrees = Mathf.Max(0f, aimErrorDegrees);
     }
 
-    public void SetPacketLeech(bool active, int ammoPerKill)
+    public void SetPacketLeech(
+        bool active,
+        int ammoPerKill)
     {
         packetLeechActive = active;
         ammoRefundPerKill = Mathf.Max(1, ammoPerKill);
@@ -308,33 +292,56 @@ public class killstreakManager : MonoBehaviour
         if (!ghostProtocolActive || ghostAimErrorDegrees <= 0f)
             return normalizedDirection;
 
-        float yaw = Random.Range(-ghostAimErrorDegrees, ghostAimErrorDegrees);
-        float pitch = Random.Range(-ghostAimErrorDegrees, ghostAimErrorDegrees);
+        float yaw =
+            Random.Range(
+                -ghostAimErrorDegrees,
+                ghostAimErrorDegrees
+            );
 
-        Quaternion errorRotation = Quaternion.Euler(pitch, yaw, 0f);
-        return (errorRotation * normalizedDirection).normalized;
+        float pitch =
+            Random.Range(
+                -ghostAimErrorDegrees,
+                ghostAimErrorDegrees
+            );
+
+        Quaternion errorRotation =
+            Quaternion.Euler(pitch, yaw, 0f);
+
+        return
+            (errorRotation * normalizedDirection).normalized;
     }
 
-    public void TriggerChainReaction(enemyBase source, int originalDamage)
+    public void TriggerChainReaction(
+        enemyBase source,
+        int originalDamage)
     {
-        if (!chainReactionActive || source == null || originalDamage <= 0)
+        if (!chainReactionActive ||
+            source == null ||
+            originalDamage <= 0)
+        {
             return;
+        }
 
-        int hitCount = Physics.OverlapSphereNonAlloc(
-            source.transform.position,
-            chainReactionRadius,
-            chainReactionBuffer
-        );
+        int hitCount =
+            Physics.OverlapSphereNonAlloc(
+                source.transform.position,
+                chainReactionRadius,
+                chainReactionBuffer
+            );
 
         if (hitCount <= 0)
             return;
 
         chainReactionVictims.Clear();
 
-        int spreadDamage = Mathf.Max(
-            1,
-            Mathf.CeilToInt(originalDamage * chainReactionDamagePercent)
-        );
+        int spreadDamage =
+            Mathf.Max(
+                1,
+                Mathf.CeilToInt(
+                    originalDamage *
+                    chainReactionDamagePercent
+                )
+            );
 
         for (int i = 0; i < hitCount; i++)
         {
@@ -343,10 +350,15 @@ public class killstreakManager : MonoBehaviour
             if (hit == null)
                 continue;
 
-            enemyBase enemy = hit.GetComponentInParent<enemyBase>();
+            enemyBase enemy =
+                hit.GetComponentInParent<enemyBase>();
 
-            if (enemy == null || enemy == source || enemy.IsDead)
+            if (enemy == null ||
+                enemy == source ||
+                enemy.IsDead)
+            {
                 continue;
+            }
 
             if (!chainReactionVictims.Add(enemy))
                 continue;
@@ -359,16 +371,21 @@ public class killstreakManager : MonoBehaviour
 
     private void ResolveAmmoRefundReceiver()
     {
-        ammoRefundReceiver = ammoRefundReceiverSource as IAmmoRefundReceiver;
+        ammoRefundReceiver =
+            ammoRefundReceiverSource as IAmmoRefundReceiver;
 
         if (ammoRefundReceiver != null)
             return;
 
-        if (gameManager.instance == null || gameManager.instance.player == null)
+        if (gameManager.instance == null ||
+            gameManager.instance.player == null)
+        {
             return;
+        }
 
         MonoBehaviour[] behaviours =
-            gameManager.instance.player.GetComponentsInChildren<MonoBehaviour>(true);
+            gameManager.instance.player
+                .GetComponentsInChildren<MonoBehaviour>(true);
 
         for (int i = 0; i < behaviours.Length; i++)
         {
@@ -391,55 +408,23 @@ public class killstreakManager : MonoBehaviour
         enemiesJammed = false;
     }
 
-    private int FindFirstEmptySlot()
+    private void UpdateSlotUI()
     {
-        for (int i = 0; i < slots.Length; i++)
-        {
-            if (slots[i] == null)
-                return i;
-        }
-
-        return -1;
-    }
-
-    private bool IsStored(killstreakBase streak)
-    {
-        for (int i = 0; i < slots.Length; i++)
-        {
-            if (slots[i] == streak)
-                return true;
-        }
-
-        return false;
-    }
-
-    private void UpdateAllSlotUI()
-    {
-        for (int i = 0; i < slots.Length; i++)
-            UpdateSlotUI(i);
-    }
-
-    private void UpdateSlotUI(int index)
-    {
-        TMP_Text text = null;
-
-        if (index == 0)
-            text = slot3Text;
-        else if (index == 1)
-            text = slot4Text;
-        else if (index == 2)
-            text = slot5Text;
-
-        if (text == null)
+        if (slot3Text == null)
             return;
 
-        string key = (index + 3).ToString();
-        string name = slots[index] != null
-            ? slots[index].GetKillstreakName()
-            : emptySlotText;
+        string name =
+            storedStreak != null
+                ? storedStreak.GetKillstreakName()
+                : emptySlotText;
 
-        text.text = "[" + key + "] " + name;
+        slot3Text.text =
+            "[3] " + name;
     }
 
+    private void OnDestroy()
+    {
+        if (instance == this)
+            instance = null;
+    }
 }
-
