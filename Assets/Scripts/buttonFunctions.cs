@@ -1,8 +1,13 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class buttonFunctions : MonoBehaviour
 {
+    [SerializeField] private Slider progressBar;
+
     public void resume()
     {
         if (audioManager.instance != null) audioManager.instance.playButtonClick();
@@ -20,7 +25,43 @@ public class buttonFunctions : MonoBehaviour
     {
         if (audioManager.instance != null) audioManager.instance.playButtonClick();
         if (gameManager.instance != null) gameManager.instance.stateUnpause();
-        SceneManager.LoadScene(0);
+        StartCoroutine(LoadSceneAsync("Title"));
+    }
+
+    public IEnumerator LoadSceneAsync(String levelName)
+    {
+
+        if (progressBar != null)
+        {
+            progressBar.gameObject.SetActive(true);
+            progressBar.value = 0f;
+        }
+
+        AsyncOperation scene = SceneManager.LoadSceneAsync(levelName);
+        scene.allowSceneActivation = false;
+
+        while (scene.progress < 0.9f)
+        {
+            float progressValue = Mathf.Clamp01(scene.progress / 0.9f);
+
+            if (progressBar != null)
+            {
+                progressBar.value = progressValue;
+            }
+
+            yield return null;
+        }
+
+        if (progressBar != null)
+        {
+            progressBar.value = 1f;
+        }
+
+        yield return new WaitForSecondsRealtime(0.2f);
+
+        if (audioManager.instance != null) audioManager.instance.stopMusic();
+
+        scene.allowSceneActivation = true;
     }
 
     public void challenge()
@@ -87,12 +128,14 @@ public class buttonFunctions : MonoBehaviour
         if (gameManager.instance.pauseScorePanel != null) gameManager.instance.pauseScorePanel.SetActive(false);
     }
 
-  
+
     public void quit()
     {
         if (audioManager.instance != null) audioManager.instance.playButtonClick();
         #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
+        #elif UNITY_WEBGL
+            Application.OpenURL("about:blank");
         #else
             Application.Quit();
         #endif
