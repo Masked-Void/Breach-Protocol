@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6f1dfaa62e12a2e43b1442e524d7e555
+guid: 419f34d452240a44da9eee275e50bb67
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8
@@ -8,7 +8,7 @@ AudioImporter:
     loadType: 0
     sampleRateSetting: 0
     sampleRateOverride: 44100
-    compressionFormat: 0
+    compressionFormat: 1
     quality: 1
     conversionMode: 0
     preloadAudioData: 0
@@ -21,10 +21,3 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 325670
-  packageName: Basic RPG Sounds
-  packageVersion: 1.0
-  assetPath: Assets/Multiple Solutions/Basic RPG Sounds/Audio/Running Snow 4(Breathing).wav
-  uploadId: 770426

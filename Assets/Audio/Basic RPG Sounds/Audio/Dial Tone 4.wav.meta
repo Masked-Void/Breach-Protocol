@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a924a197fb67dc54c8333971faab862d
+guid: 6dda799e1656ebb4f94d4d92816d2260
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8
@@ -8,7 +8,7 @@ AudioImporter:
     loadType: 0
     sampleRateSetting: 0
     sampleRateOverride: 44100
-    compressionFormat: 0
+    compressionFormat: 1
     quality: 1
     conversionMode: 0
     preloadAudioData: 0
@@ -21,10 +21,3 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 325670
-  packageName: Basic RPG Sounds
-  packageVersion: 1.0
-  assetPath: Assets/Multiple Solutions/Basic RPG Sounds/Audio/Dial Tone 4.wav
-  uploadId: 770426

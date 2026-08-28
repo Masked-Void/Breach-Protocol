@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 36e1487abac7cec48b7d779cfd5507c0
+guid: 85dcd3de264da024aabec7e65e0467ed
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8
@@ -8,7 +8,7 @@ AudioImporter:
     loadType: 0
     sampleRateSetting: 0
     sampleRateOverride: 44100
-    compressionFormat: 0
+    compressionFormat: 1
     quality: 1
     conversionMode: 0
     preloadAudioData: 0
@@ -21,11 +21,3 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 325670
-  packageName: Basic RPG Sounds
-  packageVersion: 1.0
-  assetPath: Assets/Multiple Solutions/Basic RPG Sounds/Audio/Pressure Containment
-    Unlock 6.wav
-  uploadId: 770426

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0d6e6221db56c6241a98475d5ef45d7e
+guid: 79bd909b4acedca47abcf2fb8e42d0fe
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8
@@ -8,7 +8,7 @@ AudioImporter:
     loadType: 0
     sampleRateSetting: 0
     sampleRateOverride: 44100
-    compressionFormat: 0
+    compressionFormat: 1
     quality: 1
     conversionMode: 0
     preloadAudioData: 0
@@ -21,10 +21,3 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 325670
-  packageName: Basic RPG Sounds
-  packageVersion: 1.0
-  assetPath: Assets/Multiple Solutions/Basic RPG Sounds/Audio/Missile Fire 3.wav
-  uploadId: 770426
