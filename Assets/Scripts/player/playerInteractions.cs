@@ -5,6 +5,7 @@ public class playerInteraction : MonoBehaviour
     [Header("Raycast Settings")]
     [Range(1f, 5)][SerializeField] private float maxDistance = 2f;
     [SerializeField] LayerMask interactLayer;
+
     [SerializeField] KeyCode throwKey;
 
     private Camera mainCam;

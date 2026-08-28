@@ -1,6 +1,6 @@
 using System.Collections;
 using TMPro;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +13,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuActive;
     [SerializeField] GameObject menuPause;
     [SerializeField] GameObject menuLose;
+    [SerializeField] GameObject menuWin;
 
     [Header("UI Pages")]
     public GameObject challengesCanvas;
@@ -48,9 +49,9 @@ public class gameManager : MonoBehaviour
     public TMP_Text interactionKey;
 
     [Header("Player")]
-    public Image playerStaminaBar;
     public GameObject playerSpawnPos;
-    public GameObject checkpointPopup;
+    [SerializeField] public Image playerStaminaBar;
+    [SerializeField] public GameObject checkpointPopup;
 
     [Header("Currency")]
     [SerializeField] public int totalBytes = 0;
@@ -81,11 +82,39 @@ public class gameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        if (instance != null && instance != this) {
+            Destroy(gameObject);
+            return;
+        }
         instance = this;
         player = GameObject.FindWithTag("Player");
         playerScript = player.GetComponent<playerController>();
     }
 
+    void OnDestroy() {
+        if (instance == this)
+            instance = null;
+    }
+
+    //Currency Stuff
+    public void AddBytes(int amount)
+    {
+        totalBytes += amount;
+        //Debug.Log("Current Bytes: " + totalBytes);
+    }
+    public void AddFiles(int amount)
+    {
+        totalFiles += amount;
+        //Debug.Log("Current Files: " + totalFiles);
+    }
+    public void SubtractBytes(int amount)
+    {
+        totalBytes -= amount;
+    }
+    public void SubtractFiles(int amount)
+    {
+        totalFiles -= amount;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -165,39 +194,77 @@ public class gameManager : MonoBehaviour
     // Handle the lose state
     public void stateLose()
     {
+
+        endRun(menuLose);
+    }
+
+    //Handes the win state aka when the boss dies
+    public void stateWin() {
+        endRun(menuWin);
+    }
+
+    // Simple method so simplify states
+    void endRun(GameObject endMenu) {
         statePause();
-        menuActive = menuLose;
-        menuActive.SetActive(true);
-        loseSoreText.text = currentKill.ToString("f0");
+        
+        if (menuActive != null && menuActive != endMenu)
+        {
+            menuActive.SetActive(false);
+        }
+
+        if (menuPause != null && menuPause != endMenu)
+        {
+            menuPause.SetActive(false);
+        }
+
+        menuActive = endMenu;
+
+        if (menuActive != null)
+        {
+            menuActive.SetActive(true);
+        }
+
+        if (loseSoreText != null)
+        {
+            loseSoreText.text = currentKill.ToString("f0");
+        }
         if (upgradeManager.instance != null)
         {
             upgradeManager.instance.files += totalFiles;
             upgradeManager.instance.SaveUpgrades();
         }
-        if (audioManager.instance != null) audioManager.instance.playLoseMenuMusic();
-    }
 
-    public void addKill() => currentKill++;
+        // lose screen gets its own music cue
+        if (endMenu == menuLose && audioManager.instance != null)
+        {
+            audioManager.instance.playLoseMenuMusic();
+        }
+    }
+    public void addKill()
+    {
+        currentKill++;
+    }
 
     void updateUI()
     {
         if (waveManager.instance == null) return;
 
-        waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
-        StartCoroutine(AnimateWaveText());
+        if (waveCounter != null) {
+            waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
+            StartCoroutine(AnimateWaveText());
+        }
 
-        killCounter.text = "Kills: " + currentKill;
-
-        if (waveManager.instance.isWaitingForNextWave())
-        {
+        if (waveManager.instance.isWaitingForNextWave()) {
             int secondsLeft = waveManager.instance.getSecondsUntilNextWave();
 
-            waveCountdownText.gameObject.SetActive(true);
-            waveCountdown.text = "" + secondsLeft;
-        }
-        else
-        {
-            waveCountdownText.gameObject.SetActive(false);
+            if (waveCountdownText != null) {
+                waveCountdownText.gameObject.SetActive(true);
+                waveCountdown.text = "" + secondsLeft;
+            }
+        } else {
+            if (waveCountdown != null) {
+                waveCountdownText.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -232,9 +299,4 @@ public class gameManager : MonoBehaviour
         rect.localScale = originalScale;
     }
 
-    // Currency Stuff
-    public void AddBytes(int amount) { totalBytes += amount; }
-    public void AddFiles(int amount) { totalFiles += amount; }
-    public void SubtractBytes(int amount) { totalBytes -= amount; }
-    public void SubtractFiles(int amount) { totalFiles -= amount; }
 }

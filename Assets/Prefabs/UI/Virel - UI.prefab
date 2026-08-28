@@ -645,18 +645,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainMenuLogic, Assembly-CSharp
-        m_MethodName: ExitGameButton
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &271617480499829609
 GameObject:
   m_ObjectHideFlags: 0
@@ -14871,8 +14859,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::killChainManager
   chainTimeLimit: 5
-  killsPerStreakRoll: 3
   killChainCountUI: {fileID: 4895783205309072070}
+  chainAnnouncementUI: {fileID: 0}
   killChainCount: 0
   killChainTimer: 0
 --- !u!114 &273237904850601238
@@ -28307,6 +28295,7 @@ MonoBehaviour:
   menuActive: {fileID: 0}
   menuPause: {fileID: 3688417849886448037}
   menuLose: {fileID: 5372704760630694561}
+  menuWin: {fileID: 0}
   challengesCanvas: {fileID: 7093893995623311335}
   settingsCanvas: {fileID: 2992686335668658384}
   upgradesCanvas: {fileID: 3830351706634729352}
@@ -28328,8 +28317,8 @@ MonoBehaviour:
   interactionUI: {fileID: 2813920847113862592}
   interactionText: {fileID: 5093360542766523186}
   interactionKey: {fileID: 5251123565928842603}
-  playerStaminaBar: {fileID: 5786753524944234791}
   playerSpawnPos: {fileID: 0}
+  playerStaminaBar: {fileID: 5786753524944234791}
   checkpointPopup: {fileID: 0}
   totalBytes: 0
   totalFiles: 0

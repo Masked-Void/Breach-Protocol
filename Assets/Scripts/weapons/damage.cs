@@ -31,6 +31,8 @@ public class damage : MonoBehaviour
     [SerializeField] AudioSource sfxSource;
     [SerializeField] AudioClip sfx;
 
+    [HideInInspector] public weaponStats sourceWeapon;
+
     public bool isExplosive;
 
 
@@ -144,6 +146,13 @@ public class damage : MonoBehaviour
         // Deal damage
         if (type != DamageType.DOT)
         {
+            if (sourceWeapon != null)
+            {
+                enemyBase eb = other.GetComponent<enemyBase>();
+                if (eb == null) eb = other.GetComponentInParent<enemyBase>();
+                if (eb != null) eb.RegisterDamageSource(sourceWeapon, sourceWeapon.isFromGround);
+            }
+
             IDamage dmg = other.GetComponent<IDamage>();
             if (dmg != null)
                 dmg.takeDamage(damageAmount);
@@ -232,7 +241,16 @@ public class damage : MonoBehaviour
             Rigidbody targetRb = hit.GetComponent<Rigidbody>();
             if (targetRb != null)
                 targetRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+
+            IDamage dmg = hit.GetComponent<IDamage>();
+            if(dmg != null) StartCoroutine(delayDamage(dmg));
         }
+    }
+
+    IEnumerator delayDamage(IDamage dmg)
+    {
+        yield return new WaitForFixedUpdate();
+        dmg.takeDamage(explosionDamage);
     }
 
     IEnumerator cameraShake(Camera cam, Vector3 strength, float duration)

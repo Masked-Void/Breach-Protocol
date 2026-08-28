@@ -2,8 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 // spins the glitch cubes to random angles, either snapping or easing into each new target
-public class glitchCubeRotate : MonoBehaviour
-{
+public class glitchCubeRotate : MonoBehaviour {
     [Header("Cubes")]
     [Tooltip("every cube this script randomizes the rotation of")]
     [SerializeField] GameObject[] cubes;
@@ -20,7 +19,7 @@ public class glitchCubeRotate : MonoBehaviour
 
     [Header("Feel")]
     [Tooltip("shapes the lerp, leave empty for plain linear")]
-    [SerializeField] AnimationCurve ease = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+    [SerializeField] AnimationCurve ease = AnimationCurve.EaseInOut(0f , 0f , 1f , 1f);
 
     // per cube state, all these stay the same length as cubes
     Quaternion[] fromRot;
@@ -38,28 +37,26 @@ public class glitchCubeRotate : MonoBehaviour
 
     Coroutine rotateRoutine;
 
-    void OnEnable()
-    {
+    void OnEnable() {
         buildState();
 
         // one routine only, never stack them
-        if (rotateRoutine == null) rotateRoutine = StartCoroutine(tickCubes());
+        if (rotateRoutine == null)
+            rotateRoutine = StartCoroutine(tickCubes());
     }
 
-    void OnDisable()
-    {
+    void OnDisable() {
         // kill it so it doesn't survive a disable/enable and double up
-        if (rotateRoutine != null)
-        {
+        if (rotateRoutine != null) {
             StopCoroutine(rotateRoutine);
             rotateRoutine = null;
         }
     }
 
     // sets up the parallel arrays and gives each cube its starting delay
-    void buildState()
-    {
-        if (cubes == null) return;
+    void buildState() {
+        if (cubes == null)
+            return;
 
         fromRot = new Quaternion[cubes.Length];
         toRot = new Quaternion[cubes.Length];
@@ -68,9 +65,9 @@ public class glitchCubeRotate : MonoBehaviour
         progress = new float[cubes.Length];
         waitLeft = new float[cubes.Length];
 
-        for (int i = 0; i < cubes.Length; i++)
-        {
-            if (cubes[i] == null) continue;
+        for (int i = 0 ; i < cubes.Length ; i++) {
+            if (cubes[i] == null)
+                continue;
 
             fromRot[i] = cubes[i].transform.localRotation;
             fromScale[i] = cubes[i].transform.localScale;
@@ -85,13 +82,10 @@ public class glitchCubeRotate : MonoBehaviour
         }
     }
 
-    IEnumerator tickCubes()
-    {
-        while (true)
-        {
+    IEnumerator tickCubes() {
+        while (true) {
             // nothing assigned yet, idle a frame so we don't spin forever
-            if (cubes == null || cubes.Length == 0)
-            {
+            if (cubes == null || cubes.Length == 0) {
                 yield return null;
                 continue;
             }
@@ -99,19 +93,17 @@ public class glitchCubeRotate : MonoBehaviour
             // unscaled so the cubes keep glitching while the player freezes time
             float dt = Time.unscaledDeltaTime;
 
-            for (int i = 0; i < cubes.Length; i++)
-            {
-                if (cubes[i] == null) continue;
+            for (int i = 0 ; i < cubes.Length ; i++) {
+                if (cubes[i] == null)
+                    continue;
 
-                if (progress[i] < 1f)
-                {
-                    stepLerp(i, dt);
-                }
-                else
-                {
+                if (progress[i] < 1f) {
+                    stepLerp(i , dt);
+                } else {
                     // sitting still, count down to the next target
                     waitLeft[i] -= dt;
-                    if (waitLeft[i] <= 0f) pickTarget(i);
+                    if (waitLeft[i] <= 0f)
+                        pickTarget(i);
                 }
             }
 
@@ -120,49 +112,47 @@ public class glitchCubeRotate : MonoBehaviour
     }
 
     // moves one cube a frame further along its current lerp
-    void stepLerp(int i, float dt)
-    {
+    void stepLerp(int i , float dt) {
         progress[i] += dt / lerpTime;
-        if (progress[i] > 1f) progress[i] = 1f;
+        if (progress[i] > 1f)
+            progress[i] = 1f;
 
         float t = ease != null && ease.length > 0
             ? ease.Evaluate(progress[i])
             : progress[i];
 
         // slerp so it takes the short way around instead of unwinding weird
-        cubes[i].transform.localRotation = Quaternion.Slerp(fromRot[i], toRot[i], t);
-        if (doScale) { 
-            cubes[i].transform.localScale = Vector3.Slerp(fromScale[i], toScale[i], t / 2);
+        cubes[i].transform.localRotation = Quaternion.Slerp(fromRot[i] , toRot[i] , t);
+        if (doScale) {
+            cubes[i].transform.localScale = Vector3.Slerp(fromScale[i] , toScale[i] , t / 2);
         }
         // landed, start the wait for the next one
-        if (progress[i] >= 1f) waitLeft[i] = stagger;
+        if (progress[i] >= 1f)
+            waitLeft[i] = stagger;
     }
 
     // rolls a new random rotation for one cube and kicks off its lerp
-    void pickTarget(int i)
-    {
+    void pickTarget(int i) {
         // float overload, the int one is max exclusive and gives whole degrees only
-        float x = Random.Range(0f, 360f);
-        float y = Random.Range(0f, 360f);
-        float z = Random.Range(0f, 360f);
+        float x = Random.Range(0f , 360f);
+        float y = Random.Range(0f , 360f);
+        float z = Random.Range(0f , 360f);
 
-        float xS = Random.Range(minSize, maxSize);
-        float yS = Random.Range(minSize, maxSize);
-        float zS = Random.Range(minSize, maxSize);
+        float xS = Random.Range(minSize , maxSize);
+        float yS = Random.Range(minSize , maxSize);
+        float zS = Random.Range(minSize , maxSize);
 
         // local so the cubes still read right if the rift parent moves or spins
         fromRot[i] = cubes[i].transform.localRotation;
-        toRot[i] = Quaternion.Euler(x, y, z);
+        toRot[i] = Quaternion.Euler(x , y , z);
 
         fromScale[i] = cubes[i].transform.localScale;
-        toScale[i] = new Vector3(xS, yS, zS);
+        toScale[i] = new Vector3(xS , yS , zS);
 
         // no lerp time means just put it there
-        if (lerpTime <= 0f)
-        {
+        if (lerpTime <= 0f) {
             cubes[i].transform.localRotation = toRot[i];
-            if (doScale)
-            {
+            if (doScale) {
                 cubes[i].transform.localScale = toScale[i];
             }
             progress[i] = 1f;
@@ -174,8 +164,7 @@ public class glitchCubeRotate : MonoBehaviour
     }
 
     // lets the boss manager ramp the feel per phase
-    public void setTiming(float newStagger, float newLerpTime)
-    {
+    public void setTiming(float newStagger , float newLerpTime) {
         stagger = newStagger;
         lerpTime = newLerpTime;
     }

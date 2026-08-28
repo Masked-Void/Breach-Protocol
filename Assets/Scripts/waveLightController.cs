@@ -74,6 +74,10 @@ public class waveLightController : MonoBehaviour
         // );
     }
 
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
+    }
     private void saveOriginalLightSettings()
     {
         originalLightColors = new Color[warningLights.Length];

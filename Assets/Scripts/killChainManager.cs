@@ -1,26 +1,27 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
+/// <summary>
+/// Quick-kill combat feedback only.
+/// This no longer awards scorestreaks; scoreManager owns scorestreak progression.
+/// </summary>
 public class killChainManager : MonoBehaviour
 {
     public static killChainManager instance;
 
-    [Header("Kill Chain Settings")]
-    [SerializeField] private float chainTimeLimit;
-    [SerializeField] private int killsPerStreakRoll;
+    [Header("Kill Chain")]
+    [Tooltip("Real-world seconds allowed between kills before the chain resets.")]
+    [SerializeField] private float chainTimeLimit = 3f;
 
-    [Header("UI")]
-    [SerializeField] private TextMeshProUGUI killChainCountUI;
+    [Header("UI (Optional)")]
+    [SerializeField] private TMP_Text killChainCountUI;
+    [SerializeField] private TMP_Text chainAnnouncementUI;
 
     [Header("Runtime")]
     [SerializeField] private int killChainCount;
     [SerializeField] private float killChainTimer;
 
-    // When true, RegisterKill will ignore incoming enemy deaths.
-    // This prevents a nuke from generating additional killstreak rewards.
-    private bool ignoreRegisteredKills;
-
-    void Awake()
+    private void Awake()
     {
         if (instance != null && instance != this)
         {
@@ -29,82 +30,31 @@ public class killChainManager : MonoBehaviour
         }
 
         instance = this;
+        UpdateUI();
     }
 
-    void Update()
+    private void Update()
     {
-        updateKillChainUI();
-        updateKillChainTimer();
-    }
-
-    void updateKillChainUI()
-    {
-        if (killChainCountUI != null)
-        {
-            killChainCountUI.text = "Killstreak: " + killChainCount;
-        }
-    }
-
-    void updateKillChainTimer()
-    {
-        // The timer only runs while the player has an active chain.
         if (killChainCount <= 0)
             return;
 
-        killChainTimer += Time.deltaTime;
+        if (gameManager.instance != null && gameManager.instance.isPaused)
+            return;
+
+        // Kill-chain timing is real time; slow motion does not extend it.
+        killChainTimer += Time.unscaledDeltaTime;
 
         if (killChainTimer >= chainTimeLimit)
-        {
             ResetChain();
-        }
     }
 
     public void RegisterKill()
     {
-        // Forced kills such as the Nuke still use the normal enemy death
-        // sequence, but they should not increase the player's kill chain.
-        if (ignoreRegisteredKills)
-            return;
-
         killChainCount++;
         killChainTimer = 0f;
 
-        /*Debug.Log("Kill Chain: " + killChainCount);
-
-        switch (killChainCount)
-        {
-            case 2:
-                Debug.Log("Double Kill!");
-                break;
-
-            case 3:
-                Debug.Log("Triple Kill!");
-                break;
-
-            case 4:
-                Debug.Log("Quadra Kill!");
-                break;
-
-            case 5:
-                Debug.Log("Killing FRENZY!");
-                break;
-        }*/
-
-        // Every configured number of kills, attempt to award
-        // the player a random killstreak.
-        if (killsPerStreakRoll > 0 &&
-            killChainCount % killsPerStreakRoll == 0)
-        {
-            if (killstreakManager.instance != null)
-            {
-                killstreakManager.instance.tryRoll();
-            }
-        }
-    }
-
-    public void SetIgnoreRegisteredKills(bool shouldIgnore)
-    {
-        ignoreRegisteredKills = shouldIgnore;
+        UpdateUI();
+        UpdateAnnouncement();
     }
 
     public void ResetChain()
@@ -112,11 +62,54 @@ public class killChainManager : MonoBehaviour
         killChainCount = 0;
         killChainTimer = 0f;
 
-        //Debug.Log("Kill Chain Reset");
+        UpdateUI();
+
+        if (chainAnnouncementUI != null)
+            chainAnnouncementUI.text = string.Empty;
     }
 
     public int GetKillChainCount()
     {
         return killChainCount;
     }
+
+    private void UpdateUI()
+    {
+        if (killChainCountUI != null)
+        {
+            killChainCountUI.text =
+                killChainCount > 0
+                    ? "CHAIN x" + killChainCount
+                    : string.Empty;
+        }
+    }
+
+    private void UpdateAnnouncement()
+    {
+        if (chainAnnouncementUI == null)
+            return;
+
+        if (killChainCount == 2)
+            chainAnnouncementUI.text = "DOUBLE KILL";
+        else if (killChainCount == 3)
+            chainAnnouncementUI.text = "TRIPLE KILL";
+        else if (killChainCount == 4)
+            chainAnnouncementUI.text = "QUAD KILL";
+        else if (killChainCount >= 5)
+            chainAnnouncementUI.text = "KILLING FRENZY";
+        else
+            chainAnnouncementUI.text = string.Empty;
+    }
+
+    private void OnValidate()
+    {
+        chainTimeLimit = Mathf.Max(0.1f, chainTimeLimit);
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+            instance = null;
+    }
 }
+

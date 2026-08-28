@@ -12,6 +12,7 @@ public class titleScreenManager : MonoBehaviour
     public GameObject challengePanel;
     public GameObject settingsPanel;
     public GameObject aboutPanel;
+    public GameObject creditsPanel;
 
     [Header("Top Navigation Buttons")]
     public GameObject Nav;
@@ -48,14 +49,14 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("MK2"));
+        StartCoroutine(LoadSceneAsync("Devin"));
     }
     public void openLevelDevinC()
     {
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("Mark"));
+        StartCoroutine(LoadSceneAsync("dclevel"));
     }
     public void openLevelMark()
     {
@@ -69,14 +70,14 @@ public class titleScreenManager : MonoBehaviour
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("Virel"));
+        StartCoroutine(LoadSceneAsync("ColdStorage"));
     }
     public void openLevelVirel()
     {
         audioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("Virel"));
+        StartCoroutine(LoadSceneAsync("LevelCreation-Virel"));
     }
 
     public void openSettings()
@@ -149,13 +150,11 @@ public class titleScreenManager : MonoBehaviour
     }
     public void switchToChallenge()
     {
-        audioManager.instance.playButtonClick();
         deactivateAllPanels();
         challengePanel.SetActive(true);
     }
     public void switchToWeapon()
     {
-        audioManager.instance.playButtonClick();
         deactivateAllPanels();
         weaponPanel.SetActive(true);
     }
@@ -174,13 +173,33 @@ public class titleScreenManager : MonoBehaviour
         aboutPanel.SetActive(true);
     }
 
+    public void switchToCredits()
+    {
+        audioManager.instance.playButtonClick();
+        deactivateAllPanels();
+
+        if (creditsPanel != null)
+        {
+            creditsPanel.SetActive(true);
+        }
+    }
+
     private void deactivateAllPanels()
     {
         homePanel.SetActive(false);
         weaponPanel.SetActive(false);
         settingsPanel.SetActive(false);
         challengePanel.SetActive(false);
-        if (aboutPanel != null) aboutPanel.SetActive(false);
+
+        if (aboutPanel != null)
+        {
+            aboutPanel.SetActive(false);
+        }
+
+        if (creditsPanel != null)
+        {
+            creditsPanel.SetActive(false);
+        }
     }
 
     private void deactivateAllSettings()

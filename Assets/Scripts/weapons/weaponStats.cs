@@ -6,6 +6,7 @@ public abstract class weaponStats : ScriptableObject
     public string Name;
 
     [Header("Model")]
+    public string weaponName;
     public GameObject weaponModel;
     public Sprite sprite;
 

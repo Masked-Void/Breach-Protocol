@@ -24,6 +24,9 @@ public class audioManager : MonoBehaviour
     [SerializeField] AudioClip[] steps;
     [Range(0, 1)][SerializeField] float stepsVol = .3f;
 
+    [SerializeField] public AudioClip[] enemySteps;
+    [Range(0, 1)][SerializeField] public float enemyStepsVol = .3f;
+
     [SerializeField] public AudioClip[] enemyHit;
     [Range(0, 1)][SerializeField] public float enemyHitVol = .8f;
 
@@ -109,6 +112,11 @@ public class audioManager : MonoBehaviour
             musicSource.volume = isMuted ? 0f : (musicVolume * masterVolume);
         if (sfxSource != null)
             sfxSource.volume = isMuted ? 0f : (sfxVolume * masterVolume);
+    }
+
+    private void OnDestroy() {
+        if (instance == this)
+            instance = null;
     }
 
     public void setMasterVolume(float vol)

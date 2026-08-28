@@ -18,9 +18,9 @@ MonoBehaviour:
     killCount: 5
   - challengeID: shotgun_20
     displayName: Pepper Spray II
-    killCount: 5
+    killCount: 20
   - challengeID: shotgun_100
     displayName: Pepper Spray III
-    killCount: 5
+    killCount: 100
   description: Get kills with a picked up shotgun
   weapon: {fileID: 11400000, guid: 390a74157b59cac4e8536a3f2d61b51c, type: 2}
