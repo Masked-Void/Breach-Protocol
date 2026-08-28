@@ -25,6 +25,6 @@ MonoBehaviour:
   Rotation: {x: 0, y: 0, z: 0}
   pelletCount: 20
   spreadAngle: 0.2
-  startingBullets: 30
+  startingBullets: 7
   shootSound: {fileID: 8300000, guid: dce971b0af68f5240864a8d4cc1851ed, type: 3}
   shootSoundVol: 0.8
