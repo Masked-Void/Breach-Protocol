@@ -53,3 +53,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ef7a53a17b68b474aa996e4a59d58c49, type: 2}
   - {fileID: 11400000, guid: 5769f53383e30824aba5454d741e75d8, type: 2}
   emptySlot: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 64

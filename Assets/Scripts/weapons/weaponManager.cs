@@ -13,9 +13,6 @@ public class weaponManager : MonoBehaviour
     bool isEquipping;
     [Header("Dropped Weapons")]
     [SerializeField] LayerMask groundLayers = ~0;
-    // [Header("Challenge")]
-    // public bool currentWeaponFromGround = false;
-
     GameObject spawnedWeaponModel;
     Transform gunBarrel;
     float attackTimer;
