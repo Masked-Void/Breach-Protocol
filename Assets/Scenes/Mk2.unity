@@ -349,6 +349,18 @@ PrefabInstance:
       value: UI Samuel
       objectReference: {fileID: 0}
     - target: {fileID: 5086060835436287119, guid: 8415e0c5b58296046ac8c06eb5b29035, type: 3}
+      propertyPath: basicEnemyPercent
+      value: 33
+      objectReference: {fileID: 0}
+    - target: {fileID: 5086060835436287119, guid: 8415e0c5b58296046ac8c06eb5b29035, type: 3}
+      propertyPath: heavyEnemyPercent
+      value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 5086060835436287119, guid: 8415e0c5b58296046ac8c06eb5b29035, type: 3}
+      propertyPath: rangedEnemyPercent
+      value: 33
+      objectReference: {fileID: 0}
+    - target: {fileID: 5086060835436287119, guid: 8415e0c5b58296046ac8c06eb5b29035, type: 3}
       propertyPath: 'roamPointTransforms.Array.data[0]'
       value: 
       objectReference: {fileID: 1319283780}
