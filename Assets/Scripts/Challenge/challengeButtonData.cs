@@ -29,10 +29,7 @@ public class challengeButtonData : MonoBehaviour
     {
         if (challengeManager.instance == null || challenge == null) return;
         bool allcomplete = challengeManager.instance.areAllChallengesComplete(challenge);
-        if (lockIcon != null)
-        {
-            lockIcon.SetActive(!allcomplete);
-        }
+        if (lockIcon != null) lockIcon.SetActive(!allcomplete);
     }
 
     void OnEnable()

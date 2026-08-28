@@ -203,7 +203,7 @@ public class challengeManager : MonoBehaviour
                     : 0f;
 
                 if (challengeSlots[i].challengeName != null)
-                    challengeSlots[i].challengeName.text = challenge.displayName;
+                    challengeSlots[i].challengeName.text = challenge.displayName + $"   ({challenge.killCount} kills)";
 
                 if (challengeSlots[i].progressBar != null)
                     challengeSlots[i].progressBar.fillAmount = Mathf.Clamp01(progressRatio);

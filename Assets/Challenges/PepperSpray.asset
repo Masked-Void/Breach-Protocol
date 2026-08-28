@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162886db7513b5c4694b9e2fed4e9df8, type: 3}
   m_Name: PepperSpray
   m_EditorClassIdentifier: Assembly-CSharp::challengeData
+  challengeName: Pepper Spray
   challengesList:
   - challengeID: shotgun_5
     displayName: Pepper Spray I
