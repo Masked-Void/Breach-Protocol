@@ -13442,8 +13442,8 @@ MonoBehaviour:
     collected during a breach can be spent on temporary upgrades that increase your
     power for the current run.\r\n\r\nARCHIVED DATA\r\nPersistent Data survives between
     runs and can be used to unlock permanent progression including new weapons, starting
-    loadouts, killstreak programs, and more.\r\n\r\nEvery run makes you stronger.\r\nEvery
-    wave pushes you further."
+    loadouts, killstreak programs, and more.\n\n*Weapons can only be equiped from
+    Home Screen*\r\n\r\nEvery run makes you stronger.\r\nEvery wave pushes you further."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -13470,8 +13470,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -22500,7 +22500,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7130911829068795153
 RectTransform:
   m_ObjectHideFlags: 0

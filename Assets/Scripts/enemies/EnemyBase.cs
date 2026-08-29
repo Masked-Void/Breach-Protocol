@@ -248,10 +248,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (gameManager.instance == null || gameManager.instance.player == null) return false;
 
         Vector3 dirToPlayer = gameManager.instance.player.transform.position - transform.position;
+        angleToPlayer = Vector3.Angle(playerDir, transform.forward);
 
         if (Physics.Raycast(transform.position, dirToPlayer.normalized, out RaycastHit hit, rangedEnemeyAttackRange))
         {
-            return hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player");
+            return hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player") && angleToPlayer <= FOV;
         }
         return false;
     }
@@ -264,6 +265,8 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
         Vector3 dirToPlayer = gameManager.instance.player.transform.position - transform.position;
         float distance = dirToPlayer.magnitude;
+        angleToPlayer = Vector3.Angle(playerDir, transform.forward);
+
         if (willRoam && distance > rangedEnemeyAttackRange)
         {
             return false;
@@ -271,12 +274,13 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
         if (Physics.Raycast(transform.position,dirToPlayer.normalized, out RaycastHit hit, rangedEnemeyAttackRange))
         {
-            
+            if (hit.collider.CompareTag("Player") && angleToPlayer <= FOV)
+            {
                 playerDir = dirToPlayer;
                 faceTarget();
                 attack();
                 return true;
-            
+            }
         }
 
         return false;

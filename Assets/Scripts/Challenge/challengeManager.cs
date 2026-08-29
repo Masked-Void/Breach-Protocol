@@ -6,6 +6,7 @@ using static upgradeManager;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class challengeManager : MonoBehaviour
 {
@@ -164,18 +165,19 @@ public class challengeManager : MonoBehaviour
             if (!isBought)
             {
                 int cost = weaponChallenge.weapon != null ? weaponChallenge.weapon.cost : 0;
-                actionText.text = $"Buy ({cost})";
+                if(weaponChallenge.weapon.name != "Pistol") actionText.text = $"Buy ({cost})";
 
                 int currentFiles = upgradeManager.instance != null ? upgradeManager.instance.files : 0;
-                bool canAfford = currentFiles >= cost; ;
+                bool canAfford = currentFiles >= cost;
+                bool allComplete = areAllChallengesComplete(weaponChallenge);
 
-                actionButton.interactable = canAfford;
+                actionButton.interactable = canAfford && allComplete;
                 actionButton.onClick.AddListener(() => buyWeapon(weaponChallenge));
             }
             else if (!isEquipped)
             {
                 actionText.text = "Equip";
-                actionButton.interactable = true;
+                actionButton.interactable = SceneManager.GetActiveScene().name == "Title";
                 actionButton.onClick.AddListener(() => equipWeapon(weaponChallenge));
             }
             else

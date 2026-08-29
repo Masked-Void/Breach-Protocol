@@ -8604,7 +8604,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3010337571457699106}
   m_HandleRect: {fileID: 142371136393077403}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -17375,7 +17375,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &5871462771588415424
 GameObject:
   m_ObjectHideFlags: 0
@@ -21586,6 +21586,7 @@ MonoBehaviour:
   statsPanel: {fileID: 0}
   actionButton: {fileID: 6881844347806590405}
   actionText: {fileID: 3025532332765961596}
+  fileCountText: {fileID: 0}
   challengeSlots:
   - slotRoot: {fileID: 3484084638161650711}
     challengeName: {fileID: 2495604122611600374}
@@ -25318,7 +25319,9 @@ MonoBehaviour:
   upgradeValue: {fileID: 0}
   buyButton: {fileID: 3360335128532421257}
   buyButtonText: {fileID: 1863446420662559448}
+  fileCountText: {fileID: 0}
   files: 1200
+  requiredChallengeSlots: []
   purchasedUpgrades: []
   activeUpgrades: []
 --- !u!1 &9019014454140075906

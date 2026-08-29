@@ -19,21 +19,17 @@ public class buttonFunctions : MonoBehaviour
     public void restart()
     {
         if (audioManager.instance != null) audioManager.instance.playButtonClick();
-        if (gameManager.instance != null) gameManager.instance.stateUnpause();
         StartCoroutine(LoadSceneAsync(SceneManager.GetActiveScene().name));
     }
 
     public void home()
     {
         if (audioManager.instance != null) audioManager.instance.playButtonClick();
-        if (gameManager.instance != null) gameManager.instance.stateUnpause();
         StartCoroutine(LoadSceneAsync("Title"));
     }
 
     public IEnumerator LoadSceneAsync(String levelName)
     {
-        Time.timeScale = 1f;
-
         if (loadingBackground != null) loadingBackground.SetActive(true);
 
         if (progressBar != null)
@@ -62,8 +58,9 @@ public class buttonFunctions : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.2f);
 
         if (audioManager.instance != null) audioManager.instance.stopMusic();
+        Time.timeScale = 1f;
+        if (gameManager.instance != null) gameManager.instance.stateUnpause();
         scene.allowSceneActivation = true;
-        //if (loadingBackground != null) loadingBackground.SetActive(false);
     }
 
     public void challenge()

@@ -17,6 +17,6 @@ public class droppedWeapon : MonoBehaviour
         if (((1 << collision.gameObject.layer) & groundLayers) == 0) return;
 
         hasLanded = true;
-        Destroy(gameObject);
+        Destroy(gameObject, 1f);
     }
 }
