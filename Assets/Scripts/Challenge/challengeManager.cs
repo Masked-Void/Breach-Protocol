@@ -147,7 +147,7 @@ public class challengeManager : MonoBehaviour
         }
 
         if (statsPanel != null) statsPanel.SetActive(allComplete);
-        if (weaponName != null && weaponChallenge.weapon != null) weaponName.text = weaponChallenge.weapon.Name;
+        if (weaponName != null && weaponChallenge.weapon != null) weaponName.text = weaponChallenge.challengeName + $"  ({weaponChallenge.weapon.Name})";
         if (description != null) description.text = weaponChallenge.description;
         if(fileCountText != null && upgradeManager.instance != null) fileCountText.text = "" + upgradeManager.instance.files;
 
