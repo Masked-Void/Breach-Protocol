@@ -19,4 +19,6 @@ MonoBehaviour:
   upgradeType: 0
   value: 2
   icon: {fileID: 21300000, guid: f38a619956235714da2b3ba813d67cef, type: 3}
-  equippableVersion: {fileID: 0}
+  requiredChallenges:
+  - {fileID: 11400000, guid: 3d9db04893625d2468eeb3a2b012f6f2, type: 2}
+  - {fileID: 11400000, guid: 9ded1e8600c288e46b7581c1ebf8a2a0, type: 2}
