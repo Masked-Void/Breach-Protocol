@@ -83,7 +83,7 @@ public class upgradeManager : MonoBehaviour
         if (upgradeDescription != null)
         {
             upgradeDescription.text = upgrade.upgradeType == upgradeData.UpgradeType.FireRate
-                ? upgrade.description + $". Reduces reload time by 1/{upgrade.value}"
+                ? upgrade.description + $". Reduces firerate by 1/{upgrade.value}"
                 : upgrade.description;
         }
         if (upgradeCost != null) upgradeCost.text = "" + upgrade.cost;

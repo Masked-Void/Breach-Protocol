@@ -20,7 +20,7 @@ public class buttonFunctions : MonoBehaviour
     {
         if (audioManager.instance != null) audioManager.instance.playButtonClick();
         if (gameManager.instance != null) gameManager.instance.stateUnpause();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        StartCoroutine(LoadSceneAsync(SceneManager.GetActiveScene().name));
     }
 
     public void home()
