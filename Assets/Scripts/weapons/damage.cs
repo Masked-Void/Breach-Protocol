@@ -48,8 +48,11 @@ public class damage : MonoBehaviour
         hasAudioManager = audioManager.instance != null;
 
         if (type == DamageType.bullet)
+        {
             if (rb == null && !TryGetComponent<Rigidbody>(out rb))
-                rb = gameObject.AddComponent<Rigidbody>();
+                rb = gameObject.AddComponent<Rigidbody>(); 
+            gameObject.layer = LayerMask.NameToLayer("PlayerBullets");
+        }
 
         if (type == DamageType.DOT && hasAudioManager)
         {
@@ -105,6 +108,11 @@ public class damage : MonoBehaviour
         Vector3 hitPoint = collision.contacts[0].point;
         handleGlassShatter(other, hitPoint);
         handleDamageAndEffects(other);
+
+        if (TryGetComponent<WeaponShatter>(out WeaponShatter shatter))
+            shatter.Shatter(hitPoint);
+        else
+            Destroy(gameObject);
     }
 
     void OnTriggerEnter(Collider other)
@@ -243,7 +251,7 @@ public class damage : MonoBehaviour
                 targetRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
 
             IDamage dmg = hit.GetComponent<IDamage>();
-            if(dmg != null) StartCoroutine(delayDamage(dmg));
+            if (dmg != null) StartCoroutine(delayDamage(dmg));
         }
     }
 
