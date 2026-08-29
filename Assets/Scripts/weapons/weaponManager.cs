@@ -21,6 +21,11 @@ public class weaponManager : MonoBehaviour
     [SerializeField] Vector3 meleeSwingRotation = new Vector3(35f, -70f, 20f);
     [SerializeField] Vector3 meleeSwingPosition = new Vector3(.08f, -.05f, .15f);
 
+    [Header("Aim Rotation")]
+    [SerializeField] private float aimRotationSpeed = 25f;
+    [SerializeField] private float maxAimDistance = 500f;
+    [SerializeField] private LayerMask aimTargetLayers = ~0;
+
     bool isMeleeSwinging;
 
 
@@ -50,8 +55,9 @@ public class weaponManager : MonoBehaviour
 
         weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
 
-        if (gameManager.instance!=null && gameManager.instance.ammoPanel == gameObject) {
-            Debug.LogError("weaponManager: ammoPanel is wired to the weapon manager, fix reference on gameManager" , this);
+        if (gameManager.instance != null && gameManager.instance.ammoPanel == gameObject)
+        {
+            Debug.LogError("weaponManager: ammoPanel is wired to the weapon manager, fix reference on gameManager", this);
             gameManager.instance.ammoPanel = null;
         }
 
@@ -86,8 +92,9 @@ public class weaponManager : MonoBehaviour
     }
 
     // logs when something turns this off and what kind of off it is
-    void OnDisable() {
-        Debug.Log($"weaponManager disabled | activeSelf {gameObject.activeSelf} | enabled {enabled}" , gameObject);
+    void OnDisable()
+    {
+        Debug.Log($"weaponManager disabled | activeSelf {gameObject.activeSelf} | enabled {enabled}", gameObject);
     }
 
     public void equipWeapon(weaponStats newWeapon, int ammoOverride = -1)
@@ -226,11 +233,13 @@ public class weaponManager : MonoBehaviour
         if (gameManager.instance == null) return;
 
         bool isGun = activeWeapon is gunStats;
-        if (gameManager.instance.ammoPanel != null) {
+        if (gameManager.instance.ammoPanel != null)
+        {
             gameManager.instance.ammoPanel.SetActive(isGun);
         }
 
-        if (isGun && gameManager.instance.magAmmoUI!=null){
+        if (isGun && gameManager.instance.magAmmoUI != null)
+        {
             gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
         }
 
@@ -296,7 +305,7 @@ public class weaponManager : MonoBehaviour
             float t = timer / meleeReturnDuration;
 
             weaponTransform.localRotation = Quaternion.Lerp(swingRotation, startRotation, t);
-            weaponTransform.localPosition = Vector3.Lerp (startPosition, swingPosition, t);
+            weaponTransform.localPosition = Vector3.Lerp(startPosition, swingPosition, t);
             yield return null;
         }
 

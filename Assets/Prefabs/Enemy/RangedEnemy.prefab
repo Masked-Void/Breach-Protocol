@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7980070263694380636}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GunPivotPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,6 +89,7 @@ MonoBehaviour:
   attackRate: 0.4
   attackRange: 8
   attackDamage: 1
+  rangedEnemeyAttackRange: 15
   roamWaitTime: 1.8
   roamTarget: {fileID: 0}
   roamArriveDistance: 0.1
@@ -96,6 +97,9 @@ MonoBehaviour:
   hasLeftSpawnRoom: 0
   willRoam: 0
   roamPoint: {fileID: 0}
+  stepInterval: 0.5
+  movementThreshold: 0.1
+  maxRoamDistanceFromPlayer: 15
   gunPivot: {fileID: 7980070263694380636}
   gunRotateSpeed: 20
   gunModel: {fileID: 2706629671963561621}
@@ -106,6 +110,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
   - {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
   - {fileID: 11400000, guid: 2b6e5048284a7c641a681baad4472c26, type: 2}
+  patrol: {fileID: 0}
   gunBarrel: {fileID: 0}
 --- !u!33 &7075587635719164594
 MeshFilter:

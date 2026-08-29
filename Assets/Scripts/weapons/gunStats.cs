@@ -58,6 +58,7 @@ public class gunStats : weaponStats
 
                 // Spawn the bullet projectile flying out into its offset trajectory
                 Transform spawnedBullet = Instantiate(bullet, gunBarrel.position, spreadRotation);
+                spawnedBullet.gameObject.layer = LayerMask.NameToLayer("PlayerBullets");
 
                 if (spawnedBullet.TryGetComponent<damage>(out damage dmg))
                 {
