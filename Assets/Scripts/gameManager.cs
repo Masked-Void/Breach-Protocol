@@ -82,7 +82,8 @@ public class gameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        if (instance != null && instance != this) {
+        if (instance != null && instance != this)
+        {
             Destroy(gameObject);
             return;
         }
@@ -91,7 +92,8 @@ public class gameManager : MonoBehaviour
         playerScript = player.GetComponent<playerController>();
     }
 
-    void OnDestroy() {
+    void OnDestroy()
+    {
         if (instance == this)
             instance = null;
     }
@@ -194,14 +196,16 @@ public class gameManager : MonoBehaviour
     }
 
     //Handes the win state aka when the boss dies
-    public void stateWin() {
+    public void stateWin()
+    {
         endRun(menuWin);
     }
 
     // Simple method so simplify states
-    void endRun(GameObject endMenu) {
+    void endRun(GameObject endMenu)
+    {
         statePause();
-        
+
         if (menuActive != null && menuActive != endMenu)
         {
             menuActive.SetActive(false);
@@ -244,20 +248,24 @@ public class gameManager : MonoBehaviour
     {
         if (waveManager.instance == null) return;
 
-        if (waveCounter != null) {
-            waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
-            StartCoroutine(AnimateWaveText());
-        }
+        if (waveCounter != null)waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
+        if(killCounter != null) killCounter.text = "Kills: " + waveManager.instance.getEnemiesKilled();
 
-        if (waveManager.instance.isWaitingForNextWave()) {
+        if (waveManager.instance.isWaitingForNextWave())
+        {
             int secondsLeft = waveManager.instance.getSecondsUntilNextWave();
 
-            if (waveCountdownText != null) {
+            if (waveCountdownText != null)
+            {
                 waveCountdownText.gameObject.SetActive(true);
                 waveCountdown.text = "" + secondsLeft;
+                StartCoroutine(AnimateWaveText());
             }
-        } else {
-            if (waveCountdown != null) {
+        }
+        else
+        {
+            if (waveCountdown != null)
+            {
                 waveCountdownText.gameObject.SetActive(false);
             }
         }
