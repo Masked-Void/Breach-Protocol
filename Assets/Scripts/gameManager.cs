@@ -122,7 +122,7 @@ public class gameManager : MonoBehaviour
     {
         bytesText.text = "Bytes: " + totalBytes.ToString();
 
-        if (Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             if (audioManager.instance != null) audioManager.instance.playButtonClick();
             if (menuActive == null)
