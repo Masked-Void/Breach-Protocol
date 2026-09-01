@@ -255,8 +255,6 @@ MonoBehaviour:
   streakPool: []
   allowStacking: 0
   slot3Text: {fileID: 0}
-  slot4Text: {fileID: 0}
-  slot5Text: {fileID: 0}
   emptySlotText: EMPTY
   ammoRefundReceiverSource: {fileID: 0}
   rootAccessActive: 0
@@ -1245,6 +1243,7 @@ GameObject:
   - component: {fileID: 4539600639274360597}
   - component: {fileID: 7834901390786447360}
   - component: {fileID: 685019443247867551}
+  - component: {fileID: 4959182267556369802}
   m_Layer: 0
   m_Name: ExitGame
   m_TagString: Untagged
@@ -1348,6 +1347,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4959182267556369802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240144542510637475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1b2e84aa0450e049934de31014ee7a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::hideOnWebGL
 --- !u!1 &253501790278127075
 GameObject:
   m_ObjectHideFlags: 0
@@ -4527,41 +4538,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58d3a5c6800d394fb15995a8ac91104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::gameManager
-  markerNames:
-    menuPause: Pause Menu
-    menuLose: Lose Menu
-    menuWin: Win Menu
-    challengesCanvas: ChallengesCanvas
-    settingsCanvas: SettingsCanvas
-    upgradesCanvas: UpgradesCanvas
-    navTab: Nav
-    navChallengesButton: navChallenges
-    navSettingsButton: navSettings
-    navUpgradesButton: navUpgrades
-    buttons: Buttons
-    backButton: Return
-    soundMenu: soundMenu
-    controlsMenu: ControlsCanvas
-    pauseScorePanel: Score
-    pauseScoreText: Value
-    loseScoreText: scoreValue
-    killCounter: killsCounter
-    waveCounter: waveNumer
-    waveCountdownText: waveCountDown
-    waveCountdown: Countdown
-    interactionUI: interactionUI
-    interactionText: interactionText
-    interactionKey: interactionKey
-    playerSpawnPos: 
-    playerStaminaBar: staminaBar
-    checkpointPopup: 
-    shopMessage: shopMessage
-    shopUI: shopUI
-    damageFlashUI: Damage Flash
-    ammoPanel: Ammo
-    magAmmoUI: Mag
-    totalAmmoUI: Total
-    activeWeapon: activeWeaponImage
   menuActive: {fileID: 0}
   menuPause: {fileID: 483273962949839094}
   menuLose: {fileID: 2263263232656634311}
@@ -4579,7 +4555,7 @@ MonoBehaviour:
   controlsMenu: {fileID: 8788088591479287976}
   pauseScorePanel: {fileID: 5501814049030353380}
   pauseScoreText: {fileID: 7145599423355499471}
-  loseScoreText: {fileID: 61711526711287241}
+  loseSoreText: {fileID: 0}
   killCounter: {fileID: 4348604412768240063}
   waveCounter: {fileID: 7914983771478063650}
   waveCountdownText: {fileID: 3875698204517057673}
@@ -4589,6 +4565,7 @@ MonoBehaviour:
   interactionKey: {fileID: 1305246003730074125}
   playerSpawnPos: {fileID: 0}
   playerStaminaBar: {fileID: 2864838421731665799}
+  checkpointPopup: {fileID: 0}
   totalBytes: 0
   totalFiles: 0
   bytesText: {fileID: 6755633721780261055}
@@ -6768,6 +6745,7 @@ GameObject:
   - component: {fileID: 5632998705000041043}
   - component: {fileID: 465768694541135995}
   - component: {fileID: 6660207625928017792}
+  - component: {fileID: 7216137871269269168}
   m_Layer: 5
   m_Name: Quit
   m_TagString: Untagged
@@ -6889,6 +6867,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7216137871269269168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1939532766463970271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1b2e84aa0450e049934de31014ee7a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::hideOnWebGL
 --- !u!1 &1977491693149160034
 GameObject:
   m_ObjectHideFlags: 0
@@ -8236,6 +8226,7 @@ MonoBehaviour:
   statsPanel: {fileID: 8290645719995927985}
   actionButton: {fileID: 822717914133682736}
   actionText: {fileID: 2642349861598286966}
+  fileCountText: {fileID: 0}
   challengeSlots:
   - slotRoot: {fileID: 1687968198333957482}
     challengeName: {fileID: 7332089753291536935}
@@ -14628,6 +14619,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ef7a53a17b68b474aa996e4a59d58c49, type: 2}
   - {fileID: 11400000, guid: 5769f53383e30824aba5454d741e75d8, type: 2}
   emptySlot: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  meleeSwingDuration: 0.08
+  meleeReturnDuration: 0.12
+  meleeSwingRotation: {x: 35, y: -70, z: 20}
+  meleeSwingPosition: {x: 0.08, y: -0.05, z: 0.15}
+  aimRotationSpeed: 25
+  maxAimDistance: 500
+  aimTargetLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &4496308525440028487
 GameObject:
   m_ObjectHideFlags: 0
@@ -24957,6 +24960,7 @@ GameObject:
   - component: {fileID: 3198682969442379579}
   - component: {fileID: 7467304955945568729}
   - component: {fileID: 5532563610304751190}
+  - component: {fileID: 7188496645102645801}
   m_Layer: 5
   m_Name: Quit
   m_TagString: Untagged
@@ -25078,6 +25082,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7188496645102645801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7548494460085993856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1b2e84aa0450e049934de31014ee7a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::hideOnWebGL
 --- !u!1 &7567503565974004654
 GameObject:
   m_ObjectHideFlags: 0
@@ -25805,7 +25821,9 @@ MonoBehaviour:
   upgradeValue: {fileID: 0}
   buyButton: {fileID: 6862633654261241660}
   buyButtonText: {fileID: 71380272390528878}
+  fileCountText: {fileID: 0}
   files: 0
+  requiredChallengeSlots: []
   purchasedUpgrades: []
   activeUpgrades: []
 --- !u!1 &7717651520115277492
@@ -27551,6 +27569,7 @@ GameObject:
   - component: {fileID: 6867943110422462088}
   - component: {fileID: 4404783198074381427}
   - component: {fileID: 582624281122995206}
+  - component: {fileID: 5490348556168183639}
   m_Layer: 0
   m_Name: ExitGame
   m_TagString: Untagged
@@ -27642,6 +27661,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5490348556168183639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7972816112104582144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1b2e84aa0450e049934de31014ee7a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::hideOnWebGL
 --- !u!1 &7999017826420363416
 GameObject:
   m_ObjectHideFlags: 0
@@ -29190,6 +29221,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20e3a068161237641af0bce813648f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::buttonFunctions
+  loadingBackground: {fileID: 0}
+  progressBar: {fileID: 0}
 --- !u!1 &8359514220248643270
 GameObject:
   m_ObjectHideFlags: 0
