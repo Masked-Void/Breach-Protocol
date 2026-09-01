@@ -8957,8 +8957,16 @@ PrefabInstance:
       value: StairsA
       objectReference: {fileID: 0}
     - target: {fileID: 4885884992009956, guid: 9912bf44194f8124da47f1e6355e8ae1, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885884992009956, guid: 9912bf44194f8124da47f1e6355e8ae1, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885884992009956, guid: 9912bf44194f8124da47f1e6355e8ae1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.75
+      value: 13.7
       objectReference: {fileID: 0}
     - target: {fileID: 4885884992009956, guid: 9912bf44194f8124da47f1e6355e8ae1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -8966,7 +8974,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4885884992009956, guid: 9912bf44194f8124da47f1e6355e8ae1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.25
+      value: 5.75
       objectReference: {fileID: 0}
     - target: {fileID: 4885884992009956, guid: 9912bf44194f8124da47f1e6355e8ae1, type: 3}
       propertyPath: m_LocalRotation.w
