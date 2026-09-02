@@ -9,27 +9,13 @@ public class HeartbeatManager : MonoBehaviour
 {
     public static HeartbeatManager instance;
 
-    [Header("BPM Settings")]
-    [SerializeField] private int restingBpm = 20;
-    [SerializeField] private int maxBPM = 200;
+    [Header("Config")]
+    [Tooltip("All the numbers that drive the stress/BPM system.")]
+    [SerializeField] private StressConfig config;
 
-    [Header("Runtime")]
+    [Header("Runtime State")]
     [SerializeField] private int currentBpm;
-
-    [Header("Stress Settings")]
     [SerializeField] private float currentStress;
-    [SerializeField] private float maxStress = 100f;
-
-    [Tooltip("Stress removed per real-world second while gameplay is active.")]
-    [SerializeField] private float stressDecayRate = 2f;
-
-    [Header("Stress Change Values")]
-    [SerializeField] private float shootStress = 6f;
-    [SerializeField] private float damageStress = 40f;
-    [SerializeField] private float nearMissStress = 25f;
-    [SerializeField] private float killStressReduction = 10f;
-    [SerializeField] private float waveStressReduction = 30f;
-    
 
     [Header("UI (Optional)")]
     [SerializeField] private TMP_Text heartRateText;
@@ -47,11 +33,15 @@ public class HeartbeatManager : MonoBehaviour
         }
 
         instance = this;
+
+        // no config means every stress number is missing, fail loudly here
+        if (config == null)
+            Debug.LogError("HeartbeatManager: No StressConfig assigned",this);
     }
 
     private void Start()
     {
-        currentStress = Mathf.Clamp(currentStress, 0f, maxStress);
+        currentStress = Mathf.Clamp(currentStress, 0f, config.maxStress);
         RefreshHeartbeat(true);
     }
 
@@ -68,13 +58,13 @@ public class HeartbeatManager : MonoBehaviour
 
     private void DecayStress()
     {
-        if (currentStress <= 0f || stressDecayRate <= 0f)
+        if (currentStress <= 0f || config.stressDecayRate <= 0f)
             return;
 
         float newStress = Mathf.MoveTowards(
             currentStress,
             0f,
-            stressDecayRate * Time.unscaledDeltaTime
+            config.stressDecayRate * Time.unscaledDeltaTime
         );
 
         SetStress(newStress);
@@ -82,7 +72,7 @@ public class HeartbeatManager : MonoBehaviour
 
     private void SetStress(float newStress)
     {
-        float clampedStress = Mathf.Clamp(newStress, 0f, maxStress);
+        float clampedStress = Mathf.Clamp(newStress, 0f, config.maxStress);
 
         if (Mathf.Approximately(clampedStress, currentStress))
             return;
@@ -94,12 +84,12 @@ public class HeartbeatManager : MonoBehaviour
 
     private void RefreshHeartbeat(bool forceUIUpdate)
     {
-        stressPercent = maxStress > 0f
-            ? Mathf.Clamp01(currentStress / maxStress)
+        stressPercent = config.maxStress > 0f
+            ? Mathf.Clamp01(currentStress / config.maxStress)
             : 0f;
 
         int newBPM = Mathf.RoundToInt(
-            Mathf.Lerp(restingBpm, maxBPM, stressPercent)
+            Mathf.Lerp(config.restingBpm, config.maxBpm, stressPercent)
         );
 
         if (forceUIUpdate || newBPM != currentBpm)
@@ -108,7 +98,7 @@ public class HeartbeatManager : MonoBehaviour
             UpdateHeartRateUI();
         }
 
-        if (!hasLost && currentBpm >= maxBPM)
+        if (!hasLost && currentBpm >= config.maxBpm)
             TriggerHeartFailure();
     }
 
@@ -155,7 +145,7 @@ public class HeartbeatManager : MonoBehaviour
 
     public void PlayerShot()
     {
-        AddStress(shootStress);
+        AddStress(config.shootingStress);
     }
 
     public void PlayerDamaged()
@@ -167,22 +157,22 @@ public class HeartbeatManager : MonoBehaviour
             return;
         }
 
-        AddStress(damageStress);
+        AddStress(config.damagedStress);
     }
 
     public void NearMiss()
     {
-        AddStress(nearMissStress);
+        AddStress(config.nearMissStress);
     }
 
     public void EnemyKilled()
     {
-        ReduceStress(killStressReduction);
+        ReduceStress(config.killStressRelief);
     }
 
     public void WaveCompleted()
     {
-        ReduceStress(waveStressReduction);
+        ReduceStress(config.waveEndStressRelief);
     }
 
     /// <summary>
@@ -210,19 +200,12 @@ public class HeartbeatManager : MonoBehaviour
 
     public int CurrentBpm => currentBpm;
 
-    public int RestingBpm => restingBpm;
+    public int RestingBpm => config.restingBpm;
 
     public float StressPercent => stressPercent;
 
     public float CurrentStress => currentStress;
 
-    private void OnValidate()
-    {
-        restingBpm = Mathf.Max(1, restingBpm);
-        maxBPM = Mathf.Max(restingBpm + 1, maxBPM);
-        maxStress = Mathf.Max(1f, maxStress);
-        stressDecayRate = Mathf.Max(0f, stressDecayRate);
-    }
 
     private void OnDestroy()
     {
