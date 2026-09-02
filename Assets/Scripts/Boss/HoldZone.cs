@@ -112,7 +112,7 @@ public class HoldZone : MonoBehaviour {
         if (progress >= 1f && !reported) {
             reported = true;
             if (owner != null)
-                owner.holdComplete(this);
+                owner.HoldComplete(this);
         }
     }
 
@@ -161,7 +161,7 @@ public class HoldZone : MonoBehaviour {
     }
 
 
-    public void activate(HoldZoneManager manager) {
+    public void Activate(HoldZoneManager manager) {
         owner = manager;
         progress = 0f;
         playerInside = false;
@@ -177,7 +177,7 @@ public class HoldZone : MonoBehaviour {
         updateScreen();
     }
 
-    public void deactivate() {
+    public void Deactivate() {
         isActive = false;
         playerInside = false;
         progress = 0f;

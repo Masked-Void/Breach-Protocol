@@ -10,11 +10,11 @@ public class HeartbeatManager : MonoBehaviour
     public static HeartbeatManager instance;
 
     [Header("BPM Settings")]
-    [SerializeField] private int restingBPM = 20;
+    [SerializeField] private int restingBpm = 20;
     [SerializeField] private int maxBPM = 200;
 
     [Header("Runtime")]
-    [SerializeField] private int currentBPM;
+    [SerializeField] private int currentBpm;
 
     [Header("Stress Settings")]
     [SerializeField] private float currentStress;
@@ -99,23 +99,23 @@ public class HeartbeatManager : MonoBehaviour
             : 0f;
 
         int newBPM = Mathf.RoundToInt(
-            Mathf.Lerp(restingBPM, maxBPM, stressPercent)
+            Mathf.Lerp(restingBpm, maxBPM, stressPercent)
         );
 
-        if (forceUIUpdate || newBPM != currentBPM)
+        if (forceUIUpdate || newBPM != currentBpm)
         {
-            currentBPM = newBPM;
+            currentBpm = newBPM;
             UpdateHeartRateUI();
         }
 
-        if (!hasLost && currentBPM >= maxBPM)
+        if (!hasLost && currentBpm >= maxBPM)
             TriggerHeartFailure();
     }
 
     private void UpdateHeartRateUI()
     {
         if (heartRateText != null)
-            heartRateText.text = currentBPM + bpmSuffix;
+            heartRateText.text = currentBpm + bpmSuffix;
     }
 
     private void TriggerHeartFailure()
@@ -124,13 +124,13 @@ public class HeartbeatManager : MonoBehaviour
 
         // Timed/manual streaks must not survive death.
         if (KillstreakManager.instance != null)
-            KillstreakManager.instance.cancelActiveStreak();
+            KillstreakManager.instance.CancelActiveStreak();
 
         if (GameManager.instance != null)
-            GameManager.instance.stateLose();
+            GameManager.instance.StateLose();
     }
 
-    public void addStress(float amount)
+    public void AddStress(float amount)
     {
         if (amount <= 0f || hasLost)
             return;
@@ -145,7 +145,7 @@ public class HeartbeatManager : MonoBehaviour
         SetStress(currentStress + amount);
     }
 
-    public void reduceStress(float amount)
+    public void ReduceStress(float amount)
     {
         if (amount <= 0f)
             return;
@@ -153,12 +153,12 @@ public class HeartbeatManager : MonoBehaviour
         SetStress(currentStress - amount);
     }
 
-    public void playerShot()
+    public void PlayerShot()
     {
-        addStress(shootStress);
+        AddStress(shootStress);
     }
 
-    public void playerDamaged()
+    public void PlayerDamaged()
     {
         // God Mode blocks hit stress completely.
         if (KillstreakManager.instance != null &&
@@ -167,29 +167,29 @@ public class HeartbeatManager : MonoBehaviour
             return;
         }
 
-        addStress(damageStress);
+        AddStress(damageStress);
     }
 
-    public void nearMiss()
+    public void NearMiss()
     {
-        addStress(nearMissStress);
+        AddStress(nearMissStress);
     }
 
-    public void enemyKilled()
+    public void EnemyKilled()
     {
-        reduceStress(killStressReduction);
+        ReduceStress(killStressReduction);
     }
 
-    public void waveCompleted()
+    public void WaveCompleted()
     {
-        reduceStress(waveStressReduction);
+        ReduceStress(waveStressReduction);
     }
 
     /// <summary>
     /// Cold Boot uses this. It returns stress/BPM to the resting value
     /// without resetting run/death state.
     /// </summary>
-    public void resetToRestingBPM()
+    public void ResetToRestingBpm()
     {
         if (hasLost)
             return;
@@ -201,37 +201,25 @@ public class HeartbeatManager : MonoBehaviour
     /// <summary>
     /// Full new-run/reset function.
     /// </summary>
-    public void resetHeartbeat()
+    public void ResetHeartbeat()
     {
         hasLost = false;
         currentStress = 0f;
         RefreshHeartbeat(true);
     }
 
-    public int getCurrentBPM()
-    {
-        return currentBPM;
-    }
+    public int CurrentBpm => currentBpm;
 
-    public int getRestingBPM()
-    {
-        return restingBPM;
-    }
+    public int RestingBpm => restingBpm;
 
-    public float getStressPercent()
-    {
-        return stressPercent;
-    }
+    public float StressPercent => stressPercent;
 
-    public float getCurrentStress()
-    {
-        return currentStress;
-    }
+    public float CurrentStress => currentStress;
 
     private void OnValidate()
     {
-        restingBPM = Mathf.Max(1, restingBPM);
-        maxBPM = Mathf.Max(restingBPM + 1, maxBPM);
+        restingBpm = Mathf.Max(1, restingBpm);
+        maxBPM = Mathf.Max(restingBpm + 1, maxBPM);
         maxStress = Mathf.Max(1f, maxStress);
         stressDecayRate = Mathf.Max(0f, stressDecayRate);
     }

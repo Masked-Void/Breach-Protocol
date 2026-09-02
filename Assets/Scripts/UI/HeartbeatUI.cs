@@ -55,9 +55,9 @@ public class HeartbeatUI : MonoBehaviour
             return;
         }
 
-        bpmText.text = HeartbeatManager.instance.getCurrentBPM() + " BPM";
+        bpmText.text = HeartbeatManager.instance.CurrentBpm + " BPM";
 
-        int bpm = HeartbeatManager.instance.getCurrentBPM();
+        int bpm = HeartbeatManager.instance.CurrentBpm;
 
         float beatInterval = 60f / bpm;
 

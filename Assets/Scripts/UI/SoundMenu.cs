@@ -31,7 +31,7 @@ public class SoundMenu : MonoBehaviour
     {
         if (AudioManager.instance == null) return;
 
-        AudioManager.instance.toggleMute();
+        AudioManager.instance.ToggleMute();
         UpdateVisuals();
     }
 
@@ -62,10 +62,10 @@ public class SoundMenu : MonoBehaviour
 
         if (AudioManager.instance.isMuted && val > 0f)
         {
-            AudioManager.instance.unmute();
+            AudioManager.instance.Unmute();
         }
 
-        AudioManager.instance.setMasterVolume(val);
+        AudioManager.instance.SetMasterVolume(val);
         UpdateVisuals();
     }
 
@@ -75,10 +75,10 @@ public class SoundMenu : MonoBehaviour
 
         if (AudioManager.instance.isMuted && val > 0f)
         {
-            AudioManager.instance.unmute();
+            AudioManager.instance.Unmute();
         }
 
-        AudioManager.instance.setMusicVolume(val);
+        AudioManager.instance.SetMusicVolume(val);
         UpdateVisuals();
     }
 
@@ -88,10 +88,10 @@ public class SoundMenu : MonoBehaviour
 
         if (AudioManager.instance.isMuted && val > 0f)
         {
-            AudioManager.instance.unmute();
+            AudioManager.instance.Unmute();
         }
 
-        AudioManager.instance.setSFXVolume(val);
+        AudioManager.instance.SetSFXVolume(val);
         UpdateVisuals();
     }
 }

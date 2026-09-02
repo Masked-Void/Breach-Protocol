@@ -11,7 +11,7 @@ public class IceWallShield : MonoBehaviour, IDamage
         hitsRemaining = Mathf.Max(1, hitCapacity);
     }
 
-    public void takeDamage(int amount)
+    public void TakeDamage(int amount)
     {
         if (hitsRemaining <= 0)
             return;

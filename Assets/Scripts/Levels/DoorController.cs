@@ -25,16 +25,16 @@ public class DoorController : MonoBehaviour
 
     // Sends the door all the way open
     [ContextMenu("Open")]
-    public void open()
+    public void Open()
     {
-        moveTo(1f);
+        MoveTo(1f);
     }
 
     // Sends the door all the way closed
     [ContextMenu("Close")]
-    public void close()
+    public void Close()
     {
-        moveTo(0f);
+        MoveTo(0f);
     }
 
     // The closed (0) and open (1) points the door lerps between
@@ -127,7 +127,7 @@ public class DoorController : MonoBehaviour
         }
 
         insideCount += 1;
-        open();
+        Open();
 
     }
 
@@ -189,14 +189,14 @@ public class DoorController : MonoBehaviour
         // rechecks because an enemy could have entered while this was waiting
         if (insideCount == 0)
         {
-            close();
+            Close();
         }
     }
 
 
 
     // method call for gradual door open/close
-    public void moveTo(float amt)
+    public void MoveTo(float amt)
     {
         // error check
         if (!enabled)

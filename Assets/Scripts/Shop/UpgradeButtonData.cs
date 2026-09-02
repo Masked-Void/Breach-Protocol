@@ -33,9 +33,9 @@ public class UpgradeButtonData : MonoBehaviour
     void Selected()
     {   
         if (AudioManager.instance != null)
-            AudioManager.instance.playButtonClick();
+            AudioManager.instance.PlayButtonClick();
                      
         if (UpgradeManager.instance != null && upgrade != null)
-            UpgradeManager.instance.displayUpgrades(upgrade);
+            UpgradeManager.instance.DisplayUpgrades(upgrade);
     }
 }

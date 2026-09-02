@@ -28,10 +28,10 @@ public class GunStats : WeaponStats
     public override void Attack()
     {
 
-        Transform gunBarrel = WeaponManager.instance.getBarrel();
+        Transform gunBarrel = WeaponManager.instance.Barrel;
         if (gunBarrel == null) return;
 
-        AudioManager.instance.playSFX(shootSound, shootSoundVol);
+        AudioManager.instance.PlaySFX(shootSound, shootSoundVol);
 
         bool hasKunaiSpread = UpgradeManager.instance != null &&
                       UpgradeManager.instance.IsUpgradeActive("kunai_spread");

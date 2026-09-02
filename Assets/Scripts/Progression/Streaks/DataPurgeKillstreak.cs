@@ -6,7 +6,7 @@ public class DataPurgeKillstreak : KillstreakBase
     {
         if (AudioManager.instance != null)
         {
-            AudioManager.instance.playNuke();
+            AudioManager.instance.PlayNuke();
         }
 
         

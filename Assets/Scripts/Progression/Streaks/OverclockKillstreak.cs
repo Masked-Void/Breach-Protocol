@@ -11,13 +11,13 @@ public class OverclockKillstreak : KillstreakBase
     protected override void onActivate()
     {
         if (TimeManager.instance != null)
-            TimeManager.instance.setTimeScaleOverride(worldTimeScale);
+            TimeManager.instance.SetTimeScaleOverride(worldTimeScale);
     }
 
     protected override void onDeactivate()
     {
         if (TimeManager.instance != null)
-            TimeManager.instance.clearTimeScaleOverride();
+            TimeManager.instance.ClearTimeScaleOverride();
     }
 
     private void Reset()

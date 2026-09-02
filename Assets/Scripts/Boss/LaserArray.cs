@@ -32,13 +32,13 @@ public class LaserArray : MonoBehaviour {
 
     // Sends every laser out, staggered
     [ContextMenu("Deploy")]
-    public void deploy() {
+    public void Deploy() {
         moveAll(true);
     }
 
     // Pulls every laser back in, staggered
     [ContextMenu("Retract")]
-    public void retract() {
+    public void Retract() {
         moveAll(false);
     }
 
@@ -135,7 +135,7 @@ public class LaserArray : MonoBehaviour {
         }
     }
 
-    public bool getIsLaserOut(int index) {
+    public bool IsLaserOut(int index) {
         if (lasers == null || index < 0 || index >= lasers.Length) {
             return false;
         }
@@ -290,12 +290,12 @@ public class LaserArray : MonoBehaviour {
             return;
         }
 
-        dmg.takeDamage(beamDamage);
+        dmg.TakeDamage(beamDamage);
         laser.nextTick = Time.unscaledTime + Mathf.Max(0.05f , beamRate);
     }
 
     // Moves a single laser by its index, for when only one needs to fire
-    public void moveOne(int index , bool goOut) {
+    public void MoveOne(int index , bool goOut) {
         // error check
         if (!enabled) {
             return;
@@ -311,7 +311,7 @@ public class LaserArray : MonoBehaviour {
 
     // Pulls everything in at once with no stagger, for when a phase ends
     // retract() walks down the array with a delay, so lasers it hasn't reached yet keep deploying
-    public void retractNow() {
+    public void RetractNow() {
         // error check
         if (!enabled) {
             return;

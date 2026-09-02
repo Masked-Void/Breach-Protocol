@@ -43,13 +43,13 @@ public class MeleeStats : WeaponStats
     */
     public override void Attack()
     {
-        Transform gunBarrel = WeaponManager.instance.getBarrel();
+        Transform gunBarrel = WeaponManager.instance.Barrel;
         if (gunBarrel == null) return;
 
         WeaponManager.instance.PlayMeleeSwing();
-        AudioManager.instance.playSFX(swingSound, swingSoundVol);
+        AudioManager.instance.PlaySFX(swingSound, swingSoundVol);
 
-        AudioManager.instance.playSFX(swingSound, swingSoundVol);
+        AudioManager.instance.PlaySFX(swingSound, swingSoundVol);
         //StartCoroutine(katanaSwing());
 
         RaycastHit hit;
@@ -63,15 +63,15 @@ public class MeleeStats : WeaponStats
             IDamage dmg = hit.transform.GetComponent<IDamage>();
             if (dmg != null)
             {
-                dmg.takeDamage(attackDamage);
-                AudioManager.instance.playSFX(hitFleshSound, hitFleshVol);
+                dmg.TakeDamage(attackDamage);
+                AudioManager.instance.PlaySFX(hitFleshSound, hitFleshVol);
             } else if (hit.collider.CompareTag("Shield"))
             {
-                AudioManager.instance.playSFX(hitShieldSound, hitShieldVol);
+                AudioManager.instance.PlaySFX(hitShieldSound, hitShieldVol);
             }
             else
             {
-                AudioManager.instance.playSFX(hitWallSound, hitWallVol);
+                AudioManager.instance.PlaySFX(hitWallSound, hitWallVol);
             }
             
         }

@@ -40,20 +40,20 @@ public class LavaManager : MonoBehaviour {
 
     // Sends the lava all the way up, uses riseTime
     [ContextMenu("Rise")]
-    public void rise() {
-        moveTo(1f);
+    public void Rise() {
+        MoveTo(1f);
     }
 
     // Sends the lava all the way down, uses drainTime
     [ContextMenu("Drain")]
-    public void drain() {
-        moveTo(0f);
+    public void Drain() {
+        MoveTo(0f);
     }
 
     // Snaps the lava back to the low marker with no animation, used for resets
     [ContextMenu("Reset To Drained")]
-    public void resetToDrained() {
-        setNow(0f);
+    public void ResetToDrained() {
+        SetNow(0f);
     }
 
     // Read only 0 to 1 progress for anything that needs to know how full the arena is
@@ -129,7 +129,7 @@ public class LavaManager : MonoBehaviour {
         }
 
         nextTick = Time.unscaledTime + (1f / Mathf.Max(0.01f , damageRate));
-        playerDamage.takeDamage(1);
+        playerDamage.TakeDamage(1);
     }
 
     bool checkInLava() {
@@ -179,7 +179,7 @@ public class LavaManager : MonoBehaviour {
 
 
     // method call for gradual lava rise/fall
-    public void moveTo(float amt) {
+    public void MoveTo(float amt) {
         // error check
         if (!enabled)
             return;
@@ -200,7 +200,7 @@ public class LavaManager : MonoBehaviour {
 
 
     // method call for instant lava rise/fall
-    public void setNow(float amt) {
+    public void SetNow(float amt) {
 
         // error check
         if (!enabled)

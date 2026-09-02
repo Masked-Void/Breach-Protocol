@@ -9,7 +9,7 @@ public class RandomUtility
     /// </summary>
     /// <param name="chance">Probability of true, 0 never fires and 1 always fires.</param>
     /// <returns>True if the roll succeeded.</returns>
-    public static bool roll(float chance) {
+    public static bool Roll(float chance) {
 
         if (chance <= 0) return false;
         if (chance >= 1) return true;

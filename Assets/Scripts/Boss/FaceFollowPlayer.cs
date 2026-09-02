@@ -43,7 +43,7 @@ public class FaceFollowPlayer : MonoBehaviour {
     }
 
     // Change for follow, still incase we need it.
-    public void setFollow(bool on) {
+    public void SetFollow(bool on) {
         follow = on;
     }
 }

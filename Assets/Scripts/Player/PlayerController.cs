@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
     void Update()
     {
         movement();
-        updatePlayerUI();
+        UpdatePlayerUI();
     }
     public void PushBack(Vector3 direction, float pushbackForce)
     {
@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
             stepTimer -= Time.unscaledDeltaTime;
             if (stepTimer <= 0f && AudioManager.instance != null)
             {
-                AudioManager.instance.playSteps();
+                AudioManager.instance.PlaySteps();
                 stepTimer = isSprinting ? (stepInterval / sprintMod) : stepInterval;
             }
         }
@@ -135,44 +135,45 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
     {
         if (Input.GetButtonDown("Jump") && jumpCount < jumpMax)
         {
-            AudioManager.instance.playJump();
+            AudioManager.instance.PlayJump();
             playerVel.y = jumpSpeed;
             jumpCount++;
         }
     }
 
-    public void takeDamage(int amount)
+    public void TakeDamage(int amount)
     {
-        AudioManager.instance.playHurt();
+        AudioManager.instance.PlayHurt();
 
         StartCoroutine(flashDamage());
 
         if (HeartbeatManager.instance != null)
         {
-            HeartbeatManager.instance.playerDamaged();
+            HeartbeatManager.instance.PlayerDamaged();
         }
     }
 
-    public void equipWeapon(WeaponStats weapon, int ammoOverride = -1)
+    public void EquipWeapon(WeaponStats weapon, int ammoOverride = -1)
     {
         if (WeaponManager.instance != null)
             WeaponManager.instance.equipWeapon(weapon, ammoOverride);
     }
-    public float getSpeedPercent()
+    public float SpeedPercent
     {
-        // Returns a value between 0 and 1 representing how fast the player is moving relative to their max speed.
-        Vector3 hor = new Vector3(moveDir.x, 0, moveDir.z);
-        float horPercent = Mathf.Clamp01(hor.magnitude);
-
-        // If the player is in the air, we also consider their vertical speed relative to jump speed.
-        float vertPercent = 0;
-        if (!controller.isGrounded)
+        get
         {
-            vertPercent = Mathf.Clamp01(Mathf.Abs(playerVel.y) / jumpSpeed);
-        }
+            // how fast we are moving sideways compared to max speed
+            Vector3 hor = new Vector3(moveDir.x, 0, moveDir.z);
+            float horPercent = Mathf.Clamp01(hor.magnitude);
 
-        // Return the greater of the two percentages to represent overall movement intensity.
-        return Mathf.Max(horPercent, vertPercent);
+            // in the air the fall or jump speed counts too
+            float vertPercent = 0;
+            if (!controller.isGrounded)
+                vertPercent = Mathf.Clamp01(Mathf.Abs(playerVel.y) / jumpSpeed);
+
+            // whichever is bigger is how fast we read as moving
+            return Mathf.Max(horPercent, vertPercent);
+        }
     }
 
     IEnumerator flashDamage()
@@ -190,17 +191,17 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
         //KillChainManager.instance.activatePlayershield = false;
     }
 
-    public void updatePlayerUI()
+    public void UpdatePlayerUI()
     {
         GameManager.instance.playerStaminaBar.fillAmount = (float)currentStamina / maxStamina;
 
     }
 
-    public void spawnPlayer()
+    public void SpawnPlayer()
     {
         controller.transform.position = GameManager.instance.playerSpawnPos.transform.position;
         Physics.SyncTransforms();
         currentStamina = maxStamina;
-        updatePlayerUI();
+        UpdatePlayerUI();
     }
 }

@@ -119,9 +119,9 @@ public class WeaponManager : MonoBehaviour
         if (newWeapon == null || isEquipping) yield break;
 
         isEquipping = true;
-        if (spawnedWeaponModel != null) throwWeapon();
+        if (spawnedWeaponModel != null) ThrowWeapon();
         yield return new WaitForSecondsRealtime(1f);
-        if (AudioManager.instance != null) AudioManager.instance.playEquip();
+        if (AudioManager.instance != null) AudioManager.instance.PlayEquip();
         spawnWeapon(newWeapon, ammoOverride);
         isEquipping = false;
     }
@@ -149,10 +149,10 @@ public class WeaponManager : MonoBehaviour
         updateHUD();
     }
 
-    public Transform getBarrel() => gunBarrel;
-    public int getCurrentAmmo() => currentAmmo;
+    public Transform Barrel => gunBarrel;
+    public int CurrentAmmo => currentAmmo;
 
-    public void throwWeapon()
+    public void ThrowWeapon()
     {
         if (spawnedWeaponModel == null) return;
         spawnedWeaponModel.transform.SetParent(null);
@@ -217,23 +217,27 @@ public class WeaponManager : MonoBehaviour
         return null;
     }
 
-    public float getUpgradeFireRate()
+    public float UpgradeFireRate
     {
-        if (activeWeapon == null) return 0f;
-        float rate = activeWeapon.attackRate;
+        get
+        {
+            if (activeWeapon == null) return 0f;
+         
+            float rate = activeWeapon.attackRate;
 
-        // Check if fire rate upgrade is active
-        if (UpgradeManager.instance != null && UpgradeManager.instance.IsUpgradeActive("fire_rate"))
-            rate /= 1.5f;
+            // Check if fire rate upgrade is active
+            if (UpgradeManager.instance != null && UpgradeManager.instance.IsUpgradeActive("fire_rate"))
+                rate /= 1.5f;
 
-        return rate;
+            return rate;
+        }
     }
 
-    public void attack()
+    public void Attack()
     {
-        if (activeWeapon == null || attackTimer < getUpgradeFireRate()) return;
-        if (currentAmmo <= 0) { AudioManager.instance.playEmptyMag(); return; }
-        if (HeartbeatManager.instance != null) HeartbeatManager.instance.playerShot();
+        if (activeWeapon == null || attackTimer < UpgradeFireRate) return;
+        if (currentAmmo <= 0) { AudioManager.instance.PlayEmptyMag(); return; }
+        if (HeartbeatManager.instance != null) HeartbeatManager.instance.PlayerShot();
 
         attackTimer = 0f;
         currentAmmo--;

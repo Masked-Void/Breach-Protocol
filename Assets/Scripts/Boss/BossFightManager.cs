@@ -122,7 +122,7 @@ public class BossFightManager : MonoBehaviour,IDamage {
         // debug toggle. clear the flag whether or not the hit landed, otherwise a tick during
         // immunity sits queued and fires the instant immunity drops
         if (dealDamage) {
-            applyDamage(damageAmt);
+            ApplyDamage(damageAmt);
             dealDamage = false;
         }
 
@@ -148,7 +148,7 @@ public class BossFightManager : MonoBehaviour,IDamage {
 
 
     // single entry point for damage. guns, holds, and the debug toggle all come through here
-    public void applyDamage(float amt) {
+    public void ApplyDamage(float amt) {
         if (fightOver || isImmune)
             return;
 
@@ -164,14 +164,14 @@ public class BossFightManager : MonoBehaviour,IDamage {
         if (!lastPhase) {
             // shut down the waves the phase was running
             if (endingPhase == 0) {
-                bossWavesManager.endP1();
-                trapManager.endP1();
+                bossWavesManager.EndP1();
+                trapManager.EndP1();
             } else if (endingPhase == 1) {
-                bossWavesManager.endP2();
-                trapManager.endP2();
+                bossWavesManager.EndP2();
+                trapManager.EndP2();
             } else if (endingPhase == 2) {
-                bossWavesManager.endP3();
-                trapManager.endP3();
+                bossWavesManager.EndP3();
+                trapManager.EndP3();
             }
             isImmune = true;
             phaseImmuned[endingPhase] = true;
@@ -184,7 +184,7 @@ public class BossFightManager : MonoBehaviour,IDamage {
                 shake.doShake = true;
 
             // no timer here. the window stays open until the player finishes the center hold
-            holdManager.startImmuneHold();
+            holdManager.StartImmuneHold();
 
             if (!holdManager.hasImmuneZone) {
                 Debug.LogError("BossFightManager: no immune zone, skipping hold" , this);
@@ -198,7 +198,7 @@ public class BossFightManager : MonoBehaviour,IDamage {
                 }
             }
 
-            holdManager.stopAll();
+            holdManager.StopAll();
 
             if (shake != null)
                 shake.doShake = false;
@@ -220,7 +220,7 @@ public class BossFightManager : MonoBehaviour,IDamage {
             startPhase(phase);
         } else {
             fightOver = true;
-            holdManager.stopAll();
+            holdManager.StopAll();
             bossDefeated();
         }
     }
@@ -231,12 +231,12 @@ public class BossFightManager : MonoBehaviour,IDamage {
         Debug.Log("boss fight completed");
 
         // Stops wave and traps
-        bossWavesManager.endP4();
-        trapManager.endP4();
+        bossWavesManager.EndP4();
+        trapManager.EndP4();
 
         if (GameManager.instance != null) {
             GameManager.instance.AddFiles(bossFileReward);
-            GameManager.instance.stateWin();
+            GameManager.instance.StateWin();
         }
 
         if (healthBarObj != null) {
@@ -249,47 +249,47 @@ public class BossFightManager : MonoBehaviour,IDamage {
     void startPhase(int p) {
 
         // every damage phase gets one optional hold point picked at random
-        holdManager.startDamageHold();
+        holdManager.StartDamageHold();
 
         switch (p) {
             case 0:
-                phase1();
+                Phase1();
                 break;
             case 1:
-                phase2();
+                Phase2();
                 break;
             case 2:
-                phase3();
+                Phase3();
                 break;
             case 3:
-                phase4();
+                Phase4();
                 break;
         }
     }
 
 
-    public void phase1() {
-        bossWavesManager.startP1();
-        trapManager.startP1();
+    public void Phase1() {
+        bossWavesManager.StartP1();
+        trapManager.StartP1();
     }
 
-    public void phase2() {
-        bossWavesManager.startP2();
-        trapManager.startP2();
+    public void Phase2() {
+        bossWavesManager.StartP2();
+        trapManager.StartP2();
     }
 
-    public void phase3() {
-        bossWavesManager.startP3();
-        trapManager.startP3();
+    public void Phase3() {
+        bossWavesManager.StartP3();
+        trapManager.StartP3();
     }
 
-    public void phase4() {
-        bossWavesManager.startP4();
-        trapManager.startP4();
+    public void Phase4() {
+        bossWavesManager.StartP4();
+        trapManager.StartP4();
     }
 
-    public void takeDamage(int amount) {
-        applyDamage(amount * bulletDamageMult);
+    public void TakeDamage(int amount) {
+        ApplyDamage(amount * bulletDamageMult);
     }
 
     // Looks through the bosses object's children for a marker with an exact name match

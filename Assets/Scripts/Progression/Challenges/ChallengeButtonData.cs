@@ -41,9 +41,9 @@ public class ChallengeButtonData : MonoBehaviour
     void Selected()
     {   
         if (AudioManager.instance != null)
-            AudioManager.instance.playButtonClick();
+            AudioManager.instance.PlayButtonClick();
                      
         if (ChallengeManager.instance != null && challenge != null)
-            ChallengeManager.instance.displayWeaponChallenges(challenge);
+            ChallengeManager.instance.DisplayWeaponChallenges(challenge);
     }
 }

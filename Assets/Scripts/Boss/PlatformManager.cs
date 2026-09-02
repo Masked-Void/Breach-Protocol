@@ -108,14 +108,14 @@ public class PlatformManager : MonoBehaviour {
 
     [ContextMenu("Rise Platforms")]
     // sends every stage up
-    public void risePlatforms() {
+    public void RisePlatforms() {
         startPass(true);
     }
 
 
     [ContextMenu("Fall Platforms")]
     // sends every stage back down
-    public void fallPlatforms() {
+    public void FallPlatforms() {
         startPass(false);
     }
 

@@ -164,7 +164,7 @@ public class GlitchCubeRotate : MonoBehaviour {
     }
 
     // lets the boss manager ramp the feel per phase
-    public void setTiming(float newStagger , float newLerpTime) {
+    public void SetTiming(float newStagger , float newLerpTime) {
         stagger = newStagger;
         lerpTime = newLerpTime;
     }

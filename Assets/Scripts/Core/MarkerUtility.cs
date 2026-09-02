@@ -5,7 +5,7 @@ public static class MarkerUtility {
 
     ///  <summary> Finds a child whose name matches exactly while still ignoring case. fallBackIndex >= 0 grabs that child </summary>
     
-    public static Transform findMark(Transform parent, string wanted, int fallbackIndex = -1) {
+    public static Transform FindMark(Transform parent, string wanted, int fallbackIndex = -1) {
 
         // Error check
         if (parent == null) return null;
@@ -39,7 +39,7 @@ public static class MarkerUtility {
 
 
     ///<summary> Finds a child whose name contains the word ignoring case. fallBackIndex >= 0 grabs that child </summary>
-    public static Transform findMarkLoose(Transform parent, string wanted, int fallbackIndex = -1) {
+    public static Transform FindMarkLoose(Transform parent, string wanted, int fallbackIndex = -1) {
         // Error check
         if (parent == null)
             return null;
@@ -75,7 +75,7 @@ public static class MarkerUtility {
     }
 
     /// <summary>Same as findMark but searches the whole subtree, not just direct children.</summary>
-    public static Transform findMarkDeep(Transform parent, string wanted) {
+    public static Transform FindMarkDeep(Transform parent, string wanted) {
         if (parent == null)
             return null;
 
@@ -84,7 +84,7 @@ public static class MarkerUtility {
                 return child;
             }
 
-            Transform deeper = findMarkDeep(child, wanted);
+            Transform deeper = FindMarkDeep(child, wanted);
             if (deeper != null) {
                 return deeper;
             }
@@ -95,7 +95,7 @@ public static class MarkerUtility {
 
     /// <summary>Searches the whole subtree for an object whose name contains the word, ignoring case.
     /// Warns when more than one matches.</summary>
-    public static Transform findMarkDeepLoose(Transform parent, string wanted) {
+    public static Transform FindMarkDeepLoose(Transform parent, string wanted) {
         if (parent == null) {
             return null;
         }

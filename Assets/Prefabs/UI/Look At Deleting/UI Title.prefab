@@ -473,7 +473,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: openLevelDevinC
         m_Mode: 1
         m_Arguments:
@@ -1062,7 +1062,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: switchToAbout
         m_Mode: 1
         m_Arguments:
@@ -2718,7 +2718,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -4814,7 +4814,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: switchToSettings
         m_Mode: 1
         m_Arguments:
@@ -5781,7 +5781,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -6077,7 +6077,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: switchToCredits
         m_Mode: 1
         m_Arguments:
@@ -6887,7 +6887,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: openLevelSamuel
         m_Mode: 1
         m_Arguments:
@@ -7096,7 +7096,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: switchToWeapon
         m_Mode: 1
         m_Arguments:
@@ -8949,7 +8949,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: openLevelKhurshed
         m_Mode: 1
         m_Arguments:
@@ -9208,7 +9208,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: openSettings
         m_Mode: 1
         m_Arguments:
@@ -12242,7 +12242,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -14333,7 +14333,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: openLevelVirel
         m_Mode: 1
         m_Arguments:
@@ -15029,7 +15029,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -15526,7 +15526,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: switchToHome
         m_Mode: 1
         m_Arguments:
@@ -17152,7 +17152,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: switchToChallenge
         m_Mode: 1
         m_Arguments:
@@ -17941,7 +17941,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -19755,7 +19755,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: openLevelMark
         m_Mode: 1
         m_Arguments:
@@ -20847,7 +20847,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: controls
         m_Mode: 1
         m_Arguments:
@@ -22186,7 +22186,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: openLevelDevinS
         m_Mode: 1
         m_Arguments:
@@ -25001,7 +25001,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -26748,7 +26748,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4000214608120551682}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: quitGame
         m_Mode: 1
         m_Arguments:

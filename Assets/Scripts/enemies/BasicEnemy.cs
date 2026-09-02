@@ -68,7 +68,7 @@ public class BasicEnemy : EnemyBase
 
     public override void die()
     {
-        throwWeapon(spawnedWeapon, handPos);
+        ThrowWeapon(spawnedWeapon, handPos);
         katanaTransform = null; 
         base.die();
     }

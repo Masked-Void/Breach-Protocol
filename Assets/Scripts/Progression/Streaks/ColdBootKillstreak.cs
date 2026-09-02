@@ -8,7 +8,7 @@ public class ColdBootKillstreak : KillstreakBase
     protected override void onActivate()
     {
         if (HeartbeatManager.instance != null)
-            HeartbeatManager.instance.resetToRestingBPM();
+            HeartbeatManager.instance.ResetToRestingBpm();
     }
 
     protected override void onDeactivate()

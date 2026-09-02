@@ -17,12 +17,12 @@ public class BossHitbox : MonoBehaviour, IDamage
         }
     }
 
-    public void takeDamage(int amount) {
+    public void TakeDamage(int amount) {
 
         if (fightManager == null) {
             return;
         }
 
-        fightManager.takeDamage(Mathf.RoundToInt(amount*damageMult));
+        fightManager.TakeDamage(Mathf.RoundToInt(amount*damageMult));
     }
 }

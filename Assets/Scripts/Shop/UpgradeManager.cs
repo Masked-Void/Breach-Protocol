@@ -74,7 +74,7 @@ public class UpgradeManager : MonoBehaviour
     }
 
     // Display Upgrade Info i.e Name, cost etc
-    public void displayUpgrades(UpgradeData upgrade)
+    public void DisplayUpgrades(UpgradeData upgrade)
     {
         if (upgrade == null) return;
         if (upgradeName != null) upgradeName.text = upgrade.upgradeName;
@@ -177,7 +177,7 @@ public class UpgradeManager : MonoBehaviour
             activeUpgrades.Add(upgrade.id);
 
         SaveUpgrades();
-        displayUpgrades(upgrade);
+        DisplayUpgrades(upgrade);
     }
 
     private void setButtonState(string text, Color color, bool interactable)
@@ -199,10 +199,10 @@ public class UpgradeManager : MonoBehaviour
             files -= upgrade.cost;
             purchasedUpgrades.Add(upgrade.id);
             SaveUpgrades();
-            displayUpgrades(upgrade); // Immediately reflect the purchase status
+            DisplayUpgrades(upgrade); // Immediately reflect the purchase status
         }
         if (AudioManager.instance != null)
-            AudioManager.instance.playButtonClick();
+            AudioManager.instance.PlayButtonClick();
     }
 
     [System.Serializable]

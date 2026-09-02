@@ -92,18 +92,18 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     }
 
     // Called by bossFightManager as each phase begins
-    public void startP1() { applySetup(p1); segmentCue(false); }
-    public void startP2() { applySetup(p2); segmentCue(false); }
-    public void startP3() { applySetup(p3); segmentCue(false); }
-    public void startP4() { applySetup(p4); segmentCue(false); }
+    public void StartP1() { applySetup(p1); segmentCue(false); }
+    public void StartP2() { applySetup(p2); segmentCue(false); }
+    public void StartP3() { applySetup(p3); segmentCue(false); }
+    public void StartP4() { applySetup(p4); segmentCue(false); }
 
     // Called as each phase ends. Spawning keeps going through immune window, just using different spawn numbers
-    public void endP1() { applySetup(p1_p2); segmentCue(true); }
-    public void endP2() { applySetup(p2_p3); segmentCue(true); }
-    public void endP3() { applySetup(p3_p4); segmentCue(true); }
+    public void EndP1() { applySetup(p1_p2); segmentCue(true); }
+    public void EndP2() { applySetup(p2_p3); segmentCue(true); }
+    public void EndP3() { applySetup(p3_p4); segmentCue(true); }
 
     // Boss is dead, stop spawning.
-    public void endP4() { stopSpawning(); }
+    public void EndP4() { StopSpawning(); }
 
 
     private void segmentCue(bool immuneWindow) {
@@ -115,9 +115,9 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
             return;
 
         if (immuneWindow) {
-            AudioManager.instance.playMusic(immuneMusic);
+            AudioManager.instance.PlayMusic(immuneMusic);
         } else {
-            AudioManager.instance.playMusic(phaseMusic);
+            AudioManager.instance.PlayMusic(phaseMusic);
         }
     }
 
@@ -131,7 +131,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     }
 
 
-    public void stopSpawning() {
+    public void StopSpawning() {
         if (spawnRoutine == null)
             return;
 
@@ -245,11 +245,9 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         }
     }
 
-    public int getEnemiesAlive() {
-        return enemiesAlive;
-    }
+    public int EnemiesAlive => enemiesAlive;
 
-    public void enemyKilled() {
+    public void EnemyKilled() {
         enemiesAlive--;
 
         if (enemiesAlive < 0) {
@@ -257,12 +255,12 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         }
 
         if (HeartbeatManager.instance != null) {
-            HeartbeatManager.instance.enemyKilled();
+            HeartbeatManager.instance.EnemyKilled();
         }
     }
 
 
-    public void releaseRoamPoint(GameObject askingEnemy) {
+    public void ReleaseRoamPoint(GameObject askingEnemy) {
         if (askingEnemy == null)
             return;
         if (roamPoints == null)
@@ -276,7 +274,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     }
 
 
-    public Transform claimRoamPoint(GameObject askingEnemy) {
+    public Transform ClaimRoamPoint(GameObject askingEnemy) {
         if (askingEnemy == null)
             return null;
         if (roamPoints == null || roamPoints.Length == 0)
@@ -309,7 +307,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         for (int i = 0 ; i < spawnPoints.Length ; i++) {
             SpawnPoint candidate = spawnPoints[(startIndex + i) % spawnPoints.Length];
 
-            if (candidate.isFree(spawnPointCooldown)) {
+            if (candidate.IsFree(spawnPointCooldown)) {
                 return candidate;
             }
         }

@@ -61,17 +61,17 @@ public class TrapManager : MonoBehaviour {
 
 
     // Called by BossFightManager as each phase begins or ends
-    public void startP1() { applySetup(p1); }
-    public void startP2() { applySetup(p2); }
-    public void startP3() { applySetup(p3); }
-    public void startP4() { applySetup(p4); }
+    public void StartP1() { applySetup(p1); }
+    public void StartP2() { applySetup(p2); }
+    public void StartP3() { applySetup(p3); }
+    public void StartP4() { applySetup(p4); }
 
-    public void endP1() { applySetup(p1_p2); }
-    public void endP2() { applySetup(p2_p3); }
+    public void EndP1() { applySetup(p1_p2); }
+    public void EndP2() { applySetup(p2_p3); }
 
-    public void endP3() { applySetup(p3_p4); }
+    public void EndP3() { applySetup(p3_p4); }
 
-    public void endP4() { stopAll(); }
+    public void EndP4() { StopAll(); }
 
 
 
@@ -98,20 +98,20 @@ public class TrapManager : MonoBehaviour {
 
 
     [ContextMenu("Stop all traps")]
-    public void stopAll() {
+    public void StopAll() {
         stopCycle();
 
         if (laserManager != null) {
-            laserManager.stopPattern();
-            laserManager.stopRotation();
+            laserManager.StopPattern();
+            laserManager.StopRotation();
         }
 
         if (lavaManager != null) {
-            lavaManager.drain();
+            lavaManager.Drain();
         }
 
         if (platManager != null) {
-            platManager.fallPlatforms();
+            platManager.FallPlatforms();
         }
 
         currentPattern = -1;
@@ -130,15 +130,15 @@ public class TrapManager : MonoBehaviour {
 
             if (setup.platformsActive && platManager != null) {
                 if (up)
-                    platManager.risePlatforms();
+                    platManager.RisePlatforms();
                 else
-                    platManager.fallPlatforms();
+                    platManager.FallPlatforms();
 
                 platformsUp = up;
             }
 
             if (setup.lavaActive && lavaManager != null) {
-                lavaManager.moveTo(up ? setup.lavaLevel : 0);
+                lavaManager.MoveTo(up ? setup.lavaLevel : 0);
             }
 
             yield return new WaitForSecondsRealtime(Mathf.Max(0.5f , setup.cycleInterval));
@@ -152,14 +152,14 @@ public class TrapManager : MonoBehaviour {
 
         if (!setup.laserActive) {
             if (generatedRunning || currentPattern != -1) {
-                laserManager.stopPattern();
+                laserManager.StopPattern();
                 generatedRunning = false;
                 currentDifficulty = -1f;
                 currentPattern = -1;
             }
 
             if (currentSpin != 0) {
-                laserManager.stopRotation();
+                laserManager.StopRotation();
                 currentSpin = 0;
             }
 
@@ -168,16 +168,16 @@ public class TrapManager : MonoBehaviour {
 
         if (setup.generatePattern) {
             if (!generatedRunning || !Mathf.Approximately(currentDifficulty , setup.laserDifficulty)) {
-                laserManager.startGeneratedPattern(setup.laserDifficulty);
+                laserManager.StartGeneratedPattern(setup.laserDifficulty);
                 generatedRunning = true;
                 currentDifficulty = setup.laserDifficulty;
                 currentPattern = int.MinValue;
             }
         } else if (generatedRunning || setup.laserPattern != currentPattern) {
             if (setup.laserPattern >= 0) {
-                laserManager.startPattern(setup.laserPattern);
+                laserManager.StartPattern(setup.laserPattern);
             } else {
-                laserManager.stopPattern();
+                laserManager.StopPattern();
             }
 
             generatedRunning = false;
@@ -187,9 +187,9 @@ public class TrapManager : MonoBehaviour {
 
         if (setup.laserSpinDirection != currentSpin) {
             if (setup.laserSpinDirection != 0) {
-                laserManager.startSpin(setup.laserSpinDirection);
+                laserManager.StartSpin(setup.laserSpinDirection);
             } else {
-                laserManager.stopRotation();
+                laserManager.StopRotation();
             }
 
             currentSpin = setup.laserSpinDirection;
@@ -201,7 +201,7 @@ public class TrapManager : MonoBehaviour {
         if (lavaManager == null)
             return;
 
-        lavaManager.moveTo(setup.lavaActive ? setup.lavaLevel : 0f);
+        lavaManager.MoveTo(setup.lavaActive ? setup.lavaLevel : 0f);
     }
     private void activatePlatforms(trapSetup setup) {
         if (platManager == null)
@@ -211,9 +211,9 @@ public class TrapManager : MonoBehaviour {
             return;
 
         if (setup.platformsActive)
-            platManager.risePlatforms();
+            platManager.RisePlatforms();
         else
-            platManager.fallPlatforms();
+            platManager.FallPlatforms();
 
         platformsUp = setup.platformsActive;
 
@@ -264,23 +264,23 @@ public class TrapManager : MonoBehaviour {
     }
 
     [ContextMenu("Test Phase 1")]
-    void testP1() { startP1(); }
+    void testP1() { StartP1(); }
 
     [ContextMenu("Test Immune 1")]
-    void testP1P2() { endP1(); }
+    void testP1P2() { EndP1(); }
 
     [ContextMenu("Test Phase 2")]
-    void testP2() { startP2(); }
+    void testP2() { StartP2(); }
 
     [ContextMenu("Test Immune 2")]
-    void testP2P3() { endP2(); }
+    void testP2P3() { EndP2(); }
 
     [ContextMenu("Test Phase 3")]
-    void testP3() { startP3(); }
+    void testP3() { StartP3(); }
 
     [ContextMenu("Test Immune 3")]
-    void testP3P4() { endP3(); }
+    void testP3P4() { EndP3(); }
 
     [ContextMenu("Test Phase 4")]
-    void testP4() { startP4(); }
+    void testP4() { StartP4(); }
 }

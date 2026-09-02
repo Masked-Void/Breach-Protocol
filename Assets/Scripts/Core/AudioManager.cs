@@ -82,22 +82,22 @@ public class AudioManager : MonoBehaviour
         instance = this;
 
         sfxSource.spatialBlend = 0f;
-        loadSettings();
+        LoadSettings();
     }
 
-    public AudioClip pickRandomAudio(AudioClip[] audioList) => audioList[Random.Range(0, audioList.Length)];
+    public AudioClip PickRandomAudio(AudioClip[] audioList) => audioList[Random.Range(0, audioList.Length)];
 
-    public void loadSettings()
+    public void LoadSettings()
     {
         masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
         musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
         sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
         isMuted = PlayerPrefs.GetInt("IsMuted", 0) == 1;
 
-        updateAudioVolumes();
+        UpdateAudioVolumes();
     }
 
-    public void saveSettings()
+    public void SaveSettings()
     {
         PlayerPrefs.SetFloat("MasterVolume", masterVolume);
         PlayerPrefs.SetFloat("MusicVolume", musicVolume);
@@ -106,7 +106,7 @@ public class AudioManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    public void updateAudioVolumes()
+    public void UpdateAudioVolumes()
     {
         if (musicSource != null)
             musicSource.volume = isMuted ? 0f : (musicVolume * masterVolume);
@@ -119,35 +119,35 @@ public class AudioManager : MonoBehaviour
             instance = null;
     }
 
-    public void setMasterVolume(float vol)
+    public void SetMasterVolume(float vol)
     {
         masterVolume = Mathf.Clamp01(vol);
-        updateAudioVolumes();
-        saveSettings();
+        UpdateAudioVolumes();
+        SaveSettings();
     }
 
-    public void setMusicVolume(float vol)
+    public void SetMusicVolume(float vol)
     {
         musicVolume = Mathf.Clamp01(vol);
-        updateAudioVolumes();
-        saveSettings();
+        UpdateAudioVolumes();
+        SaveSettings();
     }
 
-    public void setSFXVolume(float vol)
+    public void SetSFXVolume(float vol)
     {
         sfxVolume = Mathf.Clamp01(vol);
-        updateAudioVolumes();
-        saveSettings();
+        UpdateAudioVolumes();
+        SaveSettings();
     }
 
-    public void toggleMute()
+    public void ToggleMute()
     {
         isMuted = !isMuted;
-        updateAudioVolumes();
-        saveSettings();
+        UpdateAudioVolumes();
+        SaveSettings();
     }
 
-    public void playSFX(AudioClip clip, float localVolumeMod = 1f)
+    public void PlaySFX(AudioClip clip, float localVolumeMod = 1f)
     {
         if (clip == null || sfxSource == null) return;
 
@@ -155,7 +155,7 @@ public class AudioManager : MonoBehaviour
         sfxSource.PlayOneShot(clip, Volume);
     }
 
-    public void playSpatialSFX(AudioClip clip, Vector3 position, float localVolumeMod = 1f, float minDistance = 1f, float maxDistance = 50f)
+    public void PlaySpatialSFX(AudioClip clip, Vector3 position, float localVolumeMod = 1f, float minDistance = 1f, float maxDistance = 50f)
     {
         if (clip == null) return;
 
@@ -177,9 +177,9 @@ public class AudioManager : MonoBehaviour
         Destroy(tempGO, clip.length);
     }
 
-    public void playMusic(AudioClip clip)
+    public void PlayMusic(AudioClip clip)
     {
-        stopPauseCoroutine();
+        StopPauseCoroutine();
         if (clip == null || musicSource == null) return;
 
         musicSource.clip = clip;
@@ -187,55 +187,55 @@ public class AudioManager : MonoBehaviour
         musicSource.Play();
     }
 
-    public void pauseMusic()
+    public void PauseMusic()
     {
         if (musicSource != null && musicSource.isPlaying) musicSource.Pause();
     }
 
-    public void resumeMusic()
+    public void ResumeMusic()
     {
         if (musicSource != null) musicSource.UnPause();
     }
 
-    public void stopMusic()
+    public void StopMusic()
     {
-        stopPauseCoroutine();
+        StopPauseCoroutine();
         if (musicSource != null) musicSource.Stop();
     }
 
-    public void unmute()
+    public void Unmute()
     {
         isMuted = false;
-        updateAudioVolumes();
-        saveSettings();
+        UpdateAudioVolumes();
+        SaveSettings();
     }
 
-    public void playJump() => playSFX(pickRandomAudio(jump), jumpVol);
-    public void playHurt() => playSFX(pickRandomAudio(hurt), hurtVol);
-    public void playSteps() => playSFX(pickRandomAudio(steps), stepsVol);
-    public void playEquip() => playSFX(pickRandomAudio(equip), equipVol);
-    public void playEmptyMag() => playSFX(pickRandomAudio(emptyMag), emptyMagVol);
-    public void playButtonClick() => playSFX(pickRandomAudio(buttonClick), buttonClickVol);
-    public void playNuke() => playSFX(pickRandomAudio(nukeSFX), nukeSFXVol);
-    public void playTitleScreenSound() => playMusic(titleScreenSound);
-    public void playPauseMenuMusic()
+    public void PlayJump() => PlaySFX(PickRandomAudio(jump), jumpVol);
+    public void PlayHurt() => PlaySFX(PickRandomAudio(hurt), hurtVol);
+    public void PlaySteps() => PlaySFX(PickRandomAudio(steps), stepsVol);
+    public void PlayEquip() => PlaySFX(PickRandomAudio(equip), equipVol);
+    public void PlayEmptyMag() => PlaySFX(PickRandomAudio(emptyMag), emptyMagVol);
+    public void PlayButtonClick() => PlaySFX(PickRandomAudio(buttonClick), buttonClickVol);
+    public void PlayNuke() => PlaySFX(PickRandomAudio(nukeSFX), nukeSFXVol);
+    public void PlayTitleScreenSound() => PlayMusic(titleScreenSound);
+    public void PlayPauseMenuMusic()
     {
         if (musicSource != null && musicSource.clip != pauseMenuMusic)
         {
             savedGameplayClip = musicSource.clip;
             savedGameplayTime = musicSource.time;
         }
-        playMusic(pauseMenuMusic);
+        PlayMusic(pauseMenuMusic);
     }
 
-    public void restoreGameplayMusic()
+    public void RestoreGameplayMusic()
     {
-        stopPauseCoroutine();
+        StopPauseCoroutine();
         if (musicSource == null) return;
         if (musicSource.clip != pauseMenuMusic)
         {
-            resumeMusic();
-            updateAudioVolumes();
+            ResumeMusic();
+            UpdateAudioVolumes();
             return;
         }
         if (savedGameplayClip != null)
@@ -247,24 +247,24 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            stopMusic();
+            StopMusic();
         }
     }
 
-    public void playPauseMenuMusicWithDelay(float delaySeconds)
+    public void PlayPauseMenuMusicWithDelay(float delaySeconds)
     {
-        stopPauseCoroutine();
+        StopPauseCoroutine();
         pauseMusicRoutine = StartCoroutine(PlayPauseMusicDelayed(delaySeconds));
     }
 
     private IEnumerator PlayPauseMusicDelayed(float delaySeconds)
     {
         yield return new WaitForSecondsRealtime(delaySeconds);
-        playPauseMenuMusic();
+        PlayPauseMenuMusic();
         pauseMusicRoutine = null;
     }
 
-    public void stopPauseCoroutine()
+    public void StopPauseCoroutine()
     {
         if (pauseMusicRoutine != null)
         {
@@ -272,6 +272,6 @@ public class AudioManager : MonoBehaviour
             pauseMusicRoutine = null;
         }
     }
-    public void playLoseMenuMusic() { stopMusic(); playMusic(loseMenuMusic); }
-    public void playRoundTransitionMusic() { stopMusic(); playMusic(roundTransitionMusic); }
+    public void PlayLoseMenuMusic() { StopMusic(); PlayMusic(loseMenuMusic); }
+    public void PlayRoundTransitionMusic() { StopMusic(); PlayMusic(roundTransitionMusic); }
 }

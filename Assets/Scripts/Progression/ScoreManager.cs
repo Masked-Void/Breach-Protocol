@@ -44,7 +44,7 @@ public class ScoreManager : MonoBehaviour
     {
         float stress01 =
             HeartbeatManager.instance != null
-                ? HeartbeatManager.instance.getStressPercent()
+                ? HeartbeatManager.instance.StressPercent
                 : 0f;
 
         float multiplier =
@@ -104,7 +104,7 @@ public class ScoreManager : MonoBehaviour
             currentRound =
                 Mathf.Max(
                     1,
-                    WaveManager.instance.getCurrentWave()
+                    WaveManager.instance.CurrentWave
                 );
         }
 

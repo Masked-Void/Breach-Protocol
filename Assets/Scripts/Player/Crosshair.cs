@@ -40,12 +40,12 @@ public class Crosshair : MonoBehaviour
         right.position = new Vector2(rightValue, center.position.y);
     }
 
-    public void expand(float amount)
+    public void Expand(float amount)
     {
         value = amount;
     }
 
-    public void setTarget(bool change, Color targetColor)
+    public void SetTarget(bool change, Color targetColor)
     {
         Color c = change ? targetColor : normalColor;
 

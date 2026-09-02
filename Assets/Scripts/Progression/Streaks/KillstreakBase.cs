@@ -96,7 +96,7 @@ public abstract class KillstreakBase : MonoBehaviour
 
         if (KillstreakManager.instance != null)
         {
-            KillstreakManager.instance.streakEnded(this);
+            KillstreakManager.instance.StreakEnded(this);
         }
     }
 

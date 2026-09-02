@@ -106,7 +106,7 @@ public class LaserArrayManager : MonoBehaviour {
         }
     }
 
-    public bool resolveSlot(pillarColor color , int slot , out LaserArray owner , out int localIndex) {
+    public bool ResolveSlot(pillarColor color , int slot , out LaserArray owner , out int localIndex) {
         owner = null;
         localIndex = -1;
 
@@ -181,7 +181,7 @@ public class LaserArrayManager : MonoBehaviour {
 
     // how many lasers this pillar actually has, 0 if its empty
     // nothing should ever hardcode a count, ask here instead
-    public int getLaserCount(pillarColor color) {
+    public int LaserCount(pillarColor color) {
 
         LaserArray[] arrays = getPillar(color);
 
@@ -200,26 +200,26 @@ public class LaserArrayManager : MonoBehaviour {
     }
 
     // fires one specific laser, silently does nothing if the slot is bad
-    public void fireLaser(pillarColor color , int slot) {
-        if (!resolveSlot(color , slot , out LaserArray owner , out int localIndex)) {
+    public void FireLaser(pillarColor color , int slot) {
+        if (!ResolveSlot(color , slot , out LaserArray owner , out int localIndex)) {
             return;
         }
 
-        owner.moveOne(localIndex , true);
+        owner.MoveOne(localIndex , true);
     }
 
     // Stops one specific laser from firing, silently does nothing if the slot is bad
-    public void stopLaser(pillarColor color , int slot) {
-        if (!resolveSlot(color , slot , out LaserArray owner , out int localIndex)) {
+    public void StopLaser(pillarColor color , int slot) {
+        if (!ResolveSlot(color , slot , out LaserArray owner , out int localIndex)) {
             return;
         }
 
-        owner.moveOne(localIndex , false);
+        owner.MoveOne(localIndex , false);
     }
 
     // fires every laser on the pillar at once
     // loops off the actual array length so adding a laser to a pillar just works
-    public void firePillar(pillarColor color) {
+    public void FirePillar(pillarColor color) {
         LaserArray[] arrays = getPillar(color);
 
         if (arrays == null) {
@@ -228,13 +228,13 @@ public class LaserArrayManager : MonoBehaviour {
 
         for (int i = 0 ; i < arrays.Length ; i++) {
             if (arrays[i] != null) {
-                arrays[i].deploy();
+                arrays[i].Deploy();
             }
         }
     }
 
     // retracts every laser on one pillar
-    public void stopPillar(pillarColor color) {
+    public void StopPillar(pillarColor color) {
         LaserArray[] arrays = getPillar(color);
 
         if (arrays == null) {
@@ -243,14 +243,14 @@ public class LaserArrayManager : MonoBehaviour {
 
         for (int i = 0 ; i < arrays.Length ; i++) {
             if (arrays[i] != null) {
-                arrays[i].retract();
+                arrays[i].Retract();
             }
         }
     }
 
     // retracts everything on all four pillars
     // this is the cleanup call, phase transitions should always hit it
-    public void stopAllLasers() {
+    public void StopAllLasers() {
 
         if (pillars == null)
             return;
@@ -260,7 +260,7 @@ public class LaserArrayManager : MonoBehaviour {
 
             for (int i = 0 ; i < pillars[p].Length ; i++) {
                 if (pillars[p][i] != null) {
-                    pillars[p][i].retractNow();
+                    pillars[p][i].RetractNow();
                 }
             }
         }
@@ -268,7 +268,7 @@ public class LaserArrayManager : MonoBehaviour {
 
     // true if any laser on this pillar is currently deployed
     // needs a matching accessor over on LaserArray
-    public bool getIsFiring(pillarColor color) {
+    public bool IsFiring(pillarColor color) {
         LaserArray[] arrays = getPillar(color);
         if (arrays == null) { return false; }
 
@@ -283,14 +283,14 @@ public class LaserArrayManager : MonoBehaviour {
 
     // starts the group spinning forever, direction is 1 or -1
     // kills whatever rotation was already running first
-    public void startSpin(int direction) {
+    public void StartSpin(int direction) {
         
         if (spinTargets == null || spinTargets.Length == 0) {
             Debug.LogError("LaserArrayManager: no laserArrays to spin" , this);
             return;
         }
 
-        stopRotation();
+        StopRotation();
 
         rotateRoutine = StartCoroutine(spinLoop(direction));
 
@@ -321,14 +321,14 @@ public class LaserArrayManager : MonoBehaviour {
 
     // rotates the group to a set angle and stops there
     // shares the rotate handle with the spin so calling this cancels a spin for free
-    public void sweepTo(float angle) {
+    public void SweepTo(float angle) {
         
         if (spinTargets == null || spinTargets.Length == 0) {
             Debug.LogError("LaserArrayManager: no laserArrays to spin" , this);
             return;
         }
 
-        stopRotation();
+        StopRotation();
         rotateRoutine = StartCoroutine(sweepRoutine(angle));
     }
 
@@ -370,7 +370,7 @@ public class LaserArrayManager : MonoBehaviour {
     }
 
     // stops any rotation and leaves the pivot wherever it ended up
-    public void stopRotation() {
+    public void StopRotation() {
         if (rotateRoutine == null)
             return;
 
@@ -379,9 +379,8 @@ public class LaserArrayManager : MonoBehaviour {
     }
 
     // just a null check, the handle being alive means its rotating
-    public bool getIsSpinning() {
-        return rotateRoutine != null;
-    }
+    public bool IsSpinning => rotateRoutine != null;
+
 
     [ContextMenu("Test Spin Clockwise")]
     private void testSpinClockwise() {
@@ -390,7 +389,7 @@ public class LaserArrayManager : MonoBehaviour {
             return;
         }
 
-        startSpin(1);
+        StartSpin(1);
         Debug.Log("LaserArrayManager: spinning clockwise at " + spinSpeed + " deg per sec" , this);
     }
 
@@ -401,7 +400,7 @@ public class LaserArrayManager : MonoBehaviour {
             return;
         }
 
-        startSpin(-1);
+        StartSpin(-1);
         Debug.Log("LaserArrayManager: spinning counter clockwise at " + spinSpeed + " deg per sec" , this);
     }
 
@@ -413,18 +412,18 @@ public class LaserArrayManager : MonoBehaviour {
         }
 
         Debug.Log("LaserArrayManager: sweeping from "+ spinAngle +" to 90",this);
-        sweepTo(90);
+        SweepTo(90);
     }
 
     [ContextMenu("Stop Rotation")]
     private void testStopRotation() {
-        stopRotation();
+        StopRotation();
         Debug.Log("LaserArrayManager: rotation stopped at " +  spinAngle , this);
     }
 
     [ContextMenu("Reset Pivot Rotation")]
     private void resetPivot() {
-        stopRotation();
+        StopRotation();
         spinAngle = 0f;
         applySpinAngle();
 
@@ -441,7 +440,7 @@ public class LaserArrayManager : MonoBehaviour {
             + "\n   arrays registered: " + count
             + "\n   spinSpeed: " + spinSpeed
             + "\n   sweepSpeed: " + sweepSpeed
-            + "\n   currently rotating: " + getIsSpinning()
+            + "\n   currently rotating: " + IsSpinning
             + "\n   spinAngle: " + spinAngle.ToString("F1") , this);
 
         if (count == 0) {
@@ -484,7 +483,7 @@ public class LaserArrayManager : MonoBehaviour {
     }
 
     // runs one of the authored patterns by index, cancels any pattern already going
-    public void startPattern(int patternIndex) {
+    public void StartPattern(int patternIndex) {
         if (patterns == null)
             return;
         if (patternIndex < 0 || patternIndex >= patterns.Length)
@@ -495,7 +494,7 @@ public class LaserArrayManager : MonoBehaviour {
         if (chosen == null || chosen.steps == null || chosen.steps.Length == 0)
             return;
 
-        stopPattern();
+        StopPattern();
         patternRoutine = StartCoroutine(patternLoop(chosen));
     }
 
@@ -529,34 +528,34 @@ public class LaserArrayManager : MonoBehaviour {
 
     // kills the pattern and retracts everything
     // the retract half is the part thats easy to forget, without it lasers stay on after the phase ends
-    public void stopPattern() {
+    public void StopPattern() {
         if (patternRoutine != null) {
             StopCoroutine(patternRoutine);
             patternRoutine = null;
         }
 
-        stopAllLasers();
+        StopAllLasers();
     }
 
     private void runStep(laserStep step) {
         if (step.slot < 0) {
             if (step.retract) {
-                stopPillar(step.color);
+                StopPillar(step.color);
             } else {
-                firePillar(step.color);
+                FirePillar(step.color);
             }
         } else {
             if (step.retract) {
-                stopLaser(step.color,step.slot);
+                StopLaser(step.color,step.slot);
             }else {
-                fireLaser(step.color , step.slot);
+                FireLaser(step.color , step.slot);
             }
         }
             
     }
 
-    public void startGeneratedPattern(float difficulty) {
-        stopPattern();
+    public void StartGeneratedPattern(float difficulty) {
+        StopPattern();
         patternRoutine = StartCoroutine(generatedLoop(Mathf.Clamp01(difficulty)));
     }
 
@@ -629,7 +628,7 @@ public class LaserArrayManager : MonoBehaviour {
                 break;
             }
 
-            if (getLaserCount((pillarColor)order[i]) == 0){
+            if (LaserCount((pillarColor)order[i]) == 0){
                 continue;
             }
 
@@ -677,7 +676,7 @@ public class LaserArrayManager : MonoBehaviour {
 
             live[i] = weights[i];
 
-            if (getLaserCount(color) == 0) {
+            if (LaserCount(color) == 0) {
                 live[i] = 0f;
             } else if (needsDeployed && !hasDeployed(color)) {
                 live[i] = 0f;
@@ -688,7 +687,7 @@ public class LaserArrayManager : MonoBehaviour {
 
         if (total <= 0f) {
             for (int i = 0 ;i < 4 ;i++) {
-                if (getLaserCount((pillarColor)i) > 0) {
+                if (LaserCount((pillarColor)i) > 0) {
                     return (pillarColor)i;
                 }
             }
@@ -710,7 +709,7 @@ public class LaserArrayManager : MonoBehaviour {
 
 
     private int rollSlot(pillarColor color , AnimationCurve slotBias , bool needsDeployed) {
-        int count = getLaserCount(color);
+        int count = LaserCount(color);
 
         if (count <= 0) {
             return -2;
@@ -720,12 +719,12 @@ public class LaserArrayManager : MonoBehaviour {
         float[] weights = new float[count];
 
         for (int i = 0 ; i < count ; i++) {
-            if (!resolveSlot(color,i,out LaserArray owner,out int localIndex)) {
+            if (!ResolveSlot(color,i,out LaserArray owner,out int localIndex)) {
                 weights[i] = 0f;
                 continue;
             }
 
-            if (needsDeployed != owner.getIsLaserOut(localIndex)) {
+            if (needsDeployed != owner.IsLaserOut(localIndex)) {
                 weights[i] = 0f;
                 continue;
             }
@@ -754,10 +753,10 @@ public class LaserArrayManager : MonoBehaviour {
     }
 
     private bool hasDeployed(pillarColor color) {
-        int count = getLaserCount(color);
+        int count = LaserCount(color);
 
         for (int i = 0 ; i < count ; i++) {
-            if (resolveSlot(color,i,out LaserArray owner,out int localIndex) && owner.getIsLaserOut(localIndex)) {
+            if (ResolveSlot(color,i,out LaserArray owner,out int localIndex) && owner.IsLaserOut(localIndex)) {
                 return true;
             }
         }
@@ -777,7 +776,6 @@ public class LaserArrayManager : MonoBehaviour {
 
 
     // null check on the handle
-    public bool getIsPatternRunning() {
-        return patternRoutine != null;
-    }
+    public bool IsPatternRunning => patternRoutine != null;
+    
 }

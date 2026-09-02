@@ -126,7 +126,7 @@ public class KillstreakManager : MonoBehaviour
         return true;
     }
 
-    public void tryRoll()
+    public void TryRoll()
     {
         TryAwardRandomStreak();
     }
@@ -169,7 +169,7 @@ public class KillstreakManager : MonoBehaviour
         return UseStoredStreak();
     }
 
-    public void streakEnded(KillstreakBase streak)
+    public void StreakEnded(KillstreakBase streak)
     {
         if (streak == null)
             return;
@@ -177,7 +177,7 @@ public class KillstreakManager : MonoBehaviour
         activeStreaks.Remove(streak);
     }
 
-    public void cancelActiveStreak()
+    public void CancelActiveStreak()
     {
         if (activeStreaks.Count > 0)
         {
@@ -200,7 +200,7 @@ public class KillstreakManager : MonoBehaviour
 
     public void ResetForNewRun()
     {
-        cancelActiveStreak();
+        CancelActiveStreak();
 
         storedStreak = null;
 

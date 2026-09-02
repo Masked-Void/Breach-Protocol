@@ -124,7 +124,7 @@ public class ChallengeManager : MonoBehaviour
 
     // ---------- UI ----------
 
-    public void displayWeaponChallenges(ChallengeData weaponChallenge)
+    public void DisplayWeaponChallenges(ChallengeData weaponChallenge)
     {
         if (weaponChallenge == null) return;
         currentlySelectedChallenge = weaponChallenge;
@@ -152,11 +152,11 @@ public class ChallengeManager : MonoBehaviour
         if (description != null) description.text = weaponChallenge.description;
         if(fileCountText != null && UpgradeManager.instance != null) fileCountText.text = "" + UpgradeManager.instance.files;
 
-        updateActionButton(weaponChallenge, isBought, isEquipped);
+        UpdateActionButton(weaponChallenge, isBought, isEquipped);
         displayProgressUI(weaponChallenge);
     }
 
-    void updateActionButton(ChallengeData weaponChallenge, bool isBought, bool isEquipped)
+    void UpdateActionButton(ChallengeData weaponChallenge, bool isBought, bool isEquipped)
     {
         if (actionButton != null && actionText != null)
         {
@@ -223,7 +223,7 @@ public class ChallengeManager : MonoBehaviour
     void buyWeapon(ChallengeData challenge)
     {
         if (AudioManager.instance != null)
-            AudioManager.instance.playButtonClick();
+            AudioManager.instance.PlayButtonClick();
 
         if (challenge == null || challenge.weapon == null) return;
 
@@ -237,14 +237,14 @@ public class ChallengeManager : MonoBehaviour
             if (UpgradeManager.instance != null) UpgradeManager.instance.SaveUpgrades();
             PlayerPrefs.Save();
 
-            displayWeaponChallenges(challenge);
+            DisplayWeaponChallenges(challenge);
         }
     }
 
     void equipWeapon(ChallengeData challenge)
     {
         if (AudioManager.instance != null)
-            AudioManager.instance.playButtonClick();
+            AudioManager.instance.PlayButtonClick();
 
         if (challenge == null || challenge.weapon == null) return;
 
@@ -255,7 +255,7 @@ public class ChallengeManager : MonoBehaviour
             WeaponManager.instance.activeWeapon = challenge.weapon;
 
         // Refresh UI so previous weapon returns to "Equip" state and current switches to "Equipped"
-        displayWeaponChallenges(challenge);
+        DisplayWeaponChallenges(challenge);
     }
 
     public bool areAllChallengesComplete(ChallengeData weaponChallenge)
@@ -331,7 +331,7 @@ public class ChallengeManager : MonoBehaviour
 
         PlayerPrefs.Save();
         LoadData();
-        if (currentlySelectedChallenge != null) displayWeaponChallenges(currentlySelectedChallenge);
+        if (currentlySelectedChallenge != null) DisplayWeaponChallenges(currentlySelectedChallenge);
         Debug.Log("Challenges reset successfully.");
     }
 }

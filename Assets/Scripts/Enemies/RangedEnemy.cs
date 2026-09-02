@@ -24,7 +24,7 @@ public class RangedEnemy : EnemyBase
         SetWeaponPrefab();
         currentAmmo = activeGun.startingBullets * 3;
         if (TryGetComponent<PatrolPath>(out patrol))
-            agent.destination = patrol.getCurrentWayPointPos();
+            agent.destination = patrol.CurrentWaypointPosition;
     }
 
     protected override void attack()
@@ -41,8 +41,8 @@ public class RangedEnemy : EnemyBase
         attackTimer = 0f;
 
         if (AudioManager.instance != null)
-            AudioManager.instance.playSpatialSFX(
-                AudioManager.instance.pickRandomAudio(AudioManager.instance.enemyShoot),
+            AudioManager.instance.PlaySpatialSFX(
+                AudioManager.instance.PickRandomAudio(AudioManager.instance.enemyShoot),
                 gunBarrel.position,
                 AudioManager.instance.enemyShootVol);
 
@@ -91,7 +91,7 @@ public class RangedEnemy : EnemyBase
     }
     public override void die()
     {
-        throwWeapon(spawnedWeaponModel, gunModel.transform);
+        ThrowWeapon(spawnedWeaponModel, gunModel.transform);
         base.die();
     }
 }

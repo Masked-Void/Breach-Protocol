@@ -37,10 +37,10 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         if (Input.GetButtonDown("Fire1") && WeaponManager.instance != null)
-            WeaponManager.instance.attack();
+            WeaponManager.instance.Attack();
 
         if (Input.GetKeyDown(throwKey) && WeaponManager.instance != null)
-            WeaponManager.instance.throwWeapon();
+            WeaponManager.instance.ThrowWeapon();
 
         handleInteraction();
     }
@@ -57,7 +57,7 @@ public class PlayerInteraction : MonoBehaviour
                 setInteractionUI(true);
                 if (Input.GetButtonDown("Interact") || Input.GetKeyDown(KeyCode.E))
                 {
-                    weaponPickup.interact(picker);
+                    weaponPickup.Interact(picker);
                     Destroy(hit.collider.gameObject);
                     setInteractionUI(false);
                 }
@@ -79,14 +79,14 @@ public class PlayerInteraction : MonoBehaviour
     private void openShop()
     {
         setInteractionUI(false);
-        GameManager.instance.statePause();
+        GameManager.instance.StatePause();
         shopOpen = true;
         if (GameManager.instance.shopUI != null) GameManager.instance.shopUI.SetActive(true);
     }
 
     private void closeShop()
     {
-        GameManager.instance.stateUnpause();
+        GameManager.instance.StateUnpause();
         shopOpen = false;
         if (GameManager.instance.shopUI != null) GameManager.instance.shopUI.SetActive(false);
         setInteractionUI(false);

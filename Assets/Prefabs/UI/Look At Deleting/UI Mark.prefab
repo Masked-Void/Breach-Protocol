@@ -324,7 +324,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4638673332148709192}
-        m_TargetAssemblyTypeName: populateShop, Assembly-CSharp
+        m_TargetAssemblyTypeName: ShopPopulator, Assembly-CSharp
         m_MethodName: BuyUpgrade
         m_Mode: 1
         m_Arguments:
@@ -960,7 +960,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: restart
         m_Mode: 1
         m_Arguments:
@@ -1523,7 +1523,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -1868,7 +1868,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: upgrade
         m_Mode: 1
         m_Arguments:
@@ -3254,7 +3254,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: restart
         m_Mode: 1
         m_Arguments:
@@ -5290,7 +5290,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: sound
         m_Mode: 1
         m_Arguments:
@@ -9998,7 +9998,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: resume
         m_Mode: 1
         m_Arguments:
@@ -10436,7 +10436,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: home
         m_Mode: 1
         m_Arguments:
@@ -11030,7 +11030,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: pauseBack
         m_Mode: 1
         m_Arguments:
@@ -11299,7 +11299,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: restart
         m_Mode: 1
         m_Arguments:
@@ -11432,7 +11432,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: controls
         m_Mode: 1
         m_Arguments:
@@ -11862,7 +11862,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4407336542011153147}
-        m_TargetAssemblyTypeName: populateShop, Assembly-CSharp
+        m_TargetAssemblyTypeName: ShopPopulator, Assembly-CSharp
         m_MethodName: BuyUpgrade
         m_Mode: 1
         m_Arguments:
@@ -16124,7 +16124,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: home
         m_Mode: 1
         m_Arguments:
@@ -16226,7 +16226,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: quit
         m_Mode: 1
         m_Arguments:
@@ -17470,7 +17470,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: settings
         m_Mode: 1
         m_Arguments:
@@ -17742,7 +17742,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -18017,7 +18017,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: quit
         m_Mode: 1
         m_Arguments:
@@ -18337,7 +18337,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: sound
         m_Mode: 1
         m_Arguments:
@@ -18589,7 +18589,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: home
         m_Mode: 1
         m_Arguments:
@@ -20526,7 +20526,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: quit
         m_Mode: 1
         m_Arguments:
@@ -22685,7 +22685,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: restart
         m_Mode: 1
         m_Arguments:
@@ -22787,7 +22787,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: options
         m_Mode: 1
         m_Arguments:
@@ -23305,7 +23305,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: challenge
         m_Mode: 1
         m_Arguments:
@@ -23631,7 +23631,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -25468,7 +25468,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -27634,7 +27634,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: resume
         m_Mode: 1
         m_Arguments:
@@ -28227,7 +28227,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4152541625720327644}
-        m_TargetAssemblyTypeName: buttonFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: quit
         m_Mode: 1
         m_Arguments:
@@ -29649,7 +29649,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -30080,7 +30080,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5989207359020727707}
-        m_TargetAssemblyTypeName: populateShop, Assembly-CSharp
+        m_TargetAssemblyTypeName: ShopPopulator, Assembly-CSharp
         m_MethodName: BuyUpgrade
         m_Mode: 1
         m_Arguments:
@@ -32637,7 +32637,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: titleScreenManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleScreenManager, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
         m_Arguments:

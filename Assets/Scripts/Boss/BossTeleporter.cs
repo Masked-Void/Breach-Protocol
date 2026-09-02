@@ -19,7 +19,7 @@ public class BossTeleporter : MonoBehaviour
 
 
     [ContextMenu("Turn on")]
-    public void turnOn() {
+    public void TurnOn() {
         Debug.Log("Turned On");
         isOn = true;
         if (portal != null) {
@@ -45,7 +45,7 @@ public class BossTeleporter : MonoBehaviour
             return;
         }
 
-        if (WaveManager.instance.getCurrentWave() >= appearOnWave) {
+        if (WaveManager.instance.CurrentWave >= appearOnWave) {
             isOn = true;
             if (portal != null) {
                 portal.SetActive(true);

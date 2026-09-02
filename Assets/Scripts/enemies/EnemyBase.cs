@@ -115,7 +115,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
                 agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
                 agent.SetDestination(GameManager.instance.player.transform.position);
                 playerDir = GameManager.instance.player.transform.position - transform.position;
-                faceTarget();
+                FaceTarget();
                 attack();
             }
         }
@@ -125,7 +125,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             if (GameManager.instance?.player != null)
             {
                 //check to disengage
-                if (!canStillSeePlayer())
+                if (!CanStillSeePlayer())
                 {
                     isEngaged = false;
                     agent.stoppingDistance = 0;
@@ -133,14 +133,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
                     //clear old roam point so pick a new one
                     if (roamTarget != null)
                     {
-                        waveHost.active?.releaseRoamPoint(gameObject);
+                        waveHost.active?.ReleaseRoamPoint(gameObject);
                         roamTarget = null;
                     }
                     return;
                 }
                 agent.SetDestination(GameManager.instance.player.transform.position);
                 playerDir = GameManager.instance.player.transform.position - transform.position;
-                faceTarget();
+                FaceTarget();
 
 
                 float distance = playerDir.magnitude;
@@ -155,7 +155,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         else
         {
             // Ranged: roaming � only look around while stopped at a roam point
-            roam();
+            Roam();
 
             
                 if (tryAttackFromCurrentPosition())
@@ -171,7 +171,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     {
         if (waveHost.active == null) return;
 
-        waveHost.active.releaseRoamPoint(gameObject);
+        waveHost.active.ReleaseRoamPoint(gameObject);
 
         if (willRoam && GameManager.instance?.player != null)
         {
@@ -196,7 +196,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
         for (int i = 0; i < 10; i++)
         {
-            Transform candidatePoint = waveHost.active.claimRoamPoint(gameObject);
+            Transform candidatePoint = waveHost.active.ClaimRoamPoint(gameObject);
             if (candidatePoint == null) break;
 
             float distToPlayer = Vector3.Distance(candidatePoint.position , playerPos);
@@ -212,7 +212,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             }
             else
             {
-                waveHost.active.releaseRoamPoint(gameObject);
+                waveHost.active.ReleaseRoamPoint(gameObject);
             }
         }
         return closestPoint;
@@ -232,7 +232,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
                 if (AudioManager.instance != null && AudioManager.instance.enemySteps != null && AudioManager.instance.enemySteps.Length > 0)
                 {
-                    AudioManager.instance.playSpatialSFX(AudioManager.instance.pickRandomAudio(AudioManager.instance.enemySteps), transform.position, AudioManager.instance.enemyStepsVol, 3f, 20f);
+                    AudioManager.instance.PlaySpatialSFX(AudioManager.instance.PickRandomAudio(AudioManager.instance.enemySteps), transform.position, AudioManager.instance.enemyStepsVol, 3f, 20f);
                 }
             }
         }
@@ -243,7 +243,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     }
 
     // need this so ai goes back to roaming after losing sight. 
-    private bool canStillSeePlayer()
+    private bool CanStillSeePlayer()
     {
         if (GameManager.instance == null || GameManager.instance.player == null) return false;
 
@@ -277,7 +277,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             if (hit.collider.CompareTag("Player") && angleToPlayer <= FOV)
             {
                 playerDir = dirToPlayer;
-                faceTarget();
+                FaceTarget();
                 attack();
                 return true;
             }
@@ -287,7 +287,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     }
 
     // ensures player is within a range or FOV so they can be seen
-    public virtual bool canSeePlayer()
+    public virtual bool CanSeePlayer()
     {
         playerDir = GameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
@@ -297,7 +297,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             if (hit.collider.CompareTag("Player") && angleToPlayer <= FOV)
             {
                 agent.SetDestination(GameManager.instance.player.transform.position);
-                faceTarget();
+                FaceTarget();
 
                 attack();
                 return true;
@@ -308,7 +308,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     }
 
   
-    public virtual void roam()
+    public virtual void Roam()
     {
 
         //Check distance from player
@@ -325,7 +325,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
                 //clear roam target to hunt
                 if (roamTarget != null)
                 {
-                    waveHost.active?.releaseRoamPoint(gameObject);
+                    waveHost.active?.ReleaseRoamPoint(gameObject);
                     roamTarget = null;
                 }
                 return;
@@ -336,7 +336,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
         if (roamTarget != null && AtRoamTarget())
         {
-            waveHost.active?.releaseRoamPoint(gameObject);
+            waveHost.active?.ReleaseRoamPoint(gameObject);
             roamTarget = null;
             roamTimer = 0f;
             return;
@@ -374,7 +374,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         lastDamageWeapon = weapon;
         lastDamageFromGround = fromGround;
     }
-    public void takeDamage(int amount)
+    public void TakeDamage(int amount)
     {
         if (isDead || amount <= 0) return;
 
@@ -426,14 +426,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         // enemies talk to the wave through waveHost, not the singleton
         if (waveHost.active != null)
         {
-            waveHost.active.enemyKilled();
+            waveHost.active.EnemyKilled();
         }
 
         if (awardKillRewards)
         {
             if (GameManager.instance != null)
             {
-                GameManager.instance.addKill();
+                GameManager.instance.AddKill();
                 GameManager.instance.AddBytes(byteValue);
             }
 
@@ -453,7 +453,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         model.material.color = colorOrig;
     }
 
-    public void faceTarget()
+    public void FaceTarget()
     {
         Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z));
         transform.rotation = Quaternion.Lerp(transform.rotation, rot, faceTargetSpeed * Time.deltaTime);
@@ -468,7 +468,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         if (dist > attackRange || attackTimer <= attackRate) return false;
 
         attackTimer = 0;
-        GameManager.instance.player.GetComponent<IDamage>()?.takeDamage(attackDamage);
+        GameManager.instance.player.GetComponent<IDamage>()?.TakeDamage(attackDamage);
         return true;
     }
 
@@ -476,7 +476,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     // Right now it intentionally behaves like normal enemy damage.
     public void TakeSecondaryDamage(int amount)
     {
-        takeDamage(amount);
+        TakeDamage(amount);
     }
 
     // Existing code can still call ForceKill() with no arguments.
@@ -491,7 +491,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         die();
     }
 
-    public void throwWeapon(GameObject spawnedWeaponModel, Transform pivot)
+    public void ThrowWeapon(GameObject spawnedWeaponModel, Transform pivot)
     {
         if (spawnedWeaponModel == null) return;
         spawnedWeaponModel.transform.SetParent(null);

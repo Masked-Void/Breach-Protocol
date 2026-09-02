@@ -88,6 +88,17 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
     private int spawnersStillSpawning;
 
+
+    public int EnemiesAlive => enemiesAlive;
+    public int EnemiesKilled => enemiesKilled;
+    public int CurrentWave => currentWave;
+    public bool IsWaveInProgress => waveInProgress;
+    public bool IsWaitingForNextWave => waitingForNextWave;
+    public int SecondsUntilNextWave => Mathf.Max(0, Mathf.CeilToInt(timeBetweenWaves - waveTimer));
+
+
+
+
     void Awake()
     {
         if (instance != null && instance != this)
@@ -102,6 +113,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
         assignSpawnPoints(spawnPointTransforms);
         assignRoamPoints(roamPointTransforms);
+
     }
 
 
@@ -233,7 +245,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
             SpawnPoint candidate =
                 spawnPoints[(startIndex + i) % spawnPoints.Length];
 
-            if (candidate.isFree(spawnPointCooldown))
+            if (candidate.IsFree(spawnPointCooldown))
             {
                 return candidate;
             }
@@ -247,7 +259,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
     {
         if (AudioManager.instance != null)
         {
-            AudioManager.instance.stopMusic();
+            AudioManager.instance.StopMusic();
         }
 
         waveInProgress = true;
@@ -282,7 +294,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
         if (AudioManager.instance != null)
         {
             AudioManager.instance
-                .playRoundTransitionMusic();
+                .PlayRoundTransitionMusic();
         }
 
         waveTimer = 0f;
@@ -290,7 +302,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
     }
 
 
-    public Transform claimRoamPoint(GameObject askingEnemy)
+    public Transform ClaimRoamPoint(GameObject askingEnemy)
     {
         if (askingEnemy == null)
             return null;
@@ -317,7 +329,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
     }
 
 
-    public void releaseRoamPoint(GameObject askingEnemy)
+    public void ReleaseRoamPoint(GameObject askingEnemy)
     {
         if (askingEnemy == null || roamPoints == null)
             return;
@@ -366,13 +378,10 @@ public class WaveManager : MonoBehaviour,IWaveHost
     }
 
 
-    public int getCurrentWave()
-    {
-        return currentWave;
-    }
 
 
-    public void enemyKilled()
+
+    public void EnemyKilled()
     {
         enemiesAlive--;
         enemiesKilled++;
@@ -384,7 +393,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
         if (HeartbeatManager.instance != null)
         {
-            HeartbeatManager.instance.enemyKilled();
+            HeartbeatManager.instance.EnemyKilled();
         }
 
         // Don't finish while more enemies are still scheduled to spawn.
@@ -404,7 +413,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
         if (HeartbeatManager.instance != null)
         {
-            HeartbeatManager.instance.waveCompleted();
+            HeartbeatManager.instance.WaveCompleted();
         }
 
         if (GameManager.instance != null)
@@ -434,38 +443,11 @@ public class WaveManager : MonoBehaviour,IWaveHost
     }
 
 
-    public int getEnemiesAlive()
-    {
-        return enemiesAlive;
-    }
-
-    public int getEnemiesKilled()
-    {
-        return enemiesKilled;
-    }
-
-    public bool isWaveInProgress()
-    {
-        return waveInProgress;
-    }
 
 
-    public bool isWaitingForNextWave()
-    {
-        return waitingForNextWave;
-    }
 
 
-    public int getSecondsUntilNextWave()
-    {
-        float remaining =
-            timeBetweenWaves - waveTimer;
 
-        return Mathf.Max(
-            0,
-            Mathf.CeilToInt(remaining)
-        );
-    }
 
 
     public Transform[] cleanList(Transform[] source)

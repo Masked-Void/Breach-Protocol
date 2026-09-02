@@ -15,11 +15,11 @@ public class PatrolPath : MonoBehaviour
     int direction = 1;
     int idx;
 
-    public int getNextWayPointIdx()
+    public int NextWaypointIndex()
     {
         idx += direction;
 
-        if (pathType == PathType.Loop) idx %= patrolPoints.Length;
+        if (pathType == PathType.Loop) idx = ((idx % patrolPoints.Length) + patrolPoints.Length) % patrolPoints.Length;
         else if (pathType == PathType.ReverseWhenDone)
         {
             if (idx >= patrolPoints.Length || idx < 0)
@@ -32,12 +32,12 @@ public class PatrolPath : MonoBehaviour
         return idx;
     }
 
-    public Vector3 getCurrentWayPointPos() => patrolPoints[idx].position;
+    public Vector3 CurrentWaypointPosition => patrolPoints[idx].position;
 
-    public Vector3 getNextWayPointPos()
+    public Vector3 NextWaypointPosition()
     {
         if (patrolPoints.Length == 0) return transform.position;
-        idx = getNextWayPointIdx();
+        idx = NextWaypointIndex();
         Vector3 nextWayPoint = patrolPoints[idx].position;
 
         return nextWayPoint;

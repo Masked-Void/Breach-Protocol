@@ -12,19 +12,19 @@ public class ButtonFunctions : MonoBehaviour
 
     public void resume()
     {
-        if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
-        if (GameManager.instance != null) GameManager.instance.stateUnpause();
+        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
+        if (GameManager.instance != null) GameManager.instance.StateUnpause();
     }
 
     public void restart()
     {
-        if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
+        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         StartCoroutine(LoadSceneAsync(SceneManager.GetActiveScene().name));
     }
 
     public void home()
     {
-        if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
+        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         StartCoroutine(LoadSceneAsync("Title"));
     }
 
@@ -57,9 +57,9 @@ public class ButtonFunctions : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(0.2f);
 
-        if (AudioManager.instance != null) AudioManager.instance.stopMusic();
+        if (AudioManager.instance != null) AudioManager.instance.StopMusic();
         Time.timeScale = 1f;
-        if (GameManager.instance != null) GameManager.instance.stateUnpause();
+        if (GameManager.instance != null) GameManager.instance.StateUnpause();
         scene.allowSceneActivation = true;
     }
 
@@ -77,7 +77,7 @@ public class ButtonFunctions : MonoBehaviour
 
     public void options()
     {
-        if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
+        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         deactivateAllPanels();
         if (GameManager.instance.backButton != null) GameManager.instance.backButton.SetActive(true);
         if (GameManager.instance.navTab != null) GameManager.instance.navTab.SetActive(true);
@@ -86,28 +86,28 @@ public class ButtonFunctions : MonoBehaviour
 
     public void settings()
     {
-        if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
+        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         deactivateAllPanels();
         if (GameManager.instance.settingsCanvas != null) GameManager.instance.settingsCanvas.SetActive(true);
     }
 
     public void sound()
     {
-        if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
+        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         if (GameManager.instance.controlsMenu != null) GameManager.instance.controlsMenu.SetActive(false);
         if (GameManager.instance.soundMenu != null) GameManager.instance.soundMenu.SetActive(true);
     }
 
     public void controls()
     {
-        if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
+        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         if (GameManager.instance.soundMenu != null) GameManager.instance.soundMenu.SetActive(false);
         if (GameManager.instance.controlsMenu != null) GameManager.instance.controlsMenu.SetActive(true);
     }
 
     public void pauseBack()
     {
-        if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
+        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         deactivateAllPanels();
         if (GameManager.instance.backButton != null) GameManager.instance.backButton.SetActive(false);
         if (GameManager.instance.navTab != null) GameManager.instance.navTab.SetActive(false);
@@ -130,7 +130,7 @@ public class ButtonFunctions : MonoBehaviour
 
     public void quit()
     {
-        if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
+        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
         #elif UNITY_WEBGL

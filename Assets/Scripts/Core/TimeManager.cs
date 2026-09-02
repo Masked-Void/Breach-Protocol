@@ -64,7 +64,7 @@ public class TimeManager : MonoBehaviour
                 return;
 
             float movement01 = Mathf.Clamp01(
-                GameManager.instance.playerScript.getSpeedPercent()
+                GameManager.instance.playerScript.SpeedPercent
             );
 
             movement01 = Mathf.Pow(movement01, movementCurvePower);
@@ -76,7 +76,7 @@ public class TimeManager : MonoBehaviour
             );
 
             float stress01 = HeartbeatManager.instance != null
-                ? HeartbeatManager.instance.getStressPercent()
+                ? HeartbeatManager.instance.StressPercent
                 : 0f;
 
             float heartbeatInfluence = Mathf.Clamp01(stress01 * bpmInfluence);
@@ -115,7 +115,7 @@ public class TimeManager : MonoBehaviour
 
     // Sets the normal world speed immediately. Persistent effects should
     // use setTimeScaleOverride instead so Update() does not overwrite them.
-    public void setTimeScale(float newTimeScale)
+    public void SetTimeScale(float newTimeScale)
     {
         if (GameManager.instance != null && GameManager.instance.isPaused)
             return;
@@ -126,7 +126,7 @@ public class TimeManager : MonoBehaviour
 
     // Used by Adrenaline and future scorestreaks.
 
-    public void setTimeScaleOverride(float newTimeScale)
+    public void SetTimeScaleOverride(float newTimeScale)
     {
         overrideTimeScale = Mathf.Clamp(newTimeScale, minTimeScale, maxTimeScale);
         hasTimeScaleOverride = true;
@@ -139,7 +139,7 @@ public class TimeManager : MonoBehaviour
             ApplyTimeScale(currentTimeScale);
     }
 
-    public void clearTimeScaleOverride()
+    public void ClearTimeScaleOverride()
     {
         hasTimeScaleOverride = false;
 
@@ -147,17 +147,11 @@ public class TimeManager : MonoBehaviour
         // from the override to movement + heartbeat controlled time.
     }
 
-    public bool hasActiveTimeScaleOverride()
-    {
-        return hasTimeScaleOverride;
-    }
+    public bool ActiveTimeScaleOverride => hasTimeScaleOverride;
 
-    public float getTimeScale()
-    {
-        return currentTimeScale;
-    }
+    public float TimeScale => currentTimeScale;
 
-    public void pauseTime()
+    public void PauseTime()
     {
         if (Time.timeScale > 0f)
             currentTimeScale = Time.timeScale;
@@ -165,7 +159,7 @@ public class TimeManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    public void unpauseTime()
+    public void UnpauseTime()
     {
         ApplyTimeScale(currentTimeScale);
     }

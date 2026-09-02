@@ -84,8 +84,8 @@ public class HoldZoneManager : MonoBehaviour {
 
     // called from the phase transition. the boss stays immune until this hold finishes
     [ContextMenu("Start Immune Hold")]
-    public void startImmuneHold() {
-        stopAll();
+    public void StartImmuneHold() {
+        StopAll();
 
         immuneHoldDone = false;
 
@@ -94,7 +94,7 @@ public class HoldZoneManager : MonoBehaviour {
             return;
         }
         activeZone = immuneZone;
-        immuneZone.activate(this);
+        immuneZone.Activate(this);
 
         if (hudObj != null)
             hudObj.SetActive(true);
@@ -102,8 +102,8 @@ public class HoldZoneManager : MonoBehaviour {
 
     // called at the start of a damage phase. picks a point that isn't the one from last time
     [ContextMenu("Start Damage Hold")]
-    public void startDamageHold() {
-        stopAll();
+    public void StartDamageHold() {
+        StopAll();
         
         if (damagePoints == null || damagePoints.Length == 0)
             return;
@@ -124,28 +124,28 @@ public class HoldZoneManager : MonoBehaviour {
         if (activeZone == null)
             return;
 
-        activeZone.activate(this);
+        activeZone.Activate(this);
         if (hudObj != null)
             hudObj.SetActive(true);
     }
 
     // shuts down every point, not just the live one, so nothing survives a phase handoff
     [ContextMenu("Stop All Holds")]
-    public void stopAll() {
+    public void StopAll() {
         if (immuneZone != null)
-            immuneZone.deactivate();
+            immuneZone.Deactivate();
 
         if (damagePoints != null) {
             for (int i = 0 ; i < damagePoints.Length ; i++)
                 if (damagePoints[i] != null)
-                    damagePoints[i].deactivate();
+                    damagePoints[i].Deactivate();
         }
         activeZone = null;
         if (hudObj != null)
             hudObj.SetActive(false);
     }
 
-    public void holdComplete(HoldZone zone) {
+    public void HoldComplete(HoldZone zone) {
 
         if (zone == null)
             return;
@@ -156,19 +156,19 @@ public class HoldZoneManager : MonoBehaviour {
         }
 
         if (boss != null)
-            boss.applyDamage(zone.damageAmt);
+            boss.ApplyDamage(zone.damageAmt);
 
         damageHoldsDone++;
 
         if (repeatDamageHolds)
-            startDamageHold();
+            StartDamageHold();
 
         else
-            stopAll();
+            StopAll();
     }
 
     [ContextMenu("Force Break Immunity")]
-    public void forceCompleteImmune() {
+    public void ForceCompleteImmune() {
         immuneHoldDone = true;
     }
 
@@ -177,6 +177,6 @@ public class HoldZoneManager : MonoBehaviour {
         if (activeZone == null || activeZone == immuneZone)
             return;
 
-        holdComplete(activeZone);
+        HoldComplete(activeZone);
     }
 }
