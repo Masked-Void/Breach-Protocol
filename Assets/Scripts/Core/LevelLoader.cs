@@ -22,7 +22,7 @@ public class LevelLoader : MonoBehaviour
     [SerializeField] private string playerSpawnObjectName = "Player Spawn Pos";
 
     // set by the title screen before it loads bootstrap.
-    private static string requestedLevelName = "";
+    public static string requestedLevelName = "";
 
     // scene name of the level scene that is currently loaded, or empty if no level scene is loaded
     private static string currentLevel = "";

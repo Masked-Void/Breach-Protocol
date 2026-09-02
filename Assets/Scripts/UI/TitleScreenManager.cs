@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -23,7 +24,8 @@ public class TitleScreenManager : MonoBehaviour
     public Button navCreditsButton;
 
     [SerializeField] private GameObject titleMenuPanel;
-    [SerializeField] private GameObject SoundMenu;
+    [FormerlySerializedAs("soundMenu")]
+    [SerializeField] private GameObject soundMenu;
     [SerializeField] private GameObject controlsMenu;
     [SerializeField] private Slider progressBar;
 
@@ -42,49 +44,61 @@ public class TitleScreenManager : MonoBehaviour
         AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("MK2"));
+
+        LevelLoader.requestedLevelName = "MK2";
+        StartCoroutine(LoadSceneAsync("Bootstrap"));
     }
     public void openLevelDevinS()
     {
         AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("Devin"));
+
+        LevelLoader.requestedLevelName = "Devin";
+        StartCoroutine(LoadSceneAsync("Bootstrap"));
     }
     public void openLevelDevinC()
     {
         AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("dclevel"));
+
+        LevelLoader.requestedLevelName = "DevinC";
+        StartCoroutine(LoadSceneAsync("Bootstrap"));
     }
     public void openLevelMark()
     {
         AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("Mark"));
+        
+        LevelLoader.requestedLevelName = "Mark";
+        StartCoroutine(LoadSceneAsync("Bootstrap"));
     }
     public void openLevelKhurshed()
     {
         AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("ColdStorage"));
+
+        LevelLoader.requestedLevelName = "ColdStorage";
+        StartCoroutine(LoadSceneAsync("Bootstrap"));
     }
     public void openLevelVirel()
     {
         AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
-        StartCoroutine(LoadSceneAsync("LevelCreation-Virel"));
+
+        LevelLoader.requestedLevelName = "LevelCreation-Virel";
+        StartCoroutine(LoadSceneAsync("Bootstrap"));
     }
 
     public void openSettings()
     {
         AudioManager.instance.playButtonClick();
         deactivateAllSettings();
-        SoundMenu.SetActive(true);
+        soundMenu.SetActive(true);
     }
 
     public void controls()
@@ -206,7 +220,7 @@ public class TitleScreenManager : MonoBehaviour
 
     private void deactivateAllSettings()
     {
-        SoundMenu.SetActive(false);
+        soundMenu.SetActive(false);
         controlsMenu.SetActive(false);
     }
 }

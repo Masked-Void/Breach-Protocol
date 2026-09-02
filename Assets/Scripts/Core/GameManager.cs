@@ -1,8 +1,7 @@
-using JetBrains.Annotations;
 using System.Collections;
 using TMPro;
-//using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -30,7 +29,8 @@ public class GameManager : MonoBehaviour
     public GameObject backButton;
 
     [Header("Settings Menu")]
-    [SerializeField] public GameObject SoundMenu;
+    [FormerlySerializedAs("soundMenu")]
+    [SerializeField] public GameObject soundMenu;
     [SerializeField] public GameObject controlsMenu;
 
     [Header("Kills UI")]
@@ -190,7 +190,7 @@ public class GameManager : MonoBehaviour
         if (challengesCanvas != null) challengesCanvas.SetActive(false);
         if (settingsCanvas != null) settingsCanvas.SetActive(false);
         if (upgradesCanvas != null) upgradesCanvas.SetActive(false);
-        if (SoundMenu != null) SoundMenu.SetActive(false);
+        if (soundMenu != null) soundMenu.SetActive(false);
         if (controlsMenu != null) controlsMenu.SetActive(false);
         if (backButton != null) backButton.SetActive(false);
         if (navTab != null) navTab.SetActive(false);

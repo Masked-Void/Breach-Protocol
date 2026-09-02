@@ -95,13 +95,13 @@ public class ButtonFunctions : MonoBehaviour
     {
         if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
         if (GameManager.instance.controlsMenu != null) GameManager.instance.controlsMenu.SetActive(false);
-        if (GameManager.instance.SoundMenu != null) GameManager.instance.SoundMenu.SetActive(true);
+        if (GameManager.instance.soundMenu != null) GameManager.instance.soundMenu.SetActive(true);
     }
 
     public void controls()
     {
         if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
-        if (GameManager.instance.SoundMenu != null) GameManager.instance.SoundMenu.SetActive(false);
+        if (GameManager.instance.soundMenu != null) GameManager.instance.soundMenu.SetActive(false);
         if (GameManager.instance.controlsMenu != null) GameManager.instance.controlsMenu.SetActive(true);
     }
 
@@ -121,7 +121,7 @@ public class ButtonFunctions : MonoBehaviour
         if (GameManager.instance.challengesCanvas != null) GameManager.instance.challengesCanvas.SetActive(false);
         if (GameManager.instance.settingsCanvas != null) GameManager.instance.settingsCanvas.SetActive(false);
         if (GameManager.instance.upgradesCanvas != null) GameManager.instance.upgradesCanvas.SetActive(false);
-        if (GameManager.instance.SoundMenu != null) GameManager.instance.SoundMenu.SetActive(false);
+        if (GameManager.instance.soundMenu != null) GameManager.instance.soundMenu.SetActive(false);
         if (GameManager.instance.controlsMenu != null) GameManager.instance.controlsMenu.SetActive(false);
         if (GameManager.instance.buttons != null) GameManager.instance.buttons.SetActive(false);
         if (GameManager.instance.pauseScorePanel != null) GameManager.instance.pauseScorePanel.SetActive(false);
