@@ -1,16 +1,26 @@
 using UnityEngine;
+using System;
 
-public class enemyEvents : MonoBehaviour
+public static class enemyEvents
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public static event Action<enemyBase> killed;
+
+    public static event Action<enemyBase> shotAtPlayer;
+
+    public static void RaiseKilled(enemyBase enemy)
     {
-        
+        killed?.Invoke(enemy);
     }
 
-    // Update is called once per frame
-    void Update()
+    public static void RaiseShotAtPlayer(enemyBase enemy)
     {
-        
+        shotAtPlayer?.Invoke(enemy);
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void clearOldEvents()
+    {
+        killed = null;
+        shotAtPlayer = null;
     }
 }

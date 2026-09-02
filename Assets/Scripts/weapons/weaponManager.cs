@@ -53,6 +53,10 @@ public class weaponManager : MonoBehaviour
     {
         if (gameManager.instance == null || gameManager.instance.playerScript == null) return;
 
+        // player might already be found by now, if so just go
+        if (gameManager.instance != null && gameManager.instance.playerScript != null)
+            setupWeapons();
+
         weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
 
         if (gameManager.instance != null && gameManager.instance.ammoPanel == gameObject)
@@ -91,10 +95,19 @@ public class weaponManager : MonoBehaviour
         if (instance == this) instance = null;
     }
 
+    void OnEnable() => gameManager.PlayerReady += setupWeapons;
+
     // logs when something turns this off and what kind of off it is
     void OnDisable()
     {
+        gameManager.PlayerReady -= setupWeapons;
         Debug.Log($"weaponManager disabled | activeSelf {gameObject.activeSelf} | enabled {enabled}", gameObject);
+    }
+
+    void setupWeapons()
+    {
+        weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
+        // ...rest of the original Start body
     }
 
     public void equipWeapon(weaponStats newWeapon, int ammoOverride = -1)

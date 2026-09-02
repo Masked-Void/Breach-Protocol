@@ -79,7 +79,6 @@ public class audioManager : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(gameObject);
 
         sfxSource.spatialBlend = 0f;
         loadSettings();

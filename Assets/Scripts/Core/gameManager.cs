@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using TMPro;
 //using UnityEditor;
@@ -88,9 +89,33 @@ public class gameManager : MonoBehaviour
             return;
         }
         instance = this;
-        player = GameObject.FindWithTag("Player");
-        playerScript = player.GetComponent<playerController>();
+
     }
+
+    private void Start()
+    {
+        // player lives in bootstrap now and awake order between scenes is not guaranteed,
+        // so find it here instead, start always runs after every awake
+        GameObject tagged = GameObject.FindWithTag("Player");
+
+        if (tagged != null)
+        {
+            playerScript = tagged.GetComponentInParent<playerController>();
+            player = playerScript != null ? playerScript.gameObject : tagged;
+        }
+        else
+        {
+            Debug.LogWarning("gameManager: nothing tagged Player in the scene", this);
+        }
+
+        if (player!= null)
+        {
+            PlayerReady?.Invoke();
+        }
+
+    }
+
+    public static event System.Action PlayerReady;
 
     void OnDestroy()
     {
@@ -122,7 +147,7 @@ public class gameManager : MonoBehaviour
     {
         bytesText.text = "Bytes: " + totalBytes.ToString();
 
-        if (Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
         {
             if (audioManager.instance != null) audioManager.instance.playButtonClick();
             if (menuActive == null)
