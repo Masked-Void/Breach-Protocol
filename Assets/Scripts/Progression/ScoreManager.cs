@@ -1,21 +1,12 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager instance;
-
-    [Header("Kill Score")]
-    [SerializeField] private int baseKillScore = 100;
-
-    [Tooltip("Full stress multiplies base kill score by this amount. 3 = 100 to 300.")]
-    [SerializeField] private float maxStressMultiplier = 3f;
-
-    [Header("Scorestreak Requirement")]
-    [SerializeField] private int firstStreakCost = 1000;
-    [SerializeField] private float baseGrowth = 1.33f;
-    [SerializeField] private float growthPerRound = 0.01f;
-    [SerializeField] private float maxGrowth = 1.60f;
+    [Header("Config")]
+    [Tooltip("all the score and streak numbers live here, one asset shared by every level")]
+    [SerializeField] private ScoreConfig config;
 
     [Header("Runtime")]
     [SerializeField] private int totalScore;
@@ -37,6 +28,10 @@ public class ScoreManager : MonoBehaviour
         }
 
         instance = this;
+
+        if (config == null)
+            Debug.LogError("ScoreManager: No ScoreConfig assigned", this);
+
         ResetForNewRun();
     }
 
@@ -50,13 +45,13 @@ public class ScoreManager : MonoBehaviour
         float multiplier =
             Mathf.Lerp(
                 1f,
-                maxStressMultiplier,
+                config.fullStressMultiplier,
                 stress01
             );
 
         int earned =
             Mathf.RoundToInt(
-                baseKillScore * multiplier
+                config.baseKillScore * multiplier
             );
 
         totalScore += earned;
@@ -109,14 +104,14 @@ public class ScoreManager : MonoBehaviour
         }
 
         float growth =
-            baseGrowth +
-            growthPerRound *
+            config.baseGrowthMultiplier +
+            config.roundGrowthMultiplier *
             Mathf.Max(0, currentRound - 1);
 
         growth =
             Mathf.Min(
                 growth,
-                maxGrowth
+                config.maxGrowthMultiplier
             );
 
         currentStreakRequirement =
@@ -145,7 +140,7 @@ public class ScoreManager : MonoBehaviour
         currentStreakRequirement =
             Mathf.Max(
                 1,
-                firstStreakCost
+                config.killStreakThreshold
             );
 
         lastAwardScoreTarget = 0;
@@ -208,30 +203,6 @@ public class ScoreManager : MonoBehaviour
                 " / " +
                 currentStreakRequirement;
         }
-    }
-
-    private void OnValidate()
-    {
-        baseKillScore =
-            Mathf.Max(1, baseKillScore);
-
-        maxStressMultiplier =
-            Mathf.Max(1f, maxStressMultiplier);
-
-        firstStreakCost =
-            Mathf.Max(1, firstStreakCost);
-
-        baseGrowth =
-            Mathf.Max(1f, baseGrowth);
-
-        growthPerRound =
-            Mathf.Max(0f, growthPerRound);
-
-        maxGrowth =
-            Mathf.Max(
-                baseGrowth,
-                maxGrowth
-            );
     }
 
     private void OnDestroy()
