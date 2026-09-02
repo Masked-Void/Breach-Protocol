@@ -34,7 +34,7 @@ public struct trapSetup {
 // One place the boss fight talks to for traps. bossFightManager calls a phase number in and
 // this sets the lasers, lava and platforms to that phase's settings, so the fight script never
 // has to know how any individual traps work.
-public class trapManager : MonoBehaviour {
+public class TrapManager : MonoBehaviour {
 
     [Header("References")]
     [SerializeField] private laserArrayManager laserManager;

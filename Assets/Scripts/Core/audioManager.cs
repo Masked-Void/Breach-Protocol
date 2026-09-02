@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+fuck you unity
 public class audioManager : MonoBehaviour
 {
     public static audioManager instance { get; private set; }

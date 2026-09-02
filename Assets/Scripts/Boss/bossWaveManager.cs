@@ -3,7 +3,7 @@ using UnityEngine;
 
 // Sub class holding one block of spawn numbers, one for each phase and each transition
 [System.Serializable]
-public struct waveSetup {
+public struct WaveSetup {
     [Tooltip("Weights, not real percents. They are rolled against their own total so they do not have to add to 100")]
     public float basicEnemyPercent;
     public float heavyEnemyPercent;

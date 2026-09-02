@@ -77,7 +77,7 @@ public class patternGenerator {
 }
 
 
-public class laserArrayManager : MonoBehaviour {
+public class LaserArrayManager : MonoBehaviour {
 
     [Header("Pillar Wiring")]
     [Tooltip("lasers on the Red pillar, ordered bottom to top. size is per pillar, they dont have to match")]

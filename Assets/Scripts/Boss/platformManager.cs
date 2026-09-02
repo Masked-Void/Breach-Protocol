@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 // handles the rising and falling platforms in the arena, stages fire on a stagger
-public class platformManager : MonoBehaviour {
+public class PlatformManager : MonoBehaviour {
 
     [System.Serializable]
     public class platformStage {

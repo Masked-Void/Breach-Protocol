@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 // runs the CEO fight. owns boss health, the four phases, and the immune windows between them.
 // immunity is broken by the player finishing a hold, so the immune window waits on holdZoneManager.
-public class bossFightManager : MonoBehaviour,IDamage {
+public class BossFightManager : MonoBehaviour,IDamage {
 
     [Header("References")]
     [SerializeField] private GameObject boss;
