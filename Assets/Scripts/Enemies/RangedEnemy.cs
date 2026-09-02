@@ -89,9 +89,9 @@ public class RangedEnemy : EnemyBase
         if (activeGun.attackRate > 0f)
             attackRate = activeGun.attackRate;
     }
-    public override void die()
+    public override void Die()
     {
         ThrowWeapon(spawnedWeaponModel, gunModel.transform);
-        base.die();
+        base.Die();
     }
 }

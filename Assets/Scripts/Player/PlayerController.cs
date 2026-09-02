@@ -156,7 +156,7 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
     public void EquipWeapon(WeaponStats weapon, int ammoOverride = -1)
     {
         if (WeaponManager.instance != null)
-            WeaponManager.instance.equipWeapon(weapon, ammoOverride);
+            WeaponManager.instance.EquipWeapon(weapon, ammoOverride);
     }
     public float SpeedPercent
     {

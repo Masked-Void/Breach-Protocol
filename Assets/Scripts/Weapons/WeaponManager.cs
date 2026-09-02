@@ -109,7 +109,7 @@ public class WeaponManager : MonoBehaviour
         weaponHolder = GameManager.instance.playerScript.weaponHoldPos.transform;
     }
 
-    public void equipWeapon(WeaponStats newWeapon, int ammoOverride = -1)
+    public void EquipWeapon(WeaponStats newWeapon, int ammoOverride = -1)
     {
         StartCoroutine(equip(newWeapon, ammoOverride));
     }

@@ -66,10 +66,10 @@ public class BasicEnemy : EnemyBase
         }
     }
 
-    public override void die()
+    public override void Die()
     {
         ThrowWeapon(spawnedWeapon, handPos);
         katanaTransform = null; 
-        base.die();
+        base.Die();
     }
 }

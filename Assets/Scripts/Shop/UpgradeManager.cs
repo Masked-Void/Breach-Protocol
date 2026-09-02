@@ -64,7 +64,7 @@ public class UpgradeManager : MonoBehaviour
         // Verify all required challenge groups are completed
         foreach (var reqChallenge in upgrade.requiredChallenges)
         {
-            if (reqChallenge != null && !ChallengeManager.instance.areAllChallengesComplete(reqChallenge))
+            if (reqChallenge != null && !ChallengeManager.instance.AreAllChallengesComplete(reqChallenge))
             {
                 return false;
             }
@@ -145,7 +145,7 @@ public class UpgradeManager : MonoBehaviour
                 if (requiredChallengeSlots[i].challengeName != null && reqData != null)
                     requiredChallengeSlots[i].challengeName.text = reqData.challengeName;
 
-                bool isCompleted = reqData != null && ChallengeManager.instance != null && ChallengeManager.instance.areAllChallengesComplete(reqData);
+                bool isCompleted = reqData != null && ChallengeManager.instance != null && ChallengeManager.instance.AreAllChallengesComplete(reqData);
 
                 if (requiredChallengeSlots[i].checkmark != null)
                     requiredChallengeSlots[i].checkmark.SetActive(isCompleted);

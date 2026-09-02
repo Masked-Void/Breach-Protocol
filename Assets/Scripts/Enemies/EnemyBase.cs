@@ -393,8 +393,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
         if (currentHP <= 0)
         {
-            // die() owns the byte award so it only ever fires once
-            die();
+            // Die() owns the byte award so it only ever fires once
+            Die();
         }
         else if (model != null)
         {
@@ -402,7 +402,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         }
     }
 
-    public virtual void die()
+    public virtual void Die()
     {
         if (isDead)
             return;
@@ -488,7 +488,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
         suppressKillRewards = !countAsPlayerKill;
         currentHP = 0;
-        die();
+        Die();
     }
 
     public void ThrowWeapon(GameObject spawnedWeaponModel, Transform pivot)

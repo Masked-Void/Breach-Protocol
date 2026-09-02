@@ -129,7 +129,7 @@ public class ChallengeManager : MonoBehaviour
         if (weaponChallenge == null) return;
         currentlySelectedChallenge = weaponChallenge;
 
-        bool allComplete = areAllChallengesComplete(weaponChallenge);
+        bool allComplete = AreAllChallengesComplete(weaponChallenge);
         bool isBought = IsWeaponBought(weaponChallenge.weapon);
 
         string savedEquipped = PlayerPrefs.GetString("EquippedWeapon", "");
@@ -169,7 +169,7 @@ public class ChallengeManager : MonoBehaviour
 
                 int currentFiles = UpgradeManager.instance != null ? UpgradeManager.instance.files : 0;
                 bool canAfford = currentFiles >= cost;
-                bool allComplete = areAllChallengesComplete(weaponChallenge);
+                bool allComplete = AreAllChallengesComplete(weaponChallenge);
 
                 actionButton.interactable = canAfford && allComplete;
                 actionButton.onClick.AddListener(() => buyWeapon(weaponChallenge));
@@ -258,7 +258,7 @@ public class ChallengeManager : MonoBehaviour
         DisplayWeaponChallenges(challenge);
     }
 
-    public bool areAllChallengesComplete(ChallengeData weaponChallenge)
+    public bool AreAllChallengesComplete(ChallengeData weaponChallenge)
     {
         if (weaponChallenge == null || weaponChallenge.challengesList == null || weaponChallenge.challengesList.Length == 0) return true;
         foreach (var challenge in weaponChallenge.challengesList)
