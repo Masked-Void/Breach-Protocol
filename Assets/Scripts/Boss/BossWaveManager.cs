@@ -1,22 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-// Sub class holding one block of spawn numbers, one for each phase and each transition
-[System.Serializable]
-public struct waveSetup {
-    [Tooltip("Weights, not real percents. They are rolled against their own total so they do not have to add to 100")]
-    public float basicEnemyPercent;
-    public float heavyEnemyPercent;
-    public float rangedEnemyPercent;
-
-    [Tooltip("Ceiling on how many enemies can be alive at once")]
-    public int maxEnemiesOnMap;
-    [Tooltip("How many spawn per burst, capped by the room left under maxEnemiesOnMap")]
-    public int maxSpawnCount;
-    [Tooltip("Real seconds between bursts")]
-    public float timeBetweenBursts;
-}
-
 
 // runs enemy spawning for the CEO fight. the boss manager swaps setups as phases start and end,
 // and a single loop keeps topping the arena back up to whatever the current setup allows.
@@ -34,8 +18,8 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     [Header("Roam and Spawn points")]
     [SerializeField] Transform[] roamPointTransforms;
     [SerializeField] Transform[] spawnPointTransforms;
-    private roamPoint[] roamPoints;
-    private spawnPoint[] spawnPoints;
+    private RoamPoint[] roamPoints;
+    private SpawnPoint[] spawnPoints;
 
 
     [Header("Roam Settings")]
@@ -77,7 +61,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     [SerializeField] waveSetup p4;
 
     private waveSetup current;
-    private enemyType typeSpawned;
+    private EnemyType typeSpawned;
     private int enemiesAlive;
     private Coroutine spawnRoutine;
 
@@ -181,7 +165,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
             return;
 
         // Get a spawn point that is off cooldown
-        spawnPoint point = getSpawnPoint();
+        SpawnPoint point = getSpawnPoint();
         if (point == null)
             return;
 
@@ -189,7 +173,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         GameObject enemy = Instantiate(enemyPrefab , point.point.position , point.point.rotation);
 
         // Only ranged enemioes roll for roaming
-        if (typeSpawned == enemyType.ranged) {
+        if (typeSpawned == EnemyType.ranged) {
             if (enemy.TryGetComponent<EnemyBase>(out EnemyBase enemyScript)) {
                 enemyScript.willRoam = Random.Range(0f , 1f) <= giveWillRoamChance;
             }
@@ -228,10 +212,10 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
 
     private void assignSpawnPoints(Transform[] points) {
         Transform[] cleaned = cleanList(points);
-        spawnPoints = new spawnPoint[cleaned.Length];
+        spawnPoints = new SpawnPoint[cleaned.Length];
 
         for (int i = 0 ; i < cleaned.Length ; i++) {
-            spawnPoint newPoint = new spawnPoint();
+            SpawnPoint newPoint = new SpawnPoint();
             newPoint.point = cleaned[i];
             newPoint.lastUsed = 0f;
 
@@ -246,10 +230,10 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
 
     private void assignRoamPoints(Transform[] points) {
         Transform[] cleaned = cleanList(points);
-        roamPoints = new roamPoint[cleaned.Length];
+        roamPoints = new RoamPoint[cleaned.Length];
 
         for (int i = 0 ; i < cleaned.Length ; i++) {
-            roamPoint newPoint = new roamPoint();
+            RoamPoint newPoint = new RoamPoint();
             newPoint.point = cleaned[i];
             newPoint.claimedBy = null;
 
@@ -301,7 +285,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         int startIndex = Random.Range(0 , roamPoints.Length);
 
         for (int i = 0 ; i < roamPoints.Length ; i++) {
-            roamPoint candidate = roamPoints[(startIndex + i) % roamPoints.Length];
+            RoamPoint candidate = roamPoints[(startIndex + i) % roamPoints.Length];
 
             if (!candidate.isFree)
                 continue;
@@ -314,7 +298,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     }
 
 
-    private spawnPoint getSpawnPoint() {
+    private SpawnPoint getSpawnPoint() {
         if (spawnPoints == null || spawnPoints.Length == 0)
             return null;
 
@@ -323,7 +307,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
 
         //  Goes through the list looking for a point that is off cooldown while starting at the original point
         for (int i = 0 ; i < spawnPoints.Length ; i++) {
-            spawnPoint candidate = spawnPoints[(startIndex + i) % spawnPoints.Length];
+            SpawnPoint candidate = spawnPoints[(startIndex + i) % spawnPoints.Length];
 
             if (candidate.isFree(spawnPointCooldown)) {
                 return candidate;
@@ -353,18 +337,18 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         float randomValue = Random.Range(0f , totalPercent);
 
         if (randomValue < current.rangedEnemyPercent) {
-            typeSpawned = enemyType.ranged;
+            typeSpawned = EnemyType.ranged;
             return pickFrom(rangedEnemyPrefabs);
         }
 
         randomValue -= current.rangedEnemyPercent;
 
         if (randomValue < current.basicEnemyPercent) {
-            typeSpawned = enemyType.basic;
+            typeSpawned = EnemyType.basic;
             return pickFrom(basicEnemyPrefabs);
         }
 
-        typeSpawned = enemyType.heavy;
+        typeSpawned = EnemyType.heavy;
         return pickFrom(heavyEnemyPrefabs);
 
     }

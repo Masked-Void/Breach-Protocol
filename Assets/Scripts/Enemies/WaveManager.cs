@@ -30,34 +30,7 @@
 using System.Collections;
 using UnityEngine;
 
-public enum enemyType
-{
-    basic,
-    heavy,
-    ranged
-}
 
-public class roamPoint
-{
-    public Transform point;
-    public GameObject claimedBy;
-
-    public bool isFree
-    {
-        get { return claimedBy == null; }
-    }
-}
-
-public class spawnPoint
-{
-    public Transform point;
-    public float lastUsed;
-
-    public bool isFree(float cooldown)
-    {
-         return (Time.unscaledTime - lastUsed >= cooldown);
-    }
-}
 
 public class WaveManager : MonoBehaviour,IWaveHost
 {
@@ -80,8 +53,8 @@ public class WaveManager : MonoBehaviour,IWaveHost
     [SerializeField] Transform[] roamPointTransforms;
     [SerializeField] Transform[] spawnPointTransforms;
 
-    private roamPoint[] roamPoints;
-    private spawnPoint[] spawnPoints;
+    private RoamPoint[] roamPoints;
+    private SpawnPoint[] spawnPoints;
 
     [Header("Roam Settings")]
     [Tooltip("Chance that a ranged enemy will roam before engaging.")]
@@ -91,7 +64,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
     [SerializeField] int enemiesToSpawnAtWave0;
     [SerializeField] float enemyIncreaseMultiplier;
 
-    [HideInInspector] enemyType typeSpawned;
+    [HideInInspector] EnemyType typeSpawned;
 
     [Header("Enemy Percent To Spawn")]
     [SerializeField] int basicEnemyPercent;
@@ -180,7 +153,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
             if (enemyPrefab == null)
                 continue;
 
-            spawnPoint point = getSpawnPoint();
+            SpawnPoint point = getSpawnPoint();
 
             if (point == null)
                 break;
@@ -191,7 +164,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
                 point.point.rotation
             );
 
-            if (typeSpawned == enemyType.ranged)
+            if (typeSpawned == EnemyType.ranged)
             {
                 if (enemy.TryGetComponent<EnemyBase>(
                     out EnemyBase enemyScript))
@@ -231,7 +204,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
         if (randomValue < rangedEnemyPercent)
         {
-            typeSpawned = enemyType.ranged;
+            typeSpawned = EnemyType.ranged;
             return rangedEnemyPrefabs;
         }
 
@@ -239,16 +212,16 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
         if (randomValue < basicEnemyPercent)
         {
-            typeSpawned = enemyType.basic;
+            typeSpawned = EnemyType.basic;
             return basicEnemyPrefabs;
         }
 
-        typeSpawned = enemyType.heavy;
+        typeSpawned = EnemyType.heavy;
         return heavyEnemyPrefabs;
     }
 
 
-    private spawnPoint getSpawnPoint()
+    private SpawnPoint getSpawnPoint()
     {
         if (spawnPoints == null || spawnPoints.Length == 0)
             return null;
@@ -257,7 +230,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
         for (int i = 0; i < spawnPoints.Length; i++)
         {
-            spawnPoint candidate =
+            SpawnPoint candidate =
                 spawnPoints[(startIndex + i) % spawnPoints.Length];
 
             if (candidate.isFree(spawnPointCooldown))
@@ -329,7 +302,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
         for (int i = 0; i < roamPoints.Length; i++)
         {
-            roamPoint candidate =
+            RoamPoint candidate =
                 roamPoints[(startIndex + i) % roamPoints.Length];
 
             if (!candidate.isFree)
@@ -359,21 +332,21 @@ public class WaveManager : MonoBehaviour,IWaveHost
     }
 
 
-    private GameObject getWeaponPrefab(enemyType type, int index)
+    private GameObject getWeaponPrefab(EnemyType type, int index)
     {
         GameObject[] weaponPrefabList = null;
 
         switch (type)
         {
-            case enemyType.basic:
+            case EnemyType.basic:
                 weaponPrefabList = basicWeaponPrefabs;
                 break;
 
-            case enemyType.heavy:
+            case EnemyType.heavy:
                 weaponPrefabList = heavyWeaponPrefabs;
                 break;
 
-            case enemyType.ranged:
+            case EnemyType.ranged:
                 weaponPrefabList = rangedWeaponPrefabs;
                 break;
         }
@@ -529,11 +502,11 @@ public class WaveManager : MonoBehaviour,IWaveHost
     {
         Transform[] cleaned = cleanList(points);
 
-        spawnPoints = new spawnPoint[cleaned.Length];
+        spawnPoints = new SpawnPoint[cleaned.Length];
 
         for (int i = 0; i < cleaned.Length; i++)
         {
-            spawnPoint newPoint = new spawnPoint();
+            SpawnPoint newPoint = new SpawnPoint();
 
             newPoint.point = cleaned[i];
             newPoint.lastUsed = 0f;
@@ -552,11 +525,11 @@ public class WaveManager : MonoBehaviour,IWaveHost
     {
         Transform[] cleaned = cleanList(points);
 
-        roamPoints = new roamPoint[cleaned.Length];
+        roamPoints = new RoamPoint[cleaned.Length];
 
         for (int i = 0; i < cleaned.Length; i++)
         {
-            roamPoint newPoint = new roamPoint();
+            RoamPoint newPoint = new RoamPoint();
 
             newPoint.point = cleaned[i];
             newPoint.claimedBy = null;

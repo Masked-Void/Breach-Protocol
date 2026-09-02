@@ -7,6 +7,7 @@
   <Project Path="Unity.ProBuilder.csproj" />
   <Project Path="Unity.Multiplayer.Center.Editor.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.2D.Runtime.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.TerrainTools.Editor.csproj" />
   <Project Path="Unity.InferenceEngine.Microsoft.Msagl.csproj" />
   <Project Path="Unity.VisualScripting.Core.Editor.csproj" />
@@ -15,9 +16,8 @@
   <Project Path="Unity.PerformanceTesting.Editor.csproj" />
   <Project Path="Unity.AI.Toolkit.Utility.csproj" />
   <Project Path="Unity.AI.MCP.Editor.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
-  <Project Path="Unity.Burst.csproj" />
   <Project Path="Unity.AI.Assistant.UI.Editor.csproj" />
+  <Project Path="Unity.Burst.csproj" />
   <Project Path="Unity.VisualScripting.Flow.Editor.csproj" />
   <Project Path="Unity.RenderPipelines.Core.Editor.csproj" />
   <Project Path="Unity.ProBuilder.Csg.csproj" />

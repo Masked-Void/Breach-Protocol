@@ -1,0 +1,1 @@
+public enum pillarColor { Red, Blue, Green, Yellow };
