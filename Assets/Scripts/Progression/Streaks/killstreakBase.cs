@@ -5,7 +5,7 @@ using UnityEngine;
 /// Base class for player-earned scorestreak programs.
 /// duration > 0 = timed, duration == 0 = instant, duration < 0 = manual end.
 /// </summary>
-public abstract class killstreakBase : MonoBehaviour
+public abstract class KillstreakBase : MonoBehaviour
 {
     [Header("Scorestreak Info")]
     [SerializeField] protected string killstreakName = "Unnamed Program";
@@ -74,7 +74,7 @@ public abstract class killstreakBase : MonoBehaviour
         {
             yield return null;
 
-            if (gameManager.instance != null && gameManager.instance.isPaused)
+            if (GameManager.instance != null && GameManager.instance.isPaused)
                 continue;
 
             float dt = Time.unscaledDeltaTime;
@@ -94,9 +94,9 @@ public abstract class killstreakBase : MonoBehaviour
         isActive = false;
         onDeactivate();
 
-        if (killstreakManager.instance != null)
+        if (KillstreakManager.instance != null)
         {
-            killstreakManager.instance.streakEnded(this);
+            KillstreakManager.instance.streakEnded(this);
         }
     }
 

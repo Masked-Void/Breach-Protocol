@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class shopManager : MonoBehaviour
+public class ShopManager : MonoBehaviour
 {
-    // public static shopManager instance;
+    // public static ShopManager instance;
 
-    // [SerializeField] private populateShop[] shopSlots;
-    // [SerializeField] private upgradeData[] allUpgrades;
+    // [SerializeField] private ShopPopulator[] shopSlots;
+    // [SerializeField] private UpgradeData[] allUpgrades;
 
 
     // private void Awake()
@@ -21,14 +21,14 @@ public class shopManager : MonoBehaviour
 
     // private void PopulateShop()
     // {
-    //     Debug.Log("Unlocked upgrades: " + string.Join(", ", upgradeManager.instance.unlockedUpgrades));
-    //     var unlockedIds = upgradeManager.instance.unlockedUpgrades;
+    //     Debug.Log("Unlocked upgrades: " + string.Join(", ", UpgradeManager.instance.unlockedUpgrades));
+    //     var unlockedIds = UpgradeManager.instance.unlockedUpgrades;
 
     //     int slotIndex = 0;
 
     //     foreach (string id in unlockedIds)
     //     {
-    //         upgradeData unlockable = FindUpgradeById(id);
+    //         UpgradeData unlockable = FindUpgradeById(id);
 
     //         if (unlockable != null && unlockable.equippableVersion != null)
     //         {
@@ -38,7 +38,7 @@ public class shopManager : MonoBehaviour
     //     }
     // }
 
-    // private upgradeData FindUpgradeById(string id)
+    // private UpgradeData FindUpgradeById(string id)
     // {
     //     foreach (var upgrade in allUpgrades)
     //     {
@@ -51,23 +51,23 @@ public class shopManager : MonoBehaviour
     //     return null;
     // }
 
-    // public void buyUpgrade(upgradeData upgrade)
+    // public void buyUpgrade(UpgradeData upgrade)
     // {
-    //     if (gameManager.instance.totalBytes < upgrade.Cost)
+    //     if (GameManager.instance.totalBytes < upgrade.Cost)
     //     {
-    //         gameManager.instance.showShopWarning();
+    //         GameManager.instance.showShopWarning();
     //         return;
     //     }
 
     //     Debug.Log("Upgrade Bought: " + upgrade.UpgradeName);
-    //     gameManager.instance.totalBytes -= upgrade.Cost;
-    //     //upgradeManager.instance.PurchaseUpgrade(upgrade.Id);
+    //     GameManager.instance.totalBytes -= upgrade.Cost;
+    //     //UpgradeManager.instance.PurchaseUpgrade(upgrade.Id);
     //     upgrade.applyUpgrade();
     // }
 
     
 
-    // public populateShop[] getShopSlots()
+    // public ShopPopulator[] getShopSlots()
     // {
     //     return shopSlots;
         

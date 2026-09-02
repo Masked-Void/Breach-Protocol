@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Shop/Upgrade")]
-public class upgradeData : ScriptableObject
+public class UpgradeData : ScriptableObject
 {
     [SerializeField] public string upgradeName;
     [SerializeField] public string id;
@@ -10,7 +10,7 @@ public class upgradeData : ScriptableObject
     [SerializeField] public UpgradeType upgradeType;
     [SerializeField] public float value;
     [SerializeField] public Sprite icon;
-    [SerializeField] public challengeData[] requiredChallenges;
+    [SerializeField] public ChallengeData[] requiredChallenges;
 
     public enum UpgradeType
     {

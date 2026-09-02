@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 // spins the glitch cubes to random angles, either snapping or easing into each new target
-public class glitchCubeRotate : MonoBehaviour {
+public class GlitchCubeRotate : MonoBehaviour {
     [Header("Cubes")]
     [Tooltip("every cube this script randomizes the rotation of")]
     [SerializeField] GameObject[] cubes;

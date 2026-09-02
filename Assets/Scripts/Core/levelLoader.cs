@@ -5,10 +5,10 @@ using UnityEngine.SceneManagement;
 
 // Lives in bootstrp, swaps which level scene is loaded while the managers stay put
 // Only one level scene should be loaded at a time, and the level scene should be the only scene that is unloaded and loaded
-public class levelLoader : MonoBehaviour
+public class LevelLoader : MonoBehaviour
 {
     
-    public static levelLoader instance;
+    public static LevelLoader instance;
 
     [Header("Scenes")]
     [Tooltip("Scene name of the persistent scene that contains the managers")]
@@ -89,7 +89,7 @@ public class levelLoader : MonoBehaviour
 
     private void placePlayerAtSpawn()
     {
-        GameObject player = gameManager.instance != null ? gameManager.instance.player : null;
+        GameObject player = GameManager.instance != null ? GameManager.instance.player : null;
 
         if (player == null)
         {
@@ -100,7 +100,7 @@ public class levelLoader : MonoBehaviour
 
         if (spawnPoint == null)
         {
-            Debug.LogWarning("levelLoader: no '"+playerSpawnObjectName+"' found in " + currentLevel,this);
+            Debug.LogWarning("LevelLoader: no '"+playerSpawnObjectName+"' found in " + currentLevel,this);
             return;
         }
 

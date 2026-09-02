@@ -5,12 +5,12 @@ using UnityEngine.UI;
 // owns every hold point in the boss arena. runs the center point during immune phases and
 // lights up one random outer point during damage phases. zones report back here instead of
 // reaching into the boss themselves.
-public class holdZoneManager : MonoBehaviour {
+public class HoldZoneManager : MonoBehaviour {
     [Header("Zones")]
     [Tooltip("the single center point used by all three immune phases")]
-    [SerializeField] private holdZone immuneZone;
+    [SerializeField] private HoldZone immuneZone;
     [Tooltip("the 3 or 4 optional damage points. one gets picked at random each damage phase")]
-    [SerializeField] private List<holdZone> damageZones = new List<holdZone>();
+    [SerializeField] private List<HoldZone> damageZones = new List<HoldZone>();
 
 
     [Header("Damage holds")]
@@ -18,7 +18,7 @@ public class holdZoneManager : MonoBehaviour {
     [SerializeField] private bool repeatDamageHolds = true;
 
     [Header("References")]
-    [SerializeField] private bossFightManager boss;
+    [SerializeField] private BossFightManager boss;
 
     [Header("HUD")]
     [Tooltip("optional hud mirror of whichever point is live right now. the computer is still the main readout")]
@@ -34,16 +34,16 @@ public class holdZoneManager : MonoBehaviour {
     public bool hasImmuneZone { get { return immuneZone != null; } }
 
     // Cleaned copy of the list
-    private holdZone[] damagePoints;
-    private holdZone activeZone;
+    private HoldZone[] damagePoints;
+    private HoldZone activeZone;
     private int lastDamageIndex = -1;
 
     void Awake() {
         if (boss == null)
-            boss = GetComponentInParent<bossFightManager>();
+            boss = GetComponentInParent<BossFightManager>();
 
-        if (boss == null) { Debug.LogError("holdZoneManager has no bossFightManager" , this); }
-        if (immuneZone == null) { Debug.LogError("holdZoneManager has no immune zone assigned" , this); }
+        if (boss == null) { Debug.LogError("HoldZoneManager has no BossFightManager" , this); }
+        if (immuneZone == null) { Debug.LogError("HoldZoneManager has no immune zone assigned" , this); }
 
         buildDamagePoints();
 
@@ -59,7 +59,7 @@ public class holdZoneManager : MonoBehaviour {
                 counted++;
         }
 
-        damagePoints = new holdZone[counted];
+        damagePoints = new HoldZone[counted];
 
         int writen = 0;
 
@@ -72,7 +72,7 @@ public class holdZoneManager : MonoBehaviour {
         }
 
         if (counted == 0) {
-            Debug.LogWarning("holdZoneManager: no damage points assigned" , this);
+            Debug.LogWarning("HoldZoneManager: no damage points assigned" , this);
         }
     }
     void Update() {
@@ -90,7 +90,7 @@ public class holdZoneManager : MonoBehaviour {
         immuneHoldDone = false;
 
         if (immuneZone == null){
-            Debug.LogError("holdZoneManager: startImmuneHold with no immune zone assigned" , this);
+            Debug.LogError("HoldZoneManager: startImmuneHold with no immune zone assigned" , this);
             return;
         }
         activeZone = immuneZone;
@@ -145,7 +145,7 @@ public class holdZoneManager : MonoBehaviour {
             hudObj.SetActive(false);
     }
 
-    public void holdComplete(holdZone zone) {
+    public void holdComplete(HoldZone zone) {
 
         if (zone == null)
             return;

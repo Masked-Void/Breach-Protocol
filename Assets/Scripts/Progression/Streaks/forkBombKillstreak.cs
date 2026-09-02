@@ -4,7 +4,7 @@ using UnityEngine;
 /// FORK BOMB: damage to one enemy propagates a percentage of that damage
 /// to nearby enemies. Secondary hits do not recursively fork again.
 /// </summary>
-public class forkBombKillstreak : killstreakBase
+public class ForkBombKillstreak : KillstreakBase
 {
     [Header("Fork Bomb")]
     [SerializeField] private float spreadRadius = 4f;
@@ -12,9 +12,9 @@ public class forkBombKillstreak : killstreakBase
 
     protected override void onActivate()
     {
-        if (killstreakManager.instance != null)
+        if (KillstreakManager.instance != null)
         {
-            killstreakManager.instance.SetChainReaction(
+            KillstreakManager.instance.SetChainReaction(
                 true,
                 spreadRadius,
                 damagePercent
@@ -24,9 +24,9 @@ public class forkBombKillstreak : killstreakBase
 
     protected override void onDeactivate()
     {
-        if (killstreakManager.instance != null)
+        if (KillstreakManager.instance != null)
         {
-            killstreakManager.instance.SetChainReaction(
+            KillstreakManager.instance.SetChainReaction(
                 false,
                 spreadRadius,
                 damagePercent

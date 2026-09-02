@@ -2,15 +2,15 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using UnityEngine;
-using static upgradeManager;
+using static UpgradeManager;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class challengeManager : MonoBehaviour
+public class ChallengeManager : MonoBehaviour
 {
-    public static challengeManager instance { get; private set; }
+    public static ChallengeManager instance { get; private set; }
 
     [System.Serializable]
     public struct ChallengeUISlot
@@ -31,14 +31,14 @@ public class challengeManager : MonoBehaviour
     public TextMeshProUGUI fileCountText;
 
     [SerializeField] ChallengeUISlot[] challengeSlots;
-    [SerializeField] challengeData[] challenges;
+    [SerializeField] ChallengeData[] challenges;
 
-    challengeData currentlySelectedChallenge;
+    ChallengeData currentlySelectedChallenge;
 
     Dictionary<string, int> progress = new Dictionary<string, int>();
     Dictionary<string, bool> completed = new Dictionary<string, bool>();
     HashSet<string> purchasedWeapons = new HashSet<string>();
-    Dictionary<weaponStats, List<challengeData>> weaponChallengeLookup = new Dictionary<weaponStats, List<challengeData>>();
+    Dictionary<WeaponStats, List<ChallengeData>> weaponChallengeLookup = new Dictionary<WeaponStats, List<ChallengeData>>();
 
 
     void Awake()
@@ -70,7 +70,7 @@ public class challengeManager : MonoBehaviour
 
             if (!weaponChallengeLookup.TryGetValue(cData.weapon, out var list))
             {
-                list = new List<challengeData>();
+                list = new List<ChallengeData>();
                 weaponChallengeLookup[cData.weapon] = list;
             }
             list.Add(cData);
@@ -87,12 +87,12 @@ public class challengeManager : MonoBehaviour
         return !string.IsNullOrEmpty(id) && progress.TryGetValue(id, out int p) ? p : 0;
     }
 
-    public bool IsWeaponBought(weaponStats weapon)
+    public bool IsWeaponBought(WeaponStats weapon)
     {
         return weapon != null && !string.IsNullOrEmpty(weapon.Name) && purchasedWeapons.Contains(weapon.Name);
     }
 
-    public void ReportKill(weaponStats weapon)
+    public void ReportKill(WeaponStats weapon)
     {
         if (weapon == null || !weaponChallengeLookup.TryGetValue(weapon, out var associatedChallenges)) return;
         bool hasProgressChanged = false;
@@ -124,7 +124,7 @@ public class challengeManager : MonoBehaviour
 
     // ---------- UI ----------
 
-    public void displayWeaponChallenges(challengeData weaponChallenge)
+    public void displayWeaponChallenges(ChallengeData weaponChallenge)
     {
         if (weaponChallenge == null) return;
         currentlySelectedChallenge = weaponChallenge;
@@ -141,22 +141,22 @@ public class challengeManager : MonoBehaviour
             {
                 isEquipped = (weaponChallenge.weapon.Name == savedEquipped);
             }
-            else if (weaponManager.instance != null)
+            else if (WeaponManager.instance != null)
             {
-                isEquipped = (weaponManager.instance.activeWeapon == weaponChallenge.weapon);
+                isEquipped = (WeaponManager.instance.activeWeapon == weaponChallenge.weapon);
             }
         }
 
         if (statsPanel != null) statsPanel.SetActive(allComplete);
         if (weaponName != null && weaponChallenge.weapon != null) weaponName.text = weaponChallenge.challengeName + $"  ({weaponChallenge.weapon.Name})";
         if (description != null) description.text = weaponChallenge.description;
-        if(fileCountText != null && upgradeManager.instance != null) fileCountText.text = "" + upgradeManager.instance.files;
+        if(fileCountText != null && UpgradeManager.instance != null) fileCountText.text = "" + UpgradeManager.instance.files;
 
         updateActionButton(weaponChallenge, isBought, isEquipped);
         displayProgressUI(weaponChallenge);
     }
 
-    void updateActionButton(challengeData weaponChallenge, bool isBought, bool isEquipped)
+    void updateActionButton(ChallengeData weaponChallenge, bool isBought, bool isEquipped)
     {
         if (actionButton != null && actionText != null)
         {
@@ -167,7 +167,7 @@ public class challengeManager : MonoBehaviour
                 int cost = weaponChallenge.weapon != null ? weaponChallenge.weapon.cost : 0;
                 if(weaponChallenge.weapon.name != "Pistol") actionText.text = $"Buy ({cost})";
 
-                int currentFiles = upgradeManager.instance != null ? upgradeManager.instance.files : 0;
+                int currentFiles = UpgradeManager.instance != null ? UpgradeManager.instance.files : 0;
                 bool canAfford = currentFiles >= cost;
                 bool allComplete = areAllChallengesComplete(weaponChallenge);
 
@@ -188,7 +188,7 @@ public class challengeManager : MonoBehaviour
         }
     }
 
-    void displayProgressUI(challengeData weaponChallenge)
+    void displayProgressUI(ChallengeData weaponChallenge)
     {
         if (challengeSlots == null || weaponChallenge.challengesList == null) return;
 
@@ -220,45 +220,45 @@ public class challengeManager : MonoBehaviour
         }
     }
 
-    void buyWeapon(challengeData challenge)
+    void buyWeapon(ChallengeData challenge)
     {
-        if (audioManager.instance != null)
-            audioManager.instance.playButtonClick();
+        if (AudioManager.instance != null)
+            AudioManager.instance.playButtonClick();
 
         if (challenge == null || challenge.weapon == null) return;
 
-        if (upgradeManager.instance != null && upgradeManager.instance.files >= challenge.weapon.cost)
+        if (UpgradeManager.instance != null && UpgradeManager.instance.files >= challenge.weapon.cost)
         {
-            upgradeManager.instance.files -= challenge.weapon.cost;
+            UpgradeManager.instance.files -= challenge.weapon.cost;
 
             purchasedWeapons.Add(challenge.weapon.Name);
             PlayerPrefs.SetInt("Bought_" + challenge.weapon.Name, 1);
 
-            if (upgradeManager.instance != null) upgradeManager.instance.SaveUpgrades();
+            if (UpgradeManager.instance != null) UpgradeManager.instance.SaveUpgrades();
             PlayerPrefs.Save();
 
             displayWeaponChallenges(challenge);
         }
     }
 
-    void equipWeapon(challengeData challenge)
+    void equipWeapon(ChallengeData challenge)
     {
-        if (audioManager.instance != null)
-            audioManager.instance.playButtonClick();
+        if (AudioManager.instance != null)
+            AudioManager.instance.playButtonClick();
 
         if (challenge == null || challenge.weapon == null) return;
 
         PlayerPrefs.SetString("EquippedWeapon", challenge.weapon.Name);
         PlayerPrefs.Save();
 
-        if (weaponManager.instance != null)
-            weaponManager.instance.activeWeapon = challenge.weapon;
+        if (WeaponManager.instance != null)
+            WeaponManager.instance.activeWeapon = challenge.weapon;
 
         // Refresh UI so previous weapon returns to "Equip" state and current switches to "Equipped"
         displayWeaponChallenges(challenge);
     }
 
-    public bool areAllChallengesComplete(challengeData weaponChallenge)
+    public bool areAllChallengesComplete(ChallengeData weaponChallenge)
     {
         if (weaponChallenge == null || weaponChallenge.challengesList == null || weaponChallenge.challengesList.Length == 0) return true;
         foreach (var challenge in weaponChallenge.challengesList)

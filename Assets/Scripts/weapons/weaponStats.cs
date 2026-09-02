@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class weaponStats : ScriptableObject
+public abstract class WeaponStats : ScriptableObject
 {
     [Header("Identity")]
     public string Name;

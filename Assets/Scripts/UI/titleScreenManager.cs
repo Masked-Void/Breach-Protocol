@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class titleScreenManager : MonoBehaviour
+public class TitleScreenManager : MonoBehaviour
 {
     [Header("UI Pages")]
     public GameObject homePanel;
@@ -23,7 +23,7 @@ public class titleScreenManager : MonoBehaviour
     public Button navCreditsButton;
 
     [SerializeField] private GameObject titleMenuPanel;
-    [SerializeField] private GameObject soundMenu;
+    [SerializeField] private GameObject SoundMenu;
     [SerializeField] private GameObject controlsMenu;
     [SerializeField] private Slider progressBar;
 
@@ -34,47 +34,47 @@ public class titleScreenManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        audioManager.instance.playTitleScreenSound();
+        AudioManager.instance.playTitleScreenSound();
     }
 
     public void openLevelSamuel()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
         StartCoroutine(LoadSceneAsync("MK2"));
     }
     public void openLevelDevinS()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
         StartCoroutine(LoadSceneAsync("Devin"));
     }
     public void openLevelDevinC()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
         StartCoroutine(LoadSceneAsync("dclevel"));
     }
     public void openLevelMark()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
         StartCoroutine(LoadSceneAsync("Mark"));
     }
     public void openLevelKhurshed()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
         StartCoroutine(LoadSceneAsync("ColdStorage"));
     }
     public void openLevelVirel()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         Nav.SetActive(false);
         deactivateAllPanels();
         StartCoroutine(LoadSceneAsync("LevelCreation-Virel"));
@@ -82,14 +82,14 @@ public class titleScreenManager : MonoBehaviour
 
     public void openSettings()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         deactivateAllSettings();
-        soundMenu.SetActive(true);
+        SoundMenu.SetActive(true);
     }
 
     public void controls()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         deactivateAllSettings();
         controlsMenu.SetActive(true);
     }
@@ -127,14 +127,14 @@ public class titleScreenManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(0.2f);
 
-        if (audioManager.instance != null) audioManager.instance.stopMusic();
+        if (AudioManager.instance != null) AudioManager.instance.stopMusic();
 
         scene.allowSceneActivation = true;
     }
 
     public void quitGame()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
         #elif UNITY_WEBGL
@@ -146,7 +146,7 @@ public class titleScreenManager : MonoBehaviour
 
     public void switchToHome()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         deactivateAllPanels();
         homePanel.SetActive(true);
     }
@@ -163,21 +163,21 @@ public class titleScreenManager : MonoBehaviour
 
     public void switchToSettings()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         deactivateAllPanels();
         settingsPanel.SetActive(true);
     }
 
     public void switchToAbout()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         deactivateAllPanels();
         aboutPanel.SetActive(true);
     }
 
     public void switchToCredits()
     {
-        audioManager.instance.playButtonClick();
+        AudioManager.instance.playButtonClick();
         deactivateAllPanels();
 
         if (creditsPanel != null)
@@ -206,7 +206,7 @@ public class titleScreenManager : MonoBehaviour
 
     private void deactivateAllSettings()
     {
-        soundMenu.SetActive(false);
+        SoundMenu.SetActive(false);
         controlsMenu.SetActive(false);
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine.AI;
 using System.Collections;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public abstract class enemyBase : MonoBehaviour, IDamage
+public abstract class EnemyBase : MonoBehaviour, IDamage
 {
     [Header("Visuals")]
     [SerializeField] public Renderer model;
@@ -46,7 +46,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     [SerializeField] GameObject roamPoint;
     protected bool isEngaged = false;
     [Header("Challenge")]
-    protected weaponStats lastDamageWeapon;
+    protected WeaponStats lastDamageWeapon;
     protected bool lastDamageFromGround;
 
     bool hasGameManager;
@@ -81,16 +81,16 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         if (model != null)
             colorOrig = model.material.color;
 
-        hasAudioManager = audioManager.instance != null;
-        hasGameManager = gameManager.instance != null;
-        hasWeaponManager = weaponManager.instance != null;
-        hasChallengeManager = challengeManager.instance != null;
-        hasUpgradeManager = upgradeManager.instance != null;
+        hasAudioManager = AudioManager.instance != null;
+        hasGameManager = GameManager.instance != null;
+        hasWeaponManager = WeaponManager.instance != null;
+        hasChallengeManager = ChallengeManager.instance != null;
+        hasUpgradeManager = UpgradeManager.instance != null;
     }
 
     void Update()
     {
-        if (gameManager.instance != null && gameManager.instance.isPaused) return;
+        if (GameManager.instance != null && GameManager.instance.isPaused) return;
         attackTimer += Time.unscaledDeltaTime;
 
         HandleFootSteps();
@@ -110,11 +110,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
                  }
              }
             */
-            if (gameManager.instance?.player != null)
+            if (GameManager.instance?.player != null)
             {
                 agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
-                agent.SetDestination(gameManager.instance.player.transform.position);
-                playerDir = gameManager.instance.player.transform.position - transform.position;
+                agent.SetDestination(GameManager.instance.player.transform.position);
+                playerDir = GameManager.instance.player.transform.position - transform.position;
                 faceTarget();
                 attack();
             }
@@ -122,7 +122,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         else if (isEngaged)
         {
             // Ranged: now chasing the player
-            if (gameManager.instance?.player != null)
+            if (GameManager.instance?.player != null)
             {
                 //check to disengage
                 if (!canStillSeePlayer())
@@ -138,8 +138,8 @@ public abstract class enemyBase : MonoBehaviour, IDamage
                     }
                     return;
                 }
-                agent.SetDestination(gameManager.instance.player.transform.position);
-                playerDir = gameManager.instance.player.transform.position - transform.position;
+                agent.SetDestination(GameManager.instance.player.transform.position);
+                playerDir = GameManager.instance.player.transform.position - transform.position;
                 faceTarget();
 
 
@@ -173,7 +173,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
         waveHost.active.releaseRoamPoint(gameObject);
 
-        if (willRoam && gameManager.instance?.player != null)
+        if (willRoam && GameManager.instance?.player != null)
         {
             Transform nextRoamPoint = findNearestRoamPointToPlayer();
 
@@ -190,7 +190,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         if(waveHost.active == null) return null;
 
-        Vector3 playerPos = gameManager.instance.player.transform.position;
+        Vector3 playerPos = GameManager.instance.player.transform.position;
         Transform closestPoint = null;
         float closestDistance = float.MaxValue;
 
@@ -230,9 +230,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             {
                 stepTimer = 0f;
 
-                if (audioManager.instance != null && audioManager.instance.enemySteps != null && audioManager.instance.enemySteps.Length > 0)
+                if (AudioManager.instance != null && AudioManager.instance.enemySteps != null && AudioManager.instance.enemySteps.Length > 0)
                 {
-                    audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.enemySteps), transform.position, audioManager.instance.enemyStepsVol, 3f, 20f);
+                    AudioManager.instance.playSpatialSFX(AudioManager.instance.pickRandomAudio(AudioManager.instance.enemySteps), transform.position, AudioManager.instance.enemyStepsVol, 3f, 20f);
                 }
             }
         }
@@ -245,9 +245,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     // need this so ai goes back to roaming after losing sight. 
     private bool canStillSeePlayer()
     {
-        if (gameManager.instance == null || gameManager.instance.player == null) return false;
+        if (GameManager.instance == null || GameManager.instance.player == null) return false;
 
-        Vector3 dirToPlayer = gameManager.instance.player.transform.position - transform.position;
+        Vector3 dirToPlayer = GameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
 
         if (Physics.Raycast(transform.position, dirToPlayer.normalized, out RaycastHit hit, rangedEnemeyAttackRange))
@@ -261,9 +261,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     // Returns true if the player was visible and an attack/face action was triggered.
     protected bool tryAttackFromCurrentPosition()
     {
-        if (gameManager.instance == null || gameManager.instance.player == null) return false;
+        if (GameManager.instance == null || GameManager.instance.player == null) return false;
 
-        Vector3 dirToPlayer = gameManager.instance.player.transform.position - transform.position;
+        Vector3 dirToPlayer = GameManager.instance.player.transform.position - transform.position;
         float distance = dirToPlayer.magnitude;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
 
@@ -289,14 +289,14 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     // ensures player is within a range or FOV so they can be seen
     public virtual bool canSeePlayer()
     {
-        playerDir = gameManager.instance.player.transform.position - transform.position;
+        playerDir = GameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
 
         if (Physics.Raycast(transform.position, playerDir, out RaycastHit hit))
         {
             if (hit.collider.CompareTag("Player") && angleToPlayer <= FOV)
             {
-                agent.SetDestination(gameManager.instance.player.transform.position);
+                agent.SetDestination(GameManager.instance.player.transform.position);
                 faceTarget();
 
                 attack();
@@ -312,14 +312,14 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
 
         //Check distance from player
-        if (gameManager.instance?.player != null)
+        if (GameManager.instance?.player != null)
         {
-            float distToPlayer = Vector3.Distance(transform.position,gameManager.instance.player.transform.position);
+            float distToPlayer = Vector3.Distance(transform.position,GameManager.instance.player.transform.position);
 
             // if too far hunt them down
             if (distToPlayer > rangedEnemeyAttackRange)
             {
-                agent.SetDestination(gameManager.instance.player.transform.position);
+                agent.SetDestination(GameManager.instance.player.transform.position);
                 agent.stoppingDistance = 0f;
 
                 //clear roam target to hunt
@@ -369,7 +369,7 @@ public abstract class enemyBase : MonoBehaviour, IDamage
             playerInTrigger = false;
         }
     }
-    public void RegisterDamageSource(weaponStats weapon, bool fromGround)
+    public void RegisterDamageSource(WeaponStats weapon, bool fromGround)
     {
         lastDamageWeapon = weapon;
         lastDamageFromGround = fromGround;
@@ -380,10 +380,10 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
         currentHP -= amount;
 
-        if (gameManager.instance?.player != null)
+        if (GameManager.instance?.player != null)
         {
             if (!willRoam)
-                agent.SetDestination(gameManager.instance.player.transform.position);
+                agent.SetDestination(GameManager.instance.player.transform.position);
             else
             {
                 isEngaged = true;
@@ -418,9 +418,9 @@ public abstract class enemyBase : MonoBehaviour, IDamage
         // REPORT TO CHALLENGE SYSTEM
         if (awardKillRewards && lastDamageWeapon != null)
         {
-            // challengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
-            //challengeManager.instance?.ReportKill(weaponManager.instance.activeWeapon);
-            challengeManager.instance?.ReportKill(lastDamageWeapon);
+            // ChallengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
+            //ChallengeManager.instance?.ReportKill(WeaponManager.instance.activeWeapon);
+            ChallengeManager.instance?.ReportKill(lastDamageWeapon);
         }
 
         // enemies talk to the wave through waveHost, not the singleton
@@ -431,15 +431,15 @@ public abstract class enemyBase : MonoBehaviour, IDamage
 
         if (awardKillRewards)
         {
-            if (gameManager.instance != null)
+            if (GameManager.instance != null)
             {
-                gameManager.instance.addKill();
-                gameManager.instance.AddBytes(byteValue);
+                GameManager.instance.addKill();
+                GameManager.instance.AddBytes(byteValue);
             }
 
-            if (killChainManager.instance != null)
+            if (KillChainManager.instance != null)
             {
-                killChainManager.instance.RegisterKill();
+                KillChainManager.instance.RegisterKill();
             }
         }
 
@@ -464,11 +464,11 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     protected bool tryMeleeHit()
     {
         agent.stoppingDistance = Mathf.Max(0.5f, attackRange);
-        float dist = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
+        float dist = Vector3.Distance(transform.position, GameManager.instance.player.transform.position);
         if (dist > attackRange || attackTimer <= attackRate) return false;
 
         attackTimer = 0;
-        gameManager.instance.player.GetComponent<IDamage>()?.takeDamage(attackDamage);
+        GameManager.instance.player.GetComponent<IDamage>()?.takeDamage(attackDamage);
         return true;
     }
 
@@ -495,8 +495,8 @@ public abstract class enemyBase : MonoBehaviour, IDamage
     {
         if (spawnedWeaponModel == null) return;
         spawnedWeaponModel.transform.SetParent(null);
-        if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = false;
-        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out var picker)) picker.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out WeaponWallAvoidance clip)) clip.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out var picker)) picker.enabled = true;
 
         if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
         {

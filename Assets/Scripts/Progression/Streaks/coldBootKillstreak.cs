@@ -3,12 +3,12 @@ using UnityEngine;
 /// <summary>
 /// COLD BOOT: immediately drops stress to zero and returns BPM to 20/resting.
 /// </summary>
-public class coldBootKillstreak : killstreakBase
+public class ColdBootKillstreak : KillstreakBase
 {
     protected override void onActivate()
     {
-        if (heartbeatManager.instance != null)
-            heartbeatManager.instance.resetToRestingBPM();
+        if (HeartbeatManager.instance != null)
+            HeartbeatManager.instance.resetToRestingBPM();
     }
 
     protected override void onDeactivate()

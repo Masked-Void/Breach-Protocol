@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Patrol : MonoBehaviour
+public class PatrolPath : MonoBehaviour
 {
     public enum PathType
     {

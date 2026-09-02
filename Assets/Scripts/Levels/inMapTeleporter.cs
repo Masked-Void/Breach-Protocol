@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class inMapTeleporter : MonoBehaviour
+public class InMapTeleporter : MonoBehaviour
 {
     [SerializeField] Transform teleportPos;
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player") && teleportPos !=null) {
-            gameManager.instance.player.transform.position = teleportPos.position;
+            GameManager.instance.player.transform.position = teleportPos.position;
         }
     }
 }

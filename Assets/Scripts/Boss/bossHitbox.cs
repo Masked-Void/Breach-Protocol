@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class bossHitbox : MonoBehaviour, IDamage
+public class BossHitbox : MonoBehaviour, IDamage
 {
 
     [Header("References")]
-    [SerializeField] private bossFightManager fightManager;
+    [SerializeField] private BossFightManager fightManager;
 
     // Possible crit point, thought it could be cool and thought of it while dealing the boss damage
     [Header("Damage")]
@@ -12,7 +12,7 @@ public class bossHitbox : MonoBehaviour, IDamage
 
     void Awake() {
         if (fightManager == null) {
-            Debug.LogError("bossHitbox: no bossFightManager assigned on " + name , this);
+            Debug.LogError("BossHitbox: no BossFightManager assigned on " + name , this);
             enabled = false;
         }
     }

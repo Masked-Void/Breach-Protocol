@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class tutorialManager : MonoBehaviour
+public class TutorialManager : MonoBehaviour
 {
     void Awake() {
 
-        //gameManager.instance.player.TryGetComponent<>
+        //GameManager.instance.player.TryGetComponent<>
 
     }
 }

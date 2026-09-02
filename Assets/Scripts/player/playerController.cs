@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class playerController : MonoBehaviour, IPickWeapon, IDamage
+public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
 {
     [Header("Controller")]
     [SerializeField] CharacterController controller;
@@ -56,15 +56,15 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
     }
     void movement()
     {
-        if (gameManager.instance != null && gameManager.instance.isPaused)
+        if (GameManager.instance != null && GameManager.instance.isPaused)
         {
-            gameManager.instance.interactionUI.SetActive(false);
+            GameManager.instance.interactionUI.SetActive(false);
             return;
         }
 
-        /*if (killChainManager.instance != null && killChainManager.instance.activatePlayershield)
+        /*if (KillChainManager.instance != null && KillChainManager.instance.activatePlayershield)
         {
-            killChainManager.instance.activatePlayershield = false;
+            KillChainManager.instance.activatePlayershield = false;
             StartCoroutine(addPlayerShield());
         }*/
 
@@ -119,9 +119,9 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
         if (controller.isGrounded && isMoving)
         {
             stepTimer -= Time.unscaledDeltaTime;
-            if (stepTimer <= 0f && audioManager.instance != null)
+            if (stepTimer <= 0f && AudioManager.instance != null)
             {
-                audioManager.instance.playSteps();
+                AudioManager.instance.playSteps();
                 stepTimer = isSprinting ? (stepInterval / sprintMod) : stepInterval;
             }
         }
@@ -135,7 +135,7 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
     {
         if (Input.GetButtonDown("Jump") && jumpCount < jumpMax)
         {
-            audioManager.instance.playJump();
+            AudioManager.instance.playJump();
             playerVel.y = jumpSpeed;
             jumpCount++;
         }
@@ -143,20 +143,20 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
 
     public void takeDamage(int amount)
     {
-        audioManager.instance.playHurt();
+        AudioManager.instance.playHurt();
 
         StartCoroutine(flashDamage());
 
-        if (heartbeatManager.instance != null)
+        if (HeartbeatManager.instance != null)
         {
-            heartbeatManager.instance.playerDamaged();
+            HeartbeatManager.instance.playerDamaged();
         }
     }
 
-    public void equipWeapon(weaponStats weapon, int ammoOverride = -1)
+    public void equipWeapon(WeaponStats weapon, int ammoOverride = -1)
     {
-        if (weaponManager.instance != null)
-            weaponManager.instance.equipWeapon(weapon, ammoOverride);
+        if (WeaponManager.instance != null)
+            WeaponManager.instance.equipWeapon(weapon, ammoOverride);
     }
     public float getSpeedPercent()
     {
@@ -177,9 +177,9 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
 
     IEnumerator flashDamage()
     {
-        gameManager.instance.damageFlashUI.SetActive(true);
+        GameManager.instance.damageFlashUI.SetActive(true);
         yield return new WaitForSecondsRealtime(.1f);
-        gameManager.instance.damageFlashUI.SetActive(false);
+        GameManager.instance.damageFlashUI.SetActive(false);
     }
 
     IEnumerator addPlayerShield()
@@ -187,18 +187,18 @@ public class playerController : MonoBehaviour, IPickWeapon, IDamage
         playerShield.SetActive(true);
         yield return new WaitForSeconds(10f);
         playerShield.SetActive(false);
-        //killChainManager.instance.activatePlayershield = false;
+        //KillChainManager.instance.activatePlayershield = false;
     }
 
     public void updatePlayerUI()
     {
-        gameManager.instance.playerStaminaBar.fillAmount = (float)currentStamina / maxStamina;
+        GameManager.instance.playerStaminaBar.fillAmount = (float)currentStamina / maxStamina;
 
     }
 
     public void spawnPlayer()
     {
-        controller.transform.position = gameManager.instance.playerSpawnPos.transform.position;
+        controller.transform.position = GameManager.instance.playerSpawnPos.transform.position;
         Physics.SyncTransforms();
         currentStamina = maxStamina;
         updatePlayerUI();

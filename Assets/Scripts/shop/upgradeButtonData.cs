@@ -2,9 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class upgradeButtonData : MonoBehaviour
+public class UpgradeButtonData : MonoBehaviour
 {
-    public upgradeData upgrade;
+    public UpgradeData upgrade;
     Button button;
     [SerializeField] private bool selectOnEnable = false;
 
@@ -32,10 +32,10 @@ public class upgradeButtonData : MonoBehaviour
     // Handle weapon selection
     void Selected()
     {   
-        if (audioManager.instance != null)
-            audioManager.instance.playButtonClick();
+        if (AudioManager.instance != null)
+            AudioManager.instance.playButtonClick();
                      
-        if (upgradeManager.instance != null && upgrade != null)
-            upgradeManager.instance.displayUpgrades(upgrade);
+        if (UpgradeManager.instance != null && upgrade != null)
+            UpgradeManager.instance.displayUpgrades(upgrade);
     }
 }

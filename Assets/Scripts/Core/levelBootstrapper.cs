@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class levelBootstrapper : MonoBehaviour
+public class LevelBootstrapper : MonoBehaviour
 {
     [Header("Bootstrap")]
     [Tooltip("Scene name of the persistent scene that contains the managers")]

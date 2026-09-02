@@ -4,7 +4,7 @@ using UnityEngine;
 /// ICE WALL: mounts a shield object on the player's back.
 /// The shield remains until it absorbs its configured number of hits.
 /// </summary>
-public class iceWallKillstreak : killstreakBase
+public class IceWallKillstreak : KillstreakBase
 {
     [Header("ICE Wall")]
     [SerializeField] private GameObject shieldPrefab;
@@ -20,8 +20,8 @@ public class iceWallKillstreak : killstreakBase
     protected override void onActivate()
     {
         if (shieldPrefab == null ||
-            gameManager.instance == null ||
-            gameManager.instance.player == null)
+            GameManager.instance == null ||
+            GameManager.instance.player == null)
         {
             Debug.LogWarning(
                 "ICE Wall requires a shield prefab and a valid player.",
@@ -32,18 +32,18 @@ public class iceWallKillstreak : killstreakBase
             return;
         }
 
-        Transform player = gameManager.instance.player.transform;
+        Transform player = GameManager.instance.player.transform;
 
         shieldInstance = Instantiate(shieldPrefab, player);
         shieldInstance.transform.localPosition = localPosition;
         shieldInstance.transform.localRotation = Quaternion.Euler(localEulerAngles);
         shieldInstance.transform.localScale = localScale;
 
-        iceWallShield shield =
-            shieldInstance.GetComponent<iceWallShield>();
+        IceWallShield shield =
+            shieldInstance.GetComponent<IceWallShield>();
 
         if (shield == null)
-            shield = shieldInstance.AddComponent<iceWallShield>();
+            shield = shieldInstance.AddComponent<IceWallShield>();
 
         shield.Configure(this, Mathf.Max(1, hitsToAbsorb));
     }

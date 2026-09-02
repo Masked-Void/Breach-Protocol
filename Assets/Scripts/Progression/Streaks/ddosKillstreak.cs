@@ -4,18 +4,18 @@ using UnityEngine;
 /// DDoS: jams enemy AI for a short real-time duration.
 /// Existing projectiles continue moving, so it is control rather than invulnerability.
 /// </summary>
-public class ddosKillstreak : killstreakBase
+public class DdosKillstreak : KillstreakBase
 {
     protected override void onActivate()
     {
-        if (killstreakManager.instance != null)
-            killstreakManager.instance.SetEnemiesJammed(true);
+        if (KillstreakManager.instance != null)
+            KillstreakManager.instance.SetEnemiesJammed(true);
     }
 
     protected override void onDeactivate()
     {
-        if (killstreakManager.instance != null)
-            killstreakManager.instance.SetEnemiesJammed(false);
+        if (KillstreakManager.instance != null)
+            KillstreakManager.instance.SetEnemiesJammed(false);
     }
 
     private void Reset()

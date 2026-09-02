@@ -5,10 +5,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class gameManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
 
-    public static gameManager instance;
+    public static GameManager instance;
 
     [Header("Menu")]
     [SerializeField] GameObject menuActive;
@@ -30,7 +30,7 @@ public class gameManager : MonoBehaviour
     public GameObject backButton;
 
     [Header("Settings Menu")]
-    [SerializeField] public GameObject soundMenu;
+    [SerializeField] public GameObject SoundMenu;
     [SerializeField] public GameObject controlsMenu;
 
     [Header("Kills UI")]
@@ -75,7 +75,7 @@ public class gameManager : MonoBehaviour
     [Header("Runtime: Do not Change")]
     public bool isPaused;
     public GameObject player;
-    public playerController playerScript;
+    public PlayerController playerScript;
 
 
     int currentKill = 0;
@@ -100,12 +100,12 @@ public class gameManager : MonoBehaviour
 
         if (tagged != null)
         {
-            playerScript = tagged.GetComponentInParent<playerController>();
+            playerScript = tagged.GetComponentInParent<PlayerController>();
             player = playerScript != null ? playerScript.gameObject : tagged;
         }
         else
         {
-            Debug.LogWarning("gameManager: nothing tagged Player in the scene", this);
+            Debug.LogWarning("GameManager: nothing tagged Player in the scene", this);
         }
 
         if (player!= null)
@@ -149,7 +149,7 @@ public class gameManager : MonoBehaviour
 
         if (Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
         {
-            if (audioManager.instance != null) audioManager.instance.playButtonClick();
+            if (AudioManager.instance != null) AudioManager.instance.playButtonClick();
             if (menuActive == null)
             {
                 statePause();
@@ -165,23 +165,23 @@ public class gameManager : MonoBehaviour
 
         updateUI();
 
-        if (weaponManager.instance != null && weaponManager.instance.activeWeapon != null)
-            magAmmoUI.text = weaponManager.instance.getCurrentAmmo().ToString();
+        if (WeaponManager.instance != null && WeaponManager.instance.activeWeapon != null)
+            magAmmoUI.text = WeaponManager.instance.getCurrentAmmo().ToString();
     }
 
     // Pause the game
     public void statePause()
     {
         isPaused = true;
-        timeManager.instance.pauseTime();
+        TimeManager.instance.pauseTime();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         pauseScoreText.text = currentKill.ToString("f0");
         resetPauseUI();
-        if (audioManager.instance != null)
+        if (AudioManager.instance != null)
         {
-            audioManager.instance.pauseMusic();
-            audioManager.instance.playPauseMenuMusicWithDelay(4.0f);
+            AudioManager.instance.pauseMusic();
+            AudioManager.instance.playPauseMenuMusicWithDelay(4.0f);
         }
     }
 
@@ -190,7 +190,7 @@ public class gameManager : MonoBehaviour
         if (challengesCanvas != null) challengesCanvas.SetActive(false);
         if (settingsCanvas != null) settingsCanvas.SetActive(false);
         if (upgradesCanvas != null) upgradesCanvas.SetActive(false);
-        if (soundMenu != null) soundMenu.SetActive(false);
+        if (SoundMenu != null) SoundMenu.SetActive(false);
         if (controlsMenu != null) controlsMenu.SetActive(false);
         if (backButton != null) backButton.SetActive(false);
         if (navTab != null) navTab.SetActive(false);
@@ -202,7 +202,7 @@ public class gameManager : MonoBehaviour
     public void stateUnpause()
     {
         isPaused = false;
-        if (timeManager.instance != null) timeManager.instance.unpauseTime();
+        if (TimeManager.instance != null) TimeManager.instance.unpauseTime();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         if (menuActive != null)
@@ -210,7 +210,7 @@ public class gameManager : MonoBehaviour
             menuActive.SetActive(false);
             menuActive = null;
         }
-        if (audioManager.instance != null) audioManager.instance.restoreGameplayMusic();
+        if (AudioManager.instance != null) AudioManager.instance.restoreGameplayMusic();
     }
 
     // Handle the lose state
@@ -252,16 +252,16 @@ public class gameManager : MonoBehaviour
         {
             loseSoreText.text = currentKill.ToString("f0");
         }
-        if (upgradeManager.instance != null)
+        if (UpgradeManager.instance != null)
         {
-            upgradeManager.instance.files += totalFiles;
-            upgradeManager.instance.SaveUpgrades();
+            UpgradeManager.instance.files += totalFiles;
+            UpgradeManager.instance.SaveUpgrades();
         }
 
         // lose screen gets its own music cue
-        if (endMenu == menuLose && audioManager.instance != null)
+        if (endMenu == menuLose && AudioManager.instance != null)
         {
-            audioManager.instance.playLoseMenuMusic();
+            AudioManager.instance.playLoseMenuMusic();
         }
     }
     public void addKill()
@@ -271,14 +271,14 @@ public class gameManager : MonoBehaviour
 
     void updateUI()
     {
-        if (waveManager.instance == null) return;
+        if (WaveManager.instance == null) return;
 
-        if (waveCounter != null)waveCounter.text = waveManager.instance.getCurrentWave().ToString("f0");
-        if(killCounter != null) killCounter.text = "Kills: " + waveManager.instance.getEnemiesKilled();
+        if (waveCounter != null)waveCounter.text = WaveManager.instance.getCurrentWave().ToString("f0");
+        if(killCounter != null) killCounter.text = "Kills: " + WaveManager.instance.getEnemiesKilled();
 
-        if (waveManager.instance.isWaitingForNextWave())
+        if (WaveManager.instance.isWaitingForNextWave())
         {
-            int secondsLeft = waveManager.instance.getSecondsUntilNextWave();
+            int secondsLeft = WaveManager.instance.getSecondsUntilNextWave();
 
             if (waveCountdownText != null)
             {

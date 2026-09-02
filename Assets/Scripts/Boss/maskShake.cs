@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // Shakes the mask, will do ontop of whatever the base boss is looking at
-public class maskShake : MonoBehaviour {
+public class MaskShake : MonoBehaviour {
 
     [Header("Shake")]
     [Tooltip("Lowest random offset")]

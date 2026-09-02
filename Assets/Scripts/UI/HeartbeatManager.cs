@@ -5,9 +5,9 @@ using UnityEngine;
 /// Stress-driven BPM/health system.
 /// Stress and BPM use unscaled real time so freezing the world does not freeze danger.
 /// </summary>
-public class heartbeatManager : MonoBehaviour
+public class HeartbeatManager : MonoBehaviour
 {
-    public static heartbeatManager instance;
+    public static HeartbeatManager instance;
 
     [Header("BPM Settings")]
     [SerializeField] private int restingBPM = 20;
@@ -60,7 +60,7 @@ public class heartbeatManager : MonoBehaviour
         if (hasLost)
             return;
 
-        if (gameManager.instance != null && gameManager.instance.isPaused)
+        if (GameManager.instance != null && GameManager.instance.isPaused)
             return;
 
         DecayStress();
@@ -123,11 +123,11 @@ public class heartbeatManager : MonoBehaviour
         hasLost = true;
 
         // Timed/manual streaks must not survive death.
-        if (killstreakManager.instance != null)
-            killstreakManager.instance.cancelActiveStreak();
+        if (KillstreakManager.instance != null)
+            KillstreakManager.instance.cancelActiveStreak();
 
-        if (gameManager.instance != null)
-            gameManager.instance.stateLose();
+        if (GameManager.instance != null)
+            GameManager.instance.stateLose();
     }
 
     public void addStress(float amount)
@@ -136,8 +136,8 @@ public class heartbeatManager : MonoBehaviour
             return;
 
         // God Mode means the player cannot gain stress while it is active.
-        if (killstreakManager.instance != null &&
-            killstreakManager.instance.IsInvulnerable)
+        if (KillstreakManager.instance != null &&
+            KillstreakManager.instance.IsInvulnerable)
         {
             return;
         }
@@ -161,8 +161,8 @@ public class heartbeatManager : MonoBehaviour
     public void playerDamaged()
     {
         // God Mode blocks hit stress completely.
-        if (killstreakManager.instance != null &&
-            killstreakManager.instance.IsInvulnerable)
+        if (KillstreakManager.instance != null &&
+            KillstreakManager.instance.IsInvulnerable)
         {
             return;
         }

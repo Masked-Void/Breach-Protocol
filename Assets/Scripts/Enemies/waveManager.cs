@@ -21,10 +21,10 @@
  *
  * Interacts With:
  * - spawner (one or more, individually configured)
- * - heartbeatManager
- * - gameManager
- * - waveLightController
- * - audioManager
+ * - HeartbeatManager
+ * - GameManager
+ * - WaveLightController
+ * - AudioManager
  */
 
 using System.Collections;
@@ -59,9 +59,9 @@ public class spawnPoint
     }
 }
 
-public class waveManager : MonoBehaviour,IWaveHost
+public class WaveManager : MonoBehaviour,IWaveHost
 {
-    public static waveManager instance;
+    public static WaveManager instance;
 
     [Header("Weapon Prefabs")]
     [SerializeField] GameObject[] basicWeaponPrefabs;
@@ -140,8 +140,8 @@ public class waveManager : MonoBehaviour,IWaveHost
 
     void Update()
     {
-        if (gameManager.instance != null &&
-            gameManager.instance.isPaused)
+        if (GameManager.instance != null &&
+            GameManager.instance.isPaused)
         {
             return;
         }
@@ -193,8 +193,8 @@ public class waveManager : MonoBehaviour,IWaveHost
 
             if (typeSpawned == enemyType.ranged)
             {
-                if (enemy.TryGetComponent<enemyBase>(
-                    out enemyBase enemyScript))
+                if (enemy.TryGetComponent<EnemyBase>(
+                    out EnemyBase enemyScript))
                 {
                     enemyScript.willRoam =
                         Random.Range(0f, 1f) <= giveWillRoamChance;
@@ -272,9 +272,9 @@ public class waveManager : MonoBehaviour,IWaveHost
 
     private void startWave()
     {
-        if (audioManager.instance != null)
+        if (AudioManager.instance != null)
         {
-            audioManager.instance.stopMusic();
+            AudioManager.instance.stopMusic();
         }
 
         waveInProgress = true;
@@ -300,15 +300,15 @@ public class waveManager : MonoBehaviour,IWaveHost
             return;
         }
 
-        if (waveLightController.instance != null)
+        if (WaveLightController.instance != null)
         {
-            waveLightController.instance
+            WaveLightController.instance
                 .FlashWarningLights(timeBetweenWaves);
         }
 
-        if (audioManager.instance != null)
+        if (AudioManager.instance != null)
         {
-            audioManager.instance
+            AudioManager.instance
                 .playRoundTransitionMusic();
         }
 
@@ -409,9 +409,9 @@ public class waveManager : MonoBehaviour,IWaveHost
             enemiesAlive = 0;
         }
 
-        if (heartbeatManager.instance != null)
+        if (HeartbeatManager.instance != null)
         {
-            heartbeatManager.instance.enemyKilled();
+            HeartbeatManager.instance.enemyKilled();
         }
 
         // Don't finish while more enemies are still scheduled to spawn.
@@ -429,23 +429,23 @@ public class waveManager : MonoBehaviour,IWaveHost
 
         waveInProgress = false;
 
-        if (heartbeatManager.instance != null)
+        if (HeartbeatManager.instance != null)
         {
-            heartbeatManager.instance.waveCompleted();
+            HeartbeatManager.instance.waveCompleted();
         }
 
-        if (gameManager.instance != null)
+        if (GameManager.instance != null)
         {
-            gameManager.instance.AddFiles(5);
+            GameManager.instance.AddFiles(5);
 
             // keep the upgrade currency in sync after every wave
-            if (upgradeManager.instance != null)
+            if (UpgradeManager.instance != null)
             {
-                upgradeManager.instance.files += gameManager.instance.totalFiles;
-                upgradeManager.instance.SaveUpgrades();
+                UpgradeManager.instance.files += GameManager.instance.totalFiles;
+                UpgradeManager.instance.SaveUpgrades();
             }
 
-            //Debug.Log("Current Files: " + gameManager.instance.totalFiles);
+            //Debug.Log("Current Files: " + GameManager.instance.totalFiles);
         }
 
         queueNextWave();
@@ -454,9 +454,9 @@ public class waveManager : MonoBehaviour,IWaveHost
 
     void playerWins()
     {
-        if (gameManager.instance != null)
+        if (GameManager.instance != null)
         {
-            // gameManager.instance.stateWin();
+            // GameManager.instance.stateWin();
         }
     }
 
@@ -543,7 +543,7 @@ public class waveManager : MonoBehaviour,IWaveHost
 
         if (spawnPoints.Length == 0)
         {
-            //Debug.LogError("waveManager: no spawn points assigned");
+            //Debug.LogError("WaveManager: no spawn points assigned");
         }
     }
 
@@ -566,7 +566,7 @@ public class waveManager : MonoBehaviour,IWaveHost
 
         if (roamPoints.Length == 0)
         {
-            //Debug.LogError("waveManager: no roam points assigned");
+            //Debug.LogError("WaveManager: no roam points assigned");
         }
     }
 

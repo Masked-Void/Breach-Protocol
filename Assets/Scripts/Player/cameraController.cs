@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class cameraController : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     [SerializeField] int sens;
     [SerializeField] int lockVertMin, lockVertMax;
@@ -17,7 +17,7 @@ public class cameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!gameManager.instance.isPaused)
+        if(!GameManager.instance.isPaused)
         {
             float mouseX = Input.GetAxisRaw("Mouse X") * sens;
             float mouseY = Input.GetAxisRaw("Mouse Y") * sens;

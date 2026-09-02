@@ -6,7 +6,7 @@ using UnityEngine;
 // Handles a group of lasers that slide from a hidden spot out into the arena.
 // Each laser is a child of this object and moves between its own two markers.
 // Beams stay off while moving and only switch on once a laser is fully out.
-public class laserArray : MonoBehaviour {
+public class LaserArray : MonoBehaviour {
 
     [Header("Marker Names: (Children of each laser)")]
     [SerializeField] string laserInMarkerName = "laserIn";
@@ -175,7 +175,7 @@ public class laserArray : MonoBehaviour {
 
             // Makes sure both markers exist, one missing marker kills the whole array
             if (newUnit.laserInPos == null || newUnit.laserOutPos == null) {
-                Debug.LogError("laserArray: '" + laser.name + "' needs two children named '"
+                Debug.LogError("LaserArray: '" + laser.name + "' needs two children named '"
                 + laserInMarkerName + "' and '" + laserOutMarkerName + "'." , laser);
 
                 // Blanks the array so nothing can walk into the half filled entries later
@@ -187,9 +187,9 @@ public class laserArray : MonoBehaviour {
             newUnit.beamPos = findMark(laser , beamMarkerName);
 
             if (newUnit.beamPos == null) {
-                Debug.LogWarning("laserArray: '" + laser.name + "' has no child named '" + beamMarkerName + "', so it will move but never fire." , laser);
+                Debug.LogWarning("LaserArray: '" + laser.name + "' has no child named '" + beamMarkerName + "', so it will move but never fire." , laser);
             } else if (!newUnit.beamPos.TryGetComponent<LineRenderer>(out newUnit.beam)) {
-                Debug.LogWarning("laserArray: '" + newUnit.beamPos.name + "' has no LineRenderer." , laser);
+                Debug.LogWarning("LaserArray: '" + newUnit.beamPos.name + "' has no LineRenderer." , laser);
             }else {
                 newUnit.beam.useWorldSpace = false;
                 newUnit.beam.positionCount = 2;
@@ -220,7 +220,7 @@ public class laserArray : MonoBehaviour {
             if (child.name.IndexOf(wanted , System.StringComparison.OrdinalIgnoreCase) >= 0) {
                 // Warning for if more than one child matches, it keeps the first one and stops looking
                 if (found != null) {
-                    Debug.LogWarning("laserArray: '" + laser.name + "' has more than one child matching '"
+                    Debug.LogWarning("LaserArray: '" + laser.name + "' has more than one child matching '"
                         + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first." , laser);
                     break;
                 }

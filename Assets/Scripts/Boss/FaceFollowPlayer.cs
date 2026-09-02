@@ -1,7 +1,7 @@
 using UnityEngine;
 
-// Aims the whole boss at the player, maskShake will do the shaking for the mask only
-public class followPlayer : MonoBehaviour {
+// Aims the whole boss at the player, MaskShake will do the shaking for the mask only
+public class FaceFollowPlayer : MonoBehaviour {
     [Header("Target")]
     [Tooltip("This is what the boss looks at, if left empty it will grab the object tagged 'Player' on start.")]
     [SerializeField] private Transform followedObject;

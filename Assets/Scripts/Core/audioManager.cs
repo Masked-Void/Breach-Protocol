@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-fuck you unity
-public class audioManager : MonoBehaviour
+//fuck you unity
+public class AudioManager : MonoBehaviour
 {
-    public static audioManager instance { get; private set; }
+    public static AudioManager instance { get; private set; }
 
     [Header("Audio Source")]
     public AudioSource sfxSource;

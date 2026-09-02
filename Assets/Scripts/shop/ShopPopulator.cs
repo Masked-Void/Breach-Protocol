@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class populateShop : MonoBehaviour
+public class ShopPopulator : MonoBehaviour
 {
     
     
@@ -12,9 +12,9 @@ public class populateShop : MonoBehaviour
     // [SerializeField] TMP_Text descriptionText;
     // [SerializeField] TMP_Text costText;
     
-    // private upgradeData currentUpgrade;
+    // private UpgradeData currentUpgrade;
 
-    // public void populateShopUI(upgradeData Upgrade)
+    // public void populateShopUI(UpgradeData Upgrade)
     // {
     //     currentUpgrade = Upgrade;
 
@@ -26,6 +26,6 @@ public class populateShop : MonoBehaviour
 
     // public void BuyUpgrade()
     // {
-    //     shopManager.instance.buyUpgrade(currentUpgrade);
+    //     ShopManager.instance.buyUpgrade(currentUpgrade);
     // }
 }

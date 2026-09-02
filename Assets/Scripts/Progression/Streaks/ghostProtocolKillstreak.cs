@@ -3,16 +3,16 @@ using UnityEngine;
 /// <summary>
 /// GHOST PROTOCOL: corrupts ranged-enemy aim while active.
 /// </summary>
-public class ghostProtocolKillstreak : killstreakBase
+public class GhostProtocolKillstreak : KillstreakBase
 {
     [Header("Ghost Protocol")]
     [SerializeField] private float enemyAimErrorDegrees = 12f;
 
     protected override void onActivate()
     {
-        if (killstreakManager.instance != null)
+        if (KillstreakManager.instance != null)
         {
-            killstreakManager.instance.SetGhostProtocol(
+            KillstreakManager.instance.SetGhostProtocol(
                 true,
                 enemyAimErrorDegrees
             );
@@ -21,9 +21,9 @@ public class ghostProtocolKillstreak : killstreakBase
 
     protected override void onDeactivate()
     {
-        if (killstreakManager.instance != null)
+        if (KillstreakManager.instance != null)
         {
-            killstreakManager.instance.SetGhostProtocol(
+            KillstreakManager.instance.SetGhostProtocol(
                 false,
                 enemyAimErrorDegrees
             );

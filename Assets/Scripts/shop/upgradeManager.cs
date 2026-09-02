@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 
-public class upgradeManager : MonoBehaviour
+public class UpgradeManager : MonoBehaviour
 {
-    public static upgradeManager instance;
+    public static UpgradeManager instance;
     [System.Serializable]
     public struct RequiredChallengeUISlot
     {
@@ -15,7 +15,7 @@ public class upgradeManager : MonoBehaviour
     }
 
     [Header("Upgrade Info")]
-    public upgradeData[] upgrades;
+    public UpgradeData[] upgrades;
     public TextMeshProUGUI upgradeName;
     public Image upgradeIcon;
     public TextMeshProUGUI upgradeDescription;
@@ -50,7 +50,7 @@ public class upgradeManager : MonoBehaviour
 
     public bool IsUpgradeActive(string id) => activeUpgrades.Contains(id);
 
-    public bool IsUpgradeUnlocked(upgradeData upgrade)
+    public bool IsUpgradeUnlocked(UpgradeData upgrade)
     {
         if (upgrade == null) return false;
 
@@ -58,13 +58,13 @@ public class upgradeManager : MonoBehaviour
         if (upgrade.requiredChallenges == null || upgrade.requiredChallenges.Length == 0)
             return true;
 
-        if (challengeManager.instance == null)
+        if (ChallengeManager.instance == null)
             return false;
 
         // Verify all required challenge groups are completed
         foreach (var reqChallenge in upgrade.requiredChallenges)
         {
-            if (reqChallenge != null && !challengeManager.instance.areAllChallengesComplete(reqChallenge))
+            if (reqChallenge != null && !ChallengeManager.instance.areAllChallengesComplete(reqChallenge))
             {
                 return false;
             }
@@ -74,7 +74,7 @@ public class upgradeManager : MonoBehaviour
     }
 
     // Display Upgrade Info i.e Name, cost etc
-    public void displayUpgrades(upgradeData upgrade)
+    public void displayUpgrades(UpgradeData upgrade)
     {
         if (upgrade == null) return;
         if (upgradeName != null) upgradeName.text = upgrade.upgradeName;
@@ -82,7 +82,7 @@ public class upgradeManager : MonoBehaviour
 
         if (upgradeDescription != null)
         {
-            upgradeDescription.text = upgrade.upgradeType == upgradeData.UpgradeType.FireRate
+            upgradeDescription.text = upgrade.upgradeType == UpgradeData.UpgradeType.FireRate
                 ? upgrade.description + $". Reduces firerate by 1/{upgrade.value}"
                 : upgrade.description;
         }
@@ -127,7 +127,7 @@ public class upgradeManager : MonoBehaviour
         }
     }
 
-    private void displayRequiredChallenges(upgradeData upgrade)
+    private void displayRequiredChallenges(UpgradeData upgrade)
     {
         if (requiredChallengeSlots == null) return;
 
@@ -145,7 +145,7 @@ public class upgradeManager : MonoBehaviour
                 if (requiredChallengeSlots[i].challengeName != null && reqData != null)
                     requiredChallengeSlots[i].challengeName.text = reqData.challengeName;
 
-                bool isCompleted = reqData != null && challengeManager.instance != null && challengeManager.instance.areAllChallengesComplete(reqData);
+                bool isCompleted = reqData != null && ChallengeManager.instance != null && ChallengeManager.instance.areAllChallengesComplete(reqData);
 
                 if (requiredChallengeSlots[i].checkmark != null)
                     requiredChallengeSlots[i].checkmark.SetActive(isCompleted);
@@ -158,18 +158,18 @@ public class upgradeManager : MonoBehaviour
         }
     }
 
-    private bool canApplyUpgrade(upgradeData upgrade)
+    private bool canApplyUpgrade(UpgradeData upgrade)
     {
-        if (upgrade.upgradeType == upgradeData.UpgradeType.KunaiSpread)
+        if (upgrade.upgradeType == UpgradeData.UpgradeType.KunaiSpread)
         {
-            return weaponManager.instance != null &&
-                   weaponManager.instance.activeWeapon is gunStats gun &&
-                   gun.gunType == gunStats.GunType.Kunai;
+            return WeaponManager.instance != null &&
+                   WeaponManager.instance.activeWeapon is GunStats gun &&
+                   gun.gunType == GunStats.GunType.Kunai;
         }
         return true;
     }
 
-    void toggleUpgrade(upgradeData upgrade)
+    void toggleUpgrade(UpgradeData upgrade)
     {
         if (activeUpgrades.Contains(upgrade.id))
             activeUpgrades.Remove(upgrade.id);
@@ -191,7 +191,7 @@ public class upgradeManager : MonoBehaviour
     }
 
     // Buy button click event
-    void buyButtonClicked(upgradeData upgrade)
+    void buyButtonClicked(UpgradeData upgrade)
     {
         // Check if player can afford upgrade
         if (files >= upgrade.cost && !purchasedUpgrades.Contains(upgrade.id))
@@ -201,8 +201,8 @@ public class upgradeManager : MonoBehaviour
             SaveUpgrades();
             displayUpgrades(upgrade); // Immediately reflect the purchase status
         }
-        if (audioManager.instance != null)
-            audioManager.instance.playButtonClick();
+        if (AudioManager.instance != null)
+            AudioManager.instance.playButtonClick();
     }
 
     [System.Serializable]

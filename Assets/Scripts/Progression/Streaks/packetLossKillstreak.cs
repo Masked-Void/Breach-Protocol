@@ -1,21 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class packetLossKillstreak : killstreakBase
+public class PacketLossKillstreak : KillstreakBase
 {
     [SerializeField] private float attackRateMultiplier = 2.5f;
 
-    private readonly Dictionary<enemyBase, float> originalAttackRates =
-        new Dictionary<enemyBase, float>();
+    private readonly Dictionary<EnemyBase, float> originalAttackRates =
+        new Dictionary<EnemyBase, float>();
 
     protected override void onActivate()
     {
         originalAttackRates.Clear();
 
-        enemyBase[] enemies =
-            FindObjectsByType<enemyBase>();
+        EnemyBase[] enemies =
+            FindObjectsByType<EnemyBase>();
 
-        foreach (enemyBase enemy in enemies)
+        foreach (EnemyBase enemy in enemies)
         {
             if (enemy == null || enemy.IsDead)
                 continue;
@@ -32,7 +32,7 @@ public class packetLossKillstreak : killstreakBase
 
     protected override void onDeactivate()
     {
-        foreach (KeyValuePair<enemyBase, float> entry
+        foreach (KeyValuePair<EnemyBase, float> entry
                  in originalAttackRates)
         {
             if (entry.Key == null)

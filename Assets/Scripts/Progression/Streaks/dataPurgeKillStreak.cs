@@ -1,18 +1,18 @@
 using UnityEngine;
 
-public class dataPurgeKillstreak : killstreakBase
+public class DataPurgeKillstreak : KillstreakBase
 {
     protected override void onActivate()
     {
-        if (audioManager.instance != null)
+        if (AudioManager.instance != null)
         {
-            audioManager.instance.playNuke();
+            AudioManager.instance.playNuke();
         }
 
         
-        enemyBase[] enemies = FindObjectsByType<enemyBase>();
+        EnemyBase[] enemies = FindObjectsByType<EnemyBase>();
 
-        foreach (enemyBase enemy in enemies)
+        foreach (EnemyBase enemy in enemies)
         {
             if (enemy == null)
                 continue;

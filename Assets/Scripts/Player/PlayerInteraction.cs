@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class playerInteraction : MonoBehaviour
+public class PlayerInteraction : MonoBehaviour
 {
     [Header("Raycast Settings")]
     [Range(1f, 5)][SerializeField] private float maxDistance = 2f;
@@ -30,17 +30,17 @@ public class playerInteraction : MonoBehaviour
             return;
         }
 
-        if (gameManager.instance != null && gameManager.instance.isPaused)
+        if (GameManager.instance != null && GameManager.instance.isPaused)
         {
             setInteractionUI(false);
             return;
         }
 
-        if (Input.GetButtonDown("Fire1") && weaponManager.instance != null)
-            weaponManager.instance.attack();
+        if (Input.GetButtonDown("Fire1") && WeaponManager.instance != null)
+            WeaponManager.instance.attack();
 
-        if (Input.GetKeyDown(throwKey) && weaponManager.instance != null)
-            weaponManager.instance.throwWeapon();
+        if (Input.GetKeyDown(throwKey) && WeaponManager.instance != null)
+            WeaponManager.instance.throwWeapon();
 
         handleInteraction();
     }
@@ -51,9 +51,9 @@ public class playerInteraction : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactLayer))
         {
-            if (hit.collider.TryGetComponent<pickWeapon>(out var weaponPickup) && weaponPickup.enabled)
+            if (hit.collider.TryGetComponent<PickWeapon>(out var weaponPickup) && weaponPickup.enabled)
             {
-                gameManager.instance.interactionText.text = "Pick Up!";
+                GameManager.instance.interactionText.text = "Pick Up!";
                 setInteractionUI(true);
                 if (Input.GetButtonDown("Interact") || Input.GetKeyDown(KeyCode.E))
                 {
@@ -66,7 +66,7 @@ public class playerInteraction : MonoBehaviour
 
             if (hit.collider.CompareTag("Shop"))
             {
-                gameManager.instance.interactionText.text = "Open Shop!";
+                GameManager.instance.interactionText.text = "Open Shop!";
                 setInteractionUI(true);
                 if (Input.GetKeyDown(KeyCode.E)) openShop();
 
@@ -79,16 +79,16 @@ public class playerInteraction : MonoBehaviour
     private void openShop()
     {
         setInteractionUI(false);
-        gameManager.instance.statePause();
+        GameManager.instance.statePause();
         shopOpen = true;
-        if (gameManager.instance.shopUI != null) gameManager.instance.shopUI.SetActive(true);
+        if (GameManager.instance.shopUI != null) GameManager.instance.shopUI.SetActive(true);
     }
 
     private void closeShop()
     {
-        gameManager.instance.stateUnpause();
+        GameManager.instance.stateUnpause();
         shopOpen = false;
-        if (gameManager.instance.shopUI != null) gameManager.instance.shopUI.SetActive(false);
+        if (GameManager.instance.shopUI != null) GameManager.instance.shopUI.SetActive(false);
         setInteractionUI(false);
     }
 
@@ -97,9 +97,9 @@ public class playerInteraction : MonoBehaviour
         if (isShowingUI == active) return;
         isShowingUI = active;
 
-        if (gameManager.instance != null && gameManager.instance.interactionUI != null)
+        if (GameManager.instance != null && GameManager.instance.interactionUI != null)
         {
-            gameManager.instance.interactionUI.SetActive(active);
+            GameManager.instance.interactionUI.SetActive(active);
         }
     }
 }

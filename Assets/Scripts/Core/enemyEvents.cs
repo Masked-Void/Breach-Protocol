@@ -1,18 +1,18 @@
 using UnityEngine;
 using System;
 
-public static class enemyEvents
+public static class EnemyEvents
 {
-    public static event Action<enemyBase> killed;
+    public static event Action<EnemyBase> killed;
 
-    public static event Action<enemyBase> shotAtPlayer;
+    public static event Action<EnemyBase> shotAtPlayer;
 
-    public static void RaiseKilled(enemyBase enemy)
+    public static void RaiseKilled(EnemyBase enemy)
     {
         killed?.Invoke(enemy);
     }
 
-    public static void RaiseShotAtPlayer(enemyBase enemy)
+    public static void RaiseShotAtPlayer(EnemyBase enemy)
     {
         shotAtPlayer?.Invoke(enemy);
     }

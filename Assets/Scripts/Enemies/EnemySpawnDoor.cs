@@ -15,7 +15,7 @@ using UnityEngine;
 
 
 
-public class simplifiedEnemySpawnDoor : MonoBehaviour
+public class EnemySpawnDoor : MonoBehaviour
 {
     [SerializeField] GameObject door;
     [SerializeField] Collider doorCollider;

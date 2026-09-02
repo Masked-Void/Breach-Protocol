@@ -3,7 +3,7 @@ using UnityEngine;
 
 // Moves a lava object between a low and a high marker.
 // Runs on unscaled time so the lava keeps rising even while time is frozen.
-public class lavaManager : MonoBehaviour {
+public class LavaManager : MonoBehaviour {
 
     [Header("Drag in Lava")]
     [SerializeField] Transform lavaObject;
@@ -76,7 +76,7 @@ public class lavaManager : MonoBehaviour {
 
         // Makes sure the lava object exists
         if (lavaObject == null) {
-            Debug.LogError("lavaManager: lavaObject isn't assigned." , this);
+            Debug.LogError("LavaManager: lavaObject isn't assigned." , this);
             enabled = false;
             return;
         }
@@ -87,7 +87,7 @@ public class lavaManager : MonoBehaviour {
 
         // Makes sure they exist
         if (lowPos == null || highPos == null) {
-            Debug.LogError("lavaManager: '" + lavaObject.name + "' needs two children named '"
+            Debug.LogError("LavaManager: '" + lavaObject.name + "' needs two children named '"
                 + lowMarkerName + "' and '" + highMarkerName + "'." , lavaObject);
             enabled = false;
             return;
@@ -106,7 +106,7 @@ public class lavaManager : MonoBehaviour {
         }
 
         if (playerDamage == null) {
-            Debug.LogError("lavaManager: nothing tagged '" + playerTag + "' with an IDamage on it" , this);
+            Debug.LogError("LavaManager: nothing tagged '" + playerTag + "' with an IDamage on it" , this);
         }
 
         // Puts the lava at whatever currentProgress starts at
@@ -163,7 +163,7 @@ public class lavaManager : MonoBehaviour {
             if (child.name.IndexOf(wanted , System.StringComparison.OrdinalIgnoreCase) >= 0) {
                 // Warning for if more than one child matches, it keeps the first one and stops looking
                 if (found != null) {
-                    Debug.LogWarning("lavaManager: '" + lavaObject.name + "' has more than one child matching '"
+                    Debug.LogWarning("LavaManager: '" + lavaObject.name + "' has more than one child matching '"
                         + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first." , lavaObject);
                     break;
                 }

@@ -3,13 +3,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class killstreakManager : MonoBehaviour
+public class KillstreakManager : MonoBehaviour
 {
-    public static killstreakManager instance;
+    public static KillstreakManager instance;
 
     [Header("Scorestreak Pool")]
     [Tooltip("Attach the scorestreak components to this manager object and drag them here.")]
-    [SerializeField] private killstreakBase[] streakPool;
+    [SerializeField] private KillstreakBase[] streakPool;
 
     [Tooltip("Off by default. When false, only one timed/manual streak can be active at once.")]
     [SerializeField] private bool allowStacking = false;
@@ -35,13 +35,13 @@ public class killstreakManager : MonoBehaviour
     [SerializeField] private float ghostAimErrorDegrees = 12f;
     [SerializeField] private int ammoRefundPerKill = 1;
 
-    private killstreakBase storedStreak;
+    private KillstreakBase storedStreak;
 
-    private readonly HashSet<killstreakBase> activeStreaks =
-        new HashSet<killstreakBase>();
+    private readonly HashSet<KillstreakBase> activeStreaks =
+        new HashSet<KillstreakBase>();
 
-    private readonly HashSet<enemyBase> chainReactionVictims =
-        new HashSet<enemyBase>();
+    private readonly HashSet<EnemyBase> chainReactionVictims =
+        new HashSet<EnemyBase>();
 
     private readonly Collider[] chainReactionBuffer =
         new Collider[64];
@@ -73,7 +73,7 @@ public class killstreakManager : MonoBehaviour
 
     private void Update()
     {
-        if (gameManager.instance != null && gameManager.instance.isPaused)
+        if (GameManager.instance != null && GameManager.instance.isPaused)
             return;
 
         Keyboard keyboard = Keyboard.current;
@@ -93,18 +93,18 @@ public class killstreakManager : MonoBehaviour
         if (streakPool == null || streakPool.Length == 0)
         {
             Debug.LogWarning(
-                "killstreakManager: no scorestreaks are assigned to the pool.",
+                "KillstreakManager: no scorestreaks are assigned to the pool.",
                 this
             );
 
             return false;
         }
 
-        List<killstreakBase> candidates = new List<killstreakBase>();
+        List<KillstreakBase> candidates = new List<KillstreakBase>();
 
         for (int i = 0; i < streakPool.Length; i++)
         {
-            killstreakBase candidate = streakPool[i];
+            KillstreakBase candidate = streakPool[i];
 
             if (candidate == null)
                 continue;
@@ -139,23 +139,23 @@ public class killstreakManager : MonoBehaviour
         if (!allowStacking && HasActiveStreak())
             return false;
 
-        killstreakBase streak = storedStreak;
+        KillstreakBase streak = storedStreak;
         storedStreak = null;
 
         UpdateSlotUI();
 
         activeStreaks.Add(streak);
 
-        // scoreManager owns the GDD threshold increase.
-        if (scoreManager.instance != null)
-            scoreManager.instance.NotifyStreakActivated();
+        // ScoreManager owns the GDD threshold increase.
+        if (ScoreManager.instance != null)
+            ScoreManager.instance.NotifyStreakActivated();
 
         streak.Activate();
 
         // If enough score is already banked for the new requirement,
         // award the next streak after this one is consumed.
-        if (scoreManager.instance != null)
-            scoreManager.instance.TryAwardPendingStreak();
+        if (ScoreManager.instance != null)
+            ScoreManager.instance.TryAwardPendingStreak();
 
         return true;
     }
@@ -169,7 +169,7 @@ public class killstreakManager : MonoBehaviour
         return UseStoredStreak();
     }
 
-    public void streakEnded(killstreakBase streak)
+    public void streakEnded(KillstreakBase streak)
     {
         if (streak == null)
             return;
@@ -181,8 +181,8 @@ public class killstreakManager : MonoBehaviour
     {
         if (activeStreaks.Count > 0)
         {
-            killstreakBase[] snapshot =
-                new killstreakBase[activeStreaks.Count];
+            KillstreakBase[] snapshot =
+                new KillstreakBase[activeStreaks.Count];
 
             activeStreaks.CopyTo(snapshot);
 
@@ -215,7 +215,7 @@ public class killstreakManager : MonoBehaviour
 
     public bool HasActiveStreak()
     {
-        foreach (killstreakBase streak in activeStreaks)
+        foreach (KillstreakBase streak in activeStreaks)
         {
             if (streak != null && streak.isActive)
                 return true;
@@ -312,7 +312,7 @@ public class killstreakManager : MonoBehaviour
     }
 
     public void TriggerChainReaction(
-        enemyBase source,
+        EnemyBase source,
         int originalDamage)
     {
         if (!chainReactionActive ||
@@ -350,8 +350,8 @@ public class killstreakManager : MonoBehaviour
             if (hit == null)
                 continue;
 
-            enemyBase enemy =
-                hit.GetComponentInParent<enemyBase>();
+            EnemyBase enemy =
+                hit.GetComponentInParent<EnemyBase>();
 
             if (enemy == null ||
                 enemy == source ||
@@ -377,14 +377,14 @@ public class killstreakManager : MonoBehaviour
         if (ammoRefundReceiver != null)
             return;
 
-        if (gameManager.instance == null ||
-            gameManager.instance.player == null)
+        if (GameManager.instance == null ||
+            GameManager.instance.player == null)
         {
             return;
         }
 
         MonoBehaviour[] behaviours =
-            gameManager.instance.player
+            GameManager.instance.player
                 .GetComponentsInChildren<MonoBehaviour>(true);
 
         for (int i = 0; i < behaviours.Length; i++)

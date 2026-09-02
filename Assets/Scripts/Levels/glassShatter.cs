@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class glassShatter : MonoBehaviour
+public class GlassShatter : MonoBehaviour
 {
     public GameObject wholeGlass;
     public Rigidbody[] shards;

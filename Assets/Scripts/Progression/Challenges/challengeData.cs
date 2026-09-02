@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Challenge", menuName = "Weapons/Challenge")]
-public class challengeData : ScriptableObject
+public class ChallengeData : ScriptableObject
 {
     public string challengeName;
     [System.Serializable]
@@ -16,6 +16,6 @@ public class challengeData : ScriptableObject
     [SerializeField] public challengeStruct[] challengesList;
     public string description;      // e.g. "Kill 200 enemies with kunais you picked up"
     [Header("Requirements")]
-    public weaponStats weapon;
+    public WeaponStats weapon;
     // public bool requireGroundPickup = true;
 }

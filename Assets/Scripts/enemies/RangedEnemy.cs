@@ -1,17 +1,17 @@
 using UnityEngine;
 
-public class rangedEnemy : enemyBase
+public class RangedEnemy : EnemyBase
 {
     [Header("Weapon")]
     [SerializeField] Transform gunPivot;
     [Range(1, 30)][SerializeField] int gunRotateSpeed;
 
     public GameObject gunModel;
-    public weaponStats[] gunPrefabs;
+    public WeaponStats[] gunPrefabs;
 
-    [SerializeField] Patrol patrol;
+    [SerializeField] PatrolPath patrol;
 
-    gunStats activeGun;
+    GunStats activeGun;
     private GameObject spawnedWeaponModel;
 
     public Transform gunBarrel;
@@ -23,7 +23,7 @@ public class rangedEnemy : enemyBase
         base.Start();
         SetWeaponPrefab();
         currentAmmo = activeGun.startingBullets * 3;
-        if (TryGetComponent<Patrol>(out patrol))
+        if (TryGetComponent<PatrolPath>(out patrol))
             agent.destination = patrol.getCurrentWayPointPos();
     }
 
@@ -40,16 +40,16 @@ public class rangedEnemy : enemyBase
         currentAmmo--;
         attackTimer = 0f;
 
-        if (audioManager.instance != null)
-            audioManager.instance.playSpatialSFX(
-                audioManager.instance.pickRandomAudio(audioManager.instance.enemyShoot),
+        if (AudioManager.instance != null)
+            AudioManager.instance.playSpatialSFX(
+                AudioManager.instance.pickRandomAudio(AudioManager.instance.enemyShoot),
                 gunBarrel.position,
-                audioManager.instance.enemyShootVol);
+                AudioManager.instance.enemyShootVol);
 
         if (activeGun == null || activeGun.bullet == null || gunPivot == null || gunBarrel == null)
             return;
 
-        bool isShotgun = activeGun.gunType == gunStats.GunType.Shotgun;
+        bool isShotgun = activeGun.gunType == GunStats.GunType.Shotgun;
 
         int shotsToFire = isShotgun ? Mathf.Max(1, activeGun.pelletCount) : 1;
         float spread = isShotgun ? activeGun.spreadAngle : 0f;
@@ -73,17 +73,17 @@ public class rangedEnemy : enemyBase
 
     public void SetWeaponPrefab()
     {
-        weaponStats selectedGun = gunPrefabs[Random.Range(0, gunPrefabs.Length)];
+        WeaponStats selectedGun = gunPrefabs[Random.Range(0, gunPrefabs.Length)];
         spawnedWeaponModel = Instantiate(selectedGun.weaponModel, gunModel.transform, false);
 
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
-        if (spawnedWeaponModel.TryGetComponent<clip>(out var weaponClip)) weaponClip.enabled = true;
-        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out var picker)) picker.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out var weaponClip)) weaponClip.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out var picker)) picker.enabled = false;
 
-        string targetName = (selectedGun is gunStats) ? "Muzzle" : "HitPoint";
-        gunBarrel = weaponManager.instance.FindDeepChild(spawnedWeaponModel.transform, targetName);
-        activeGun = (gunStats)selectedGun;
+        string targetName = (selectedGun is GunStats) ? "Muzzle" : "HitPoint";
+        gunBarrel = WeaponManager.instance.FindDeepChild(spawnedWeaponModel.transform, targetName);
+        activeGun = (GunStats)selectedGun;
 
         // each weapon sets its own pacing
         if (activeGun.attackRate > 0f)

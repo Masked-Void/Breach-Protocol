@@ -60,7 +60,7 @@ public class PlatformManager : MonoBehaviour {
         stageRoutines = new Coroutine[stages.Length];
 
         if (stageBase == null) {
-            Debug.LogError("platformManager: No stage base marker given" , this);
+            Debug.LogError("PlatformManager: No stage base marker given" , this);
             return;
         }
 

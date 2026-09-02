@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 [CreateAssetMenu(menuName = "Weapons/Melee", order = 2)]
-public class meleeStats : weaponStats
+public class MeleeStats : WeaponStats
 {
     [Header("Damage")]
     [Range(1, 10)][SerializeField] public int attackDamage;
@@ -43,35 +43,35 @@ public class meleeStats : weaponStats
     */
     public override void Attack()
     {
-        Transform gunBarrel = weaponManager.instance.getBarrel();
+        Transform gunBarrel = WeaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
 
-        weaponManager.instance.PlayMeleeSwing();
-        audioManager.instance.playSFX(swingSound, swingSoundVol);
+        WeaponManager.instance.PlayMeleeSwing();
+        AudioManager.instance.playSFX(swingSound, swingSoundVol);
 
-        audioManager.instance.playSFX(swingSound, swingSoundVol);
+        AudioManager.instance.playSFX(swingSound, swingSoundVol);
         //StartCoroutine(katanaSwing());
 
         RaycastHit hit;
         if (Physics.Raycast(gunBarrel.position, gunBarrel.forward, out hit, attackDist))
         {
             // //register source for challenge manager
-            enemyBase eb = hit.transform.GetComponent<enemyBase>();
-            if (eb == null) eb = hit.transform.GetComponentInParent<enemyBase>();
+            EnemyBase eb = hit.transform.GetComponent<EnemyBase>();
+            if (eb == null) eb = hit.transform.GetComponentInParent<EnemyBase>();
             if (eb != null) eb.RegisterDamageSource(this, isFromGround);
 
             IDamage dmg = hit.transform.GetComponent<IDamage>();
             if (dmg != null)
             {
                 dmg.takeDamage(attackDamage);
-                audioManager.instance.playSFX(hitFleshSound, hitFleshVol);
+                AudioManager.instance.playSFX(hitFleshSound, hitFleshVol);
             } else if (hit.collider.CompareTag("Shield"))
             {
-                audioManager.instance.playSFX(hitShieldSound, hitShieldVol);
+                AudioManager.instance.playSFX(hitShieldSound, hitShieldVol);
             }
             else
             {
-                audioManager.instance.playSFX(hitWallSound, hitWallVol);
+                AudioManager.instance.playSFX(hitWallSound, hitWallVol);
             }
             
         }

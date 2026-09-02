@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // runs the CEO fight. owns boss health, the four phases, and the immune windows between them.
-// immunity is broken by the player finishing a hold, so the immune window waits on holdZoneManager.
+// immunity is broken by the player finishing a hold, so the immune window waits on HoldZoneManager.
 public class BossFightManager : MonoBehaviour,IDamage {
 
     [Header("References")]
     [SerializeField] private GameObject boss;
-    [SerializeField] private bossWaveManager waveManager;
-    [SerializeField] private holdZoneManager holdManager;
-    [SerializeField] private trapManager trapManager;
+    [SerializeField] private BossWaveManager bossWavesManager;
+    [SerializeField] private HoldZoneManager holdManager;
+    [SerializeField] private TrapManager trapManager;
 
     [Header("UI")]
     [SerializeField] private GameObject immuneBarObj;
@@ -47,32 +47,32 @@ public class BossFightManager : MonoBehaviour,IDamage {
 
     private float curHealth;
     private bool fightOver = false;
-    private maskShake shake;
+    private MaskShake shake;
 
 
     void Awake() {
         // every one of these is fatal, so bail out instead of limping into a null dereference later.
         // returning matters here, enabled = false on its own doesn't stop the rest of this method
         if (boss == null) {
-            Debug.LogError("bossFightManager: no boss object assigned" , this);
+            Debug.LogError("BossFightManager: no boss object assigned" , this);
             enabled = false;
             return;
         }
 
-        if (waveManager == null) {
-            Debug.LogError("bossFightManager: no bossWaveManager assigned" , this);
+        if (bossWavesManager == null) {
+            Debug.LogError("BossFightManager: no BossWaveManager assigned" , this);
             enabled = false;
             return;
         }
 
         if (holdManager == null) {
-            Debug.LogError("bossFightManager: no holdZoneManager assigned" , this);
+            Debug.LogError("BossFightManager: no HoldZoneManager assigned" , this);
             enabled = false;
             return;
         }
 
         if (trapManager == null) {
-            Debug.LogError("bossFightManager: no trapManager assigned" , this);
+            Debug.LogError("BossFightManager: no TrapManager assigned" , this);
             enabled = false;
             return;
         }
@@ -91,13 +91,13 @@ public class BossFightManager : MonoBehaviour,IDamage {
         // the mask is a child of the boss, so find it by name before pulling components off it
         Transform mask = findMark("Head");
         if (mask == null) {
-            Debug.LogError("bossFightManager: no child named Head on the boss object" , this);
+            Debug.LogError("BossFightManager: no child named Head on the boss object" , this);
             enabled = false;
             return;
         }
 
         if (!mask.TryGetComponent(out shake)) {
-            Debug.LogError("bossFightManager: no maskShake component on the boss head" , this);
+            Debug.LogError("BossFightManager: no MaskShake component on the boss head" , this);
         }
 
         if (healthBarObj != null) {
@@ -164,13 +164,13 @@ public class BossFightManager : MonoBehaviour,IDamage {
         if (!lastPhase) {
             // shut down the waves the phase was running
             if (endingPhase == 0) {
-                waveManager.endP1();
+                bossWavesManager.endP1();
                 trapManager.endP1();
             } else if (endingPhase == 1) {
-                waveManager.endP2();
+                bossWavesManager.endP2();
                 trapManager.endP2();
             } else if (endingPhase == 2) {
-                waveManager.endP3();
+                bossWavesManager.endP3();
                 trapManager.endP3();
             }
             isImmune = true;
@@ -187,7 +187,7 @@ public class BossFightManager : MonoBehaviour,IDamage {
             holdManager.startImmuneHold();
 
             if (!holdManager.hasImmuneZone) {
-                Debug.LogError("bossFightManager: no immune zone, skipping hold" , this);
+                Debug.LogError("BossFightManager: no immune zone, skipping hold" , this);
             } else {
                 while (!holdManager.immuneHoldDone) {
                     if (immuneBar != null) {
@@ -231,12 +231,12 @@ public class BossFightManager : MonoBehaviour,IDamage {
         Debug.Log("boss fight completed");
 
         // Stops wave and traps
-        waveManager.endP4();
+        bossWavesManager.endP4();
         trapManager.endP4();
 
-        if (gameManager.instance != null) {
-            gameManager.instance.AddFiles(bossFileReward);
-            gameManager.instance.stateWin();
+        if (GameManager.instance != null) {
+            GameManager.instance.AddFiles(bossFileReward);
+            GameManager.instance.stateWin();
         }
 
         if (healthBarObj != null) {
@@ -269,22 +269,22 @@ public class BossFightManager : MonoBehaviour,IDamage {
 
 
     public void phase1() {
-        waveManager.startP1();
+        bossWavesManager.startP1();
         trapManager.startP1();
     }
 
     public void phase2() {
-        waveManager.startP2();
+        bossWavesManager.startP2();
         trapManager.startP2();
     }
 
     public void phase3() {
-        waveManager.startP3();
+        bossWavesManager.startP3();
         trapManager.startP3();
     }
 
     public void phase4() {
-        waveManager.startP4();
+        bossWavesManager.startP4();
         trapManager.startP4();
     }
 

@@ -4,16 +4,16 @@ using UnityEngine;
 /// PACKET LEECH: normal player kills refund ammo to the currently held weapon.
 /// The weapon controller must implement IAmmoRefundReceiver.
 /// </summary>
-public class packetLeechKillstreak : killstreakBase
+public class PacketLeechKillstreak : KillstreakBase
 {
     [Header("Packet Leech")]
     [SerializeField] private int ammoRefundPerKill = 1;
 
     protected override void onActivate()
     {
-        if (killstreakManager.instance != null)
+        if (KillstreakManager.instance != null)
         {
-            killstreakManager.instance.SetPacketLeech(
+            KillstreakManager.instance.SetPacketLeech(
                 true,
                 ammoRefundPerKill
             );
@@ -22,9 +22,9 @@ public class packetLeechKillstreak : killstreakBase
 
     protected override void onDeactivate()
     {
-        if (killstreakManager.instance != null)
+        if (KillstreakManager.instance != null)
         {
-            killstreakManager.instance.SetPacketLeech(
+            KillstreakManager.instance.SetPacketLeech(
                 false,
                 ammoRefundPerKill
             );

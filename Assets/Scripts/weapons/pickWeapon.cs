@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class pickWeapon : MonoBehaviour
+public class PickWeapon : MonoBehaviour
 {
-    [SerializeField] public weaponStats weapon;
+    [SerializeField] public WeaponStats weapon;
 
     [Tooltip("Ammo left in this dropped weapon. -1 means a full magazine.")]
     public int remainingAmmo = -1;

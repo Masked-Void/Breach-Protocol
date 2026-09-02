@@ -4,7 +4,7 @@ using UnityEngine;
 // Spawn room door that slides between a closed and an open marker.
 // Opens when an enemy that hasn't left the spawn room walks into the trigger,
 // then closes again once the trigger is empty.
-public class doorController : MonoBehaviour
+public class DoorController : MonoBehaviour
 {
     [Header("Drag door Obj in")]
     [SerializeField] Transform doorObject;
@@ -69,7 +69,7 @@ public class doorController : MonoBehaviour
         // Makes sure the door object exists
         if (doorObject == null)
         {
-            //Debug.LogError("doorController: doorObject isn't assigned", this);
+            //Debug.LogError("DoorController: doorObject isn't assigned", this);
             enabled = false;
             return;
         }
@@ -81,7 +81,7 @@ public class doorController : MonoBehaviour
         // Makes sure they exist
         if (closedPos == null || openPos == null)
         {
-            //Debug.LogError("doorController: '" + doorObject.name + "' needs two children named '"
+            //Debug.LogError("DoorController: '" + doorObject.name + "' needs two children named '"
                 //+ closedMarkerName + "' and '" + openMarkerName + "'.", doorObject);
             enabled = false;
             return;
@@ -169,7 +169,7 @@ public class doorController : MonoBehaviour
         }
 
         // Makes sure it actually has the enemy script and isn't just tagged
-        enemyBase enemy;
+        EnemyBase enemy;
         if (!other.TryGetComponent(out enemy))
         {
             return false;

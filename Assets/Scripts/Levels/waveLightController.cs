@@ -18,7 +18,7 @@
  * - Restore the lights after the warning sequence.
  *
  * Interacts With:
- * - waveManager
+ * - WaveManager
  *
  * Last Updated:
  * Prototype 1
@@ -27,9 +27,9 @@
 using System.Collections;
 using UnityEngine;
 
-public class waveLightController : MonoBehaviour
+public class WaveLightController : MonoBehaviour
 {
-    public static waveLightController instance;
+    public static WaveLightController instance;
 
     [Header("Unity Light Components")]
     [Tooltip("Drag the Point Light components here.")]

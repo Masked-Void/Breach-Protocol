@@ -1,7 +1,7 @@
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
-public static class markerUtility {
+public static class MarkerUtility {
 
     ///  <summary> Finds a child whose name matches exactly while still ignoring case. fallBackIndex >= 0 grabs that child </summary>
     
@@ -16,7 +16,7 @@ public static class markerUtility {
         foreach(Transform child in parent) {
             if (string.Equals(child.name , wanted , System.StringComparison.OrdinalIgnoreCase)) {
                 if (found != null) {
-                    Debug.LogWarning("markerUtility: '" + parent.name + "' has more than one child exactly named '" + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first." , parent);
+                    Debug.LogWarning("MarkerUtility: '" + parent.name + "' has more than one child exactly named '" + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first." , parent);
                     break;
                 }
 
@@ -53,7 +53,7 @@ public static class markerUtility {
                 continue; 
             
             if (found != null) {
-                Debug.LogWarning("markerUtility: '" + parent.name + "' has more than one child loosely named '" + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first." , parent);
+                Debug.LogWarning("MarkerUtility: '" + parent.name + "' has more than one child loosely named '" + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first." , parent);
                 break;
             }
 
@@ -106,7 +106,7 @@ public static class markerUtility {
         scanLoose(parent,wanted,ref found, ref dupe);
 
         if (dupe != null) {
-            Debug.LogWarning("markerUtility: more than one object under '" + parent.name + "' matches '"
+            Debug.LogWarning("MarkerUtility: more than one object under '" + parent.name + "' matches '"
             + wanted + "' ('" + found.name + "' and '" + dupe.name + "'). Using the first." , parent);
         }
 

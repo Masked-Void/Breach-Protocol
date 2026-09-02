@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class bossTeleporter : MonoBehaviour
+public class BossTeleporter : MonoBehaviour
 {
 
     [Header("Appear Conditions")]
@@ -41,11 +41,11 @@ public class bossTeleporter : MonoBehaviour
             return;
         }
 
-        if (waveManager.instance == null) {
+        if (WaveManager.instance == null) {
             return;
         }
 
-        if (waveManager.instance.getCurrentWave() >= appearOnWave) {
+        if (WaveManager.instance.getCurrentWave() >= appearOnWave) {
             isOn = true;
             if (portal != null) {
                 portal.SetActive(true);

@@ -27,7 +27,7 @@ using TMPro;
 
 
 
-public class heartbeatUI : MonoBehaviour
+public class HeartbeatUI : MonoBehaviour
 {
     [SerializeField] RectTransform heartImage;
     [SerializeField] TextMeshProUGUI bpmText;
@@ -50,14 +50,14 @@ public class heartbeatUI : MonoBehaviour
     void Update()
     {
 
-        if (heartbeatManager.instance == null)
+        if (HeartbeatManager.instance == null)
         {
             return;
         }
 
-        bpmText.text = heartbeatManager.instance.getCurrentBPM() + " BPM";
+        bpmText.text = HeartbeatManager.instance.getCurrentBPM() + " BPM";
 
-        int bpm = heartbeatManager.instance.getCurrentBPM();
+        int bpm = HeartbeatManager.instance.getCurrentBPM();
 
         float beatInterval = 60f / bpm;
 

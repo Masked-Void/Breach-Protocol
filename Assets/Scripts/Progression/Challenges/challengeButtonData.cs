@@ -2,9 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class challengeButtonData : MonoBehaviour
+public class ChallengeButtonData : MonoBehaviour
 {
-    public challengeData challenge;
+    public ChallengeData challenge;
     Button button;
     public GameObject lockIcon;
     [SerializeField] private bool selectOnEnable = false;
@@ -27,8 +27,8 @@ public class challengeButtonData : MonoBehaviour
 
     void updateLockstate()
     {
-        if (challengeManager.instance == null || challenge == null) return;
-        bool allcomplete = challengeManager.instance.areAllChallengesComplete(challenge);
+        if (ChallengeManager.instance == null || challenge == null) return;
+        bool allcomplete = ChallengeManager.instance.areAllChallengesComplete(challenge);
         if (lockIcon != null) lockIcon.SetActive(!allcomplete);
     }
 
@@ -40,10 +40,10 @@ public class challengeButtonData : MonoBehaviour
 
     void Selected()
     {   
-        if (audioManager.instance != null)
-            audioManager.instance.playButtonClick();
+        if (AudioManager.instance != null)
+            AudioManager.instance.playButtonClick();
                      
-        if (challengeManager.instance != null && challenge != null)
-            challengeManager.instance.displayWeaponChallenges(challenge);
+        if (ChallengeManager.instance != null && challenge != null)
+            ChallengeManager.instance.displayWeaponChallenges(challenge);
     }
 }

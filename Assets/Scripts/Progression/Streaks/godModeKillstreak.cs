@@ -3,18 +3,18 @@ using UnityEngine;
 /// <summary>
 /// GOD MODE: incoming hit stress is ignored for the duration.
 /// </summary>
-public class godModeKillstreak : killstreakBase
+public class GodModeKillstreak : KillstreakBase
 {
     protected override void onActivate()
     {
-        if (killstreakManager.instance != null)
-            killstreakManager.instance.SetInvulnerable(true);
+        if (KillstreakManager.instance != null)
+            KillstreakManager.instance.SetInvulnerable(true);
     }
 
     protected override void onDeactivate()
     {
-        if (killstreakManager.instance != null)
-            killstreakManager.instance.SetInvulnerable(false);
+        if (KillstreakManager.instance != null)
+            KillstreakManager.instance.SetInvulnerable(false);
     }
 
     private void Reset()

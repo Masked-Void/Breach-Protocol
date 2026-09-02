@@ -8,7 +8,7 @@ public struct trapSetup {
 
     [Tooltip("False retracts every laser and stops the lasers from spinning")]
     public bool laserActive;
-    [Tooltip("Index into laserArrayManager's pattern list. -1 runs no sequence")]
+    [Tooltip("Index into LaserArrayManager's pattern list. -1 runs no sequence")]
     public int laserPattern;
     public bool generatePattern;
     [Range(0f , 1f)] public float laserDifficulty;
@@ -31,15 +31,15 @@ public struct trapSetup {
     public float cycleInterval;
 }
 
-// One place the boss fight talks to for traps. bossFightManager calls a phase number in and
+// One place the boss fight talks to for traps. BossFightManager calls a phase number in and
 // this sets the lasers, lava and platforms to that phase's settings, so the fight script never
 // has to know how any individual traps work.
 public class TrapManager : MonoBehaviour {
 
     [Header("References")]
-    [SerializeField] private laserArrayManager laserManager;
-    [SerializeField] private lavaManager lavaManager;
-    [SerializeField] private platformManager platManager;
+    [SerializeField] private LaserArrayManager laserManager;
+    [SerializeField] private LavaManager lavaManager;
+    [SerializeField] private PlatformManager platManager;
 
     [Header("Phase 1")]
     [SerializeField] private trapSetup p1;
@@ -76,19 +76,19 @@ public class TrapManager : MonoBehaviour {
     void Awake() {
         // Logs potential fatal errors
         if (laserManager == null) {
-            Debug.LogWarning("trapManager: no laserArrayManager assigned" , this);
+            Debug.LogWarning("TrapManager: no LaserArrayManager assigned" , this);
         }
         if (lavaManager == null) {
-            Debug.LogWarning("trapManager: no lavaManager assigned" , this);
+            Debug.LogWarning("TrapManager: no LavaManager assigned" , this);
         }
         if (platManager == null) {
-            Debug.LogWarning("trapManager: no platformsManager assigned" , this);
+            Debug.LogWarning("TrapManager: no platformsManager assigned" , this);
         }
 
     }
 
 
-    // Called by bossFightManager as each phase begins or ends
+    // Called by BossFightManager as each phase begins or ends
     public void startP1() { applySetup(p1); }
     public void startP2() { applySetup(p2); }
     public void startP3() { applySetup(p3); }

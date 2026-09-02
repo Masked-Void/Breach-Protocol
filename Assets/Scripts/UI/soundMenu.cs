@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class soundMenu : MonoBehaviour
+public class SoundMenu : MonoBehaviour
 {
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
@@ -29,26 +29,26 @@ public class soundMenu : MonoBehaviour
 
     public void ToggleMute()
     {
-        if (audioManager.instance == null) return;
+        if (AudioManager.instance == null) return;
 
-        audioManager.instance.toggleMute();
+        AudioManager.instance.toggleMute();
         UpdateVisuals();
     }
 
     public void UpdateVisuals()
     {
-        if (audioManager.instance == null) return;
+        if (AudioManager.instance == null) return;
 
-        bool isMuted = audioManager.instance.isMuted;
+        bool isMuted = AudioManager.instance.isMuted;
 
         if (masterSlider != null)
-            masterSlider.SetValueWithoutNotify(isMuted ? 0f : audioManager.instance.masterVolume);
+            masterSlider.SetValueWithoutNotify(isMuted ? 0f : AudioManager.instance.masterVolume);
 
         if (musicSlider != null)
-            musicSlider.SetValueWithoutNotify(isMuted ? 0f : audioManager.instance.musicVolume);
+            musicSlider.SetValueWithoutNotify(isMuted ? 0f : AudioManager.instance.musicVolume);
 
         if (sfxSlider != null)
-            sfxSlider.SetValueWithoutNotify(isMuted ? 0f : audioManager.instance.sfxVolume);
+            sfxSlider.SetValueWithoutNotify(isMuted ? 0f : AudioManager.instance.sfxVolume);
 
         if (muteText != null)
         {
@@ -58,40 +58,40 @@ public class soundMenu : MonoBehaviour
 
     private void onMasterSliderChanged(float val)
     {
-        if (audioManager.instance == null) return;
+        if (AudioManager.instance == null) return;
 
-        if (audioManager.instance.isMuted && val > 0f)
+        if (AudioManager.instance.isMuted && val > 0f)
         {
-            audioManager.instance.unmute();
+            AudioManager.instance.unmute();
         }
 
-        audioManager.instance.setMasterVolume(val);
+        AudioManager.instance.setMasterVolume(val);
         UpdateVisuals();
     }
 
     private void onMusicSliderChanged(float val)
     {
-        if (audioManager.instance == null) return;
+        if (AudioManager.instance == null) return;
 
-        if (audioManager.instance.isMuted && val > 0f)
+        if (AudioManager.instance.isMuted && val > 0f)
         {
-            audioManager.instance.unmute();
+            AudioManager.instance.unmute();
         }
 
-        audioManager.instance.setMusicVolume(val);
+        AudioManager.instance.setMusicVolume(val);
         UpdateVisuals();
     }
 
     private void onSFXSliderChanged(float val)
     {
-        if (audioManager.instance == null) return;
+        if (AudioManager.instance == null) return;
 
-        if (audioManager.instance.isMuted && val > 0f)
+        if (AudioManager.instance.isMuted && val > 0f)
         {
-            audioManager.instance.unmute();
+            AudioManager.instance.unmute();
         }
 
-        audioManager.instance.setSFXVolume(val);
+        AudioManager.instance.setSFXVolume(val);
         UpdateVisuals();
     }
 }

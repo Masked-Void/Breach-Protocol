@@ -1,11 +1,11 @@
 using UnityEngine;
-public class iceWallShield : MonoBehaviour, IDamage
+public class IceWallShield : MonoBehaviour, IDamage
 {
     [SerializeField] private int hitsRemaining;
 
-    private iceWallKillstreak owner;
+    private IceWallKillstreak owner;
 
-    public void Configure(iceWallKillstreak streakOwner, int hitCapacity)
+    public void Configure(IceWallKillstreak streakOwner, int hitCapacity)
     {
         owner = streakOwner;
         hitsRemaining = Mathf.Max(1, hitCapacity);

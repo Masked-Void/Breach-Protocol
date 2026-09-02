@@ -3,7 +3,7 @@ using UnityEngine;
 
 // Sub class holding one block of spawn numbers, one for each phase and each transition
 [System.Serializable]
-public struct WaveSetup {
+public struct waveSetup {
     [Tooltip("Weights, not real percents. They are rolled against their own total so they do not have to add to 100")]
     public float basicEnemyPercent;
     public float heavyEnemyPercent;
@@ -21,8 +21,8 @@ public struct WaveSetup {
 // runs enemy spawning for the CEO fight. the boss manager swaps setups as phases start and end,
 // and a single loop keeps topping the arena back up to whatever the current setup allows.
 // everything in here is real seconds because nothing in the boss arena obeys the player's time scale.
-public class bossWaveManager : MonoBehaviour , IWaveHost {
-    public static bossWaveManager instance;
+public class BossWaveManager : MonoBehaviour , IWaveHost {
+    public static BossWaveManager instance;
 
     [Header("Prefabs")]
     [SerializeField] GameObject[] basicEnemyPrefabs;
@@ -123,17 +123,17 @@ public class bossWaveManager : MonoBehaviour , IWaveHost {
 
 
     private void segmentCue(bool immuneWindow) {
-        if (waveLightController.instance != null) {
-            waveLightController.instance.FlashWarningLights(lightFlashTime);
+        if (WaveLightController.instance != null) {
+            WaveLightController.instance.FlashWarningLights(lightFlashTime);
         }
 
-        if (audioManager.instance == null)
+        if (AudioManager.instance == null)
             return;
 
         if (immuneWindow) {
-            audioManager.instance.playMusic(immuneMusic);
+            AudioManager.instance.playMusic(immuneMusic);
         } else {
-            audioManager.instance.playMusic(phaseMusic);
+            AudioManager.instance.playMusic(phaseMusic);
         }
     }
 
@@ -190,7 +190,7 @@ public class bossWaveManager : MonoBehaviour , IWaveHost {
 
         // Only ranged enemioes roll for roaming
         if (typeSpawned == enemyType.ranged) {
-            if (enemy.TryGetComponent<enemyBase>(out enemyBase enemyScript)) {
+            if (enemy.TryGetComponent<EnemyBase>(out EnemyBase enemyScript)) {
                 enemyScript.willRoam = Random.Range(0f , 1f) <= giveWillRoamChance;
             }
         }
@@ -272,8 +272,8 @@ public class bossWaveManager : MonoBehaviour , IWaveHost {
             enemiesAlive = 0;
         }
 
-        if (heartbeatManager.instance != null) {
-            heartbeatManager.instance.enemyKilled();
+        if (HeartbeatManager.instance != null) {
+            HeartbeatManager.instance.enemyKilled();
         }
     }
 

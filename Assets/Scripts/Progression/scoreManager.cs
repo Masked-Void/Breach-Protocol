@@ -1,9 +1,9 @@
 using TMPro;
 using UnityEngine;
 
-public class scoreManager : MonoBehaviour
+public class ScoreManager : MonoBehaviour
 {
-    public static scoreManager instance;
+    public static ScoreManager instance;
 
     [Header("Kill Score")]
     [SerializeField] private int baseKillScore = 100;
@@ -43,8 +43,8 @@ public class scoreManager : MonoBehaviour
     public int RegisterKill()
     {
         float stress01 =
-            heartbeatManager.instance != null
-                ? heartbeatManager.instance.getStressPercent()
+            HeartbeatManager.instance != null
+                ? HeartbeatManager.instance.getStressPercent()
                 : 0f;
 
         float multiplier =
@@ -69,10 +69,10 @@ public class scoreManager : MonoBehaviour
 
     public void TryAwardPendingStreak()
     {
-        if (killstreakManager.instance == null)
+        if (KillstreakManager.instance == null)
             return;
 
-        if (!killstreakManager.instance.HasOpenSlot())
+        if (!KillstreakManager.instance.HasOpenSlot())
         {
             UpdateUI();
             return;
@@ -84,7 +84,7 @@ public class scoreManager : MonoBehaviour
             return;
         }
 
-        if (killstreakManager.instance.TryAwardRandomStreak())
+        if (KillstreakManager.instance.TryAwardRandomStreak())
         {
             lastAwardScoreTarget =
                 nextStreakScoreTarget;
@@ -99,12 +99,12 @@ public class scoreManager : MonoBehaviour
 
     public void NotifyStreakActivated()
     {
-        if (waveManager.instance != null)
+        if (WaveManager.instance != null)
         {
             currentRound =
                 Mathf.Max(
                     1,
-                    waveManager.instance.getCurrentWave()
+                    WaveManager.instance.getCurrentWave()
                 );
         }
 

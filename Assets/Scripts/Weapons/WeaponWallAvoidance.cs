@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class clip : MonoBehaviour
+public class WeaponWallAvoidance : MonoBehaviour
 {
     Transform clipProjector; 
     public LayerMask clipLayer; 

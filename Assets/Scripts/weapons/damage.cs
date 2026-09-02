@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class damage : MonoBehaviour
+public class Damage : MonoBehaviour
 {
     enum DamageType { bullet, stationary, DOT, shard, throwable }
     [SerializeField] DamageType type;
@@ -31,7 +31,7 @@ public class damage : MonoBehaviour
     [SerializeField] AudioSource sfxSource;
     [SerializeField] AudioClip sfx;
 
-    [HideInInspector] public weaponStats sourceWeapon;
+    [HideInInspector] public WeaponStats sourceWeapon;
 
     public bool isExplosive;
 
@@ -45,7 +45,7 @@ public class damage : MonoBehaviour
     void Start()
     {
         enemyLayer = LayerMask.NameToLayer("Enemy");
-        hasAudioManager = audioManager.instance != null;
+        hasAudioManager = AudioManager.instance != null;
 
         if (type == DamageType.bullet)
             if (rb == null && !TryGetComponent<Rigidbody>(out rb))
@@ -57,7 +57,7 @@ public class damage : MonoBehaviour
             {
                 sfxSource = gameObject.AddComponent<AudioSource>();
                 sfxSource.clip = sfx;
-                sfxSource.volume = .4f * audioManager.instance.masterVolume;
+                sfxSource.volume = .4f * AudioManager.instance.masterVolume;
                 sfxSource.loop = true;
                 sfxSource.spatialBlend = 1f;
                 sfxSource.minDistance = 1f;
@@ -71,7 +71,7 @@ public class damage : MonoBehaviour
     {
         if (sfxSource != null && type == DamageType.DOT)
         {
-            if (gameManager.instance != null && gameManager.instance.isPaused)
+            if (GameManager.instance != null && GameManager.instance.isPaused)
             {
                 if (sfxSource.isPlaying)
                     sfxSource.Pause();
@@ -132,12 +132,12 @@ public class damage : MonoBehaviour
 
     void handleGlassShatter(Collider other, Vector3 hitPoint)
     {
-        glassShatter glass = other.GetComponent<glassShatter>() ?? other.GetComponentInParent<glassShatter>();
+        GlassShatter glass = other.GetComponent<GlassShatter>() ?? other.GetComponentInParent<GlassShatter>();
         if (glass != null)
         {
             glass.Shatter(hitPoint, transform.forward, shatterForce);
             if (hasAudioManager)
-                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.glass), transform.position, audioManager.instance.glassVol);
+                AudioManager.instance.playSpatialSFX(AudioManager.instance.pickRandomAudio(AudioManager.instance.glass), transform.position, AudioManager.instance.glassVol);
         }
     }
 
@@ -148,8 +148,8 @@ public class damage : MonoBehaviour
         {
             if (sourceWeapon != null)
             {
-                enemyBase eb = other.GetComponent<enemyBase>();
-                if (eb == null) eb = other.GetComponentInParent<enemyBase>();
+                EnemyBase eb = other.GetComponent<EnemyBase>();
+                if (eb == null) eb = other.GetComponentInParent<EnemyBase>();
                 if (eb != null) eb.RegisterDamageSource(sourceWeapon, sourceWeapon.isFromGround);
             }
 
@@ -163,9 +163,9 @@ public class damage : MonoBehaviour
         {
             bool isEnemy = other.gameObject.layer == enemyLayer;
             if (isEnemy)
-                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.enemyHit), transform.position, audioManager.instance.enemyHitVol);
+                AudioManager.instance.playSpatialSFX(AudioManager.instance.pickRandomAudio(AudioManager.instance.enemyHit), transform.position, AudioManager.instance.enemyHitVol);
             else
-                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.wallHit), transform.position, audioManager.instance.wallHitVol);
+                AudioManager.instance.playSpatialSFX(AudioManager.instance.pickRandomAudio(AudioManager.instance.wallHit), transform.position, AudioManager.instance.wallHitVol);
         }
     }
 
@@ -199,7 +199,7 @@ public class damage : MonoBehaviour
             // Calculate the reflection vector based on current velocity and surface normal
             Vector3 reflectedVelocity = Vector3.Reflect(rb.linearVelocity, hit.normal);
             if (hasAudioManager)
-                audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.bulletRicochet), transform.position, audioManager.instance.bulletRicochetVol);
+                AudioManager.instance.playSpatialSFX(AudioManager.instance.pickRandomAudio(AudioManager.instance.bulletRicochet), transform.position, AudioManager.instance.bulletRicochetVol);
 
             transform.forward = reflectedVelocity.normalized;
 
@@ -211,7 +211,7 @@ public class damage : MonoBehaviour
     void explode()
     {
         if (hasAudioManager)
-            audioManager.instance.playSpatialSFX(audioManager.instance.pickRandomAudio(audioManager.instance.explosion), transform.position, audioManager.instance.explosionVol);
+            AudioManager.instance.playSpatialSFX(AudioManager.instance.pickRandomAudio(AudioManager.instance.explosion), transform.position, AudioManager.instance.explosionVol);
 
         // Spawn explosion particle effect
         if (explosionEffect != null)

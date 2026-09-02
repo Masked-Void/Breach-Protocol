@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class droppedWeapon : MonoBehaviour
+public class DroppedWeapon : MonoBehaviour
 {
     [Tooltip("Which layers count as ground. Enemies and props should be excluded.")]
     public LayerMask groundLayers = ~0;

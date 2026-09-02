@@ -3,11 +3,11 @@ using UnityEngine;
 
 /// <summary>
 /// Quick-kill combat feedback only.
-/// This no longer awards scorestreaks; scoreManager owns scorestreak progression.
+/// This no longer awards scorestreaks; ScoreManager owns scorestreak progression.
 /// </summary>
-public class killChainManager : MonoBehaviour
+public class KillChainManager : MonoBehaviour
 {
-    public static killChainManager instance;
+    public static KillChainManager instance;
 
     [Header("Kill Chain")]
     [Tooltip("Real-world seconds allowed between kills before the chain resets.")]
@@ -38,7 +38,7 @@ public class killChainManager : MonoBehaviour
         if (killChainCount <= 0)
             return;
 
-        if (gameManager.instance != null && gameManager.instance.isPaused)
+        if (GameManager.instance != null && GameManager.instance.isPaused)
             return;
 
         // Kill-chain timing is real time; slow motion does not extend it.

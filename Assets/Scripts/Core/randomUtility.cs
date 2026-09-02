@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class randomUtility 
+public class RandomUtility 
 {
 
     /// <summary>

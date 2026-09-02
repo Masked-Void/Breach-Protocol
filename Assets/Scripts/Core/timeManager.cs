@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class timeManager : MonoBehaviour
+public class TimeManager : MonoBehaviour
 {
-    public static timeManager instance;
+    public static TimeManager instance;
 
     [Header("Time Scale Range")]
     [SerializeField] private float minTimeScale = 0.05f;
@@ -47,7 +47,7 @@ public class timeManager : MonoBehaviour
 
     private void Update()
     {
-        if (gameManager.instance != null && gameManager.instance.isPaused)
+        if (GameManager.instance != null && GameManager.instance.isPaused)
             return;
 
         float targetTimeScale;
@@ -60,11 +60,11 @@ public class timeManager : MonoBehaviour
         }
         else
         {
-            if (gameManager.instance == null || gameManager.instance.playerScript == null)
+            if (GameManager.instance == null || GameManager.instance.playerScript == null)
                 return;
 
             float movement01 = Mathf.Clamp01(
-                gameManager.instance.playerScript.getSpeedPercent()
+                GameManager.instance.playerScript.getSpeedPercent()
             );
 
             movement01 = Mathf.Pow(movement01, movementCurvePower);
@@ -75,8 +75,8 @@ public class timeManager : MonoBehaviour
                 movement01
             );
 
-            float stress01 = heartbeatManager.instance != null
-                ? heartbeatManager.instance.getStressPercent()
+            float stress01 = HeartbeatManager.instance != null
+                ? HeartbeatManager.instance.getStressPercent()
                 : 0f;
 
             float heartbeatInfluence = Mathf.Clamp01(stress01 * bpmInfluence);
@@ -117,7 +117,7 @@ public class timeManager : MonoBehaviour
     // use setTimeScaleOverride instead so Update() does not overwrite them.
     public void setTimeScale(float newTimeScale)
     {
-        if (gameManager.instance != null && gameManager.instance.isPaused)
+        if (GameManager.instance != null && GameManager.instance.isPaused)
             return;
 
         currentTimeScale = Mathf.Clamp(newTimeScale, minTimeScale, maxTimeScale);
@@ -135,7 +135,7 @@ public class timeManager : MonoBehaviour
         // Apply it instantly on activation.
         currentTimeScale = overrideTimeScale;
 
-        if (gameManager.instance == null || !gameManager.instance.isPaused)
+        if (GameManager.instance == null || !GameManager.instance.isPaused)
             ApplyTimeScale(currentTimeScale);
     }
 

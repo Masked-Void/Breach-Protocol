@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class basicEnemy : enemyBase
+public class BasicEnemy : EnemyBase
 {
     [Header("Melee")]
     [SerializeField] GameObject weapon;
@@ -22,7 +22,7 @@ public class basicEnemy : enemyBase
             spawnedWeapon.transform.localPosition = Vector3.zero;
             spawnedWeapon.transform.localRotation = Quaternion.identity;
 
-            if(spawnedWeapon.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
+            if(spawnedWeapon.TryGetComponent<PickWeapon>(out PickWeapon picker)) picker.enabled = false;
 
             katanaTransform = spawnedWeapon.transform;
             katanaOrigRot = katanaTransform.localRotation;
@@ -31,7 +31,7 @@ public class basicEnemy : enemyBase
 
     protected override void attack()
     {
-        float distToPlayer = Vector3.Distance(transform.position, gameManager.instance.player.transform.position);
+        float distToPlayer = Vector3.Distance(transform.position, GameManager.instance.player.transform.position);
         if (katanaTransform != null && attackRange > distToPlayer)
         {
             if (tryMeleeHit())

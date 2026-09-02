@@ -2,7 +2,7 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "Weapons/Gun")]
 
-public class gunStats : weaponStats
+public class GunStats : WeaponStats
 {
     public enum GunType { Pistol, AR, Shotgun, Kunai }
 
@@ -28,13 +28,13 @@ public class gunStats : weaponStats
     public override void Attack()
     {
 
-        Transform gunBarrel = weaponManager.instance.getBarrel();
+        Transform gunBarrel = WeaponManager.instance.getBarrel();
         if (gunBarrel == null) return;
 
-        audioManager.instance.playSFX(shootSound, shootSoundVol);
+        AudioManager.instance.playSFX(shootSound, shootSoundVol);
 
-        bool hasKunaiSpread = upgradeManager.instance != null &&
-                      upgradeManager.instance.IsUpgradeActive("kunai_spread");
+        bool hasKunaiSpread = UpgradeManager.instance != null &&
+                      UpgradeManager.instance.IsUpgradeActive("kunai_spread");
 
         int shotsToFire = (gunType == GunType.Shotgun) ? pelletCount : 1;
         float spreadToUse = (gunType == GunType.Shotgun) ? spreadAngle : 0f;
@@ -60,11 +60,11 @@ public class gunStats : weaponStats
                 Transform spawnedBullet = Instantiate(bullet, gunBarrel.position, spreadRotation);
                 spawnedBullet.gameObject.layer = LayerMask.NameToLayer("PlayerBullets");
 
-                if (spawnedBullet.TryGetComponent<damage>(out damage dmg))
+                if (spawnedBullet.TryGetComponent<Damage>(out Damage dmg))
                 {
                     dmg.sourceWeapon = this;
 
-                    if (upgradeManager.instance != null && upgradeManager.instance.IsUpgradeActive("exploding_bullets"))
+                    if (UpgradeManager.instance != null && UpgradeManager.instance.IsUpgradeActive("exploding_bullets"))
                         dmg.isExplosive = true;
                 }
             }

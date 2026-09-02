@@ -2,7 +2,7 @@ using UnityEngine;
 
 // hides whatever it is attached to when the game is built for webgl
 // browsers cannot close their own tab so exit buttons do nothing there
-public class hideOnWebGL : MonoBehaviour
+public class HideOnWebGL : MonoBehaviour
 {
     private void Awake()
     {

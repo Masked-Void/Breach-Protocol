@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class rotate : MonoBehaviour
+public class ConstantRotate : MonoBehaviour
 {
     [SerializeField] int speed;
 

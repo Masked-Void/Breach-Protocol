@@ -3,7 +3,7 @@ using UnityEngine;
 // a hold point in the boss arena. the player stands inside a cylinder to fill progress, and
 // leaving drains it slowly instead of wiping it. everything in here runs on unscaled time
 // because nothing in the boss fight obeys the player's time scale.
-public class holdZone : MonoBehaviour {
+public class HoldZone : MonoBehaviour {
 
     public enum holdMode { breakImmunity, dealDamage }
 
@@ -62,7 +62,7 @@ public class holdZone : MonoBehaviour {
     public float damageAmt { get { return holdDamageAmount; } }
 
 
-    private holdZoneManager owner;
+    private HoldZoneManager owner;
     private bool reported;
 
     private Vector3 barBaseScale = Vector3.one;
@@ -75,7 +75,7 @@ public class holdZone : MonoBehaviour {
         }
 
         if (player == null) {
-            Debug.LogError("holdZone: no player reference and nothing is tagger: " + playerTag , this);
+            Debug.LogError("HoldZone: no player reference and nothing is tagger: " + playerTag , this);
         }
 
         if (fillSprite != null)
@@ -161,7 +161,7 @@ public class holdZone : MonoBehaviour {
     }
 
 
-    public void activate(holdZoneManager manager) {
+    public void activate(HoldZoneManager manager) {
         owner = manager;
         progress = 0f;
         playerInside = false;

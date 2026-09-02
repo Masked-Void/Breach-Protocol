@@ -1,14 +1,14 @@
 using System.Collections;
 using UnityEngine;
 
-public class weaponManager : MonoBehaviour
+public class WeaponManager : MonoBehaviour
 {
-    public static weaponManager instance { get; private set; }
+    public static WeaponManager instance { get; private set; }
 
     [Header("Weapon")]
-    public weaponStats activeWeapon;
-    public weaponStats starterWeapon;
-    [SerializeField] private weaponStats[] allWeapons;
+    public WeaponStats activeWeapon;
+    public WeaponStats starterWeapon;
+    [SerializeField] private WeaponStats[] allWeapons;
     public Sprite emptySlot;
     bool isEquipping;
     [Header("Dropped Weapons")]
@@ -51,25 +51,25 @@ public class weaponManager : MonoBehaviour
 
     void Start()
     {
-        if (gameManager.instance == null || gameManager.instance.playerScript == null) return;
+        if (GameManager.instance == null || GameManager.instance.playerScript == null) return;
 
         // player might already be found by now, if so just go
-        if (gameManager.instance != null && gameManager.instance.playerScript != null)
+        if (GameManager.instance != null && GameManager.instance.playerScript != null)
             setupWeapons();
 
-        weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
+        weaponHolder = GameManager.instance.playerScript.weaponHoldPos.transform;
 
-        if (gameManager.instance != null && gameManager.instance.ammoPanel == gameObject)
+        if (GameManager.instance != null && GameManager.instance.ammoPanel == gameObject)
         {
-            Debug.LogError("weaponManager: ammoPanel is wired to the weapon manager, fix reference on gameManager", this);
-            gameManager.instance.ammoPanel = null;
+            Debug.LogError("WeaponManager: ammoPanel is wired to the weapon manager, fix reference on GameManager", this);
+            GameManager.instance.ammoPanel = null;
         }
 
         // Load saved weapon
         string savedWeaponName = PlayerPrefs.GetString("EquippedWeapon", "");
         if (!string.IsNullOrEmpty(savedWeaponName) && allWeapons != null)
         {
-            weaponStats loadedWeapon = System.Array.Find(allWeapons, w => w != null && w.Name == savedWeaponName);
+            WeaponStats loadedWeapon = System.Array.Find(allWeapons, w => w != null && w.Name == savedWeaponName);
             if (loadedWeapon != null)
             {
                 activeWeapon = loadedWeapon;
@@ -95,43 +95,43 @@ public class weaponManager : MonoBehaviour
         if (instance == this) instance = null;
     }
 
-    void OnEnable() => gameManager.PlayerReady += setupWeapons;
+    void OnEnable() => GameManager.PlayerReady += setupWeapons;
 
     // logs when something turns this off and what kind of off it is
     void OnDisable()
     {
-        gameManager.PlayerReady -= setupWeapons;
-        Debug.Log($"weaponManager disabled | activeSelf {gameObject.activeSelf} | enabled {enabled}", gameObject);
+        GameManager.PlayerReady -= setupWeapons;
+        Debug.Log($"WeaponManager disabled | activeSelf {gameObject.activeSelf} | enabled {enabled}", gameObject);
     }
 
     void setupWeapons()
     {
-        weaponHolder = gameManager.instance.playerScript.weaponHoldPos.transform;
+        weaponHolder = GameManager.instance.playerScript.weaponHoldPos.transform;
     }
 
-    public void equipWeapon(weaponStats newWeapon, int ammoOverride = -1)
+    public void equipWeapon(WeaponStats newWeapon, int ammoOverride = -1)
     {
         StartCoroutine(equip(newWeapon, ammoOverride));
     }
 
-    IEnumerator equip(weaponStats newWeapon, int ammoOverride)
+    IEnumerator equip(WeaponStats newWeapon, int ammoOverride)
     {
         if (newWeapon == null || isEquipping) yield break;
 
         isEquipping = true;
         if (spawnedWeaponModel != null) throwWeapon();
         yield return new WaitForSecondsRealtime(1f);
-        if (audioManager.instance != null) audioManager.instance.playEquip();
+        if (AudioManager.instance != null) AudioManager.instance.playEquip();
         spawnWeapon(newWeapon, ammoOverride);
         isEquipping = false;
     }
-    private void spawnWeapon(weaponStats newWeapon, int ammoOverride = -1)
+    private void spawnWeapon(WeaponStats newWeapon, int ammoOverride = -1)
     {
         activeWeapon = newWeapon;
 
-        if (activeWeapon is gunStats gun)
+        if (activeWeapon is GunStats gun)
             currentAmmo = ammoOverride >= 0 ? ammoOverride : gun.startingBullets;
-        else if (activeWeapon is meleeStats)
+        else if (activeWeapon is MeleeStats)
             currentAmmo = 10_000;
 
         spawnedWeaponModel = Instantiate(activeWeapon.weaponModel, weaponHolder, false);
@@ -139,11 +139,11 @@ public class weaponManager : MonoBehaviour
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
 
         if (spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody rb)) rb.isKinematic = true;
-        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker)) picker.enabled = false;
-        if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = true;
-        if (spawnedWeaponModel.TryGetComponent<damage>(out damage thrownDamage)) thrownDamage.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out PickWeapon picker)) picker.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out WeaponWallAvoidance clip)) clip.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<Damage>(out Damage thrownDamage)) thrownDamage.enabled = false;
 
-        string targetName = (activeWeapon is gunStats) ? "Muzzle" : "HitPoint";
+        string targetName = (activeWeapon is GunStats) ? "Muzzle" : "HitPoint";
         gunBarrel = FindDeepChild(spawnedWeaponModel.transform, targetName);
 
         updateHUD();
@@ -156,11 +156,11 @@ public class weaponManager : MonoBehaviour
     {
         if (spawnedWeaponModel == null) return;
         spawnedWeaponModel.transform.SetParent(null);
-        if (spawnedWeaponModel.TryGetComponent<clip>(out clip clip)) clip.enabled = false;
-        if (spawnedWeaponModel.TryGetComponent<pickWeapon>(out pickWeapon picker))
+        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out WeaponWallAvoidance clip)) clip.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out PickWeapon picker))
         {
             picker.weapon = activeWeapon;
-            picker.remainingAmmo = (activeWeapon is gunStats) ? currentAmmo : -1;
+            picker.remainingAmmo = (activeWeapon is GunStats) ? currentAmmo : -1;
             picker.enabled = true;
         }
         if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
@@ -175,16 +175,16 @@ public class weaponManager : MonoBehaviour
         Vector3 forceDirection = Camera.main.transform.forward;
         RaycastHit hit;
 
-        if (Physics.Raycast(gameManager.instance.playerScript.weaponHoldPos.transform.position,
-                            gameManager.instance.playerScript.weaponHoldPos.transform.forward,
+        if (Physics.Raycast(GameManager.instance.playerScript.weaponHoldPos.transform.position,
+                            GameManager.instance.playerScript.weaponHoldPos.transform.forward,
                             out hit, 500f))
         {
-            forceDirection = (hit.point - gameManager.instance.playerScript.weaponHoldPos.transform.position).normalized;
+            forceDirection = (hit.point - GameManager.instance.playerScript.weaponHoldPos.transform.position).normalized;
         }
 
         // Apply forward and upward force
-        Vector3 forceToAdd = forceDirection * gameManager.instance.playerScript.throwForce
-                           + gameManager.instance.player.transform.up * gameManager.instance.playerScript.throwUpwardForce;
+        Vector3 forceToAdd = forceDirection * GameManager.instance.playerScript.throwForce
+                           + GameManager.instance.player.transform.up * GameManager.instance.playerScript.throwUpwardForce;
 
         projectileRb.AddForce(forceToAdd, ForceMode.Impulse);
 
@@ -192,10 +192,10 @@ public class weaponManager : MonoBehaviour
         projectileRb.AddTorque(Camera.main.transform.right * 10f, ForceMode.Impulse);
 
         if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider)) weaponCollider.enabled = true;
-        if (spawnedWeaponModel.TryGetComponent<damage>(out damage thrownDamage)) thrownDamage.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<Damage>(out Damage thrownDamage)) thrownDamage.enabled = true;
 
-        if (!spawnedWeaponModel.TryGetComponent<droppedWeapon>(out droppedWeapon dropped))
-            dropped = spawnedWeaponModel.AddComponent<droppedWeapon>();
+        if (!spawnedWeaponModel.TryGetComponent<DroppedWeapon>(out DroppedWeapon dropped))
+            dropped = spawnedWeaponModel.AddComponent<DroppedWeapon>();
 
         dropped.groundLayers = groundLayers;
         activeWeapon = null;
@@ -223,7 +223,7 @@ public class weaponManager : MonoBehaviour
         float rate = activeWeapon.attackRate;
 
         // Check if fire rate upgrade is active
-        if (upgradeManager.instance != null && upgradeManager.instance.IsUpgradeActive("fire_rate"))
+        if (UpgradeManager.instance != null && UpgradeManager.instance.IsUpgradeActive("fire_rate"))
             rate /= 1.5f;
 
         return rate;
@@ -232,8 +232,8 @@ public class weaponManager : MonoBehaviour
     public void attack()
     {
         if (activeWeapon == null || attackTimer < getUpgradeFireRate()) return;
-        if (currentAmmo <= 0) { audioManager.instance.playEmptyMag(); return; }
-        if (heartbeatManager.instance != null) heartbeatManager.instance.playerShot();
+        if (currentAmmo <= 0) { AudioManager.instance.playEmptyMag(); return; }
+        if (HeartbeatManager.instance != null) HeartbeatManager.instance.playerShot();
 
         attackTimer = 0f;
         currentAmmo--;
@@ -242,17 +242,17 @@ public class weaponManager : MonoBehaviour
 
     void updateHUD()
     {
-        if (gameManager.instance == null) return;
+        if (GameManager.instance == null) return;
 
-        bool isGun = activeWeapon is gunStats;
-        if (gameManager.instance.ammoPanel != null)
+        bool isGun = activeWeapon is GunStats;
+        if (GameManager.instance.ammoPanel != null)
         {
-            gameManager.instance.ammoPanel.SetActive(isGun);
+            GameManager.instance.ammoPanel.SetActive(isGun);
         }
 
-        if (isGun && gameManager.instance.magAmmoUI != null)
+        if (isGun && GameManager.instance.magAmmoUI != null)
         {
-            gameManager.instance.magAmmoUI.text = currentAmmo.ToString();
+            GameManager.instance.magAmmoUI.text = currentAmmo.ToString();
         }
 
         updateWeaponIcons();
@@ -260,16 +260,16 @@ public class weaponManager : MonoBehaviour
 
     void updateWeaponIcons()
     {
-        if (gameManager.instance == null) return;
+        if (GameManager.instance == null) return;
 
-        if (activeWeapon != null && gameManager.instance.activeWeapon != null)
+        if (activeWeapon != null && GameManager.instance.activeWeapon != null)
         {
-            gameManager.instance.activeWeapon.sprite = activeWeapon.sprite;
+            GameManager.instance.activeWeapon.sprite = activeWeapon.sprite;
         }
         else
         {
-            gameManager.instance.magAmmoUI.text = "0";
-            gameManager.instance.activeWeapon.sprite = emptySlot;
+            GameManager.instance.magAmmoUI.text = "0";
+            GameManager.instance.activeWeapon.sprite = emptySlot;
         }
     }
 
