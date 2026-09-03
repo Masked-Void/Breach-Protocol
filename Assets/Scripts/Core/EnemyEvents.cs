@@ -26,16 +26,21 @@ public static class EnemyEvents
 
     public static event Action<EnemyBase> NearMissedPlayer;
 
+    // called by EnemyBase.Die when the kill should reward the player.
+    // suppressed kills, like Data Purge, never reach here.
     public static void RaiseKilled(EnemyBase enemy)
     {
         Killed?.Invoke(enemy);
     }
 
+    // not called yet, near miss detection is not implemented
     public static void RaiseNearMissedPlayer(EnemyBase enemy)
     {
         NearMissedPlayer?.Invoke(enemy);
     }
 
+    // play mode settings can skip domain reload, which leaves last session's dead
+    // subscribers attached and throws null refs on the second play
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void clearOldEvents()
     {

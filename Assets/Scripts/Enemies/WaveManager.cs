@@ -37,67 +37,88 @@ public class WaveManager : MonoBehaviour,IWaveHost
     public static WaveManager instance;
 
     [Header("Weapon Prefabs")]
+    [Tooltip("weapons a basic enemy can spawn holding, one is picked at random")]
     [SerializeField] GameObject[] basicWeaponPrefabs;
+
+    [Tooltip("weapons a heavy enemy can spawn holding")]
     [SerializeField] GameObject[] heavyWeaponPrefabs;
+
+    [Tooltip("weapons a ranged enemy can spawn holding, this is where player guns come from")]
     [SerializeField] GameObject[] rangedWeaponPrefabs;
 
-    private int enemiesAlive;
-    private int enemiesKilled;
-    private bool waveInProgress;
     [Header("Enemy Prefabs")]
+    [Tooltip("melee enemy with a katana")]
     [SerializeField] GameObject basicEnemyPrefabs;
+
+    [Tooltip("melee enemy that shoves instead of damaging")]
     [SerializeField] GameObject heavyEnemyPrefabs;
+
+    [Tooltip("shooting enemy, drops the weapon the player picks up")]
     [SerializeField] GameObject rangedEnemyPrefabs;
 
     [Header("Roam and Spawn Points")]
+    [Tooltip("empty objects enemies wander between, drag them from the level")]
     [SerializeField] Transform[] roamPointTransforms;
-    [SerializeField] Transform[] spawnPointTransforms;
 
-    private RoamPoint[] roamPoints;
-    private SpawnPoint[] spawnPoints;
+    [Tooltip("empty objects enemies appear at, usually inside spawn rooms")]
+    [SerializeField] Transform[] spawnPointTransforms;
 
     [Header("Roam Settings")]
     [Tooltip("Chance that a ranged enemy will roam before engaging.")]
     [SerializeField] float giveWillRoamChance;
 
     [Header("Spawn Settings")]
+    [Tooltip("how many enemies wave 1 spawns")]
     [SerializeField] int enemiesToSpawnAtWave0;
+
+    [Tooltip("count is multiplied by this each wave, 1.2 means twenty percent more each time")]
     [SerializeField] float enemyIncreaseMultiplier;
 
-    [HideInInspector] EnemyType typeSpawned;
-
     [Header("Enemy Percent To Spawn")]
+    [Tooltip("weights, not real percents, they are rolled against their own total so they need not add to 100")]
     [SerializeField] int basicEnemyPercent;
     [SerializeField] int heavyEnemyPercent;
     [SerializeField] int rangedEnemyPercent;
 
     [Header("Timers")]
+    [Tooltip("seconds between each enemy appearing within a wave")]
     [SerializeField] float timeBetweenSpawns;
+
+    [Tooltip("seconds of breathing room after a wave clears")]
     [SerializeField] int timeBetweenWaves;
+
+    [Tooltip("counts up during the gap between waves, set at runtime")]
     [SerializeField] float waveTimer;
+
+    [Tooltip("real seconds a spawn point must rest before reusing, spreads spawns out")]
     [SerializeField] float spawnPointCooldown = 5f;
 
     [Header("Misc")]
+    [Tooltip("waves before the boss teleporter opens, gdd says 10")]
     [SerializeField] int maxWaves;
+
+    [Tooltip("true during the gap between waves, set at runtime")]
     [SerializeField] bool waitingForNextWave;
 
     [Header("Wave Tracking")]
+    [Tooltip("current wave, set at runtime")]
     [SerializeField] private int currentWave = 0;
 
-    private Coroutine spawnRoutine;
+    [Header("Economy")]
+    [Tooltip("how many Files a cleared wave is worth")]
+    [SerializeField] private EconomyConfig economy;
 
+    // runtime counters
+    private int enemiesAlive;
+    private int enemiesKilled;
+    private bool waveInProgress;
+    private RoamPoint[] roamPoints;
+    private SpawnPoint[] spawnPoints;
+    private Coroutine spawnRoutine;
     private int spawnersStillSpawning;
 
-
-    public int EnemiesAlive => enemiesAlive;
-    public int EnemiesKilled => enemiesKilled;
-    public int CurrentWave => currentWave;
-    public bool IsWaveInProgress => waveInProgress;
-    public bool IsWaitingForNextWave => waitingForNextWave;
-    public int SecondsUntilNextWave => Mathf.Max(0, Mathf.CeilToInt(timeBetweenWaves - waveTimer));
-
-
-    [SerializeField] private EconomyConfig economy; 
+    // which type the last roll picked, held between the roll and the spawn
+    [HideInInspector] EnemyType typeSpawned;
 
     void Awake()
     {
@@ -151,6 +172,8 @@ public class WaveManager : MonoBehaviour,IWaveHost
             waveHost.active = null;
         }
     }
+
+    // spawns one enemy at a time on an interval until the wave's count is met
     private IEnumerator spawn()
     {
         int amountToSpawn = Mathf.RoundToInt(
@@ -232,7 +255,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
         return heavyEnemyPrefabs;
     }
 
-
+    // picks a spawn point that's off cooldown, falls back to a random one if none are
     private SpawnPoint getSpawnPoint()
     {
         if (spawnPoints == null || spawnPoints.Length == 0)
@@ -254,7 +277,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
         return spawnPoints[startIndex];
     }
 
-
+    // bumps the wave number, works out the count, and starts the spawn routine
     private void startWave()
     {
         if (AudioManager.instance != null)
@@ -273,7 +296,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
         spawnRoutine = StartCoroutine(spawn());
     }
 
-
+    // starts the gap between waves and the round transition music
     private void queueNextWave()
     {
         currentWave++;
@@ -301,7 +324,8 @@ public class WaveManager : MonoBehaviour,IWaveHost
         waitingForNextWave = true;
     }
 
-
+    // hands an enemy a free roam point and marks it taken, so two enemies never
+    // walk to the same spot. returns null when every point is claimed.
     public Transform ClaimRoamPoint(GameObject askingEnemy)
     {
         if (askingEnemy == null)
@@ -328,7 +352,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
         return null;
     }
 
-
+    // frees whatever point this enemy had, called on death or when it engages
     public void ReleaseRoamPoint(GameObject askingEnemy)
     {
         if (askingEnemy == null || roamPoints == null)
@@ -343,7 +367,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
         }
     }
 
-
+    // picks which weapon a spawning enemy carries, by type
     private GameObject getWeaponPrefab(EnemyType type, int index)
     {
         GameObject[] weaponPrefabList = null;
@@ -377,10 +401,8 @@ public class WaveManager : MonoBehaviour,IWaveHost
         return weaponPrefabList[index];
     }
 
-
-
-
-
+    // enemies report in here through IWaveHost. the wave only advances once
+    // every spawned enemy is dead.
     public void EnemyKilled()
     {
         enemiesAlive--;
@@ -403,7 +425,8 @@ public class WaveManager : MonoBehaviour,IWaveHost
         }
     }
 
-
+    // awards Files, tells the heartbeat system, then either queues the next
+    // wave or ends the run
     void completeWave()
     {
         if (!waveInProgress)
@@ -434,6 +457,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
     }
 
 
+    // all waves cleared, hands off to the win state
     void playerWins()
     {
         if (GameManager.instance != null)
@@ -443,13 +467,8 @@ public class WaveManager : MonoBehaviour,IWaveHost
     }
 
 
-
-
-
-
-
-
-
+    // strips nulls out of an inspector array, so a forgotten empty slot doesn't
+    // throw when picking a random point
     public Transform[] cleanList(Transform[] source)
     {
         if (source == null)

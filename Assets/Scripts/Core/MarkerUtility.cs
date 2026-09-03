@@ -1,10 +1,33 @@
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
-public static class MarkerUtility {
+/*
+ * Script: MarkerUtility
+ *
+ * Description:
+ * Finds child objects by name instead of by inspector reference. Used where a
+ * prefab needs named anchor points — door open and closed positions, laser
+ * beam origins, boss hold points — so a designer can rename or re-parent
+ * without rewiring anything.
+ *
+ * Responsibilities:
+ * - Exact and loose name matching, case insensitive
+ * - Direct children only, or the whole subtree
+ * - Warn when more than one child matches, and use the first
+ * - Optional fallback to a child index when nothing matches
+ *
+ * Interacts With:
+ * - DoorController, LaserArray, BossFightManager, HoldZoneManager
+ *
+ * Notes:
+ * - Duplicate matches log a warning rather than failing, because a level with
+ *   two objects of the same name is a mistake worth seeing but not worth
+ *   stopping play for.
+ */
+public static class MarkerUtility
+{
 
     ///  <summary> Finds a child whose name matches exactly while still ignoring case. fallBackIndex >= 0 grabs that child </summary>
-    
+
     public static Transform FindMark(Transform parent, string wanted, int fallbackIndex = -1) {
 
         // Error check

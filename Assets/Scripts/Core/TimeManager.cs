@@ -4,32 +4,42 @@ using UnityEngine;
  * Script: TimeManager
  *
  * Description:
- * The SUPERHOT-style time system. World time scales with how fast the player
- * is moving, so standing still nearly freezes everything. Player movement runs
- * on unscaled time so the player always feels responsive.
+ * The SUPERHOT-style time system. World time scales with how fast the player is
+ * moving, so standing still nearly freezes everything. High stress pushes time
+ * back toward full speed, so panicking costs you the slow motion. Player
+ * movement runs on unscaled time so the player always feels responsive.
  *
  * Responsibilities:
- * - Read player speed each frame and set Time.timeScale from it
- * - Support a hard override so scorestreaks can force a scale
+ * - Blend player speed and stress into a target time scale each frame
+ * - Smooth toward that target so time never snaps
+ * - Keep the physics step in proportion to the time scale
+ * - Support a hard override so scorestreaks can force a speed
  * - Pause and unpause for menus
  *
  * Interacts With:
  * - PlayerController (reads SpeedPercent)
- * - GameManager (pause and unpause)
- * - OverclockKillstreak (sets an override)
+ * - HeartbeatManager (reads StressPercent)
+ * - GameManager (pause state)
+ * - Scorestreaks (set and clear the override)
  *
  * Notes:
  * - Anything that must ignore time scale uses Time.unscaledDeltaTime. Player
  *   movement, stress decay, and every boss hazard are on unscaled time.
+ * - fixedDeltaTime is scaled alongside timeScale so physics stays stable at
+ *   low speeds. baseFixedDeltaTime remembers the project's original step.
  */
-
 public class TimeManager : MonoBehaviour
 {
     public static TimeManager instance;
 
     [Header("Time Scale Range")]
+    [Tooltip("slowest the world ever runs, reached when standing still")]
     [SerializeField] private float minTimeScale = 0.05f;
+
+    [Tooltip("fastest the world ever runs, only reached at high stress")]
     [SerializeField] private float maxTimeScale = 1f;
+
+    [Tooltip("fastest movement alone can push time, deliberately below max so stress still matters")]
     [SerializeField] private float moveMaxTimeScale = 0.85f;
 
     [Header("Movement Influence")]
@@ -37,17 +47,25 @@ public class TimeManager : MonoBehaviour
     [SerializeField] private float movementCurvePower = 1.35f;
 
     [Header("Heartbeat Influence")]
+    [Tooltip("how much full stress pushes time toward max, 0 means stress does nothing")]
     [Range(0f, 1f)]
     [SerializeField] private float bpmInfluence = 0.40f;
 
     [Header("Smoothing")]
+    [Tooltip("how fast time reaches its target, higher snaps harder, 0 freezes the current scale")]
     [SerializeField] private float timeScaleSmoothing = 10f;
 
     [Header("Runtime Override")]
+    [Tooltip("true while a scorestreak is forcing the speed, set at runtime")]
     [SerializeField] private bool hasTimeScaleOverride;
+
+    [Tooltip("the forced speed while an override is active, set at runtime")]
     [SerializeField] private float overrideTimeScale;
 
+    // smoothed value we are actually applying, separate from the target
     private float currentTimeScale;
+
+    // the project's physics step at timeScale 1, so scaling stays proportional
     private float baseFixedDeltaTime;
 
     private void Awake()
@@ -125,6 +143,8 @@ public class TimeManager : MonoBehaviour
         ApplyTimeScale(currentTimeScale);
     }
 
+    // clamps, then writes both timeScale and the matching physics step.
+    // early outs on tiny changes so we're not writing Time every frame.
     private void ApplyTimeScale(float newTimeScale)
     {
         newTimeScale = Mathf.Clamp(newTimeScale, minTimeScale, maxTimeScale);
@@ -147,14 +167,14 @@ public class TimeManager : MonoBehaviour
         ApplyTimeScale(currentTimeScale);
     }
 
-    // Used by Adrenaline and future scorestreaks.
+    // Used by Overclock and any future scorestreak that needs to force world speed.
 
     public void SetTimeScaleOverride(float newTimeScale)
     {
         overrideTimeScale = Mathf.Clamp(newTimeScale, minTimeScale, maxTimeScale);
         hasTimeScaleOverride = true;
 
-        // Adrenaline should feel immediate rather than taking several frames
+        // Overclock should feel immediate rather than taking several frames
         // Apply it instantly on activation.
         currentTimeScale = overrideTimeScale;
 
@@ -170,10 +190,13 @@ public class TimeManager : MonoBehaviour
         // from the override to movement + heartbeat controlled time.
     }
 
+    // true while a scorestreak is holding the speed
     public bool ActiveTimeScaleOverride => hasTimeScaleOverride;
 
+    // the smoothed scale we are applying, not necessarily Time.timeScale if paused
     public float TimeScale => currentTimeScale;
 
+    // remembers the current scale before zeroing, so UnpauseTime can restore it
     public void PauseTime()
     {
         if (Time.timeScale > 0f)

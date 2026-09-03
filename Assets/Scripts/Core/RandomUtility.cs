@@ -1,15 +1,16 @@
 using UnityEngine;
 
-public class RandomUtility 
+// small random helpers shared across the project
+public static class RandomUtility
 {
-
     /// <summary>
     /// Random true/false weighted by a 0-1 chance. Use instead of Random.Range so the
     /// int overload can't sneak in.
     /// </summary>
     /// <param name="chance">Probability of true, 0 never fires and 1 always fires.</param>
     /// <returns>True if the roll succeeded.</returns>
-    public static bool Roll(float chance) {
+    public static bool Roll(float chance)
+    {
 
         if (chance <= 0) return false;
         if (chance >= 1) return true;

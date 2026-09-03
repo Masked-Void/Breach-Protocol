@@ -1,19 +1,38 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * Script: Crosshair
+ *
+ * Description:
+ * Four-piece crosshair that spreads apart when the player fires and eases back
+ * in. Also recolours when aiming at something worth highlighting.
+ *
+ * Interacts With:
+ * - WeaponManager (calls Expand on fire)
+ * - PlayerInteraction (calls SetTarget when looking at a pickup)
+ */
 public class Crosshair : MonoBehaviour
 {
+    [Header("Spread")]
+    [Tooltip("current spread in pixels, set at runtime by Expand, eases back to 0")]
     [Range(0, 25)]
     public float value;
 
+    [Tooltip("how fast the pieces move toward their target position")]
     public float speed;
+
+    [Tooltip("gap from centre even at zero spread, so the pieces never overlap")]
     public float margin;
 
-    LayerMask interactLayer;
-
+    [Header("Pieces")]
+    [Tooltip("the four arms and the centre dot, positioned each frame")]
     public RectTransform top, bottom, left, right, center;
+
+    [Tooltip("images on those same pieces, recoloured by SetTarget")]
     public Image topImage, bottomImage, leftImage, rightImage, centerImage;
 
+    [Tooltip("colour used when not aiming at anything special")]
     public Color normalColor = Color.white;
     void Update()
     {
@@ -40,11 +59,13 @@ public class Crosshair : MonoBehaviour
         right.position = new Vector2(rightValue, center.position.y);
     }
 
+    // opens the crosshair to a given spread, it eases back in on its own
     public void Expand(float amount)
     {
         value = amount;
     }
 
+    // recolours the four arms, pass false to go back to normalColor
     public void SetTarget(bool change, Color targetColor)
     {
         Color c = change ? targetColor : normalColor;

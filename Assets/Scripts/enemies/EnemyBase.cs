@@ -36,10 +36,14 @@ using System.Collections;
 public abstract class EnemyBase : MonoBehaviour, IDamage
 {
     [Header("Visuals")]
+    [Tooltip("the model renderer, flashed black briefly when hit")]
     [SerializeField] public Renderer model;
+
+    // original colour, restored after the hit flash
     Color colorOrig;
 
     [Header("Agent")]
+    [Tooltip("navmesh agent on this object, does the actual pathing")]
     [SerializeField] public NavMeshAgent agent;
 
     [Header("Config")]
@@ -47,7 +51,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     [SerializeField] private EnemyConfig config;
 
     [Header("Runtime Stats")]
-    // copied out of the config in awake so streaks and guns can change them per enemy
+    // copied out of the config in Start so streaks and guns can change them per enemy
     int currentHP;
     public float attackRate;
 
@@ -55,28 +59,37 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     public float AttackRange => config.attackRange;
     public int AttackDamage => config.attackDamage;
 
-    [Header("Roaming")]
+    [Header("Spawn and Roam")]
+    [Tooltip("set true once the enemy walks out of its spawn room, gates roaming")]
+    public bool hasLeftSpawnRoom = false;
+
+    [Tooltip("tick to let this enemy wander between roam points instead of holding position")]
+    public bool willRoam = false;
+
+    [Tooltip("optional specific point this enemy prefers, leave empty to claim any free one")]
+    [SerializeField] GameObject roamPoint;
+
+    // roaming state
     float roamTimer;
     public Transform roamTarget;
+    protected bool isEngaged = false;
 
+    // footstep timing
     float stepTimer;
 
+    // per frame sight and combat state
     protected bool playerInTrigger;
     protected float angleToPlayer;
     protected float stoppingDistOrig;
     protected float attackTimer;
-
     protected Vector3 playerDir;
 
-    [Header("Spawn and Roam")]
-    public bool hasLeftSpawnRoom = false;
-    public bool willRoam = false;
-    [SerializeField] GameObject roamPoint;
-    protected bool isEngaged = false;
     [Header("Challenge")]
+    // what killed this enemy, so ChallengeManager can credit the right weapon
     protected WeaponStats lastDamageWeapon;
     protected bool lastDamageFromGround;
 
+    // cached on Start so Update isn't null checking five singletons every frame
     bool hasGameManager;
     bool hasAudioManager;
     bool hasWeaponManager;
@@ -85,12 +98,13 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
     public WeaponStats LastDamageWeapon => lastDamageWeapon;
 
-    // small compatibility state used by the scorestreak system
+    // death state. suppressKillRewards lets Data Purge kill without awarding.
     private bool isDead;
     private bool suppressKillRewards;
 
     public bool IsDead => isDead;
     public int ByteValue => config.byteValue;
+
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -191,6 +205,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         }
     }
 
+    // picks a roam point, preferring the assigned one, otherwise claiming any free one
     void pickRoamPoint()
     {
         if (waveHost.active == null) return;
@@ -210,6 +225,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             return;
         }
     }
+
+    // used by ranged enemies so they close on the player rather than wandering off
     Transform findNearestRoamPointToPlayer()
     {
         if(waveHost.active == null) return null;
@@ -243,7 +260,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     }
 
 
-
+    // fires a step sound on an interval, only while actually moving
     void HandleFootSteps()
     {
         if (agent.velocity.magnitude > config.stepSpeedThreshold)
@@ -266,7 +283,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         }
     }
 
-    // need this so ai goes back to roaming after losing sight. 
+    // cheaper follow-up check once already engaged, skips the FOV cone
     private bool CanStillSeePlayer()
     {
         if (GameManager.instance == null || GameManager.instance.player == null) return false;
@@ -281,8 +298,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         return false;
     }
 
-    // Attempt to see and attack the player without changing the agent's destination.
-    // Returns true if the player was visible and an attack/face action was triggered.
+    // true if we're in range and off cooldown, so the subclass can swing or shoot
     protected bool tryAttackFromCurrentPosition()
     {
         if (GameManager.instance == null || GameManager.instance.player == null) return false;
@@ -310,7 +326,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         return false;
     }
 
-    // ensures player is within a range or FOV so they can be seen
+    // full check: in trigger, inside the FOV cone, and nothing blocking the ray
     public virtual bool CanSeePlayer()
     {
         playerDir = GameManager.instance.player.transform.position - transform.position;
@@ -375,6 +391,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             pickRoamPoint();
         }
     }
+
+    // true once the agent has arrived at its roam target
     bool AtRoamTarget()
     {
         if (roamTarget == null) return false;
@@ -393,11 +411,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             playerInTrigger = false;
         }
     }
+
+    // called by weapons before damage lands, so the kill can be credited correctly
     public void RegisterDamageSource(WeaponStats weapon, bool fromGround)
     {
         lastDamageWeapon = weapon;
         lastDamageFromGround = fromGround;
     }
+
     public void TakeDamage(int amount)
     {
         if (isDead || amount <= 0) return;
@@ -453,6 +474,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         Destroy(gameObject);
     }
 
+    // brief black flash on hit, gives feedback without an animation
     IEnumerator FlashBlack()
     {
         model.material.color = Color.black;
@@ -460,6 +482,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         model.material.color = colorOrig;
     }
 
+    // rotates to face the player, used before attacking so hits look intentional
     public void FaceTarget()
     {
         Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z));
@@ -468,6 +491,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
     protected abstract void attack();
 
+    // raycast at swing time, so a melee attack can still miss
     protected bool tryMeleeHit()
     {
         agent.stoppingDistance = Mathf.Max(0.5f, config.attackRange);
@@ -479,15 +503,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         return true;
     }
 
-    // Chain Reaction uses this so secondary damage has a clear entry point.
-    // Right now it intentionally behaves like normal enemy damage.
+    // Fork Bomb spreads damage through this, so it doesn't re-trigger the fork
     public void TakeSecondaryDamage(int amount)
     {
         TakeDamage(amount);
     }
 
-    // Existing code can still call ForceKill() with no arguments.
-    // Scorestreak/environment kills can pass false to suppress player rewards.
+    // kills without going through damage. Data Purge passes false so the kill
+    // still reduces the wave count but awards nothing.
     public void ForceKill(bool countAsPlayerKill = true)
     {
         if (isDead)
@@ -498,6 +521,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         Die();
     }
 
+    // drops the held weapon on death, re-enabling its pickup and physics so the
+    // player can grab it. weapons only come from enemy drops per the gdd.
     public void ThrowWeapon(GameObject spawnedWeaponModel, Transform pivot)
     {
         if (spawnedWeaponModel == null) return;
