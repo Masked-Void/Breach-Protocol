@@ -28,8 +28,8 @@ public class BossFightManager : MonoBehaviour,IDamage {
     [Range(0f , 1f)][SerializeField] private float p3EndHealthPerc = .25f;
 
     [Header("Misc")]
-    [Tooltip("Files banked for killing the CEO")]
-    [SerializeField] private int bossFileReward = 5;
+    [SerializeField] private EconomyConfig economy;
+
 
     [Header("Debug")]
     [Tooltip("tick this in play mode to chip the boss by damageAmt")]
@@ -235,7 +235,7 @@ public class BossFightManager : MonoBehaviour,IDamage {
         trapManager.EndP4();
 
         if (GameManager.instance != null) {
-            GameManager.instance.AddFiles(bossFileReward);
+            GameManager.instance.AddFiles(economy.filesForBossBeat);
             GameManager.instance.StateWin();
         }
 

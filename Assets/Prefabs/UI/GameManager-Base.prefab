@@ -8002,6 +8002,7 @@ MonoBehaviour:
   maxWaves: 5
   waitingForNextWave: 0
   currentWave: 0
+  economy: {fileID: 11400000, guid: 37c6b65a3410415469e359a3bce38218, type: 2}
 --- !u!1 &2263263232656634311
 GameObject:
   m_ObjectHideFlags: 0
@@ -15881,17 +15882,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c52b5e83b85708345a2f81eb37ae815e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::heartbeatManager
-  restingBPM: 20
-  maxBPM: 200
-  currentBPM: 0
+  config: {fileID: 11400000, guid: 7eee900413230d74d9b7d893633401f0, type: 2}
+  currentBpm: 0
   currentStress: 0
-  maxStress: 100
-  stressDecayRate: 3
-  shootStress: 4
-  damageStress: 20
-  nearMissStress: 5
-  killStressReduction: 5
-  waveStressReduction: 20
   heartRateText: {fileID: 0}
   bpmSuffix: ' BPM'
 --- !u!1 &4822254877632537143

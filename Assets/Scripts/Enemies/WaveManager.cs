@@ -97,7 +97,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
     public int SecondsUntilNextWave => Mathf.Max(0, Mathf.CeilToInt(timeBetweenWaves - waveTimer));
 
 
-
+    [SerializeField] private EconomyConfig economy; 
 
     void Awake()
     {
@@ -418,7 +418,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
         if (GameManager.instance != null)
         {
-            GameManager.instance.AddFiles(5);
+            GameManager.instance.AddFiles(economy.filesPerWave);
 
             // keep the upgrade currency in sync after every wave
             if (UpgradeManager.instance != null)

@@ -20037,7 +20037,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::bossFightManager
   boss: {fileID: 0}
-  waveManager: {fileID: 8286564000546729644}
+  bossWavesManager: {fileID: 0}
   holdManager: {fileID: 66728293332457547}
   trapManager: {fileID: 5960733661592971427}
   immuneBarObj: {fileID: 0}
@@ -20049,7 +20049,7 @@ MonoBehaviour:
   p1EndHealthPerc: 0.75
   p2EndHealthPerc: 0.5
   p3EndHealthPerc: 0.25
-  bossFileReward: 5
+  economy: {fileID: 11400000, guid: 37c6b65a3410415469e359a3bce38218, type: 2}
   dealDamage: 0
   damageAmt: 100
 --- !u!114 &8286564000546729644
@@ -22015,7 +22015,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -64.3, y: -122.1}
+  m_AnchoredPosition: {x: -64.299805, y: -122.099976}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1619786485475316635
@@ -26850,17 +26850,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c52b5e83b85708345a2f81eb37ae815e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::heartbeatManager
-  restingBPM: 20
-  maxBPM: 200
-  currentBPM: 0
+  config: {fileID: 0}
+  currentBpm: 0
   currentStress: 0
-  maxStress: 100
-  stressDecayRate: 3
-  shootStress: 4
-  damageStress: 20
-  nearMissStress: 5
-  killStressReduction: 5
-  waveStressReduction: 20
   heartRateText: {fileID: 4369937664478627974}
   bpmSuffix: ' BPM'
 --- !u!1 &7230005824668694645
