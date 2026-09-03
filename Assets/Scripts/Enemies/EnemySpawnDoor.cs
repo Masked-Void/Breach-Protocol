@@ -1,12 +1,9 @@
 /*
- * This is a simplified door for enemy spawn rooms
- * 
- * utilizes layers and triggers to work.
- * 
- * 
- * created by Mark Fittante
- * 
- * 
+ * Script: EnemySpawnDoor
+ *
+ * Description:
+ * Simplified door for enemy spawn rooms. Uses layers and triggers rather than
+ * the full DoorController logic.
  */
 
 using System.Collections;

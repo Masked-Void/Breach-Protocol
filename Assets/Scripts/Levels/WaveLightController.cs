@@ -1,6 +1,5 @@
 /*
  * Script: WaveLightController
- * Author: IronGrid Architects
  *
  * Description:
  * Controls warning lights during transitions between enemy waves.

@@ -2,6 +2,32 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
+/*
+ * Script: LevelLoader
+ *
+ * Description:
+ * Lives in Bootstrap and swaps which level scene is loaded while every manager
+ * stays put. Only one level is ever loaded at a time.
+ *
+ * Responsibilities:
+ * - Load the level the title screen asked for, additively on top of Bootstrap
+ * - Unload the previous level before loading a new one
+ * - Set the level as the active scene so it owns lighting and spawns
+ * - Move the player to the level's Player Spawn Pos marker
+ * - Detect when someone pressed play from a level scene and skip loading
+ *
+ * Interacts With:
+ * - LevelBootstrapper (sits in each level scene)
+ * - GameManager (player reference)
+ * - TitleScreenManager (sets requestedLevel before loading Bootstrap)
+ *
+ * Notes:
+ * - The player teleport disables the CharacterController first. It overrides
+ *   transform writes, so without that the player silently stays at origin.
+ * - requestedLevel is static because the title screen sets it before Bootstrap
+ *   exists.
+ */
+
 
 // Lives in bootstrp, swaps which level scene is loaded while the managers stay put
 // Only one level scene should be loaded at a time, and the level scene should be the only scene that is unloaded and loaded

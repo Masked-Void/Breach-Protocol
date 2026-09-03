@@ -1,30 +1,17 @@
 
 /*
- * Script heartBeatUI
- * Author: Mark Fittante
- * 
- * Takes player heartbeat and changes speed of heart image in UI.
- * 
- * 
- * Communicates with heartBeatManager
- * 
- * 
- * 
+ * Script: HeartbeatUI
+ *
+ * Description:
+ * Drives the heart image in the HUD, beating faster as the player's BPM rises.
+ *
+ * Interacts With:
+ * - HeartbeatManager (reads CurrentBpm)
  */
-
-
-
-
-
-
-
-
 
 using UnityEngine;
 using System.Collections;
 using TMPro;
-
-
 
 
 public class HeartbeatUI : MonoBehaviour
