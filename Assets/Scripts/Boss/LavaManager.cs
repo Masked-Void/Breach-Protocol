@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 /*
@@ -19,7 +19,8 @@ using UnityEngine;
  * - IDamage (damages the player)
  * - MarkerUtility (finds the low and high markers by name)
  */
-public class LavaManager : MonoBehaviour {
+public class LavaManager : MonoBehaviour
+{
 
     [Header("Drag in Lava")]
     [Tooltip("the lava surface object, moved between the two markers below")]
@@ -64,19 +65,22 @@ public class LavaManager : MonoBehaviour {
 
     // Sends the lava all the way up, uses riseTime
     [ContextMenu("Rise")]
-    public void Rise() {
+    public void Rise()
+    {
         MoveTo(1f);
     }
 
     // Sends the lava all the way down, uses drainTime
     [ContextMenu("Drain")]
-    public void Drain() {
+    public void Drain()
+    {
         MoveTo(0f);
     }
 
     // Snaps the lava back to the low marker with no animation, used for resets
     [ContextMenu("Reset To Drained")]
-    public void ResetToDrained() {
+    public void ResetToDrained()
+    {
         SetNow(0f);
     }
 
@@ -88,11 +92,13 @@ public class LavaManager : MonoBehaviour {
     // Read only world height of the lava surface, for damage/height checks
     public float CurrentSurfaceY => lavaObject.position.y;
 
-    void Awake() {
+    void Awake()
+    {
 
         // Makes sure the lava object exists
-        if (lavaObject == null) {
-            Debug.LogError("LavaManager: lavaObject isn't assigned." , this);
+        if (lavaObject == null)
+        {
+            Debug.LogError("LavaManager: lavaObject isn't assigned.", this);
             enabled = false;
             return;
         }
@@ -102,27 +108,30 @@ public class LavaManager : MonoBehaviour {
         highPos = findMark(highMarkerName);
 
         // Makes sure they exist
-        if (lowPos == null || highPos == null) {
+        if (lowPos == null || highPos == null)
+        {
             Debug.LogError("LavaManager: '" + lavaObject.name + "' needs two children named '"
-                + lowMarkerName + "' and '" + highMarkerName + "'." , lavaObject);
+                + lowMarkerName + "' and '" + highMarkerName + "'.", lavaObject);
             enabled = false;
             return;
         }
 
         // Reparents the markers onto this object so they stay put when the lava moves
-        lowPos.SetParent(transform , true);
-        highPos.SetParent(transform , true);
+        lowPos.SetParent(transform, true);
+        highPos.SetParent(transform, true);
 
         lavaSurface = lavaObject.GetComponentInChildren<Renderer>();
 
         GameObject playerObj = GameObject.FindGameObjectWithTag(playerTag);
-        if (playerObj!= null) {
+        if (playerObj != null)
+        {
             player = playerObj.transform;
             playerDamage = playerObj.GetComponent<IDamage>();
         }
 
-        if (playerDamage == null) {
-            Debug.LogError("LavaManager: nothing tagged '" + playerTag + "' with an IDamage on it" , this);
+        if (playerDamage == null)
+        {
+            Debug.LogError("LavaManager: nothing tagged '" + playerTag + "' with an IDamage on it", this);
         }
 
         // Puts the lava at whatever currentProgress starts at
@@ -130,39 +139,48 @@ public class LavaManager : MonoBehaviour {
     }
 
 
-    void Update() {
-        if (playerDamage == null) {
+    void Update()
+    {
+        if (playerDamage == null)
+        {
             return;
         }
 
-        if (!checkInLava()) {
+        if (!checkInLava())
+        {
             nextTick = 0f;
             return;
         }
 
-        if (Time.unscaledTime < nextTick) {
+        if (Time.unscaledTime < nextTick)
+        {
             return;
         }
 
-        nextTick = Time.unscaledTime + (1f / Mathf.Max(0.01f , damageRate));
+        nextTick = Time.unscaledTime + (1f / Mathf.Max(0.01f, damageRate));
         playerDamage.TakeDamage(1);
     }
 
     // depth check against the surface height rather than a trigger, so the lava
     // can be any shape and the check still works
-    bool checkInLava() {
-        if (player.position.y > CurrentSurfaceY - damageDepth) {
+    bool checkInLava()
+    {
+        if (player.position.y > CurrentSurfaceY - damageDepth)
+        {
             return false;
         }
 
-        if (lavaSurface != null) {
+        if (lavaSurface != null)
+        {
             Bounds bound = lavaSurface.bounds;
 
-            if (player.position.x < bound.min.x || player.position.x > bound.max.x) {
+            if (player.position.x < bound.min.x || player.position.x > bound.max.x)
+            {
                 return false;
             }
 
-            if (player.position.z < bound.min.z||player.position.z> bound.max.z) {
+            if (player.position.z < bound.min.z || player.position.z > bound.max.z)
+            {
                 return false;
             }
         }
@@ -171,18 +189,22 @@ public class LavaManager : MonoBehaviour {
     }
 
     // Looks through the lava object's children for one whose name contains 'wanted'
-    Transform findMark(string wanted) {
+    Transform findMark(string wanted)
+    {
         // empty variable for 1 return call
         Transform found = null;
 
         // Goes through each element in the lava object
-        foreach (Transform child in lavaObject) {
+        foreach (Transform child in lavaObject)
+        {
             // If the element has that wanted name it assigns it to the called object
-            if (child.name.IndexOf(wanted , System.StringComparison.OrdinalIgnoreCase) >= 0) {
+            if (child.name.IndexOf(wanted, System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
                 // Warning for if more than one child matches, it keeps the first one and stops looking
-                if (found != null) {
+                if (found != null)
+                {
                     Debug.LogWarning("LavaManager: '" + lavaObject.name + "' has more than one child matching '"
-                        + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first." , lavaObject);
+                        + wanted + "' ('" + found.name + "' and '" + child.name + "'). Using the first.", lavaObject);
                     break;
                 }
 
@@ -199,7 +221,8 @@ public class LavaManager : MonoBehaviour {
     // starts a move to a 0 to 1 target, cancelling whatever move was running.
     // duration comes from riseTime or drainTime depending on direction.
 
-    public void MoveTo(float amt) {
+    public void MoveTo(float amt)
+    {
         // error check
         if (!enabled)
             return;
@@ -208,7 +231,8 @@ public class LavaManager : MonoBehaviour {
         amt = Mathf.Clamp01(amt);
 
         // stops the routine for if it needs to be restarted
-        if (lavaRoutine != null) {
+        if (lavaRoutine != null)
+        {
             StopCoroutine(lavaRoutine);
         }
 
@@ -220,14 +244,16 @@ public class LavaManager : MonoBehaviour {
 
 
     // method call for instant lava rise/fall
-    public void SetNow(float amt) {
+    public void SetNow(float amt)
+    {
 
         // error check
         if (!enabled)
             return;
 
         // Stops routine incase its running
-        if (lavaRoutine != null) {
+        if (lavaRoutine != null)
+        {
             StopCoroutine(lavaRoutine);
             lavaRoutine = null;
         }
@@ -242,7 +268,8 @@ public class LavaManager : MonoBehaviour {
 
 
     // Lerps currentProgress over to the target over time, then keeps the lava updated each frame
-    IEnumerator moveLava(float target) {
+    IEnumerator moveLava(float target)
+    {
         // Gets the current progress for if a routine is started while another routine is already running
         float currentStartPos = currentProgress;
 
@@ -257,15 +284,16 @@ public class LavaManager : MonoBehaviour {
 
         float timePassed = 0f;
 
-        while (timePassed < duration) {
+        while (timePassed < duration)
+        {
             // Unscaled so the lava ignores the time freeze, capped at 0.05 so a lag spike can't teleport it
-            float timePerStep = Mathf.Min(Time.unscaledDeltaTime , 0.05f);
+            float timePerStep = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
             timePassed += timePerStep;
 
             // 0 to 1 of how much of the trip is done
             float howFar = Mathf.Clamp01(timePassed / duration);
 
-            currentProgress = Mathf.Lerp(currentStartPos , target , howFar);
+            currentProgress = Mathf.Lerp(currentStartPos, target, howFar);
             placeLava();
 
             yield return null;
@@ -282,8 +310,9 @@ public class LavaManager : MonoBehaviour {
 
 
     // writes the lava to a height with no animation, used on reset and by SetNow
-    void placeLava() {
-        lavaObject.position = Vector3.Lerp(lowPos.position , highPos.position , currentProgress);
+    void placeLava()
+    {
+        lavaObject.position = Vector3.Lerp(lowPos.position, highPos.position, currentProgress);
     }
 
 }

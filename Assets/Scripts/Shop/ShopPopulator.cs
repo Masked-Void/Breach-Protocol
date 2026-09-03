@@ -1,7 +1,4 @@
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
-using System.Collections.Generic;
+﻿using UnityEngine;
 
 /*
  * Script: ShopPopulator
@@ -19,13 +16,13 @@ using System.Collections.Generic;
  */
 public class ShopPopulator : MonoBehaviour
 {
-    
-    
+
+
     // [SerializeField] Image icon;
     // [SerializeField] TMP_Text nameText;
     // [SerializeField] TMP_Text descriptionText;
     // [SerializeField] TMP_Text costText;
-    
+
     // private UpgradeData currentUpgrade;
 
     // public void populateShopUI(UpgradeData Upgrade)

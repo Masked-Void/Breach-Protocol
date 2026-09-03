@@ -1,6 +1,4 @@
-using UnityEngine;
-
-/// <summary>
+﻿/// <summary>
 /// DDoS: jams enemy AI for a short real-time duration.
 /// Existing projectiles continue moving, so it is control rather than invulnerability.
 /// </summary>

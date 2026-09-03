@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 /*
@@ -128,7 +128,7 @@ public class TitleScreenManager : MonoBehaviour
         AudioManager.instance.PlayButtonClick();
         nav.SetActive(false);
         deactivateAllPanels();
-        
+
         LevelLoader.requestedLevelName = "Mark";
         StartCoroutine(LoadSceneAsync("Bootstrap"));
     }
@@ -198,7 +198,8 @@ public class TitleScreenManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(0.2f);
 
-        if (AudioManager.instance != null) AudioManager.instance.StopMusic();
+        if (AudioManager.instance != null)
+            AudioManager.instance.StopMusic();
 
         scene.allowSceneActivation = true;
     }
@@ -206,13 +207,13 @@ public class TitleScreenManager : MonoBehaviour
     public void quitGame()
     {
         AudioManager.instance.PlayButtonClick();
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #elif UNITY_WEBGL
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_WEBGL
             Application.OpenURL("about:blank");
-        #else
+#else
             Application.Quit();
-        #endif
+#endif
     }
 
     public void switchToHome()

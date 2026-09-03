@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 /*
@@ -75,7 +75,7 @@ public class HeartbeatManager : MonoBehaviour
 
         // no config means every stress number is missing, fail loudly here
         if (config == null)
-            Debug.LogError("HeartbeatManager: No StressConfig assigned",this);
+            Debug.LogError("HeartbeatManager: No StressConfig assigned", this);
     }
 
     private void Start()

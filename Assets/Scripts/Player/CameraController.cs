@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: CameraController
@@ -37,7 +37,7 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        if(!GameManager.instance.isPaused)
+        if (!GameManager.instance.isPaused)
         {
             float mouseX = Input.GetAxisRaw("Mouse X") * sens;
             float mouseY = Input.GetAxisRaw("Mouse Y") * sens;

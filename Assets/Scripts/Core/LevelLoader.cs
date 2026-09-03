@@ -1,5 +1,5 @@
+﻿using System.Collections;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.SceneManagement;
 
 /*
@@ -33,7 +33,7 @@ using UnityEngine.SceneManagement;
 // Only one level scene should be loaded at a time, and the level scene should be the only scene that is unloaded and loaded
 public class LevelLoader : MonoBehaviour
 {
-    
+
     public static LevelLoader instance;
 
     [Header("Scenes")]
@@ -126,7 +126,7 @@ public class LevelLoader : MonoBehaviour
 
         if (spawnPoint == null)
         {
-            Debug.LogWarning("LevelLoader: no '"+playerSpawnObjectName+"' found in " + currentLevel,this);
+            Debug.LogWarning("LevelLoader: no '" + playerSpawnObjectName + "' found in " + currentLevel, this);
             return;
         }
 

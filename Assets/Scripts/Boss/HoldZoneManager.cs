@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -63,12 +63,15 @@ public class HoldZoneManager : MonoBehaviour
     private HoldZone activeZone;
     private int lastDamageIndex = -1;
 
-    void Awake() {
+    void Awake()
+    {
         if (boss == null)
             boss = GetComponentInParent<BossFightManager>();
 
-        if (boss == null) { Debug.LogError("HoldZoneManager has no BossFightManager" , this); }
-        if (immuneZone == null) { Debug.LogError("HoldZoneManager has no immune zone assigned" , this); }
+        if (boss == null)
+        { Debug.LogError("HoldZoneManager has no BossFightManager", this); }
+        if (immuneZone == null)
+        { Debug.LogError("HoldZoneManager has no immune zone assigned", this); }
 
         buildDamagePoints();
 
@@ -76,10 +79,12 @@ public class HoldZoneManager : MonoBehaviour
             hudObj.SetActive(false);
     }
 
-    void buildDamagePoints() {
+    void buildDamagePoints()
+    {
         int counted = 0;
 
-        for (int i = 0 ; i < damageZones.Count ; i++) {
+        for (int i = 0; i < damageZones.Count; i++)
+        {
             if (damageZones[i] != null)
                 counted++;
         }
@@ -88,7 +93,8 @@ public class HoldZoneManager : MonoBehaviour
 
         int writen = 0;
 
-        for (int i = 0 ; i < damageZones.Count ; i++) {
+        for (int i = 0; i < damageZones.Count; i++)
+        {
             if (damageZones[i] == null)
                 continue;
 
@@ -96,11 +102,13 @@ public class HoldZoneManager : MonoBehaviour
             writen++;
         }
 
-        if (counted == 0) {
-            Debug.LogWarning("HoldZoneManager: no damage points assigned" , this);
+        if (counted == 0)
+        {
+            Debug.LogWarning("HoldZoneManager: no damage points assigned", this);
         }
     }
-    void Update() {
+    void Update()
+    {
         if (activeZone == null)
             return;
         if (hudFill != null)
@@ -109,13 +117,15 @@ public class HoldZoneManager : MonoBehaviour
 
     // called from the phase transition. the boss stays immune until this hold finishes
     [ContextMenu("Start Immune Hold")]
-    public void StartImmuneHold() {
+    public void StartImmuneHold()
+    {
         StopAll();
 
         immuneHoldDone = false;
 
-        if (immuneZone == null){
-            Debug.LogError("HoldZoneManager: startImmuneHold with no immune zone assigned" , this);
+        if (immuneZone == null)
+        {
+            Debug.LogError("HoldZoneManager: startImmuneHold with no immune zone assigned", this);
             return;
         }
         activeZone = immuneZone;
@@ -127,21 +137,25 @@ public class HoldZoneManager : MonoBehaviour
 
     // called at the start of a damage phase. picks a point that isn't the one from last time
     [ContextMenu("Start Damage Hold")]
-    public void StartDamageHold() {
+    public void StartDamageHold()
+    {
         StopAll();
-        
+
         if (damagePoints == null || damagePoints.Length == 0)
             return;
 
         int pick;
-        if (damagePoints.Length > 1 && lastDamageIndex>=0) {
+        if (damagePoints.Length > 1 && lastDamageIndex >= 0)
+        {
             // roll from the list minus last time's point, then step over the gap.
             // doing it this way keeps every remaining point equally likely
-            pick = Random.Range(0 , damagePoints.Length - 1);
+            pick = Random.Range(0, damagePoints.Length - 1);
             if (pick >= lastDamageIndex)
                 pick++;
-        } else {
-            pick = Random.Range(0 , damagePoints.Length);
+        }
+        else
+        {
+            pick = Random.Range(0, damagePoints.Length);
         }
 
         lastDamageIndex = pick;
@@ -156,12 +170,14 @@ public class HoldZoneManager : MonoBehaviour
 
     // shuts down every point, not just the live one, so nothing survives a phase handoff
     [ContextMenu("Stop All Holds")]
-    public void StopAll() {
+    public void StopAll()
+    {
         if (immuneZone != null)
             immuneZone.Deactivate();
 
-        if (damagePoints != null) {
-            for (int i = 0 ; i < damagePoints.Length ; i++)
+        if (damagePoints != null)
+        {
+            for (int i = 0; i < damagePoints.Length; i++)
                 if (damagePoints[i] != null)
                     damagePoints[i].Deactivate();
         }
@@ -170,12 +186,14 @@ public class HoldZoneManager : MonoBehaviour
             hudObj.SetActive(false);
     }
 
-    public void HoldComplete(HoldZone zone) {
+    public void HoldComplete(HoldZone zone)
+    {
 
         if (zone == null)
             return;
 
-        if (zone == immuneZone) {
+        if (zone == immuneZone)
+        {
             immuneHoldDone = true;
             return;
         }
@@ -193,12 +211,14 @@ public class HoldZoneManager : MonoBehaviour
     }
 
     [ContextMenu("Force Break Immunity")]
-    public void ForceCompleteImmune() {
+    public void ForceCompleteImmune()
+    {
         immuneHoldDone = true;
     }
 
     [ContextMenu("Force Damage Payout")]
-    void debugPayout() {
+    void debugPayout()
+    {
         if (activeZone == null || activeZone == immuneZone)
             return;
 

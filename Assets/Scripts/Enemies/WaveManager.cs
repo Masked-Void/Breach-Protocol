@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Script: WaveManager
  *
  * Description:
@@ -32,7 +32,7 @@ using UnityEngine;
 
 
 
-public class WaveManager : MonoBehaviour,IWaveHost
+public class WaveManager : MonoBehaviour, IWaveHost
 {
     public static WaveManager instance;
 
@@ -102,7 +102,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
     [Header("Wave Tracking")]
     [Tooltip("current wave, set at runtime")]
-    [SerializeField] public int CurrentWave = 0;
+    [SerializeField] private int currentWave = 0;
 
     [Header("Economy")]
     [Tooltip("how many Files a cleared wave is worth")]
@@ -116,6 +116,17 @@ public class WaveManager : MonoBehaviour,IWaveHost
     private SpawnPoint[] spawnPoints;
     private Coroutine spawnRoutine;
     private int spawnersStillSpawning;
+
+    // read only views for the hud and other systems, nothing outside changes these
+    public int CurrentWave => currentWave;
+
+    public int EnemiesKilled => enemiesKilled;
+
+    public bool IsWaitingForNextWave => waitingForNextWave;
+
+    // rounds up so the countdown never shows 0 while still waiting
+    public int SecondsUntilNextWave =>
+        Mathf.Max(0, Mathf.CeilToInt(timeBetweenWaves - waveTimer));
 
     // which type the last roll picked, held between the roll and the spawn
     [HideInInspector] EnemyType typeSpawned;
@@ -164,11 +175,13 @@ public class WaveManager : MonoBehaviour,IWaveHost
         }
     }
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         if (instance == this)
             instance = null;
 
-        if (ReferenceEquals(waveHost.active , this)) {
+        if (ReferenceEquals(waveHost.active, this))
+        {
             waveHost.active = null;
         }
     }
@@ -299,10 +312,10 @@ public class WaveManager : MonoBehaviour,IWaveHost
     // starts the gap between waves and the round transition music
     private void queueNextWave()
     {
-        CurrentWave++;
+        currentWave++;
         enemiesAlive = 0;
 
-        if (CurrentWave > maxWaves)
+        if (currentWave > maxWaves)
         {
             playerWins();
             return;

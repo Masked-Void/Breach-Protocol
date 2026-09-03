@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: RangedEnemy
@@ -61,8 +61,10 @@ public class RangedEnemy : EnemyBase
     {
         agent.stoppingDistance = stoppingDistOrig;
 
-        if (gunPivot != null) rotateGun();
-        if (attackTimer > attackRate && currentAmmo >= 0) shoot();
+        if (gunPivot != null)
+            rotateGun();
+        if (attackTimer > attackRate && currentAmmo >= 0)
+            shoot();
     }
 
     // fires one round at the player, skewed if ghost protocol is running
@@ -111,8 +113,10 @@ public class RangedEnemy : EnemyBase
 
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
-        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out var weaponClip)) weaponClip.enabled = true;
-        if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out var picker)) picker.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out var weaponClip))
+            weaponClip.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out var picker))
+            picker.enabled = false;
 
         string targetName = (selectedGun is GunStats) ? "Muzzle" : "HitPoint";
         gunBarrel = WeaponManager.instance.FindDeepChild(spawnedWeaponModel.transform, targetName);

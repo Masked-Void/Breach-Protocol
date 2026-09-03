@@ -1,5 +1,4 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
 /*
  * Script: BossTeleporter
@@ -34,32 +33,42 @@ public class BossTeleporter : MonoBehaviour
     public void TurnOn()
     {
         isOn = true;
-        if (portal != null) {
+        if (portal != null)
+        {
             portal.SetActive(true);
         }
     }
 
-    private void Start() {
-        if (portal != null) {
+    private void Start()
+    {
+        if (portal != null)
+        {
             portal.SetActive(false);
-        } else {
+        }
+        else
+        {
             Debug.LogError("portal doesnt exist");
         }
     }
 
-    private void Update() {
+    private void Update()
+    {
 
-        if (isOn) {
+        if (isOn)
+        {
             return;
         }
 
-        if (WaveManager.instance == null) {
+        if (WaveManager.instance == null)
+        {
             return;
         }
 
-        if (WaveManager.instance.CurrentWave >= appearOnWave) {
+        if (WaveManager.instance.CurrentWave >= appearOnWave)
+        {
             isOn = true;
-            if (portal != null) {
+            if (portal != null)
+            {
                 portal.SetActive(true);
             }
         }

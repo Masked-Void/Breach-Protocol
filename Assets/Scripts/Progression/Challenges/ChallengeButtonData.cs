@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,9 +36,11 @@ public class ChallengeButtonData : MonoBehaviour
     // shows the lock unless every challenge in the set is complete
     void updateLockstate()
     {
-        if (ChallengeManager.instance == null || challenge == null) return;
+        if (ChallengeManager.instance == null || challenge == null)
+            return;
         bool allcomplete = ChallengeManager.instance.AreAllChallengesComplete(challenge);
-        if (lockIcon != null) lockIcon.SetActive(!allcomplete);
+        if (lockIcon != null)
+            lockIcon.SetActive(!allcomplete);
     }
 
     void OnEnable()
@@ -49,10 +51,10 @@ public class ChallengeButtonData : MonoBehaviour
 
     // opens this weapon's challenges in the panel
     void Selected()
-    {   
+    {
         if (AudioManager.instance != null)
             AudioManager.instance.PlayButtonClick();
-                     
+
         if (ChallengeManager.instance != null && challenge != null)
             ChallengeManager.instance.DisplayWeaponChallenges(challenge);
     }

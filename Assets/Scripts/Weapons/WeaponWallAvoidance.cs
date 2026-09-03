@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: WeaponWallAvoidance
@@ -51,7 +51,7 @@ public class WeaponWallAvoidance : MonoBehaviour
         {
             lerpPos = 0f;
         }
-        
+
         lerpPos = Mathf.Clamp01(lerpPos);
 
         transform.localRotation = Quaternion.Lerp(defaultRot, clippedRot, lerpPos);

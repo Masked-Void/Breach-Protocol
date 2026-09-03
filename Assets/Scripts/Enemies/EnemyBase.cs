@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
 
 
 /*
@@ -111,7 +111,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         attackRate = config.shotInterval;
         currentHP = config.maxHP;
         stoppingDistOrig = agent.stoppingDistance;
-       if (willRoam)
+        if (willRoam)
         {
             pickRoamPoint();
         }
@@ -128,7 +128,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
     void Update()
     {
-        if (GameManager.instance != null && GameManager.instance.isPaused) return;
+        if (GameManager.instance != null && GameManager.instance.isPaused)
+            return;
         attackTimer += Time.unscaledDeltaTime;
 
         HandleFootSteps();
@@ -182,11 +183,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
 
                 float distance = playerDir.magnitude;
-              
-                
+
+
                 if (distance <= config.rangedAttackRange)
                 {
-                 attack();
+                    attack();
                 }
             }
         }
@@ -195,20 +196,21 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             // Ranged: roaming � only look around while stopped at a roam point
             Roam();
 
-            
-                if (tryAttackFromCurrentPosition())
-                {
-                    isEngaged = true;
-                    agent.stoppingDistance = stoppingDistOrig;
-                }
-            
+
+            if (tryAttackFromCurrentPosition())
+            {
+                isEngaged = true;
+                agent.stoppingDistance = stoppingDistOrig;
+            }
+
         }
     }
 
     // picks a roam point, preferring the assigned one, otherwise claiming any free one
     void pickRoamPoint()
     {
-        if (waveHost.active == null) return;
+        if (waveHost.active == null)
+            return;
 
         waveHost.active.ReleaseRoamPoint(gameObject);
 
@@ -229,7 +231,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     // used by ranged enemies so they close on the player rather than wandering off
     Transform findNearestRoamPointToPlayer()
     {
-        if(waveHost.active == null) return null;
+        if (waveHost.active == null)
+            return null;
 
         Vector3 playerPos = GameManager.instance.player.transform.position;
         Transform closestPoint = null;
@@ -238,9 +241,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         for (int i = 0; i < 10; i++)
         {
             Transform candidatePoint = waveHost.active.ClaimRoamPoint(gameObject);
-            if (candidatePoint == null) break;
+            if (candidatePoint == null)
+                break;
 
-            float distToPlayer = Vector3.Distance(candidatePoint.position , playerPos);
+            float distToPlayer = Vector3.Distance(candidatePoint.position, playerPos);
 
             if (distToPlayer <= config.roamRange && distToPlayer < closestDistance)
             {
@@ -248,8 +252,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
                 {
                     //need to check this
                 }
-                closestPoint= candidatePoint;
-                closestDistance= distToPlayer;
+                closestPoint = candidatePoint;
+                closestDistance = distToPlayer;
             }
             else
             {
@@ -286,7 +290,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     // cheaper follow-up check once already engaged, skips the FOV cone
     private bool CanStillSeePlayer()
     {
-        if (GameManager.instance == null || GameManager.instance.player == null) return false;
+        if (GameManager.instance == null || GameManager.instance.player == null)
+            return false;
 
         Vector3 dirToPlayer = GameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
@@ -301,7 +306,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     // true if we're in range and off cooldown, so the subclass can swing or shoot
     protected bool tryAttackFromCurrentPosition()
     {
-        if (GameManager.instance == null || GameManager.instance.player == null) return false;
+        if (GameManager.instance == null || GameManager.instance.player == null)
+            return false;
 
         Vector3 dirToPlayer = GameManager.instance.player.transform.position - transform.position;
         float distance = dirToPlayer.magnitude;
@@ -312,7 +318,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             return false;
         }
 
-        if (Physics.Raycast(transform.position,dirToPlayer.normalized, out RaycastHit hit, config.rangedAttackRange))
+        if (Physics.Raycast(transform.position, dirToPlayer.normalized, out RaycastHit hit, config.rangedAttackRange))
         {
             if (hit.collider.CompareTag("Player") && angleToPlayer <= config.fov)
             {
@@ -347,14 +353,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         return false;
     }
 
-  
+
     public virtual void Roam()
     {
 
         //Check distance from player
         if (GameManager.instance?.player != null)
         {
-            float distToPlayer = Vector3.Distance(transform.position,GameManager.instance.player.transform.position);
+            float distToPlayer = Vector3.Distance(transform.position, GameManager.instance.player.transform.position);
 
             // if too far hunt them down
             if (distToPlayer > config.rangedAttackRange)
@@ -385,9 +391,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         if (roamTarget == null)
         {
             roamTimer += Time.deltaTime;
-            if (roamTimer < config.roamWaitTime) return;
+            if (roamTimer < config.roamWaitTime)
+                return;
             roamTimer = 0f;
-            if (Random.Range(0f, 1f) > config.roamChance) return;
+            if (Random.Range(0f, 1f) > config.roamChance)
+                return;
             pickRoamPoint();
         }
     }
@@ -395,12 +403,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     // true once the agent has arrived at its roam target
     bool AtRoamTarget()
     {
-        if (roamTarget == null) return false;
+        if (roamTarget == null)
+            return false;
         return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + config.roamArrivalDistance;
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) playerInTrigger = true;
+        if (other.CompareTag("Player"))
+            playerInTrigger = true;
     }
 
     private void OnTriggerExit(Collider other)
@@ -421,7 +431,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
     public void TakeDamage(int amount)
     {
-        if (isDead || amount <= 0) return;
+        if (isDead || amount <= 0)
+            return;
 
         currentHP -= amount;
 
@@ -496,7 +507,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     {
         agent.stoppingDistance = Mathf.Max(0.5f, config.attackRange);
         float dist = Vector3.Distance(transform.position, GameManager.instance.player.transform.position);
-        if (dist > config.attackRange || attackTimer <= attackRate) return false;
+        if (dist > config.attackRange || attackTimer <= attackRate)
+            return false;
 
         attackTimer = 0;
         GameManager.instance.player.GetComponent<IDamage>()?.TakeDamage(config.attackDamage);
@@ -525,10 +537,13 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     // player can grab it. weapons only come from enemy drops per the gdd.
     public void ThrowWeapon(GameObject spawnedWeaponModel, Transform pivot)
     {
-        if (spawnedWeaponModel == null) return;
+        if (spawnedWeaponModel == null)
+            return;
         spawnedWeaponModel.transform.SetParent(null);
-        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out WeaponWallAvoidance clip)) clip.enabled = false;
-        if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out var picker)) picker.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out WeaponWallAvoidance clip))
+            clip.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out var picker))
+            picker.enabled = true;
 
         if (!spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody projectileRb))
         {
@@ -547,7 +562,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         // Add subtle spin for realistic throwing physics
         projectileRb.AddTorque(transform.right * 0.3f, ForceMode.Impulse);
 
-        if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider)) weaponCollider.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider))
+            weaponCollider.enabled = true;
 
         spawnedWeaponModel = null;
     }

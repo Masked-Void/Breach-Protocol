@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Script: WaveLightController
  *
  * Description:
@@ -81,7 +81,8 @@ public class WaveLightController : MonoBehaviour
         // );
     }
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         if (instance == this)
             instance = null;
     }

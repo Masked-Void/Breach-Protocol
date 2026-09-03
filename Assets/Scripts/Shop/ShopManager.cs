@@ -1,5 +1,4 @@
-using UnityEngine;
-using System.Collections.Generic;
+﻿using UnityEngine;
 
 /*
  * Script: ShopManager
@@ -81,14 +80,14 @@ public class ShopManager : MonoBehaviour
     //     upgrade.applyUpgrade();
     // }
 
-    
+
 
     // public ShopPopulator[] getShopSlots()
     // {
     //     return shopSlots;
-        
+
     // }
-    
-    
+
+
 }
 

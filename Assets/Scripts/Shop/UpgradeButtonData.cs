@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,10 +38,10 @@ public class UpgradeButtonData : MonoBehaviour
 
     // Handle weapon selection
     void Selected()
-    {   
+    {
         if (AudioManager.instance != null)
             AudioManager.instance.PlayButtonClick();
-                     
+
         if (UpgradeManager.instance != null && upgrade != null)
             UpgradeManager.instance.DisplayUpgrades(upgrade);
     }

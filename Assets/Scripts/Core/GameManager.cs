@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -159,8 +159,6 @@ public class GameManager : MonoBehaviour
     [Tooltip("rounds left in the current weapon")]
     public TextMeshProUGUI magAmmoUI;
 
-    [Tooltip("reserve ammo, unused since the gdd has no reload")]
-
     [Tooltip("icon of the weapon currently held")]
     public Image activeWeapon;
 
@@ -203,7 +201,7 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("GameManager: nothing tagged Player in the scene", this);
         }
 
-        if (player!= null)
+        if (player != null)
         {
             PlayerReady?.Invoke();
         }
@@ -253,7 +251,8 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
         {
-            if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
+            if (AudioManager.instance != null)
+                AudioManager.instance.PlayButtonClick();
             if (menuActive == null)
             {
                 StatePause();
@@ -291,22 +290,32 @@ public class GameManager : MonoBehaviour
 
     public void ResetPauseUI()
     {
-        if (challengesCanvas != null) challengesCanvas.SetActive(false);
-        if (settingsCanvas != null) settingsCanvas.SetActive(false);
-        if (upgradesCanvas != null) upgradesCanvas.SetActive(false);
-        if (soundMenu != null) soundMenu.SetActive(false);
-        if (controlsMenu != null) controlsMenu.SetActive(false);
-        if (backButton != null) backButton.SetActive(false);
-        if (navTab != null) navTab.SetActive(false);
-        if (buttons != null) buttons.SetActive(true);
-        if (pauseScorePanel != null) pauseScorePanel.SetActive(true);
+        if (challengesCanvas != null)
+            challengesCanvas.SetActive(false);
+        if (settingsCanvas != null)
+            settingsCanvas.SetActive(false);
+        if (upgradesCanvas != null)
+            upgradesCanvas.SetActive(false);
+        if (soundMenu != null)
+            soundMenu.SetActive(false);
+        if (controlsMenu != null)
+            controlsMenu.SetActive(false);
+        if (backButton != null)
+            backButton.SetActive(false);
+        if (navTab != null)
+            navTab.SetActive(false);
+        if (buttons != null)
+            buttons.SetActive(true);
+        if (pauseScorePanel != null)
+            pauseScorePanel.SetActive(true);
     }
 
     // Unpause the game
     public void StateUnpause()
     {
         isPaused = false;
-        if (TimeManager.instance != null) TimeManager.instance.UnpauseTime();
+        if (TimeManager.instance != null)
+            TimeManager.instance.UnpauseTime();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         if (menuActive != null)
@@ -314,7 +323,8 @@ public class GameManager : MonoBehaviour
             menuActive.SetActive(false);
             menuActive = null;
         }
-        if (AudioManager.instance != null) AudioManager.instance.RestoreGameplayMusic();
+        if (AudioManager.instance != null)
+            AudioManager.instance.RestoreGameplayMusic();
     }
 
     // Handle the lose state
@@ -375,10 +385,13 @@ public class GameManager : MonoBehaviour
 
     void UpdateUI()
     {
-        if (WaveManager.instance == null) return;
+        if (WaveManager.instance == null)
+            return;
 
-        if (waveCounter != null)waveCounter.text = WaveManager.instance.CurrentWave.ToString("f0");
-        if(killCounter != null) killCounter.text = "Kills: " + WaveManager.instance.EnemiesKilled;
+        if (waveCounter != null)
+            waveCounter.text = WaveManager.instance.CurrentWave.ToString("f0");
+        if (killCounter != null)
+            killCounter.text = "Kills: " + WaveManager.instance.EnemiesKilled;
 
         if (WaveManager.instance.IsWaitingForNextWave)
         {
@@ -402,9 +415,11 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator WarningText()
     {
-        if (shopMessage != null) shopMessage.SetActive(true);
+        if (shopMessage != null)
+            shopMessage.SetActive(true);
         yield return new WaitForSecondsRealtime(5);
-        if (shopMessage != null) shopMessage.SetActive(false);
+        if (shopMessage != null)
+            shopMessage.SetActive(false);
     }
 
     public void ShowShopWarning()

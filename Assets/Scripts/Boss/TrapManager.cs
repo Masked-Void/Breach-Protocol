@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 /*
@@ -26,7 +25,8 @@ using UnityEngine;
  *   seconds regardless of how slow the world is running.
  */
 
-public class TrapManager : MonoBehaviour {
+public class TrapManager : MonoBehaviour
+{
 
     [Header("References")]
     [Tooltip("the four laser pillars, told which pattern to run per phase")]
@@ -75,16 +75,20 @@ public class TrapManager : MonoBehaviour {
     private Coroutine cycleRoutine;
 
 
-    void Awake() {
+    void Awake()
+    {
         // Logs potential fatal errors
-        if (laserManager == null) {
-            Debug.LogWarning("TrapManager: no LaserArrayManager assigned" , this);
+        if (laserManager == null)
+        {
+            Debug.LogWarning("TrapManager: no LaserArrayManager assigned", this);
         }
-        if (lavaManager == null) {
-            Debug.LogWarning("TrapManager: no LavaManager assigned" , this);
+        if (lavaManager == null)
+        {
+            Debug.LogWarning("TrapManager: no LavaManager assigned", this);
         }
-        if (platManager == null) {
-            Debug.LogWarning("TrapManager: no platformsManager assigned" , this);
+        if (platManager == null)
+        {
+            Debug.LogWarning("TrapManager: no platformsManager assigned", this);
         }
 
     }
@@ -112,9 +116,12 @@ public class TrapManager : MonoBehaviour {
         stopCycle();
 
         activateLasers(setup);
-        if (setup.cycleTraps) {
+        if (setup.cycleTraps)
+        {
             cycleRoutine = StartCoroutine(trapCycle(setup));
-        } else {
+        }
+        else
+        {
             activateLava(setup);
             activatePlatforms(setup);
         }
@@ -137,16 +144,19 @@ public class TrapManager : MonoBehaviour {
     {
         stopCycle();
 
-        if (laserManager != null) {
+        if (laserManager != null)
+        {
             laserManager.StopPattern();
             laserManager.StopRotation();
         }
 
-        if (lavaManager != null) {
+        if (lavaManager != null)
+        {
             lavaManager.Drain();
         }
 
-        if (platManager != null) {
+        if (platManager != null)
+        {
             platManager.FallPlatforms();
         }
 
@@ -163,10 +173,12 @@ public class TrapManager : MonoBehaviour {
     {
         bool up = false;
 
-        while (true) {
+        while (true)
+        {
             up = !up;
 
-            if (setup.platformsActive && platManager != null) {
+            if (setup.platformsActive && platManager != null)
+            {
                 if (up)
                     platManager.RisePlatforms();
                 else
@@ -175,30 +187,35 @@ public class TrapManager : MonoBehaviour {
                 platformsUp = up;
             }
 
-            if (setup.lavaActive && lavaManager != null) {
+            if (setup.lavaActive && lavaManager != null)
+            {
                 lavaManager.MoveTo(up ? setup.lavaLevel : 0);
             }
 
-            yield return new WaitForSecondsRealtime(Mathf.Max(0.5f , setup.cycleInterval));
+            yield return new WaitForSecondsRealtime(Mathf.Max(0.5f, setup.cycleInterval));
         }
     }
 
     // starts, stops or regenerates the laser pattern to match the setup
     private void activateLasers(trapSetup setup)
     {
-        if (laserManager == null) {
+        if (laserManager == null)
+        {
             return;
         }
 
-        if (!setup.laserActive) {
-            if (generatedRunning || currentPattern != -1) {
+        if (!setup.laserActive)
+        {
+            if (generatedRunning || currentPattern != -1)
+            {
                 laserManager.StopPattern();
                 generatedRunning = false;
                 currentDifficulty = -1f;
                 currentPattern = -1;
             }
 
-            if (currentSpin != 0) {
+            if (currentSpin != 0)
+            {
                 laserManager.StopRotation();
                 currentSpin = 0;
             }
@@ -206,17 +223,24 @@ public class TrapManager : MonoBehaviour {
             return;
         }
 
-        if (setup.generatePattern) {
-            if (!generatedRunning || !Mathf.Approximately(currentDifficulty , setup.laserDifficulty)) {
+        if (setup.generatePattern)
+        {
+            if (!generatedRunning || !Mathf.Approximately(currentDifficulty, setup.laserDifficulty))
+            {
                 laserManager.StartGeneratedPattern(setup.laserDifficulty);
                 generatedRunning = true;
                 currentDifficulty = setup.laserDifficulty;
                 currentPattern = int.MinValue;
             }
-        } else if (generatedRunning || setup.laserPattern != currentPattern) {
-            if (setup.laserPattern >= 0) {
+        }
+        else if (generatedRunning || setup.laserPattern != currentPattern)
+        {
+            if (setup.laserPattern >= 0)
+            {
                 laserManager.StartPattern(setup.laserPattern);
-            } else {
+            }
+            else
+            {
                 laserManager.StopPattern();
             }
 
@@ -225,25 +249,31 @@ public class TrapManager : MonoBehaviour {
             currentPattern = setup.laserPattern;
         }
 
-        if (setup.laserSpinDirection != currentSpin) {
-            if (setup.laserSpinDirection != 0) {
+        if (setup.laserSpinDirection != currentSpin)
+        {
+            if (setup.laserSpinDirection != 0)
+            {
                 laserManager.StartSpin(setup.laserSpinDirection);
-            } else {
+            }
+            else
+            {
                 laserManager.StopRotation();
             }
 
             currentSpin = setup.laserSpinDirection;
         }
-    
+
     }
 
-    private void activateLava(trapSetup setup) {
+    private void activateLava(trapSetup setup)
+    {
         if (lavaManager == null)
             return;
 
         lavaManager.MoveTo(setup.lavaActive ? setup.lavaLevel : 0f);
     }
-    private void activatePlatforms(trapSetup setup) {
+    private void activatePlatforms(trapSetup setup)
+    {
         if (platManager == null)
             return;
 
@@ -262,27 +292,28 @@ public class TrapManager : MonoBehaviour {
 
 
     [ContextMenu("Apply defaults")]
-    private void applyDefaults() {
+    private void applyDefaults()
+    {
         // Phase 1, enemies only, no hazards at all
-        p1 = makeSetup(false , -1 , false , 0f , 0 , false , 0f , false , false , 0f);
+        p1 = makeSetup(false, -1, false, 0f, 0, false, 0f, false, false, 0f);
 
         // Immune 1, lasers spin and rise and fall
-        p1_p2 = makeSetup(true , -1 , true , 0.15f , 1 , false , 0f , false , false , 0f);
+        p1_p2 = makeSetup(true, -1, true, 0.15f, 1, false, 0f, false, false, 0f);
 
         // Phase 2, the lasers stay active
-        p2 = makeSetup(true , -1 , true , 0.15f , 1 , false , 0f , false , false , 0f);
+        p2 = makeSetup(true, -1, true, 0.15f, 1, false, 0f, false, false, 0f);
 
         // Immune 2, more lasers and the platforms rise so the hold point goes up
-        p2_p3 = makeSetup(true , -1 , true , 0.5f , 1 , false , 0f , true , false , 0f);
+        p2_p3 = makeSetup(true, -1, true, 0.5f, 1, false, 0f, true, false, 0f);
 
         // Phase 3, more lasers again. Platforms stay up since the escalation is cumulative
-        p3 = makeSetup(true , -1 , true , 0.5f , 1 , false , 0f , true , false , 0f);
+        p3 = makeSetup(true, -1, true, 0.5f, 1, false, 0f, true, false, 0f);
 
         // Immune 3, platforms rise with lava behind them
-        p3_p4 = makeSetup(true , -1 , true , 0.8f , -1 , true , 0.6f , true , false , 0f);
+        p3_p4 = makeSetup(true, -1, true, 0.8f, -1, true, 0.6f, true, false, 0f);
 
         // Phase 4, platforms and lava rise and fall on a loop
-        p4 = makeSetup(true , -1 , true , 1f , -1 , true , 0.85f , true , true , 8f);
+        p4 = makeSetup(true, -1, true, 1f, -1, true, 0.85f, true, true, 8f);
     }
 
     // builds a trapSetup in code, used by the defaults and the test menu

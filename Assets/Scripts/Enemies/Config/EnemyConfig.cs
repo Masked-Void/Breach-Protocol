@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: EnemyConfig
@@ -14,7 +14,7 @@ public class EnemyConfig : ScriptableObject
 {
     [Header("Health")]
     [Tooltip("How much health this enemy has: default is 1")]
-    [Range(1,50)] public int maxHP = 1;
+    [Range(1, 50)] public int maxHP = 1;
 
 
     [Header("Combat")]
@@ -50,7 +50,7 @@ public class EnemyConfig : ScriptableObject
     public float roamChance = 0.1f;
 
     [Tooltip("Ranged enemies stay within this far of the player while roaming: default is 20f")]
-    [Range(5f,50f)] public float roamRange = 20f;
+    [Range(5f, 50f)] public float roamRange = 20f;
 
 
     [Header("Footsteps")]

@@ -1,9 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 // a hold point in the boss arena. the player stands inside a cylinder to fill progress, and
 // leaving drains it slowly instead of wiping it. everything in here runs on unscaled time
 // because nothing in the boss fight obeys the player's time scale.
-public class HoldZone : MonoBehaviour {
+public class HoldZone : MonoBehaviour
+{
 
     public enum holdMode { breakImmunity, dealDamage }
 
@@ -75,15 +76,18 @@ public class HoldZone : MonoBehaviour {
 
     private Vector3 barBaseScale = Vector3.one;
 
-    void Awake() {
-        if (player == null) {
+    void Awake()
+    {
+        if (player == null)
+        {
             GameObject gameObj = GameObject.FindGameObjectWithTag(playerTag);
             if (gameObj != null)
                 player = gameObj.transform;
         }
 
-        if (player == null) {
-            Debug.LogError("HoldZone: no player reference and nothing is tagger: " + playerTag , this);
+        if (player == null)
+        {
+            Debug.LogError("HoldZone: no player reference and nothing is tagger: " + playerTag, this);
         }
 
         if (fillSprite != null)
@@ -96,18 +100,20 @@ public class HoldZone : MonoBehaviour {
     }
 
 
-    void OnValidate() {
+    void OnValidate()
+    {
         matchMarkerToRadius();
     }
 
-    void Update() {
+    void Update()
+    {
         if (!isActive || player == null)
             return;
 
         playerInside = checkInside();
 
         // fills while standing in and slowly decreases while not
-        float rate = 1f / Mathf.Max(0.01f , fillTime);
+        float rate = 1f / Mathf.Max(0.01f, fillTime);
         if (playerInside)
             progress += rate * Time.unscaledDeltaTime;
         else
@@ -117,7 +123,8 @@ public class HoldZone : MonoBehaviour {
         updateScreen();
 
         // Reports to the manager that the zone has been completed
-        if (progress >= 1f && !reported) {
+        if (progress >= 1f && !reported)
+        {
             reported = true;
             if (owner != null)
                 owner.HoldComplete(this);
@@ -159,7 +166,7 @@ public class HoldZone : MonoBehaviour {
         fillSprite.transform.localScale = scale;
 
         Color state = playerInside ? fillingColor : drainingColor;
-        Color lit = state * Mathf.Lerp(1f , brightnessAtFull , progress);
+        Color lit = state * Mathf.Lerp(1f, brightnessAtFull, progress);
 
         lit.a = state.a;
         fillSprite.color = lit;
@@ -173,11 +180,12 @@ public class HoldZone : MonoBehaviour {
         if (zoneMarker == null)
             return;
 
-        zoneMarker.localScale = new Vector3(radius * 2f , zoneMarker.localScale.y , radius * 2f);
+        zoneMarker.localScale = new Vector3(radius * 2f, zoneMarker.localScale.y, radius * 2f);
     }
 
 
-    public void Activate(HoldZoneManager manager) {
+    public void Activate(HoldZoneManager manager)
+    {
         owner = manager;
         progress = 0f;
         playerInside = false;
@@ -186,14 +194,16 @@ public class HoldZone : MonoBehaviour {
 
         matchMarkerToRadius();
 
-        if (visuals != null) {
+        if (visuals != null)
+        {
             visuals.SetActive(true);
         }
 
         updateScreen();
     }
 
-    public void Deactivate() {
+    public void Deactivate()
+    {
         isActive = false;
         playerInside = false;
         progress = 0f;
@@ -207,19 +217,22 @@ public class HoldZone : MonoBehaviour {
 
 
     [ContextMenu("Fill Hold")]
-    void debugFill() {
+    void debugFill()
+    {
         progress = 1f;
         updateScreen();
     }
 
     [ContextMenu("Empty Hold")]
-    void debugEmpty() {
+    void debugEmpty()
+    {
         progress = 0f;
         reported = false;
         updateScreen();
     }
 
-    void OnDrawGizmos() {
+    void OnDrawGizmos()
+    {
         Gizmos.color = isActive ? Color.cyan : Color.magenta;
 
         Vector3 bottom = transform.position + Vector3.up * baseOffset;
@@ -230,14 +243,16 @@ public class HoldZone : MonoBehaviour {
     }
 
 
-    void drawRing(Vector3 center) {
+    void drawRing(Vector3 center)
+    {
         int steps = 32;
-        Vector3 prev = center + new Vector3(radius , 0 , 0);
+        Vector3 prev = center + new Vector3(radius, 0, 0);
 
-        for (int i = 1 ; i <= steps ; i++) {
+        for (int i = 1; i <= steps; i++)
+        {
             float area = (i / (float)steps) * Mathf.PI * 2f;
-            Vector3 next = center + new Vector3(Mathf.Cos(area) , 0f , Mathf.Sin(area)) * radius;
-            Gizmos.DrawLine(prev , next);
+            Vector3 next = center + new Vector3(Mathf.Cos(area), 0f, Mathf.Sin(area)) * radius;
+            Gizmos.DrawLine(prev, next);
             prev = next;
         }
     }

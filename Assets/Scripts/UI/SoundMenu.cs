@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,7 +46,8 @@ public class SoundMenu : MonoBehaviour
 
     public void ToggleMute()
     {
-        if (AudioManager.instance == null) return;
+        if (AudioManager.instance == null)
+            return;
 
         AudioManager.instance.ToggleMute();
         UpdateVisuals();
@@ -54,7 +55,8 @@ public class SoundMenu : MonoBehaviour
 
     public void UpdateVisuals()
     {
-        if (AudioManager.instance == null) return;
+        if (AudioManager.instance == null)
+            return;
 
         bool isMuted = AudioManager.instance.isMuted;
 
@@ -75,7 +77,8 @@ public class SoundMenu : MonoBehaviour
 
     private void onMasterSliderChanged(float val)
     {
-        if (AudioManager.instance == null) return;
+        if (AudioManager.instance == null)
+            return;
 
         if (AudioManager.instance.isMuted && val > 0f)
         {
@@ -88,7 +91,8 @@ public class SoundMenu : MonoBehaviour
 
     private void onMusicSliderChanged(float val)
     {
-        if (AudioManager.instance == null) return;
+        if (AudioManager.instance == null)
+            return;
 
         if (AudioManager.instance.isMuted && val > 0f)
         {
@@ -101,7 +105,8 @@ public class SoundMenu : MonoBehaviour
 
     private void onSFXSliderChanged(float val)
     {
-        if (AudioManager.instance == null) return;
+        if (AudioManager.instance == null)
+            return;
 
         if (AudioManager.instance.isMuted && val > 0f)
         {

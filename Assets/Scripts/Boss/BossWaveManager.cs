@@ -1,11 +1,12 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 
 // runs enemy spawning for the CEO fight. the boss manager swaps setups as phases start and end,
 // and a single loop keeps topping the arena back up to whatever the current setup allows.
 // everything in here is real seconds because nothing in the boss arena obeys the player's time scale.
-public class BossWaveManager : MonoBehaviour , IWaveHost {
+public class BossWaveManager : MonoBehaviour, IWaveHost
+{
     public static BossWaveManager instance;
 
     [Header("Prefabs")]
@@ -83,8 +84,10 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
 
 
 
-    void Awake() {
-        if (instance != null && instance != this) {
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
             Destroy(gameObject);
             return;
         }
@@ -99,11 +102,13 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         setWaveSetupBase();
     }
 
-    void OnDestroy() {
+    void OnDestroy()
+    {
         if (instance == this)
             instance = null;
 
-        if (ReferenceEquals(waveHost.active, this)) {
+        if (ReferenceEquals(waveHost.active, this))
+        {
             waveHost.active = null;
         }
     }
@@ -125,17 +130,22 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     public void EndP4() { StopSpawning(); }
 
     // swaps music and flashes the warning lights when the fight changes state
-    private void segmentCue(bool immuneWindow) {
-        if (WaveLightController.instance != null) {
+    private void segmentCue(bool immuneWindow)
+    {
+        if (WaveLightController.instance != null)
+        {
             WaveLightController.instance.FlashWarningLights(lightFlashTime);
         }
 
         if (AudioManager.instance == null)
             return;
 
-        if (immuneWindow) {
+        if (immuneWindow)
+        {
             AudioManager.instance.PlayMusic(immuneMusic);
-        } else {
+        }
+        else
+        {
             AudioManager.instance.PlayMusic(phaseMusic);
         }
     }
@@ -147,13 +157,15 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
 
         current = setup;
 
-        if (spawnRoutine == null) {
+        if (spawnRoutine == null)
+        {
             spawnRoutine = StartCoroutine(spawnLoop());
         }
     }
 
 
-    public void StopSpawning() {
+    public void StopSpawning()
+    {
         if (spawnRoutine == null)
             return;
 
@@ -166,11 +178,13 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     private IEnumerator spawnLoop()
     {
         // only fill the room that is left, so it never goes above maxEnemiesOnMap but it isnt target.
-        while (true) {
+        while (true)
+        {
             int roomLeft = current.maxEnemiesOnMap - enemiesAlive;
-            int toSpawn = Mathf.Min(roomLeft , current.maxSpawnCount);
+            int toSpawn = Mathf.Min(roomLeft, current.maxSpawnCount);
 
-            for (int i = 0 ; i < toSpawn ; i++) {
+            for (int i = 0; i < toSpawn; i++)
+            {
                 spawnOne();
 
                 // Wait before spawning the next one
@@ -179,7 +193,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
 
             // Real seconds like the rest of the boss arena, Floor so a setup left at 0
             // cannot spin the loop every frame
-            yield return new WaitForSecondsRealtime(Mathf.Max(0.05f , current.timeBetweenBursts));
+            yield return new WaitForSecondsRealtime(Mathf.Max(0.05f, current.timeBetweenBursts));
         }
     }
 
@@ -198,12 +212,14 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
             return;
 
         // Spawn the enemy
-        GameObject enemy = Instantiate(enemyPrefab , point.point.position , point.point.rotation);
+        GameObject enemy = Instantiate(enemyPrefab, point.point.position, point.point.rotation);
 
         // Only ranged enemioes roll for roaming
-        if (typeSpawned == EnemyType.ranged) {
-            if (enemy.TryGetComponent<EnemyBase>(out EnemyBase enemyScript)) {
-                enemyScript.willRoam = Random.Range(0f , 1f) <= giveWillRoamChance;
+        if (typeSpawned == EnemyType.ranged)
+        {
+            if (enemy.TryGetComponent<EnemyBase>(out EnemyBase enemyScript))
+            {
+                enemyScript.willRoam = Random.Range(0f, 1f) <= giveWillRoamChance;
             }
         }
 
@@ -220,7 +236,8 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
 
         int counted = 0;
 
-        for (int i = 0 ; i < source.Length ; i++) {
+        for (int i = 0; i < source.Length; i++)
+        {
             if (source[i] != null)
                 counted++;
         }
@@ -229,7 +246,8 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
 
         int writen = 0;
 
-        for (int i = 0 ; i < source.Length ; i++) {
+        for (int i = 0; i < source.Length; i++)
+        {
             if (source[i] == null)
                 continue;
 
@@ -240,11 +258,13 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         return cleaned;
     }
 
-    private void assignSpawnPoints(Transform[] points) {
+    private void assignSpawnPoints(Transform[] points)
+    {
         Transform[] cleaned = cleanList(points);
         spawnPoints = new SpawnPoint[cleaned.Length];
 
-        for (int i = 0 ; i < cleaned.Length ; i++) {
+        for (int i = 0; i < cleaned.Length; i++)
+        {
             SpawnPoint newPoint = new SpawnPoint();
             newPoint.point = cleaned[i];
             newPoint.lastUsed = 0f;
@@ -252,17 +272,20 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
             spawnPoints[i] = newPoint;
         }
 
-        if (cleaned.Length == 0) {
-            Debug.LogError("bossWaveManager: no spawn points assigned" , this);
+        if (cleaned.Length == 0)
+        {
+            Debug.LogError("bossWaveManager: no spawn points assigned", this);
         }
     }
 
 
-    private void assignRoamPoints(Transform[] points) {
+    private void assignRoamPoints(Transform[] points)
+    {
         Transform[] cleaned = cleanList(points);
         roamPoints = new RoamPoint[cleaned.Length];
 
-        for (int i = 0 ; i < cleaned.Length ; i++) {
+        for (int i = 0; i < cleaned.Length; i++)
+        {
             RoamPoint newPoint = new RoamPoint();
             newPoint.point = cleaned[i];
             newPoint.claimedBy = null;
@@ -270,49 +293,58 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
             roamPoints[i] = newPoint;
         }
 
-        if (cleaned.Length == 0) {
-            Debug.LogError("bossWaveManager: no roam points assigned" , this);
+        if (cleaned.Length == 0)
+        {
+            Debug.LogError("bossWaveManager: no roam points assigned", this);
         }
     }
 
     public int EnemiesAlive => enemiesAlive;
 
-    public void EnemyKilled() {
+    public void EnemyKilled()
+    {
         enemiesAlive--;
 
-        if (enemiesAlive < 0) {
+        if (enemiesAlive < 0)
+        {
             enemiesAlive = 0;
         }
 
-        if (HeartbeatManager.instance != null) {
+        if (HeartbeatManager.instance != null)
+        {
             HeartbeatManager.instance.EnemyKilled();
         }
     }
 
 
-    public void ReleaseRoamPoint(GameObject askingEnemy) {
+    public void ReleaseRoamPoint(GameObject askingEnemy)
+    {
         if (askingEnemy == null)
             return;
         if (roamPoints == null)
             return;
 
-        for (int i = 0 ; i < roamPoints.Length ; i++) {
-            if (roamPoints[i].claimedBy == askingEnemy) {
+        for (int i = 0; i < roamPoints.Length; i++)
+        {
+            if (roamPoints[i].claimedBy == askingEnemy)
+            {
                 roamPoints[i].claimedBy = null;
             }
         }
     }
 
 
-    public Transform ClaimRoamPoint(GameObject askingEnemy) {
+    public Transform ClaimRoamPoint(GameObject askingEnemy)
+    {
         if (askingEnemy == null)
             return null;
         if (roamPoints == null || roamPoints.Length == 0)
             return null;
 
-        int startIndex = Random.Range(0 , roamPoints.Length);
+        int startIndex = Random.Range(0, roamPoints.Length);
 
-        for (int i = 0 ; i < roamPoints.Length ; i++) {
+        for (int i = 0; i < roamPoints.Length; i++)
+        {
             RoamPoint candidate = roamPoints[(startIndex + i) % roamPoints.Length];
 
             if (!candidate.isFree)
@@ -326,18 +358,21 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     }
 
 
-    private SpawnPoint getSpawnPoint() {
+    private SpawnPoint getSpawnPoint()
+    {
         if (spawnPoints == null || spawnPoints.Length == 0)
             return null;
 
         // Gets a random position to start
-        int startIndex = Random.Range(0 , spawnPoints.Length);
+        int startIndex = Random.Range(0, spawnPoints.Length);
 
         //  Goes through the list looking for a point that is off cooldown while starting at the original point
-        for (int i = 0 ; i < spawnPoints.Length ; i++) {
+        for (int i = 0; i < spawnPoints.Length; i++)
+        {
             SpawnPoint candidate = spawnPoints[(startIndex + i) % spawnPoints.Length];
 
-            if (candidate.IsFree(spawnPointCooldown)) {
+            if (candidate.IsFree(spawnPointCooldown))
+            {
                 return candidate;
             }
         }
@@ -352,7 +387,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         if (list == null || list.Length == 0)
             return null;
 
-        return list[Random.Range(0 , list.Length)];
+        return list[Random.Range(0, list.Length)];
     }
 
 
@@ -364,16 +399,18 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         if (totalPercent <= 0f)
             return null;
 
-        float randomValue = Random.Range(0f , totalPercent);
+        float randomValue = Random.Range(0f, totalPercent);
 
-        if (randomValue < current.rangedEnemyPercent) {
+        if (randomValue < current.rangedEnemyPercent)
+        {
             typeSpawned = EnemyType.ranged;
             return pickFrom(rangedEnemyPrefabs);
         }
 
         randomValue -= current.rangedEnemyPercent;
 
-        if (randomValue < current.basicEnemyPercent) {
+        if (randomValue < current.basicEnemyPercent)
+        {
             typeSpawned = EnemyType.basic;
             return pickFrom(basicEnemyPrefabs);
         }
@@ -387,30 +424,37 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     // sets the starting setup so the loop has something to read before phase 1
     private void setWaveSetupBase()
     {
-        waveSetup[] waves = new waveSetup[] { p1 , p1_p2 ,p2, p2_p3 , p3 , p3_p4 , p4 };
+        waveSetup[] waves = new waveSetup[] { p1, p1_p2, p2, p2_p3, p3, p3_p4, p4 };
 
-        for (int i = 0 ; i < waves.Length ; i++) {
-            if (waves[i].basicEnemyPercent == 0f) {
+        for (int i = 0; i < waves.Length; i++)
+        {
+            if (waves[i].basicEnemyPercent == 0f)
+            {
                 waves[i].basicEnemyPercent = 0.25f;
             }
 
-            if (waves[i].heavyEnemyPercent == 0f) {
+            if (waves[i].heavyEnemyPercent == 0f)
+            {
                 waves[i].heavyEnemyPercent = 0.25f;
             }
 
-            if (waves[i].rangedEnemyPercent == 0f) {
+            if (waves[i].rangedEnemyPercent == 0f)
+            {
                 waves[i].rangedEnemyPercent = 0.5f;
             }
 
-            if (waves[i].maxEnemiesOnMap == 0) {
+            if (waves[i].maxEnemiesOnMap == 0)
+            {
                 waves[i].maxEnemiesOnMap = 10;
             }
 
-            if (waves[i].maxSpawnCount == 0) {
+            if (waves[i].maxSpawnCount == 0)
+            {
                 waves[i].maxSpawnCount = 5;
             }
 
-            if (waves[i].timeBetweenBursts == 0) {
+            if (waves[i].timeBetweenBursts == 0)
+            {
                 waves[i].timeBetweenBursts = 5;
             }
         }

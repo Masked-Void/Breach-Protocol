@@ -1,6 +1,4 @@
-using UnityEngine;
-
-/// <summary>
+﻿/// <summary>
 /// GOD MODE: incoming hit stress is ignored for the duration.
 /// </summary>
 public class GodModeKillstreak : KillstreakBase

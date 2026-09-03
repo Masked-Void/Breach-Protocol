@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: PlayerInteraction
@@ -104,7 +104,8 @@ public class PlayerInteraction : MonoBehaviour
             {
                 GameManager.instance.interactionText.text = "Open Shop!";
                 setInteractionUI(true);
-                if (Input.GetKeyDown(KeyCode.E)) openShop();
+                if (Input.GetKeyDown(KeyCode.E))
+                    openShop();
 
                 return;
             }
@@ -118,7 +119,8 @@ public class PlayerInteraction : MonoBehaviour
         setInteractionUI(false);
         GameManager.instance.StatePause();
         shopOpen = true;
-        if (GameManager.instance.shopUI != null) GameManager.instance.shopUI.SetActive(true);
+        if (GameManager.instance.shopUI != null)
+            GameManager.instance.shopUI.SetActive(true);
     }
 
     // unpauses and hides the shop panel
@@ -126,14 +128,16 @@ public class PlayerInteraction : MonoBehaviour
     {
         GameManager.instance.StateUnpause();
         shopOpen = false;
-        if (GameManager.instance.shopUI != null) GameManager.instance.shopUI.SetActive(false);
+        if (GameManager.instance.shopUI != null)
+            GameManager.instance.shopUI.SetActive(false);
         setInteractionUI(false);
     }
 
     // early outs when the state hasn't changed, SetActive every frame is wasteful
     void setInteractionUI(bool active)
     {
-        if (isShowingUI == active) return;
+        if (isShowingUI == active)
+            return;
         isShowingUI = active;
 
         if (GameManager.instance != null && GameManager.instance.interactionUI != null)

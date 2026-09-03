@@ -1,6 +1,4 @@
-using UnityEngine;
-
-/// <summary>
+﻿/// <summary>
 /// DATA PURGE: instantly kills every enemy in the level. Kills are suppressed,
 /// so they clear the wave count without awarding score, bytes or challenges.
 /// </summary>
@@ -13,7 +11,7 @@ public class DataPurgeKillstreak : KillstreakBase
             AudioManager.instance.PlayNuke();
         }
 
-        
+
         EnemyBase[] enemies = FindObjectsByType<EnemyBase>();
 
         foreach (EnemyBase enemy in enemies)

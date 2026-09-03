@@ -94,7 +94,8 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
 
     void Start()
     {
-        currentStamina = maxStamina;;
+        currentStamina = maxStamina;
+        ;
     }
 
     void Update()
@@ -138,7 +139,8 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
         bool isMovingForward = vInput > 0;
 
         bool canSprint = isMoving && currentStamina > 0.01f;
-        if (sprintForwardOnly) canSprint &= isMovingForward;
+        if (sprintForwardOnly)
+            canSprint &= isMovingForward;
 
         bool isSprinting = Input.GetButton("Sprint") && canSprint;
 

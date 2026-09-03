@@ -1,8 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TutorialManager : MonoBehaviour
 {
-    void Awake() {
+    void Awake()
+    {
 
         //GameManager.instance.player.TryGetComponent<>
 

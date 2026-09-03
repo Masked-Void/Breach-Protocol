@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 /*
@@ -41,7 +41,8 @@ public class BasicEnemy : EnemyBase
             spawnedWeapon.transform.localPosition = Vector3.zero;
             spawnedWeapon.transform.localRotation = Quaternion.identity;
 
-            if(spawnedWeapon.TryGetComponent<PickWeapon>(out PickWeapon picker)) picker.enabled = false;
+            if (spawnedWeapon.TryGetComponent<PickWeapon>(out PickWeapon picker))
+                picker.enabled = false;
 
             katanaTransform = spawnedWeapon.transform;
             katanaOrigRot = katanaTransform.localRotation;
@@ -91,7 +92,7 @@ public class BasicEnemy : EnemyBase
     public override void Die()
     {
         ThrowWeapon(spawnedWeapon, handPos);
-        katanaTransform = null; 
+        katanaTransform = null;
         base.Die();
     }
 }

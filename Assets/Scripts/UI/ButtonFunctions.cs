@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -39,22 +39,26 @@ public class ButtonFunctions : MonoBehaviour
     // closes the menu and hands control back to the game
     public void resume()
     {
-        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
-        if (GameManager.instance != null) GameManager.instance.StateUnpause();
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlayButtonClick();
+        if (GameManager.instance != null)
+            GameManager.instance.StateUnpause();
     }
 
     // reloads the current level from scratch
     public void restart()
 
     {
-        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlayButtonClick();
         StartCoroutine(LoadSceneAsync(SceneManager.GetActiveScene().name));
     }
 
     // leaves the run and goes back to the title screen
     public void home()
     {
-        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlayButtonClick();
         StartCoroutine(LoadSceneAsync("Title"));
     }
 
@@ -62,7 +66,8 @@ public class ButtonFunctions : MonoBehaviour
     // so the bar reaches 100 before anything swaps
     public IEnumerator LoadSceneAsync(String levelName)
     {
-        if (loadingBackground != null) loadingBackground.SetActive(true);
+        if (loadingBackground != null)
+            loadingBackground.SetActive(true);
 
         if (progressBar != null)
         {
@@ -85,13 +90,16 @@ public class ButtonFunctions : MonoBehaviour
             yield return null;
         }
 
-        if (progressBar != null) progressBar.value = 1f;
+        if (progressBar != null)
+            progressBar.value = 1f;
 
         yield return new WaitForSecondsRealtime(0.2f);
 
-        if (AudioManager.instance != null) AudioManager.instance.StopMusic();
+        if (AudioManager.instance != null)
+            AudioManager.instance.StopMusic();
         Time.timeScale = 1f;
-        if (GameManager.instance != null) GameManager.instance.StateUnpause();
+        if (GameManager.instance != null)
+            GameManager.instance.StateUnpause();
         scene.allowSceneActivation = true;
     }
 
@@ -100,78 +108,106 @@ public class ButtonFunctions : MonoBehaviour
 
     {
         deactivateAllPanels();
-        if (GameManager.instance.challengesCanvas != null) GameManager.instance.challengesCanvas.SetActive(true);
+        if (GameManager.instance.challengesCanvas != null)
+            GameManager.instance.challengesCanvas.SetActive(true);
     }
 
     public void upgrade()
     {
         deactivateAllPanels();
-        if (GameManager.instance.upgradesCanvas != null) GameManager.instance.upgradesCanvas.SetActive(true);
+        if (GameManager.instance.upgradesCanvas != null)
+            GameManager.instance.upgradesCanvas.SetActive(true);
     }
 
     public void options()
     {
-        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlayButtonClick();
         deactivateAllPanels();
-        if (GameManager.instance.backButton != null) GameManager.instance.backButton.SetActive(true);
-        if (GameManager.instance.navTab != null) GameManager.instance.navTab.SetActive(true);
-        if (GameManager.instance.settingsCanvas != null) GameManager.instance.settingsCanvas.SetActive(true);
+        if (GameManager.instance.backButton != null)
+            GameManager.instance.backButton.SetActive(true);
+        if (GameManager.instance.navTab != null)
+            GameManager.instance.navTab.SetActive(true);
+        if (GameManager.instance.settingsCanvas != null)
+            GameManager.instance.settingsCanvas.SetActive(true);
     }
 
     public void settings()
     {
-        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlayButtonClick();
         deactivateAllPanels();
-        if (GameManager.instance.settingsCanvas != null) GameManager.instance.settingsCanvas.SetActive(true);
+        if (GameManager.instance.settingsCanvas != null)
+            GameManager.instance.settingsCanvas.SetActive(true);
     }
 
     public void sound()
     {
-        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
-        if (GameManager.instance.controlsMenu != null) GameManager.instance.controlsMenu.SetActive(false);
-        if (GameManager.instance.soundMenu != null) GameManager.instance.soundMenu.SetActive(true);
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlayButtonClick();
+        if (GameManager.instance.controlsMenu != null)
+            GameManager.instance.controlsMenu.SetActive(false);
+        if (GameManager.instance.soundMenu != null)
+            GameManager.instance.soundMenu.SetActive(true);
     }
 
     public void controls()
     {
-        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
-        if (GameManager.instance.soundMenu != null) GameManager.instance.soundMenu.SetActive(false);
-        if (GameManager.instance.controlsMenu != null) GameManager.instance.controlsMenu.SetActive(true);
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlayButtonClick();
+        if (GameManager.instance.soundMenu != null)
+            GameManager.instance.soundMenu.SetActive(false);
+        if (GameManager.instance.controlsMenu != null)
+            GameManager.instance.controlsMenu.SetActive(true);
     }
 
     public void pauseBack()
     {
-        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlayButtonClick();
         deactivateAllPanels();
-        if (GameManager.instance.backButton != null) GameManager.instance.backButton.SetActive(false);
-        if (GameManager.instance.navTab != null) GameManager.instance.navTab.SetActive(false);
-        if (GameManager.instance.buttons != null) GameManager.instance.buttons.SetActive(true);
-        if (GameManager.instance.pauseScorePanel != null) GameManager.instance.pauseScorePanel.SetActive(true);
+        if (GameManager.instance.backButton != null)
+            GameManager.instance.backButton.SetActive(false);
+        if (GameManager.instance.navTab != null)
+            GameManager.instance.navTab.SetActive(false);
+        if (GameManager.instance.buttons != null)
+            GameManager.instance.buttons.SetActive(true);
+        if (GameManager.instance.pauseScorePanel != null)
+            GameManager.instance.pauseScorePanel.SetActive(true);
     }
 
     // hides every page so only one is ever up at a time
     void deactivateAllPanels()
     {
-        if (GameManager.instance == null) return;
-        if (GameManager.instance.challengesCanvas != null) GameManager.instance.challengesCanvas.SetActive(false);
-        if (GameManager.instance.settingsCanvas != null) GameManager.instance.settingsCanvas.SetActive(false);
-        if (GameManager.instance.upgradesCanvas != null) GameManager.instance.upgradesCanvas.SetActive(false);
-        if (GameManager.instance.soundMenu != null) GameManager.instance.soundMenu.SetActive(false);
-        if (GameManager.instance.controlsMenu != null) GameManager.instance.controlsMenu.SetActive(false);
-        if (GameManager.instance.buttons != null) GameManager.instance.buttons.SetActive(false);
-        if (GameManager.instance.pauseScorePanel != null) GameManager.instance.pauseScorePanel.SetActive(false);
+        if (GameManager.instance == null)
+            return;
+        if (GameManager.instance.challengesCanvas != null)
+            GameManager.instance.challengesCanvas.SetActive(false);
+        if (GameManager.instance.settingsCanvas != null)
+            GameManager.instance.settingsCanvas.SetActive(false);
+        if (GameManager.instance.upgradesCanvas != null)
+            GameManager.instance.upgradesCanvas.SetActive(false);
+        if (GameManager.instance.soundMenu != null)
+            GameManager.instance.soundMenu.SetActive(false);
+        if (GameManager.instance.controlsMenu != null)
+            GameManager.instance.controlsMenu.SetActive(false);
+        if (GameManager.instance.buttons != null)
+            GameManager.instance.buttons.SetActive(false);
+        if (GameManager.instance.pauseScorePanel != null)
+            GameManager.instance.pauseScorePanel.SetActive(false);
     }
 
 
     public void quit()
     {
-        if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #elif UNITY_WEBGL
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlayButtonClick();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_WEBGL
             Application.OpenURL("about:blank");
-        #else
+#else
             Application.Quit();
-        #endif
+#endif
     }
 }

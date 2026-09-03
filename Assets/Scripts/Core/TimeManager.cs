@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: TimeManager
@@ -138,7 +138,7 @@ public class TimeManager : MonoBehaviour
             blend
         );
 
-        
+
 
         ApplyTimeScale(currentTimeScale);
     }

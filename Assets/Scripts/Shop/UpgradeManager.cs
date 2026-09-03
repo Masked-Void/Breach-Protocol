@@ -1,6 +1,6 @@
-using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 /*
@@ -49,7 +49,7 @@ public class UpgradeManager : MonoBehaviour
     public TextMeshProUGUI upgradeValue;
     public Button buyButton;
     public TextMeshProUGUI buyButtonText;
-    
+
     [Header("Currency")]
     public TextMeshProUGUI fileCountText;
     public int files;
@@ -78,7 +78,8 @@ public class UpgradeManager : MonoBehaviour
 
     public bool IsUpgradeUnlocked(UpgradeData upgrade)
     {
-        if (upgrade == null) return false;
+        if (upgrade == null)
+            return false;
 
         // If no challenges are required, unlock automatically
         if (upgrade.requiredChallenges == null || upgrade.requiredChallenges.Length == 0)
@@ -102,9 +103,12 @@ public class UpgradeManager : MonoBehaviour
     // Display Upgrade Info i.e Name, cost etc
     public void DisplayUpgrades(UpgradeData upgrade)
     {
-        if (upgrade == null) return;
-        if (upgradeName != null) upgradeName.text = upgrade.upgradeName;
-        if (upgradeIcon != null) upgradeIcon.sprite = upgrade.icon;
+        if (upgrade == null)
+            return;
+        if (upgradeName != null)
+            upgradeName.text = upgrade.upgradeName;
+        if (upgradeIcon != null)
+            upgradeIcon.sprite = upgrade.icon;
 
         if (upgradeDescription != null)
         {
@@ -112,9 +116,12 @@ public class UpgradeManager : MonoBehaviour
                 ? upgrade.description + $". Reduces firerate by 1/{upgrade.value}"
                 : upgrade.description;
         }
-        if (upgradeCost != null) upgradeCost.text = "" + upgrade.cost;
-        if (upgradeValue != null) upgradeValue.text = "" + upgrade.value;
-        if (fileCountText != null) fileCountText.text = "" + files;
+        if (upgradeCost != null)
+            upgradeCost.text = "" + upgrade.cost;
+        if (upgradeValue != null)
+            upgradeValue.text = "" + upgrade.value;
+        if (fileCountText != null)
+            fileCountText.text = "" + files;
 
         displayRequiredChallenges(upgrade);
 
@@ -155,13 +162,15 @@ public class UpgradeManager : MonoBehaviour
 
     private void displayRequiredChallenges(UpgradeData upgrade)
     {
-        if (requiredChallengeSlots == null) return;
+        if (requiredChallengeSlots == null)
+            return;
 
         int reqCount = (upgrade != null && upgrade.requiredChallenges != null) ? upgrade.requiredChallenges.Length : 0;
 
         for (int i = 0; i < requiredChallengeSlots.Length; i++)
         {
-            if (requiredChallengeSlots[i].slotRoot == null) continue;
+            if (requiredChallengeSlots[i].slotRoot == null)
+                continue;
 
             if (i < reqCount)
             {
@@ -255,7 +264,8 @@ public class UpgradeManager : MonoBehaviour
 
     public void LoadUpgrades()
     {
-        if (!PlayerPrefs.HasKey("UnlockedUpgrades")) return;
+        if (!PlayerPrefs.HasKey("UnlockedUpgrades"))
+            return;
         upgradeSaveData data = JsonUtility.FromJson<upgradeSaveData>(PlayerPrefs.GetString("UnlockedUpgrades"));
         purchasedUpgrades = data.purchased ?? new List<string>();
         activeUpgrades = data.active ?? new List<string>();

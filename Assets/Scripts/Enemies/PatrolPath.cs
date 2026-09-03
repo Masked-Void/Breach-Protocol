@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: PatrolPath
@@ -42,7 +42,8 @@ public class PatrolPath : MonoBehaviour
     {
         idx += direction;
 
-        if (pathType == PathType.Loop) idx = ((idx % patrolPoints.Length) + patrolPoints.Length) % patrolPoints.Length;
+        if (pathType == PathType.Loop)
+            idx = ((idx % patrolPoints.Length) + patrolPoints.Length) % patrolPoints.Length;
         else if (pathType == PathType.ReverseWhenDone)
         {
             if (idx >= patrolPoints.Length || idx < 0)
@@ -61,7 +62,8 @@ public class PatrolPath : MonoBehaviour
     // advances to the next waypoint and returns where it is
     public Vector3 NextWaypointPosition()
     {
-        if (patrolPoints.Length == 0) return transform.position;
+        if (patrolPoints.Length == 0)
+            return transform.position;
         idx = NextWaypointIndex();
         Vector3 nextWayPoint = patrolPoints[idx].position;
 
@@ -71,7 +73,8 @@ public class PatrolPath : MonoBehaviour
     // draws the route in the scene view so it can be laid out visually
     void OnDrawGizmos()
     {
-        if (patrolPoints == null || patrolPoints.Length == 0) return;
+        if (patrolPoints == null || patrolPoints.Length == 0)
+            return;
 
         Gizmos.color = Color.white;
 

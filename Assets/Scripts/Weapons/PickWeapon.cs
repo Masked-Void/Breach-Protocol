@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 // sits on a weapon lying on the ground. enemies carry one with this disabled,
 // and it turns back on when the weapon is thrown or dropped on death.
@@ -14,7 +14,8 @@ public class PickWeapon : MonoBehaviour
     // challenges check
     public void Interact(IPickWeapon pic)
     {
-        if (pic == null || weapon == null) return;
+        if (pic == null || weapon == null)
+            return;
 
         weapon.isFromGround = true;
         pic.EquipWeapon(weapon, remainingAmmo);

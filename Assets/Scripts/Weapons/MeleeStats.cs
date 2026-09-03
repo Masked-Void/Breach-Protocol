@@ -1,5 +1,4 @@
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 
 /*
  * Script: MeleeStats
@@ -47,7 +46,8 @@ public class MeleeStats : WeaponStats
     public override void Attack()
     {
         Transform gunBarrel = WeaponManager.instance.Barrel;
-        if (gunBarrel == null) return;
+        if (gunBarrel == null)
+            return;
 
         WeaponManager.instance.PlayMeleeSwing();
         AudioManager.instance.PlaySFX(swingSound, swingSoundVol);
@@ -59,15 +59,18 @@ public class MeleeStats : WeaponStats
         {
             // //register source for challenge manager
             EnemyBase eb = hit.transform.GetComponent<EnemyBase>();
-            if (eb == null) eb = hit.transform.GetComponentInParent<EnemyBase>();
-            if (eb != null) eb.RegisterDamageSource(this, isFromGround);
+            if (eb == null)
+                eb = hit.transform.GetComponentInParent<EnemyBase>();
+            if (eb != null)
+                eb.RegisterDamageSource(this, isFromGround);
 
             IDamage dmg = hit.transform.GetComponent<IDamage>();
             if (dmg != null)
             {
                 dmg.TakeDamage(attackDamage);
                 AudioManager.instance.PlaySFX(hitFleshSound, hitFleshVol);
-            } else if (hit.collider.CompareTag("Shield"))
+            }
+            else if (hit.collider.CompareTag("Shield"))
             {
                 AudioManager.instance.PlaySFX(hitShieldSound, hitShieldVol);
             }
@@ -75,7 +78,7 @@ public class MeleeStats : WeaponStats
             {
                 AudioManager.instance.PlaySFX(hitWallSound, hitWallVol);
             }
-            
+
         }
     }
 }

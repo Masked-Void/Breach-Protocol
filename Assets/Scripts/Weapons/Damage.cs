@@ -1,5 +1,5 @@
+﻿using System.Collections;
 using UnityEngine;
-using System.Collections;
 
 /*
  * Script: Damage
@@ -152,10 +152,12 @@ public class Damage : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (type != DamageType.throwable || hasHit) return;
+        if (type != DamageType.throwable || hasHit)
+            return;
 
         Collider other = collision.collider;
-        if (other.isTrigger || other.CompareTag("Player")) return;
+        if (other.isTrigger || other.CompareTag("Player"))
+            return;
 
         hasHit = true;
         Vector3 hitPoint = collision.contacts[0].point;
@@ -165,7 +167,8 @@ public class Damage : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.isTrigger) return;
+        if (other.isTrigger)
+            return;
 
         if (type == DamageType.bullet && ((1 << other.gameObject.layer) & deflectLayer) != 0)
         {
@@ -175,8 +178,10 @@ public class Damage : MonoBehaviour
 
         if (type == DamageType.bullet)
         {
-            if (isExplosive) explode();
-            else if (hitEffect != null) Instantiate(hitEffect, transform.position, Quaternion.identity);
+            if (isExplosive)
+                explode();
+            else if (hitEffect != null)
+                Instantiate(hitEffect, transform.position, Quaternion.identity);
         }
 
         Vector3 hitPoint = other.ClosestPoint(transform.position);
@@ -205,8 +210,10 @@ public class Damage : MonoBehaviour
             if (sourceWeapon != null)
             {
                 EnemyBase eb = other.GetComponent<EnemyBase>();
-                if (eb == null) eb = other.GetComponentInParent<EnemyBase>();
-                if (eb != null) eb.RegisterDamageSource(sourceWeapon, sourceWeapon.isFromGround);
+                if (eb == null)
+                    eb = other.GetComponentInParent<EnemyBase>();
+                if (eb != null)
+                    eb.RegisterDamageSource(sourceWeapon, sourceWeapon.isFromGround);
             }
 
             IDamage dmg = other.GetComponent<IDamage>();
@@ -228,7 +235,8 @@ public class Damage : MonoBehaviour
     // DOT damage, we do not use it right now
     void OnTriggerStay(Collider other)
     {
-        if (other.isTrigger) return;
+        if (other.isTrigger)
+            return;
 
         IDamage dmg = other.GetComponent<IDamage>();
         if (dmg != null && type == DamageType.DOT && !isDamaging)
@@ -299,7 +307,8 @@ public class Damage : MonoBehaviour
                 targetRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
 
             IDamage dmg = hit.GetComponent<IDamage>();
-            if (dmg != null) StartCoroutine(delayDamage(dmg));
+            if (dmg != null)
+                StartCoroutine(delayDamage(dmg));
         }
     }
 

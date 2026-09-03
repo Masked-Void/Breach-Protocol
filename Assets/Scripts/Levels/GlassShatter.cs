@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: GlassShatter
@@ -38,7 +38,8 @@ public class GlassShatter : MonoBehaviour
     // called by a bullet. bulletShatterForce of -1 falls back to the default 200.
     public void Shatter(Vector3 hitPoint, Vector3 bulletDirection = default, float bulletShatterForce = -1f)
     {
-        if (hasShattered) return;
+        if (hasShattered)
+            return;
         hasShattered = true;
 
         if (wholeGlass != null)

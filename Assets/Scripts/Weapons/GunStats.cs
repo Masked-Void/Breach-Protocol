@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: GunStats
@@ -56,7 +56,8 @@ public class GunStats : WeaponStats
     {
 
         Transform gunBarrel = WeaponManager.instance.Barrel;
-        if (gunBarrel == null) return;
+        if (gunBarrel == null)
+            return;
 
         AudioManager.instance.PlaySFX(shootSound, shootSoundVol);
 

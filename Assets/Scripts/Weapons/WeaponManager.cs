@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 /*
@@ -86,7 +86,8 @@ public class WeaponManager : MonoBehaviour
 
     void Start()
     {
-        if (GameManager.instance == null || GameManager.instance.playerScript == null) return;
+        if (GameManager.instance == null || GameManager.instance.playerScript == null)
+            return;
 
         // player might already be found by now, if so just go
         if (GameManager.instance != null && GameManager.instance.playerScript != null)
@@ -112,10 +113,12 @@ public class WeaponManager : MonoBehaviour
         }
         else
         {
-            if (starterWeapon != null) activeWeapon = starterWeapon;
+            if (starterWeapon != null)
+                activeWeapon = starterWeapon;
         }
 
-        if (activeWeapon != null) spawnWeapon(activeWeapon);
+        if (activeWeapon != null)
+            spawnWeapon(activeWeapon);
     }
 
     void Update()
@@ -126,8 +129,10 @@ public class WeaponManager : MonoBehaviour
 
     void OnDestroy()
     {
-        if (activeWeapon != null) activeWeapon.isFromGround = false;
-        if (instance == this) instance = null;
+        if (activeWeapon != null)
+            activeWeapon.isFromGround = false;
+        if (instance == this)
+            instance = null;
     }
 
     void OnEnable() => GameManager.PlayerReady += setupWeapons;
@@ -146,12 +151,15 @@ public class WeaponManager : MonoBehaviour
 
     IEnumerator equip(WeaponStats newWeapon, int ammoOverride)
     {
-        if (newWeapon == null || isEquipping) yield break;
+        if (newWeapon == null || isEquipping)
+            yield break;
 
         isEquipping = true;
-        if (spawnedWeaponModel != null) ThrowWeapon();
+        if (spawnedWeaponModel != null)
+            ThrowWeapon();
         yield return new WaitForSecondsRealtime(1f);
-        if (AudioManager.instance != null) AudioManager.instance.PlayEquip();
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlayEquip();
         spawnWeapon(newWeapon, ammoOverride);
         isEquipping = false;
     }
@@ -168,10 +176,14 @@ public class WeaponManager : MonoBehaviour
         spawnedWeaponModel.transform.localPosition = Vector3.zero;
         spawnedWeaponModel.transform.localRotation = Quaternion.identity;
 
-        if (spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody rb)) rb.isKinematic = true;
-        if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out PickWeapon picker)) picker.enabled = false;
-        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out WeaponWallAvoidance clip)) clip.enabled = true;
-        if (spawnedWeaponModel.TryGetComponent<Damage>(out Damage thrownDamage)) thrownDamage.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<Rigidbody>(out Rigidbody rb))
+            rb.isKinematic = true;
+        if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out PickWeapon picker))
+            picker.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out WeaponWallAvoidance clip))
+            clip.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<Damage>(out Damage thrownDamage))
+            thrownDamage.enabled = false;
 
         string targetName = (activeWeapon is GunStats) ? "Muzzle" : "HitPoint";
         gunBarrel = FindDeepChild(spawnedWeaponModel.transform, targetName);
@@ -184,9 +196,11 @@ public class WeaponManager : MonoBehaviour
 
     public void ThrowWeapon()
     {
-        if (spawnedWeaponModel == null) return;
+        if (spawnedWeaponModel == null)
+            return;
         spawnedWeaponModel.transform.SetParent(null);
-        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out WeaponWallAvoidance clip)) clip.enabled = false;
+        if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out WeaponWallAvoidance clip))
+            clip.enabled = false;
         if (spawnedWeaponModel.TryGetComponent<PickWeapon>(out PickWeapon picker))
         {
             picker.weapon = activeWeapon;
@@ -221,8 +235,10 @@ public class WeaponManager : MonoBehaviour
         // Add subtle spin for realistic throwing physics
         projectileRb.AddTorque(Camera.main.transform.right * 10f, ForceMode.Impulse);
 
-        if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider)) weaponCollider.enabled = true;
-        if (spawnedWeaponModel.TryGetComponent<Damage>(out Damage thrownDamage)) thrownDamage.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<Collider>(out Collider weaponCollider))
+            weaponCollider.enabled = true;
+        if (spawnedWeaponModel.TryGetComponent<Damage>(out Damage thrownDamage))
+            thrownDamage.enabled = true;
 
         if (!spawnedWeaponModel.TryGetComponent<DroppedWeapon>(out DroppedWeapon dropped))
             dropped = spawnedWeaponModel.AddComponent<DroppedWeapon>();
@@ -240,9 +256,11 @@ public class WeaponManager : MonoBehaviour
     {
         foreach (Transform child in parent)
         {
-            if (child.name == name) return child;
+            if (child.name == name)
+                return child;
             Transform result = FindDeepChild(child, name);
-            if (result != null) return result;
+            if (result != null)
+                return result;
         }
         return null;
     }
@@ -251,8 +269,9 @@ public class WeaponManager : MonoBehaviour
     {
         get
         {
-            if (activeWeapon == null) return 0f;
-         
+            if (activeWeapon == null)
+                return 0f;
+
             float rate = activeWeapon.attackRate;
 
             // Check if fire rate upgrade is active
@@ -265,9 +284,12 @@ public class WeaponManager : MonoBehaviour
 
     public void Attack()
     {
-        if (activeWeapon == null || attackTimer < UpgradeFireRate) return;
-        if (currentAmmo <= 0) { AudioManager.instance.PlayEmptyMag(); return; }
-        if (HeartbeatManager.instance != null) HeartbeatManager.instance.PlayerShot();
+        if (activeWeapon == null || attackTimer < UpgradeFireRate)
+            return;
+        if (currentAmmo <= 0)
+        { AudioManager.instance.PlayEmptyMag(); return; }
+        if (HeartbeatManager.instance != null)
+            HeartbeatManager.instance.PlayerShot();
 
         attackTimer = 0f;
         currentAmmo--;
@@ -276,7 +298,8 @@ public class WeaponManager : MonoBehaviour
 
     void updateHUD()
     {
-        if (GameManager.instance == null) return;
+        if (GameManager.instance == null)
+            return;
 
         bool isGun = activeWeapon is GunStats;
         if (GameManager.instance.ammoPanel != null)
@@ -294,7 +317,8 @@ public class WeaponManager : MonoBehaviour
 
     void updateWeaponIcons()
     {
-        if (GameManager.instance == null) return;
+        if (GameManager.instance == null)
+            return;
 
         if (activeWeapon != null && GameManager.instance.activeWeapon != null)
         {
@@ -315,7 +339,8 @@ public class WeaponManager : MonoBehaviour
 
     public void PlayMeleeSwing()
     {
-        if (spawnedWeaponModel == null || isMeleeSwinging) return;
+        if (spawnedWeaponModel == null || isMeleeSwinging)
+            return;
 
         StartCoroutine(meleeSwing());
     }

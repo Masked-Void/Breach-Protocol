@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 /*
@@ -173,7 +173,8 @@ public class AudioManager : MonoBehaviour
             sfxSource.volume = isMuted ? 0f : (sfxVolume * masterVolume);
     }
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         if (instance == this)
             instance = null;
     }
@@ -208,7 +209,8 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(AudioClip clip, float localVolumeMod = 1f)
     {
-        if (clip == null || sfxSource == null) return;
+        if (clip == null || sfxSource == null)
+            return;
 
         float Volume = localVolumeMod * sfxVolume * masterVolume;
         sfxSource.PlayOneShot(clip, Volume);
@@ -216,7 +218,8 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySpatialSFX(AudioClip clip, Vector3 position, float localVolumeMod = 1f, float minDistance = 1f, float maxDistance = 50f)
     {
-        if (clip == null) return;
+        if (clip == null)
+            return;
 
         GameObject tempGO = new GameObject("TempAudio");
         tempGO.transform.position = position;
@@ -239,7 +242,8 @@ public class AudioManager : MonoBehaviour
     public void PlayMusic(AudioClip clip)
     {
         StopPauseCoroutine();
-        if (clip == null || musicSource == null) return;
+        if (clip == null || musicSource == null)
+            return;
 
         musicSource.clip = clip;
         musicSource.volume = isMuted ? 0f : musicVolume * masterVolume;
@@ -248,18 +252,21 @@ public class AudioManager : MonoBehaviour
 
     public void PauseMusic()
     {
-        if (musicSource != null && musicSource.isPlaying) musicSource.Pause();
+        if (musicSource != null && musicSource.isPlaying)
+            musicSource.Pause();
     }
 
     public void ResumeMusic()
     {
-        if (musicSource != null) musicSource.UnPause();
+        if (musicSource != null)
+            musicSource.UnPause();
     }
 
     public void StopMusic()
     {
         StopPauseCoroutine();
-        if (musicSource != null) musicSource.Stop();
+        if (musicSource != null)
+            musicSource.Stop();
     }
 
     public void Unmute()
@@ -290,7 +297,8 @@ public class AudioManager : MonoBehaviour
     public void RestoreGameplayMusic()
     {
         StopPauseCoroutine();
-        if (musicSource == null) return;
+        if (musicSource == null)
+            return;
         if (musicSource.clip != pauseMenuMusic)
         {
             ResumeMusic();

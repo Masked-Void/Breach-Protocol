@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 /*
@@ -26,7 +26,8 @@ public class PlatformManager : MonoBehaviour
 {
 
     [System.Serializable]
-    public class platformStage {
+    public class platformStage
+    {
         [Tooltip("platforms that belong to this stage")]
         public Transform[] platforms;
 
@@ -70,7 +71,8 @@ public class PlatformManager : MonoBehaviour
     private Coroutine[] stageRoutines;
 
 
-    void Awake() {
+    void Awake()
+    {
         cacheStages();
     }
 
@@ -82,26 +84,30 @@ public class PlatformManager : MonoBehaviour
 
         stageRoutines = new Coroutine[stages.Length];
 
-        if (stageBase == null) {
-            Debug.LogError("PlatformManager: No stage base marker given" , this);
+        if (stageBase == null)
+        {
+            Debug.LogError("PlatformManager: No stage base marker given", this);
             return;
         }
 
 
-        for (int i = 0 ; i < stages.Length ; i++) {
+        for (int i = 0; i < stages.Length; i++)
+        {
             platformStage stage = stages[i];
 
             // stage starts unusable, only flipped on once setup finishes
             stage.ready = false;
 
             // catches a fat fingered array size in the inspector, checked before anything allocates
-            if (stage.platforms == null || stage.platforms.Length > 256) {
-                Debug.LogError("stage " + i + " has a bad platforms array, check the array size" , this);
+            if (stage.platforms == null || stage.platforms.Length > 256)
+            {
+                Debug.LogError("stage " + i + " has a bad platforms array, check the array size", this);
                 continue;
             }
 
-            if (stage.topMarker == null) {
-                Debug.LogError("stage " + i + " has no top marker" , this);
+            if (stage.topMarker == null)
+            {
+                Debug.LogError("stage " + i + " has no top marker", this);
                 continue;
             }
 
@@ -111,7 +117,8 @@ public class PlatformManager : MonoBehaviour
             stage.order = new int[stage.platforms.Length];
             stage.riseHeight = stage.topMarker.position.y - stageBase.position.y;
 
-            for (int j = 0 ; j < stage.platforms.Length ; j++) {
+            for (int j = 0; j < stage.platforms.Length; j++)
+            {
                 stage.order[j] = j;
 
                 if (stage.platforms[j] == null)
@@ -131,14 +138,16 @@ public class PlatformManager : MonoBehaviour
 
     [ContextMenu("Rise Platforms")]
     // sends every stage up
-    public void RisePlatforms() {
+    public void RisePlatforms()
+    {
         startPass(true);
     }
 
 
     [ContextMenu("Fall Platforms")]
     // sends every stage back down
-    public void FallPlatforms() {
+    public void FallPlatforms()
+    {
         startPass(false);
     }
 
@@ -152,19 +161,24 @@ public class PlatformManager : MonoBehaviour
 
     // stops the pass and every per stage and per platform routine underneath it,
     // so nothing survives a phase handoff
-    void stopEveryPass() {
-        if (passRoutine != null) {
+    void stopEveryPass()
+    {
+        if (passRoutine != null)
+        {
             StopCoroutine(passRoutine);
-            passRoutine= null;
+            passRoutine = null;
         }
 
-        if (stageRoutines == null) {
+        if (stageRoutines == null)
+        {
             return;
         }
 
-        for (int i = 0 ; i < stageRoutines.Length ; i++) {
-            if (stageRoutines[i] != null) {
-                StopCoroutine (stageRoutines[i]);
+        for (int i = 0; i < stageRoutines.Length; i++)
+        {
+            if (stageRoutines[i] != null)
+            {
+                StopCoroutine(stageRoutines[i]);
                 stageRoutines[i] = null;
             }
         }
@@ -172,9 +186,11 @@ public class PlatformManager : MonoBehaviour
 
 
     // walks the stages in order, waiting stageStagger between each
-    IEnumerator runPass(bool rising) {
-        for (int i = 0 ; i < stages.Length ; i++) {
-            stageRoutines[i] = StartCoroutine(runStage(stages[i] , rising));
+    IEnumerator runPass(bool rising)
+    {
+        for (int i = 0; i < stages.Length; i++)
+        {
+            stageRoutines[i] = StartCoroutine(runStage(stages[i], rising));
 
             if (stageStagger > 0f)
                 yield return new WaitForSecondsRealtime(stageStagger);
@@ -192,23 +208,26 @@ public class PlatformManager : MonoBehaviour
             yield break;
 
         // no stagger means the whole stage goes at once
-        if (inStageStagger <= 0f) {
-            for (int p = 0 ; p < stage.platforms.Length ; p++)
-                movePlatform(stage , p , rising);
+        if (inStageStagger <= 0f)
+        {
+            for (int p = 0; p < stage.platforms.Length; p++)
+                movePlatform(stage, p, rising);
 
             yield break;
         }
 
         // shuffle in place so the stage does not fire the same way every time
-        for (int i = stage.order.Length - 1 ; i > 0 ; i--) {
-            int swap = Random.Range(0 , i + 1);
+        for (int i = stage.order.Length - 1; i > 0; i--)
+        {
+            int swap = Random.Range(0, i + 1);
             int temp = stage.order[i];
             stage.order[i] = stage.order[swap];
             stage.order[swap] = temp;
         }
 
-        for (int i = 0 ; i < stage.order.Length ; i++) {
-            movePlatform(stage , stage.order[i] , rising);
+        for (int i = 0; i < stage.order.Length; i++)
+        {
+            movePlatform(stage, stage.order[i], rising);
 
             yield return new WaitForSecondsRealtime(inStageStagger);
         }
@@ -216,25 +235,28 @@ public class PlatformManager : MonoBehaviour
 
 
     // stops whatever this platform was doing before starting the new direction
-    void movePlatform(platformStage stage , int index , bool rising) {
+    void movePlatform(platformStage stage, int index, bool rising)
+    {
         if (stage.platforms[index] == null)
             return;
 
         if (stage.platformRoutines[index] != null)
             StopCoroutine(stage.platformRoutines[index]);
 
-        stage.platformRoutines[index] = StartCoroutine(rising ? risePlatform(stage , index) : fallPlatform(stage , index));
+        stage.platformRoutines[index] = StartCoroutine(rising ? risePlatform(stage, index) : fallPlatform(stage, index));
     }
 
 
     // drives one platform up to the top
-    IEnumerator risePlatform(platformStage stage , int index) {
-        while (stage.current[index] < 1f) {
+    IEnumerator risePlatform(platformStage stage, int index)
+    {
+        while (stage.current[index] < 1f)
+        {
 
-            float step = Mathf.Min(Time.unscaledDeltaTime , 0.05f);
-            
-            stage.current[index] = Mathf.MoveTowards(stage.current[index] , 1f , stage.riseSpeed * step);
-            applyHeight(stage , index);
+            float step = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
+
+            stage.current[index] = Mathf.MoveTowards(stage.current[index], 1f, stage.riseSpeed * step);
+            applyHeight(stage, index);
             yield return null;
         }
 
@@ -243,12 +265,14 @@ public class PlatformManager : MonoBehaviour
 
 
     // drives one platform back down to the base
-    IEnumerator fallPlatform(platformStage stage , int index) {
-        while (stage.current[index] > 0f) {
+    IEnumerator fallPlatform(platformStage stage, int index)
+    {
+        while (stage.current[index] > 0f)
+        {
 
-            float step = Mathf.Min(Time.unscaledDeltaTime , 0.05f);
-            stage.current[index] = Mathf.MoveTowards(stage.current[index] , 0f , stage.fallSpeed * step);
-            applyHeight(stage , index);
+            float step = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
+            stage.current[index] = Mathf.MoveTowards(stage.current[index], 0f, stage.fallSpeed * step);
+            applyHeight(stage, index);
             yield return null;
         }
 

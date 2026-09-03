@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 // small random helpers shared across the project
 public static class RandomUtility
@@ -12,8 +12,10 @@ public static class RandomUtility
     public static bool Roll(float chance)
     {
 
-        if (chance <= 0) return false;
-        if (chance >= 1) return true;
+        if (chance <= 0)
+            return false;
+        if (chance >= 1)
+            return true;
 
         bool output = Random.value < chance;
 

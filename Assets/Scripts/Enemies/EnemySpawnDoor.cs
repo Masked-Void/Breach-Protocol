@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Script: EnemySpawnDoor
  *
  * Description:
@@ -32,7 +32,7 @@ public class EnemySpawnDoor : MonoBehaviour
     private void Start()
     {
         doorStartPos = door.transform.localPosition;
-        doorOpenPos = new Vector3(-1,0, 0);
+        doorOpenPos = new Vector3(-1, 0, 0);
 
     }
 
@@ -43,13 +43,14 @@ public class EnemySpawnDoor : MonoBehaviour
 
         if (isAnimating)
         {
-           shouldReopen = true;
+            shouldReopen = true;
 
-        }else
+        }
+        else
         {
             currentCoroutine = StartCoroutine(DoorOpening());
         }
-        
+
     }
 
 
@@ -86,18 +87,18 @@ public class EnemySpawnDoor : MonoBehaviour
         while (timer < doorClosing)
         {
             //If walks back in trigger mid close back to open
-           if (shouldReopen)
+            if (shouldReopen)
             {
                 isAnimating = false;
                 currentCoroutine = StartCoroutine(DoorOpening());
                 yield break;
             }
 
-           //Else keep closing
+            //Else keep closing
             timer += Time.deltaTime;
             float t = timer / doorClosing;
 
-            door.transform.localPosition = Vector3.Lerp(doorOpenPos,doorStartPos, t);
+            door.transform.localPosition = Vector3.Lerp(doorOpenPos, doorStartPos, t);
 
             yield return null;
         }
