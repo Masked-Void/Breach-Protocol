@@ -32,7 +32,7 @@ public class BasicEnemy : EnemyBase
     protected override void attack()
     {
         float distToPlayer = Vector3.Distance(transform.position, GameManager.instance.player.transform.position);
-        if (katanaTransform != null && attackRange > distToPlayer)
+        if (katanaTransform != null && AttackRange > distToPlayer)
         {
             if (tryMeleeHit())
             {

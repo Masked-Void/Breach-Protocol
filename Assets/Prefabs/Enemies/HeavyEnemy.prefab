@@ -164,23 +164,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::heavyEnemy
   model: {fileID: 2567143705488947480}
   agent: {fileID: 304971188936524132}
-  maxHP: 1
-  faceTargetSpeed: 30
-  FOV: 120
+  config: {fileID: 11400000, guid: f17e55f56ac6a4d4ba3cb3c53c5900cc, type: 2}
   attackRate: 0.5
-  attackRange: 3
-  attackDamage: 3
-  rangedEnemeyAttackRange: 15
-  roamWaitTime: 1.4
   roamTarget: {fileID: 0}
-  roamArriveDistance: 0.1
-  roamChance: 0.1
   hasLeftSpawnRoom: 0
   willRoam: 0
   roamPoint: {fileID: 0}
-  stepInterval: 0.5
-  movementThreshold: 0.1
-  maxRoamDistanceFromPlayer: 15
   pushbackForce: 3
 --- !u!33 &977282381851803801
 MeshFilter:

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
@@ -12,26 +12,24 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     [Header("Agent")]
     [SerializeField] public NavMeshAgent agent;
 
-    [Header("Stats")]
+    [Header("Config")]
+    [Tooltip("tuning for this enemy type, one asset per type")]
+    [SerializeField] private EnemyConfig config;
+
+    [Header("Runtime Stats")]
+    // copied out of the config in awake so streaks and guns can change them per enemy
     int currentHP;
-    [Range(1, 50)][SerializeField] int maxHP;
-    [Range(1, 30)][SerializeField] float faceTargetSpeed = 8f;
-    [Range(15, 180)][SerializeField] float FOV = 120f;
-    [Range(.1f, 5)][SerializeField] public float attackRate = 1.5f;
-    [Range(1, 20)][SerializeField] public float attackRange = 2f;
-    [Range(1, 20)][SerializeField] public int attackDamage = 1;
-    [Range(1, 20)][SerializeField] public float rangedEnemeyAttackRange = 15f;
+    public float attackRate;
+
+    // read straight off the config, nothing changes these at runtime
+    public float AttackRange => config.attackRange;
+    public int AttackDamage => config.attackDamage;
 
     [Header("Roaming")]
-    [SerializeField] float roamWaitTime = 1.1f;
     float roamTimer;
     public Transform roamTarget;
-    [SerializeField] float roamArriveDistance = 0.1f;
-    [SerializeField] float roamChance = .1f;
 
-    [Header("Currency")]
-    int byteValue = 5;
-
+    float stepTimer;
 
     protected bool playerInTrigger;
     protected float angleToPlayer;
@@ -55,14 +53,6 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     bool hasChallengeManager;
     bool hasUpgradeManager;
 
-    [Header("Footsteps")]
-    [SerializeField] float stepInterval = 0.5f;
-    [SerializeField] float movementThreshold = 0.1f;
-    float stepTimer;
-
-    [Header("Ranged AI Settings")]
-    [Range(5f, 30f)][SerializeField] float maxRoamDistanceFromPlayer = 15f; // distance ranged ai should stay within player
-
     // small compatibility state used by the scorestreak system
     private bool isDead;
     private bool suppressKillRewards;
@@ -71,7 +61,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        currentHP = maxHP;
+        attackRate = config.shotInterval;
+        currentHP = config.maxHP;
         stoppingDistOrig = agent.stoppingDistance;
        if (willRoam)
         {
@@ -112,7 +103,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             */
             if (GameManager.instance?.player != null)
             {
-                agent.stoppingDistance = Mathf.Max(0.5f, attackRange - 0.5f);
+                agent.stoppingDistance = Mathf.Max(0.5f, config.attackRange - 0.5f);
                 agent.SetDestination(GameManager.instance.player.transform.position);
                 playerDir = GameManager.instance.player.transform.position - transform.position;
                 FaceTarget();
@@ -146,7 +137,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
                 float distance = playerDir.magnitude;
               
                 
-                if (distance <= rangedEnemeyAttackRange)
+                if (distance <= config.rangedAttackRange)
                 {
                  attack();
                 }
@@ -201,7 +192,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
             float distToPlayer = Vector3.Distance(candidatePoint.position , playerPos);
 
-            if (distToPlayer <= maxRoamDistanceFromPlayer && distToPlayer < closestDistance)
+            if (distToPlayer <= config.roamRange && distToPlayer < closestDistance)
             {
                 if (closestPoint != null)
                 {
@@ -222,11 +213,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
     void HandleFootSteps()
     {
-        if (agent.velocity.magnitude > movementThreshold)
+        if (agent.velocity.magnitude > config.stepSpeedThreshold)
         {
             stepTimer += Time.deltaTime;
 
-            if (stepTimer >= stepInterval)
+            if (stepTimer >= config.stepInterval)
             {
                 stepTimer = 0f;
 
@@ -250,9 +241,9 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         Vector3 dirToPlayer = GameManager.instance.player.transform.position - transform.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
 
-        if (Physics.Raycast(transform.position, dirToPlayer.normalized, out RaycastHit hit, rangedEnemeyAttackRange))
+        if (Physics.Raycast(transform.position, dirToPlayer.normalized, out RaycastHit hit, config.rangedAttackRange))
         {
-            return hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player") && angleToPlayer <= FOV;
+            return hit.collider.CompareTag("Player") || hit.collider.transform.root.CompareTag("Player") && angleToPlayer <= config.fov;
         }
         return false;
     }
@@ -267,14 +258,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         float distance = dirToPlayer.magnitude;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
 
-        if (willRoam && distance > rangedEnemeyAttackRange)
+        if (willRoam && distance > config.rangedAttackRange)
         {
             return false;
         }
 
-        if (Physics.Raycast(transform.position,dirToPlayer.normalized, out RaycastHit hit, rangedEnemeyAttackRange))
+        if (Physics.Raycast(transform.position,dirToPlayer.normalized, out RaycastHit hit, config.rangedAttackRange))
         {
-            if (hit.collider.CompareTag("Player") && angleToPlayer <= FOV)
+            if (hit.collider.CompareTag("Player") && angleToPlayer <= config.fov)
             {
                 playerDir = dirToPlayer;
                 FaceTarget();
@@ -294,7 +285,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
         if (Physics.Raycast(transform.position, playerDir, out RaycastHit hit))
         {
-            if (hit.collider.CompareTag("Player") && angleToPlayer <= FOV)
+            if (hit.collider.CompareTag("Player") && angleToPlayer <= config.fov)
             {
                 agent.SetDestination(GameManager.instance.player.transform.position);
                 FaceTarget();
@@ -317,7 +308,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             float distToPlayer = Vector3.Distance(transform.position,GameManager.instance.player.transform.position);
 
             // if too far hunt them down
-            if (distToPlayer > rangedEnemeyAttackRange)
+            if (distToPlayer > config.rangedAttackRange)
             {
                 agent.SetDestination(GameManager.instance.player.transform.position);
                 agent.stoppingDistance = 0f;
@@ -345,16 +336,16 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         if (roamTarget == null)
         {
             roamTimer += Time.deltaTime;
-            if (roamTimer < roamWaitTime) return;
+            if (roamTimer < config.roamWaitTime) return;
             roamTimer = 0f;
-            if (Random.Range(0f, 1f) > roamChance) return;
+            if (Random.Range(0f, 1f) > config.roamChance) return;
             pickRoamPoint();
         }
     }
     bool AtRoamTarget()
     {
         if (roamTarget == null) return false;
-        return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + roamArriveDistance;
+        return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + config.roamArrivalDistance;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -434,7 +425,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
             if (GameManager.instance != null)
             {
                 GameManager.instance.AddKill();
-                GameManager.instance.AddBytes(byteValue);
+                GameManager.instance.AddBytes(config.byteValue);
             }
 
             if (KillChainManager.instance != null)
@@ -456,19 +447,19 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     public void FaceTarget()
     {
         Quaternion rot = Quaternion.LookRotation(new Vector3(playerDir.x, 0, playerDir.z));
-        transform.rotation = Quaternion.Lerp(transform.rotation, rot, faceTargetSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, rot, config.turnSpeed * Time.deltaTime);
     }
 
     protected abstract void attack();
 
     protected bool tryMeleeHit()
     {
-        agent.stoppingDistance = Mathf.Max(0.5f, attackRange);
+        agent.stoppingDistance = Mathf.Max(0.5f, config.attackRange);
         float dist = Vector3.Distance(transform.position, GameManager.instance.player.transform.position);
-        if (dist > attackRange || attackTimer <= attackRate) return false;
+        if (dist > config.attackRange || attackTimer <= attackRate) return false;
 
         attackTimer = 0;
-        GameManager.instance.player.GetComponent<IDamage>()?.TakeDamage(attackDamage);
+        GameManager.instance.player.GetComponent<IDamage>()?.TakeDamage(config.attackDamage);
         return true;
     }
 

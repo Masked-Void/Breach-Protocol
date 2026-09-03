@@ -83,23 +83,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedEnemy
   model: {fileID: 3262802430056639548}
   agent: {fileID: 7931631704010347091}
-  maxHP: 1
-  faceTargetSpeed: 20
-  FOV: 100
+  config: {fileID: 11400000, guid: b921c6bf04a70f94793783087845b41b, type: 2}
   attackRate: 0.4
-  attackRange: 8
-  attackDamage: 1
-  rangedEnemeyAttackRange: 15
-  roamWaitTime: 1.8
   roamTarget: {fileID: 0}
-  roamArriveDistance: 0.1
-  roamChance: 0.1
   hasLeftSpawnRoom: 0
   willRoam: 0
   roamPoint: {fileID: 0}
-  stepInterval: 0.5
-  movementThreshold: 0.1
-  maxRoamDistanceFromPlayer: 15
   gunPivot: {fileID: 7980070263694380636}
   gunRotateSpeed: 20
   gunModel: {fileID: 2706629671963561621}
