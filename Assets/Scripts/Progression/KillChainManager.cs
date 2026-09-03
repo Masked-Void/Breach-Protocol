@@ -48,6 +48,11 @@ public class KillChainManager : MonoBehaviour
             ResetChain();
     }
 
+    private void OnEnable() => EnemyEvents.Killed += handleKill;
+    private void OnDisable() => EnemyEvents.Killed -= handleKill;
+
+    private void handleKill(EnemyBase enemy) => RegisterKill();
+
     public void RegisterKill()
     {
         killChainCount++;

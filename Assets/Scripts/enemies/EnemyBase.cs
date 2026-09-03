@@ -53,11 +53,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     bool hasChallengeManager;
     bool hasUpgradeManager;
 
+    public WeaponStats LastDamageWeapon => lastDamageWeapon;
+
     // small compatibility state used by the scorestreak system
     private bool isDead;
     private bool suppressKillRewards;
 
     public bool IsDead => isDead;
+    public int ByteValue => config.byteValue;
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -406,32 +409,15 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
         bool awardKillRewards = !suppressKillRewards;
         suppressKillRewards = false;
 
-        // REPORT TO CHALLENGE SYSTEM
-        if (awardKillRewards && lastDamageWeapon != null)
+        if (awardKillRewards)
         {
-            // ChallengeManager.instance?.ReportKill(lastDamageWeapon, lastDamageFromGround);
-            //ChallengeManager.instance?.ReportKill(WeaponManager.instance.activeWeapon);
-            ChallengeManager.instance?.ReportKill(lastDamageWeapon);
+            EnemyEvents.RaiseKilled(this);
         }
 
         // enemies talk to the wave through waveHost, not the singleton
         if (waveHost.active != null)
         {
             waveHost.active.EnemyKilled();
-        }
-
-        if (awardKillRewards)
-        {
-            if (GameManager.instance != null)
-            {
-                GameManager.instance.AddKill();
-                GameManager.instance.AddBytes(config.byteValue);
-            }
-
-            if (KillChainManager.instance != null)
-            {
-                KillChainManager.instance.RegisterKill();
-            }
         }
 
         Destroy(gameObject);

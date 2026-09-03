@@ -3,24 +3,24 @@ using System;
 
 public static class EnemyEvents
 {
-    public static event Action<EnemyBase> killed;
+    public static event Action<EnemyBase> Killed;
 
-    public static event Action<EnemyBase> shotAtPlayer;
+    public static event Action<EnemyBase> ShotAtPlayer;
 
     public static void RaiseKilled(EnemyBase enemy)
     {
-        killed?.Invoke(enemy);
+        Killed?.Invoke(enemy);
     }
 
     public static void RaiseShotAtPlayer(EnemyBase enemy)
     {
-        shotAtPlayer?.Invoke(enemy);
+        ShotAtPlayer?.Invoke(enemy);
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void clearOldEvents()
     {
-        killed = null;
-        shotAtPlayer = null;
+        Killed = null;
+        ShotAtPlayer = null;
     }
 }

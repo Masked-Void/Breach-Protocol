@@ -35,6 +35,11 @@ public class ScoreManager : MonoBehaviour
         ResetForNewRun();
     }
 
+    private void OnEnable() => EnemyEvents.Killed += handleKill;
+    private void OnDisable() => EnemyEvents.Killed -= handleKill;
+
+    private void handleKill(EnemyBase enemy) => RegisterKill();
+
     public int RegisterKill()
     {
         float stress01 =

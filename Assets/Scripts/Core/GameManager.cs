@@ -115,6 +115,16 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private void OnEnable() => EnemyEvents.Killed += handleKill;
+    private void OnDisable() => EnemyEvents.Killed -= handleKill;
+
+    private void handleKill(EnemyBase enemy)
+    {
+        AddKill();
+        AddBytes(enemy.ByteValue);
+    }
+
+
     public static event System.Action PlayerReady;
 
     void OnDestroy()

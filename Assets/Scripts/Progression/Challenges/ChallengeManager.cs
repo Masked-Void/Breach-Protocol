@@ -54,6 +54,18 @@ public class ChallengeManager : MonoBehaviour
         LoadData();
     }
 
+
+    private void OnEnable() => EnemyEvents.Killed += handleKill;
+    private void OnDisable() => EnemyEvents.Killed -= handleKill;
+
+    private void handleKill(EnemyBase enemy)
+    {
+        if (enemy.LastDamageWeapon != null){
+            ReportKill(enemy.LastDamageWeapon);
+        }
+        
+    }
+
     void OnDestroy()
     {
         if (instance == this) instance = null;
