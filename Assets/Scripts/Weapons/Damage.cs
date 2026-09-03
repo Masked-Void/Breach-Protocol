@@ -98,7 +98,6 @@ public class Damage : MonoBehaviour
     int enemyLayer;
     bool hasAudioManager;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         enemyLayer = LayerMask.NameToLayer("Enemy");

@@ -29,14 +29,12 @@ public class CameraController : MonoBehaviour
     // accumulated vertical angle, kept separate so it can be clamped
     float camRotX;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(!GameManager.instance.isPaused)

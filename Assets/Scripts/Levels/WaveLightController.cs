@@ -18,9 +18,6 @@
  *
  * Interacts With:
  * - WaveManager
- *
- * Last Updated:
- * Prototype 1
  */
 
 using System.Collections;

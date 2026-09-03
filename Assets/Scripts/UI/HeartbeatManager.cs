@@ -46,13 +46,18 @@ public class HeartbeatManager : MonoBehaviour
     [Header("Config")]
     [Tooltip("All the numbers that drive the stress/BPM system.")]
     [SerializeField] private StressConfig config;
-
     [Header("Runtime State")]
+    [Tooltip("current beats per minute, set at runtime")]
     [SerializeField] private int currentBpm;
+
+    [Tooltip("current stress, 0 to maxStress, set at runtime")]
     [SerializeField] private float currentStress;
 
     [Header("UI (Optional)")]
+    [Tooltip("numeric bpm readout, leave empty if the hud does not show one")]
     [SerializeField] private TMP_Text heartRateText;
+
+    [Tooltip("appended after the number, e.g. 120 BPM")]
     [SerializeField] private string bpmSuffix = " BPM";
 
     private float stressPercent;

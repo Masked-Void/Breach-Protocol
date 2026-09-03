@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using UnityEngine;
-using static UpgradeManager;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;

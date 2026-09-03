@@ -176,7 +176,6 @@ public class GameManager : MonoBehaviour
 
     int currentKill = 0;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         if (instance != null && instance != this)
@@ -248,7 +247,6 @@ public class GameManager : MonoBehaviour
     {
         totalFiles -= amount;
     }
-    // Update is called once per frame
     void Update()
     {
         bytesText.text = "Bytes: " + totalBytes.ToString();

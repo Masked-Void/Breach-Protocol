@@ -35,14 +35,26 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private ScoreConfig config;
 
     [Header("Runtime")]
+    [Tooltip("score this run, set at runtime")]
     [SerializeField] private int totalScore;
+
+    [Tooltip("score needed for the next streak roll, grows each time")]
     [SerializeField] private int currentStreakRequirement;
+
+    [Tooltip("score total at the last streak award, set at runtime")]
     [SerializeField] private int lastAwardScoreTarget;
+
+    [Tooltip("score total that triggers the next roll, set at runtime")]
     [SerializeField] private int nextStreakScoreTarget;
+
+    [Tooltip("rounds survived, feeds the per round growth on the requirement")]
     [SerializeField] private int currentRound = 1;
 
     [Header("UI")]
+    [Tooltip("run score on the hud")]
     [SerializeField] private TMP_Text totalScoreText;
+
+    [Tooltip("progress toward the next streak, shown as current over required")]
     [SerializeField] private TMP_Text streakProgressText;
 
     private void Awake()

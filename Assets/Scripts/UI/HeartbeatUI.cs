@@ -39,13 +39,11 @@ public class HeartbeatUI : MonoBehaviour
     bool isPulsing;
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         origHeartScale = heartImage.localScale;
     }
 
-    // Update is called once per frame
     void Update()
     {
 
