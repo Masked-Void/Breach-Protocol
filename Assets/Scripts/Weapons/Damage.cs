@@ -24,39 +24,75 @@ using System.Collections;
  */
 public class Damage : MonoBehaviour
 {
+    // how the receiver should react, and which of the blocks below apply
     enum DamageType { bullet, stationary, DOT, shard, throwable }
+
+    [Header("Core")]
+    [Tooltip("bullet travels and dies, stationary sits and damages on contact, throwable is a thrown weapon, shard is glass debris")]
     [SerializeField] DamageType type;
+
+    [Tooltip("only needed for bullet and throwable, they get launched through it")]
     [SerializeField] Rigidbody rb;
 
+    [Tooltip("damage dealt per hit")]
     [Range(1, 10)][SerializeField] int damageAmount;
+
+    [Tooltip("seconds between ticks while something stays inside a stationary hazard")]
     [Range(.1f, 10)][SerializeField] float damageRate;
 
     [Header("Bullet")]
+    [Tooltip("launch speed, applied once on spawn")]
     [Range(1, 80)][SerializeField] int bulletSpeed;
+
+    [Tooltip("seconds before the bullet deletes itself if it hits nothing")]
     [Range(.1f, 20)][SerializeField] int bulletDestroyTime;
+
+    [Tooltip("force applied to breakable glass this bullet passes through")]
     [SerializeField] float shatterForce = 350f;
+
+    [Tooltip("layers a bullet bounces off instead of dying on")]
     [SerializeField] LayerMask deflectLayer;
+
+    [Tooltip("spawned at the impact point on any hit")]
     [SerializeField] ParticleSystem hitEffect;
 
     [Header("Explosion")]
+    [Tooltip("only used when isExplosive is ticked")]
     [SerializeField] ParticleSystem explosionEffect;
+
+    [Tooltip("physics push applied to nearby rigidbodies")]
     [SerializeField] float explosionForce = 1000f;
+
+    [Tooltip("how far the blast reaches, in metres")]
     [SerializeField] float explosionRadius = 5f;
+
+    [Tooltip("damage to everything inside the radius, separate from damageAmount")]
     [SerializeField] int explosionDamage = 50;
 
     [Header("Explosion Shake")]
+    [Tooltip("beyond this distance the player feels no shake")]
     [SerializeField] float maxShakeDistance = 20f;
+
+    [Tooltip("seconds the camera shakes for")]
     [SerializeField] float shakeDuration = 0.3f;
+
+    [Tooltip("shake at point blank, falls off with distance")]
     [SerializeField] Vector3 maxShakeStrength = new Vector3(0.25f, 0.25f, 0.25f);
 
+    [Header("Audio")]
+    [Tooltip("plays the impact sound, leave empty to use AudioManager instead")]
     [SerializeField] AudioSource sfxSource;
+
+    [Tooltip("sound played on impact")]
     [SerializeField] AudioClip sfx;
 
+    // set by whatever fired this, so kills can be credited to the right weapon
     [HideInInspector] public WeaponStats sourceWeapon;
 
+    [Tooltip("tick to use the explosion block instead of a normal hit")]
     public bool isExplosive;
 
-
+    // true while a stationary hazard is mid damage tick, stops it stacking
     bool isDamaging;
     bool hasHit = false;
     int enemyLayer;

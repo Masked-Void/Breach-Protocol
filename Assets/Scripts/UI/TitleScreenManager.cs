@@ -9,12 +9,12 @@ using UnityEngine.UI;
  * Script: TitleScreenManager
  *
  * Description:
- * The title screen and level select. Each level button sets which level the
- * player picked, then loads Bootstrap, which brings the level in on top.
+ * The title screen and level select. Each level button records which level the
+ * player picked, then loads Bootstrap, which brings that level in on top.
  *
  * Responsibilities:
- * - Switch between the home, challenge, weapon, settings, about and credits panels
- * - Set LevelLoader.requestedLevel and load Bootstrap with a progress bar
+ * - Switch between the home, weapon, challenge, settings, about and credits pages
+ * - Set LevelLoader.requestedLevel and load Bootstrap behind a progress bar
  * - Quit the game
  *
  * Interacts With:
@@ -26,30 +26,64 @@ using UnityEngine.UI;
  * - Every public method here is wired to a Button in the inspector, so the
  *   names are stored as strings in the prefab. Renaming one breaks its button
  *   silently, with no compile error.
+ * - The six openLevel methods are near identical and differ only by scene name.
+ *   Worth collapsing into one that takes a parameter, but that means rewiring
+ *   six buttons by hand.
  */
-
 public class TitleScreenManager : MonoBehaviour
 {
     [Header("UI Pages")]
+    [Tooltip("landing page with the level select buttons")]
     public GameObject homePanel;
+
+    [Tooltip("weapon list and their challenges")]
     public GameObject weaponPanel;
+
+    [Tooltip("challenge progress page")]
     public GameObject challengePanel;
+
+    [Tooltip("settings page, holds the sound and controls sub menus")]
     public GameObject settingsPanel;
+
+    [Tooltip("about the game")]
     public GameObject aboutPanel;
+
+    [Tooltip("credits page")]
     public GameObject creditsPanel;
 
     [Header("Top Navigation Buttons")]
-    public GameObject Nav;
+    [Tooltip("the tab row across the top, hidden while a level loads")]
+    [FormerlySerializedAs("Nav")]
+    public GameObject nav;
+
+    [Tooltip("tab that opens homePanel")]
     public Button navHomeButton;
+
+    [Tooltip("tab that opens weaponPanel")]
     public Button navWeaponButton;
+
+    [Tooltip("tab that opens settingsPanel")]
     public Button navSettingsButton;
+
+    [Tooltip("tab that opens aboutPanel")]
     public Button navAboutButton;
+
+    [Tooltip("tab that opens creditsPanel")]
     public Button navCreditsButton;
 
+    [Header("Menus")]
+    [Tooltip("root of the whole title menu, hidden during the load screen")]
     [SerializeField] private GameObject titleMenuPanel;
+
+    [Tooltip("volume sliders sub menu")]
     [FormerlySerializedAs("soundMenu")]
     [SerializeField] private GameObject soundMenu;
+
+    [Tooltip("controls reference sub menu")]
     [SerializeField] private GameObject controlsMenu;
+
+    [Header("Loading")]
+    [Tooltip("fills 0 to 1 while Bootstrap loads, then the level comes in on top")]
     [SerializeField] private Slider progressBar;
 
     void Start()
@@ -65,7 +99,7 @@ public class TitleScreenManager : MonoBehaviour
     public void openLevelSamuel()
     {
         AudioManager.instance.PlayButtonClick();
-        Nav.SetActive(false);
+        nav.SetActive(false);
         deactivateAllPanels();
 
         LevelLoader.requestedLevelName = "MK2";
@@ -74,7 +108,7 @@ public class TitleScreenManager : MonoBehaviour
     public void openLevelDevinS()
     {
         AudioManager.instance.PlayButtonClick();
-        Nav.SetActive(false);
+        nav.SetActive(false);
         deactivateAllPanels();
 
         LevelLoader.requestedLevelName = "Devin";
@@ -83,7 +117,7 @@ public class TitleScreenManager : MonoBehaviour
     public void openLevelDevinC()
     {
         AudioManager.instance.PlayButtonClick();
-        Nav.SetActive(false);
+        nav.SetActive(false);
         deactivateAllPanels();
 
         LevelLoader.requestedLevelName = "DevinC";
@@ -92,7 +126,7 @@ public class TitleScreenManager : MonoBehaviour
     public void openLevelMark()
     {
         AudioManager.instance.PlayButtonClick();
-        Nav.SetActive(false);
+        nav.SetActive(false);
         deactivateAllPanels();
         
         LevelLoader.requestedLevelName = "Mark";
@@ -101,7 +135,7 @@ public class TitleScreenManager : MonoBehaviour
     public void openLevelKhurshed()
     {
         AudioManager.instance.PlayButtonClick();
-        Nav.SetActive(false);
+        nav.SetActive(false);
         deactivateAllPanels();
 
         LevelLoader.requestedLevelName = "ColdStorage";
@@ -110,7 +144,7 @@ public class TitleScreenManager : MonoBehaviour
     public void openLevelVirel()
     {
         AudioManager.instance.PlayButtonClick();
-        Nav.SetActive(false);
+        nav.SetActive(false);
         deactivateAllPanels();
 
         LevelLoader.requestedLevelName = "LevelCreation-Virel";

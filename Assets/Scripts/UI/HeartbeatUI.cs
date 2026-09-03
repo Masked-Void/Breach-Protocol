@@ -16,10 +16,16 @@ using TMPro;
 
 public class HeartbeatUI : MonoBehaviour
 {
+    [Tooltip("the heart image, scaled up and back on each beat")]
     [SerializeField] RectTransform heartImage;
+
+    [Tooltip("numeric bpm readout next to the heart")]
     [SerializeField] TextMeshProUGUI bpmText;
 
+    [Tooltip("how big the heart gets at the peak of a beat, 1.2 is 20 percent")]
     [SerializeField] float pulseScale = 1.2f;
+
+    [Tooltip("seconds one pulse takes, the gap between beats comes from bpm")]
     [SerializeField] float pulseDuration = .2f;
 
     float beatTimer;

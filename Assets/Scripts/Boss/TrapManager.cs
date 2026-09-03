@@ -29,10 +29,18 @@ using UnityEngine;
 public class TrapManager : MonoBehaviour {
 
     [Header("References")]
+    [Tooltip("the four laser pillars, told which pattern to run per phase")]
     [SerializeField] private LaserArrayManager laserManager;
+
+    [Tooltip("lava height, raised and drained per phase")]
     [SerializeField] private LavaManager lavaManager;
+
+    [Tooltip("rising and falling platforms, toggled per phase")]
     [SerializeField] private PlatformManager platManager;
 
+    // Each phase gets one setup, and each transition between phases gets another.
+    // The immune blocks run while the boss is invulnerable and the player is
+    // holding a zone to break it.
     [Header("Phase 1")]
     [SerializeField] private trapSetup p1;
 

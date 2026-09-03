@@ -38,77 +38,141 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager instance;
 
     [Header("Menu")]
+    [Tooltip("whichever menu is currently open, set at runtime not in the inspector")]
     [SerializeField] GameObject menuActive;
+
+    [Tooltip("root of the pause menu")]
     [SerializeField] GameObject menuPause;
+
+    [Tooltip("root of the lose screen, shown when bpm hits max")]
     [SerializeField] GameObject menuLose;
+
+    [Tooltip("root of the win screen, shown after the boss dies")]
     [SerializeField] GameObject menuWin;
 
     [Header("UI Pages")]
+    [Tooltip("challenge list page inside the pause menu")]
     public GameObject challengesCanvas;
+
+    [Tooltip("settings page inside the pause menu")]
     public GameObject settingsCanvas;
+
+    [Tooltip("upgrade shop page inside the pause menu")]
     public GameObject upgradesCanvas;
 
     [Header("Top Navigation Buttons")]
+    [Tooltip("the row of tabs across the top of the pause menu")]
     public GameObject navTab;
+
+    [Tooltip("tab that opens challengesCanvas")]
     public Button navChallengesButton;
+
+    [Tooltip("tab that opens settingsCanvas")]
     public Button navSettingsButton;
+
+    [Tooltip("tab that opens upgradesCanvas")]
     public Button navUpgradesButton;
+
+    [Tooltip("the main pause menu button column, hidden when a page is open")]
     public GameObject buttons;
+
+    [Tooltip("back button, only shown while a page is open")]
     public GameObject backButton;
 
     [Header("Settings Menu")]
+    [Tooltip("volume sliders page")]
     [FormerlySerializedAs("soundMenu")]
     [SerializeField] public GameObject soundMenu;
+
+    [Tooltip("controls reference page")]
     [SerializeField] public GameObject controlsMenu;
 
     [Header("Kills UI")]
+    [Tooltip("score panel shown on the pause menu")]
     [SerializeField] public GameObject pauseScorePanel;
+
+    [Tooltip("kill count text on the pause menu")]
     [SerializeField] private TMP_Text pauseScoreText;
-    [SerializeField] private TMP_Text loseSoreText;
+
+    [Tooltip("kill count text on the lose screen")]
+    [FormerlySerializedAs("loseScoreText")]
+    [SerializeField] private TMP_Text loseScoreText;
+
+    [Tooltip("live kill counter on the hud")]
     [SerializeField] TextMeshProUGUI killCounter;
 
     [Header("Wave UI")]
+    [Tooltip("current wave number on the hud")]
     [SerializeField] TextMeshProUGUI waveCounter;
+
+    [Tooltip("the words shown above the countdown, hidden mid wave")]
     [SerializeField] TextMeshProUGUI waveCountdownText;
+
+    [Tooltip("seconds remaining until the next wave")]
     [SerializeField] TextMeshProUGUI waveCountdown;
 
     [Header("Interaction UI")]
+    [Tooltip("root of the interact prompt, shown when looking at something usable")]
     public GameObject interactionUI;
+
+    [Tooltip("what the interaction does, e.g. Open Shop")]
     public TMP_Text interactionText;
+
+    [Tooltip("which key to press, e.g. E")]
     public TMP_Text interactionKey;
 
     [Header("Player")]
-    public GameObject playerSpawnPos;
+    [Tooltip("stamina bar on the hud")]
     [SerializeField] public Image playerStaminaBar;
+
+    [Tooltip("popup shown when a checkpoint is reached")]
     [SerializeField] public GameObject checkpointPopup;
 
     [Header("Currency")]
+    [Tooltip("bytes held this run, spent in the in-run shop, lost on death")]
     [SerializeField] public int totalBytes = 0;
+
+    [Tooltip("files held this run, added to the meta total when the run ends")]
     [SerializeField] public int totalFiles = 0;
+
+    [Tooltip("bytes counter on the hud")]
     [SerializeField] TextMeshProUGUI bytesText;
 
     [Header("Shop")]
+    [Tooltip("warning shown when the player can't afford something")]
     public GameObject shopMessage;
+
+    [Tooltip("root of the in-run shop panel")]
     public GameObject shopUI;
 
     [Header("Screen Flash")]
+    [Tooltip("red overlay flashed when the player takes damage")]
     public GameObject damageFlashUI;
 
     [Header("Weapon UI")]
+    [Tooltip("root of the ammo readout, hidden when unarmed")]
     public GameObject ammoPanel;
+
+    [Tooltip("rounds left in the current weapon")]
     public TextMeshProUGUI magAmmoUI;
-    public TextMeshProUGUI totalAmmoUI;
+
+    [Tooltip("reserve ammo, unused since the gdd has no reload")]
+
+    [Tooltip("icon of the weapon currently held")]
     public Image activeWeapon;
 
     [Header("Runtime: Do not Change")]
+    [Tooltip("true while any menu is open and time is paused")]
     public bool isPaused;
-    public GameObject player;
-    public PlayerController playerScript;
 
+    [Tooltip("found by tag in Start, not assigned in the inspector")]
+    public GameObject player;
+
+    [Tooltip("cached controller off the player object, found in Start")]
+    public PlayerController playerScript;
 
     int currentKill = 0;
 
@@ -290,9 +354,9 @@ public class GameManager : MonoBehaviour
             menuActive.SetActive(true);
         }
 
-        if (loseSoreText != null)
+        if (loseScoreText != null)
         {
-            loseSoreText.text = currentKill.ToString("f0");
+            loseScoreText.text = currentKill.ToString("f0");
         }
         if (UpgradeManager.instance != null)
         {

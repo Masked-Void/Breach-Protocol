@@ -3,6 +3,20 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+/*
+ * Script: ShopPopulator
+ *
+ * Description:
+ * Fills one shop card with an upgrade's name, icon, cost and buy button.
+ * Currently disabled — the whole implementation below is commented out
+ * pending a decision on whether the in-run shop ships.
+ *
+ * Interacts With:
+ * - ShopManager, UpgradeData
+ *
+ * Notes:
+ * - Do not delete the commented block without deciding the shop's fate first.
+ */
 public class ShopPopulator : MonoBehaviour
 {
     

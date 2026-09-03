@@ -31,40 +31,48 @@ using UnityEngine;
 public class WeaponManager : MonoBehaviour
 {
     public static WeaponManager instance { get; private set; }
-
     [Header("Weapon")]
+    [Tooltip("what the player is holding right now, set at runtime")]
     public WeaponStats activeWeapon;
+
+    [Tooltip("what the player spawns with, the gdd says a 3 round pistol")]
     public WeaponStats starterWeapon;
+
+    [Tooltip("every weapon in the game, used to restore the saved one on load")]
     [SerializeField] private WeaponStats[] allWeapons;
+
+    [Tooltip("icon shown in the hud when the player is unarmed")]
     public Sprite emptySlot;
-    bool isEquipping;
+
     [Header("Dropped Weapons")]
+    [Tooltip("layers a thrown weapon counts as landing on, so it doesn't stick to enemies")]
     [SerializeField] LayerMask groundLayers = ~0;
 
-
-    [Header("Melee Weapon Info")]
+    [Header("Melee")]
+    [Tooltip("seconds for the swing out")]
     [SerializeField] float meleeSwingDuration = .08f;
+
+    [Tooltip("seconds to return to the resting pose")]
     [SerializeField] float meleeReturnDuration = .12f;
+
+    [Tooltip("euler rotation offset at the peak of the swing")]
     [SerializeField] Vector3 meleeSwingRotation = new Vector3(35f, -70f, 20f);
+
+    [Tooltip("position offset at the peak of the swing")]
     [SerializeField] Vector3 meleeSwingPosition = new Vector3(.08f, -.05f, .15f);
 
     [Header("Aim Rotation")]
-    [SerializeField] private float aimRotationSpeed = 25f;
-    [SerializeField] private float maxAimDistance = 500f;
+    [Tooltip("layers the aim raycast can hit")]
     [SerializeField] private LayerMask aimTargetLayers = ~0;
 
+    // runtime state
+    bool isEquipping;
     bool isMeleeSwinging;
-
-
-    // [Header("Challenge")]
-    // public bool currentWeaponFromGround = false;
-
     GameObject spawnedWeaponModel;
     Transform gunBarrel;
-    float attackTimer;
-
-    int currentAmmo;
     Transform weaponHolder;
+    float attackTimer;
+    int currentAmmo;
 
     void Awake()
     {

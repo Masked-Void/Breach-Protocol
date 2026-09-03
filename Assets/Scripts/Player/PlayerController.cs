@@ -1,66 +1,96 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 /*
  * Script: PlayerController
  *
  * Description:
- * Player movement, look, and the damage entry point. Lives on the Player
- * prefab in Bootstrap, so it persists across level loads.
+ * Player movement, look, stamina and the damage entry point. Lives on the
+ * Player prefab in Bootstrap, so it persists across level loads.
  *
  * Responsibilities:
- * - Movement, sprint, jump, gravity via CharacterController
- * - Report speed to TimeManager so the world scales with the player
+ * - Movement, sprint, double jump and gravity through CharacterController
+ * - Stamina drain while sprinting and regen while not
+ * - Report speed to TimeManager so world time scales with the player
  * - Take damage and route it to the heartbeat system
- * - Hold the weapon mount point that WeaponManager attaches to
+ * - Hold the weapon mount point WeaponManager attaches to
+ * - Throw the held weapon
  *
  * Interacts With:
  * - TimeManager (SpeedPercent drives world time scale)
  * - HeartbeatManager (damage adds stress)
- * - WeaponManager (weapon hold point)
- * - GameManager (found by tag, exposed as playerScript)
+ * - WeaponManager (weaponHoldPos, EquipWeapon via IPickWeapon)
+ * - GameManager (found by tag, exposed as playerScript, drives stamina bar)
  * - LevelLoader (teleports the player to each level's spawn marker)
  *
  * Notes:
- * - Movement uses Time.unscaledDeltaTime on purpose. Scaled time is for the
- *   world, not the player.
+ * - Movement uses unscaled delta time on purpose. Scaled time is for the world,
+ *   not the player. That inversion is the whole SUPERHOT mechanic.
  * - LevelLoader disables the CharacterController before moving the transform,
  *   because the controller overrides direct transform writes.
  */
-
 public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
 {
     [Header("Controller")]
+    [Tooltip("on this same object, does the actual moving and collision")]
     [SerializeField] CharacterController controller;
 
-    [Header("Player Settings")]
+    [Header("Movement")]
+    [Tooltip("base walk speed in units per second")]
     [SerializeField] int speed;
+
+    [Tooltip("speed is multiplied by this while sprinting")]
     [SerializeField] int sprintMod;
+
+    [Tooltip("upward force per jump")]
     [SerializeField] int jumpSpeed;
+
+    [Tooltip("how many jumps before touching the ground, 2 is a double jump")]
     [SerializeField] int jumpMax;
+
+    [Tooltip("downward acceleration, higher falls faster")]
     [SerializeField] int gravity;
+
+    [Tooltip("how fast knockback bleeds off, higher stops the player sooner")]
     [SerializeField] float pushbackFriction = 5f;
+
+    [Header("Throwing")]
+    [Tooltip("forward force when throwing the held weapon")]
     public float throwForce = 5f;
+
+    [Tooltip("upward arc added to the throw so it doesn't go flat")]
     public float throwUpwardForce = 5f;
+
+    [Header("Refs")]
+    [Tooltip("shield object mounted on the back by the ice wall scorestreak")]
     [SerializeField] GameObject playerShield;
 
-    [Header("Stamina Settings")]
+    [Tooltip("empty transform the equipped weapon parents to")]
+    public GameObject weaponHoldPos;
+
+    [Header("Stamina")]
+    [Tooltip("seconds of sprint from full")]
     [SerializeField] float maxStamina = 5f;
+
+    [Tooltip("stamina used per second while sprinting")]
     [SerializeField] float staminaDrainRate = 1f;
+
+    [Tooltip("stamina recovered per second while not sprinting")]
     [SerializeField] float staminaRegenRate = 1f;
+
+    [Tooltip("stops sprinting sideways or backwards")]
     [SerializeField] bool sprintForwardOnly = true;
 
-    float currentStamina;
-
-    [Header("Footstep Settings")]
+    [Header("Footsteps")]
+    [Tooltip("seconds between step sounds while moving on the ground")]
     [SerializeField] float stepInterval = 0.4f;
+
+    // runtime state
+    float currentStamina;
     float stepTimer;
-
     int jumpCount;
-
     Vector3 moveDir;
     Vector3 playerVel;
-    public GameObject weaponHoldPos;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -224,11 +254,4 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
 
     }
 
-    public void SpawnPlayer()
-    {
-        controller.transform.position = GameManager.instance.playerSpawnPos.transform.position;
-        Physics.SyncTransforms();
-        currentStamina = maxStamina;
-        UpdatePlayerUI();
-    }
 }

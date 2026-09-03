@@ -2,12 +2,29 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * Script: SoundMenu
+ *
+ * Description:
+ * The three volume sliders and the mute toggle. Wires them to AudioManager in
+ * code rather than through the inspector, so renaming a handler is caught by
+ * the compiler.
+ *
+ * Interacts With:
+ * - AudioManager (reads current values, writes changes, saves to PlayerPrefs)
+ */
 public class SoundMenu : MonoBehaviour
 {
+    [Tooltip("scales both music and sfx")]
     [SerializeField] private Slider masterSlider;
+
+    [Tooltip("music only, before the master multiplier")]
     [SerializeField] private Slider musicSlider;
+
+    [Tooltip("sound effects only, before the master multiplier")]
     [SerializeField] private Slider sfxSlider;
 
+    [Tooltip("label on the mute button, swaps between Mute and Unmute")]
     [SerializeField] private TextMeshProUGUI muteText;
 
     private void Awake()

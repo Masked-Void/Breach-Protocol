@@ -7,12 +7,20 @@ using UnityEngine;
 public class IceWallKillstreak : KillstreakBase
 {
     [Header("ICE Wall")]
+    [Tooltip("shield object spawned on the player, needs an IceWallShield or one gets added")]
     [SerializeField] private GameObject shieldPrefab;
+
+    [Tooltip("hits the shield absorbs before breaking, not damage numbers")]
     [SerializeField] private int hitsToAbsorb = 3;
 
     [Header("Back Mount")]
+    [Tooltip("offset from the player root, roughly shoulder height and behind")]
     [SerializeField] private Vector3 localPosition = new Vector3(0f, 1.1f, -0.35f);
+
+    [Tooltip("rotation offset, zero faces the same way as the player")]
     [SerializeField] private Vector3 localEulerAngles = Vector3.zero;
+
+    [Tooltip("scale of the shield relative to the prefab")]
     [SerializeField] private Vector3 localScale = Vector3.one;
 
     private GameObject shieldInstance;
