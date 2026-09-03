@@ -498,7 +498,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
         if (spawnPoints.Length == 0)
         {
-            //Debug.LogError("WaveManager: no spawn points assigned");
+            Debug.LogError("WaveManager: no spawn points assigned");
         }
     }
 
@@ -521,7 +521,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
         if (roamPoints.Length == 0)
         {
-            //Debug.LogError("WaveManager: no roam points assigned");
+            Debug.LogError("WaveManager: no roam points assigned");
         }
     }
 

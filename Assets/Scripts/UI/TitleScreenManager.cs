@@ -5,6 +5,29 @@ using UnityEngine.Serialization;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/*
+ * Script: TitleScreenManager
+ *
+ * Description:
+ * The title screen and level select. Each level button sets which level the
+ * player picked, then loads Bootstrap, which brings the level in on top.
+ *
+ * Responsibilities:
+ * - Switch between the home, challenge, weapon, settings, about and credits panels
+ * - Set LevelLoader.requestedLevel and load Bootstrap with a progress bar
+ * - Quit the game
+ *
+ * Interacts With:
+ * - LevelLoader (sets requestedLevel before Bootstrap exists)
+ * - AudioManager (title music, button clicks)
+ * - Bootstrap.unity
+ *
+ * Notes:
+ * - Every public method here is wired to a Button in the inspector, so the
+ *   names are stored as strings in the prefab. Renaming one breaks its button
+ *   silently, with no compile error.
+ */
+
 public class TitleScreenManager : MonoBehaviour
 {
     [Header("UI Pages")]

@@ -1,6 +1,27 @@
 using UnityEngine;
 using System.Collections;
 
+/*
+ * Script: Damage
+ *
+ * Description:
+ * Sits on anything that can hurt something else — bullets, melee hitboxes,
+ * hazards. Carries a DamageType so the receiver can react differently to a
+ * bullet, a thrown weapon, or a stationary hazard.
+ *
+ * Responsibilities:
+ * - Detect collision or trigger with something implementing IDamage
+ * - Apply damage of the configured type and amount
+ * - Handle the throwable and shard variants
+ *
+ * Interacts With:
+ * - IDamage (EnemyBase, PlayerController, BossHitbox, IceWallShield)
+ * - WeaponManager (enables and disables this when throwing)
+ *
+ * Notes:
+ * - The DOT path is written but unused. Left in case a damage-over-time
+ *   hazard gets added.
+ */
 public class Damage : MonoBehaviour
 {
     enum DamageType { bullet, stationary, DOT, shard, throwable }

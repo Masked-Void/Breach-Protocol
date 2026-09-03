@@ -3,6 +3,32 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 
+/*
+ * Script: UpgradeManager
+ *
+ * Description:
+ * Owns meta progression. Files earned during runs are spent here on upgrades
+ * that persist between runs.
+ *
+ * Responsibilities:
+ * - Hold the Files balance and the set of unlocked upgrades
+ * - Save and load upgrade state
+ * - Populate the upgrade UI and handle purchases
+ * - Answer IsUpgradeActive queries from gameplay systems
+ *
+ * Interacts With:
+ * - UpgradeData (the upgrade assets)
+ * - GameManager, WaveManager (Files are transferred in)
+ * - WeaponManager (fire rate upgrade)
+ * - ChallengeManager (challenges gate some upgrades)
+ *
+ * Notes:
+ * - Files accounting currently compounds. WaveManager and GameManager both add
+ *   the running total rather than the amount earned, so the balance grows
+ *   faster than intended.
+ * - IsUpgradeActive takes a magic string. An enum would fail loudly on a typo.
+ */
+
 public class UpgradeManager : MonoBehaviour
 {
     public static UpgradeManager instance;

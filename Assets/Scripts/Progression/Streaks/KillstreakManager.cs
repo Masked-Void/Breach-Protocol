@@ -3,6 +3,30 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/*
+ * Script: KillstreakManager
+ *
+ * Description:
+ * Rolls and runs the ten scorestreaks. ScoreManager decides when a roll is
+ * earned; this picks one, activates it, and tracks it until it ends.
+ *
+ * Responsibilities:
+ * - Roll a random streak when one is earned
+ * - Activate it and hold a reference until it reports back
+ * - Expose active-state flags other systems read
+ * - Handle Fork Bomb secondary damage spreading between enemies
+ *
+ * Interacts With:
+ * - ScoreManager (triggers rolls)
+ * - KillstreakBase and its ten subclasses
+ * - EnemyBase (several streaks mutate or kill enemies)
+ * - HeartbeatManager, TimeManager, WeaponManager (streak effects)
+ *
+ * Notes:
+ * - Audit finding: six of the ten streaks set flags nothing consumes. Setting
+ *   a flag is not the same as having an effect.
+ */
+
 public class KillstreakManager : MonoBehaviour
 {
     public static KillstreakManager instance;

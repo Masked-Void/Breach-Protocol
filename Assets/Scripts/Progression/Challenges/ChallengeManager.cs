@@ -8,6 +8,31 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
+/*
+ * Script: ChallengeManager
+ *
+ * Description:
+ * Tracks per-weapon challenges and their completion state, and drives the
+ * challenge UI panel. Progress persists between runs.
+ *
+ * Responsibilities:
+ * - Record kills against the weapon that made them
+ * - Save and load challenge progress
+ * - Populate the challenge UI slots and their button state
+ * - Report when every challenge for a weapon is complete
+ *
+ * Interacts With:
+ * - EnemyEvents (subscribes to Killed)
+ * - ChallengeData, ChallengeButtonData (the challenge assets)
+ * - UpgradeManager (completed challenges unlock upgrades)
+ * - WeaponStats (challenges are per weapon)
+ *
+ * Notes:
+ * - This class has a history of save-system bugs: a MonoBehaviour instantiated
+ *   with new, a broken null check, and a KeyNotFoundException. Test saves after
+ *   any change here.
+ */
+
 public class ChallengeManager : MonoBehaviour
 {
     public static ChallengeManager instance { get; private set; }

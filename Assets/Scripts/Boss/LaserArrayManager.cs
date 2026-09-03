@@ -2,8 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
+/*
+ * Script: LaserArrayManager
+ *
+ * Description:
+ * Coordinates the four laser pillars in the boss arena. Owns firing patterns,
+ * pillar rotation, and the procedural pattern generator that scales with
+ * difficulty.
+ *
+ * Responsibilities:
+ * - Resolve a colour and slot to a specific LaserArray and local index
+ * - Fire and stop individual lasers, whole pillars, or everything
+ * - Spin and sweep the pillar rig, with a shared rotation handle
+ * - Run authored patterns and generate new ones at a given difficulty
+ *
+ * Interacts With:
+ * - LaserArray (the individual pillars)
+ * - laserStep, laserPattern, patternGenerator (pattern data)
+ * - pillarColor (which pillar a step targets)
+ * - BossFightManager, TrapManager (start and stop patterns per phase)
+ *
+ * Notes:
+ * - Runs on unscaled time. Boss hazards ignore the player's time scale.
+ * - Debug logging is on by default and fires during normal play. Consider
+ *   gating it behind a bool if the console gets noisy.
+ */
 public class LaserArrayManager : MonoBehaviour {
 
     [Header("Pillar Wiring")]

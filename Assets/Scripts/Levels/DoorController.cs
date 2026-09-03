@@ -69,7 +69,7 @@ public class DoorController : MonoBehaviour
         // Makes sure the door object exists
         if (doorObject == null)
         {
-            //Debug.LogError("DoorController: doorObject isn't assigned", this);
+            Debug.LogError("DoorController: doorObject isn't assigned", this);
             enabled = false;
             return;
         }
@@ -81,8 +81,8 @@ public class DoorController : MonoBehaviour
         // Makes sure they exist
         if (closedPos == null || openPos == null)
         {
-            //Debug.LogError("DoorController: '" + doorObject.name + "' needs two children named '"
-                //+ closedMarkerName + "' and '" + openMarkerName + "'.", doorObject);
+            Debug.LogError("DoorController: '" + doorObject.name + "' needs two children named '"
+                + closedMarkerName + "' and '" + openMarkerName + "'.", doorObject);
             enabled = false;
             return;
         }

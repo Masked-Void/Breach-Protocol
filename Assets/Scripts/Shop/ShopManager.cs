@@ -1,6 +1,22 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+/*
+ * Script: ShopManager
+ *
+ * Description:
+ * In-run shop. Currently disabled — the buy logic below is commented out
+ * pending a decision on whether the shop ships. The component is still
+ * attached to live scenes, so it loads and does nothing.
+ *
+ * Interacts With:
+ * - UpgradeManager, UpgradeData, GameManager (bytes)
+ *
+ * Notes:
+ * - Do not delete the commented block without deciding the shop's fate first.
+ */
+
+
 public class ShopManager : MonoBehaviour
 {
     // public static ShopManager instance;

@@ -1,6 +1,33 @@
 using System.Collections;
 using UnityEngine;
 
+/*
+ * Script: PlayerController
+ *
+ * Description:
+ * Player movement, look, and the damage entry point. Lives on the Player
+ * prefab in Bootstrap, so it persists across level loads.
+ *
+ * Responsibilities:
+ * - Movement, sprint, jump, gravity via CharacterController
+ * - Report speed to TimeManager so the world scales with the player
+ * - Take damage and route it to the heartbeat system
+ * - Hold the weapon mount point that WeaponManager attaches to
+ *
+ * Interacts With:
+ * - TimeManager (SpeedPercent drives world time scale)
+ * - HeartbeatManager (damage adds stress)
+ * - WeaponManager (weapon hold point)
+ * - GameManager (found by tag, exposed as playerScript)
+ * - LevelLoader (teleports the player to each level's spawn marker)
+ *
+ * Notes:
+ * - Movement uses Time.unscaledDeltaTime on purpose. Scaled time is for the
+ *   world, not the player.
+ * - LevelLoader disables the CharacterController before moving the transform,
+ *   because the controller overrides direct transform writes.
+ */
+
 public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
 {
     [Header("Controller")]

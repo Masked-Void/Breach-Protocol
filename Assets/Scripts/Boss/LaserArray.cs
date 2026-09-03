@@ -3,9 +3,30 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-// Handles a group of lasers that slide from a hidden spot out into the arena.
-// Each laser is a child of this object and moves between its own two markers.
-// Beams stay off while moving and only switch on once a laser is fully out.
+/*
+ * Script: LaserArray
+ *
+ * Description:
+ * One laser pillar. Holds several laser units that deploy out of the pillar
+ * and fire beams. LaserArrayManager coordinates the four pillars; this one
+ * only knows about its own lasers.
+ *
+ * Responsibilities:
+ * - Find its laser units and their beam markers on setup
+ * - Deploy and retract individual lasers or the whole array
+ * - Fire a beam from a given laser and report whether one is out
+ *
+ * Interacts With:
+ * - LaserArrayManager (owns and drives every array)
+ * - Damage (beams deal damage to whatever they hit)
+ *
+ * Notes:
+ * - Each laser object needs two named children, one for the move target and
+ *   one for the beam origin. Missing either logs an error at setup rather
+ *   than failing silently at runtime.
+ * - Runs on unscaled time like every other boss hazard.
+ */
+
 public class LaserArray : MonoBehaviour {
 
     [Header("Marker Names: (Children of each laser)")]

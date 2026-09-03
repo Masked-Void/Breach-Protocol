@@ -1,5 +1,28 @@
 using UnityEngine;
 
+/*
+ * Script: TimeManager
+ *
+ * Description:
+ * The SUPERHOT-style time system. World time scales with how fast the player
+ * is moving, so standing still nearly freezes everything. Player movement runs
+ * on unscaled time so the player always feels responsive.
+ *
+ * Responsibilities:
+ * - Read player speed each frame and set Time.timeScale from it
+ * - Support a hard override so scorestreaks can force a scale
+ * - Pause and unpause for menus
+ *
+ * Interacts With:
+ * - PlayerController (reads SpeedPercent)
+ * - GameManager (pause and unpause)
+ * - OverclockKillstreak (sets an override)
+ *
+ * Notes:
+ * - Anything that must ignore time scale uses Time.unscaledDeltaTime. Player
+ *   movement, stress decay, and every boss hazard are on unscaled time.
+ */
+
 public class TimeManager : MonoBehaviour
 {
     public static TimeManager instance;

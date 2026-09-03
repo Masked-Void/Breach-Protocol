@@ -2,10 +2,30 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+/*
+ * Script: TrapManager
+ *
+ * Description:
+ * Sets which hazards are active for each boss phase and each transition
+ * between phases. Reads a trapSetup block per phase and applies it.
+ *
+ * Responsibilities:
+ * - Apply a trapSetup on phase start and on phase transition
+ * - Drive lava height through LavaManager
+ * - Start and stop laser patterns through LaserArrayManager
+ * - Raise and drop platforms through PlatformManager
+ * - Stop everything when the fight ends
+ *
+ * Interacts With:
+ * - BossFightManager (calls StartPhase1-4 and EndPhase1-4)
+ * - LavaManager, LaserArrayManager, PlatformManager
+ * - trapSetup (the per-phase data block)
+ *
+ * Notes:
+ * - Boss hazards ignore Time.timeScale per the GDD, so timings here are real
+ *   seconds regardless of how slow the world is running.
+ */
 
-// One place the boss fight talks to for traps. BossFightManager calls a phase number in and
-// this sets the lasers, lava and platforms to that phase's settings, so the fight script never
-// has to know how any individual traps work.
 public class TrapManager : MonoBehaviour {
 
     [Header("References")]

@@ -3,8 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// runs the CEO fight. owns boss health, the four phases, and the immune windows between them.
-// immunity is broken by the player finishing a hold, so the immune window waits on HoldZoneManager.
+/*
+ * Script: BossFightManager
+ *
+ * Description:
+ * Runs the CEO fight. Owns boss health, drives the four phases, and tells the
+ * wave manager, hold zones and traps when each phase starts and ends.
+ *
+ * Responsibilities:
+ * - Hold boss health and apply damage from guns, holds and the debug toggle
+ * - Move through phases as health crosses each threshold
+ * - Start and end each phase on BossWaveManager and TrapManager
+ * - Pick a random hold point for each damage phase
+ * - Drive the health and immunity bars
+ * - Award Files on defeat
+ *
+ * Interacts With:
+ * - BossWaveManager (phase start and end, enemy spawning)
+ * - HoldZoneManager (immunity breaking and damage holds)
+ * - TrapManager (hazard setup per phase)
+ * - BossHitbox (routes damage in)
+ * - EconomyConfig (Files reward)
+ *
+ * Notes:
+ * - Four phases in code, but the GDD describes the CEO as seven segments.
+ *   One of the two is out of date.
+ * - Health, damage multiplier and the three phase thresholds are serialized
+ *   here rather than in a config. Worth moving if boss tuning gets shared.
+ */
+
 public class BossFightManager : MonoBehaviour,IDamage {
 
     [Header("References")]
