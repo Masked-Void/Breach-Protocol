@@ -1,8 +1,20 @@
 using UnityEngine;
 
-
-
-
+/*
+ * Script: patternGenerator
+ *
+ * Description:
+ * Builds laser firing sequences procedurally instead of using an authored one.
+ * Every setting has an easy and a hard value, and a 0-1 difficulty lerps
+ * between them, so one generator covers the whole fight.
+ *
+ * Interacts With:
+ * - LaserArrayManager (owns one, calls it when a phase asks for a generated pattern)
+ * - laserPattern, laserStep (what it produces)
+ *
+ * Notes:
+ * - jitter stops two passes at the same difficulty coming out identical.
+ */
 [System.Serializable]
 public class patternGenerator
 {

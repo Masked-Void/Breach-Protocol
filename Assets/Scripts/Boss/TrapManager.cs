@@ -62,14 +62,16 @@ public class TrapManager : MonoBehaviour {
     [Header("Phase 4")]
     [SerializeField] private trapSetup p4;
 
-    // What is running so applying the same thing does nothing
+    // What is running, so applying the same setup twice does nothing.
+    // Without these a phase re-entry would restart every pattern mid-sequence.
+
     private int currentPattern = int.MinValue;
     private bool generatedRunning = false;
     private float currentDifficulty = -1f;
     private int currentSpin = 0;
     private bool platformsUp = false;
 
-
+    // one handle so a cycle can never stack on top of another
     private Coroutine cycleRoutine;
 
 
@@ -103,8 +105,10 @@ public class TrapManager : MonoBehaviour {
 
 
 
-    // Swaps traps to new segments settings
-    private void applySetup(trapSetup setup) {
+    // applies one block of hazard settings. compares against what is already
+    // running so nothing restarts unnecessarily.
+    private void applySetup(trapSetup setup)
+    {
         stopCycle();
 
         activateLasers(setup);
@@ -116,7 +120,9 @@ public class TrapManager : MonoBehaviour {
         }
     }
 
-    private void stopCycle() {
+    // stops the cycle loop without touching the hazards themselves
+    private void stopCycle()
+    {
         if (cycleRoutine == null)
             return;
 
@@ -126,7 +132,9 @@ public class TrapManager : MonoBehaviour {
 
 
     [ContextMenu("Stop all traps")]
-    public void StopAll() {
+    // shuts down every hazard, used when the fight ends
+    public void StopAll()
+    {
         stopCycle();
 
         if (laserManager != null) {
@@ -149,8 +157,10 @@ public class TrapManager : MonoBehaviour {
         platformsUp = false;
     }
 
-    // Cycles lava and platforms for interesting gameplay will probably be used in p4
-    private IEnumerator trapCycle(trapSetup setup) {
+    // makes the active hazards rise and fall on a loop instead of holding one
+    // position. mainly for phase 4.
+    private IEnumerator trapCycle(trapSetup setup)
+    {
         bool up = false;
 
         while (true) {
@@ -173,7 +183,9 @@ public class TrapManager : MonoBehaviour {
         }
     }
 
-    private void activateLasers(trapSetup setup) {
+    // starts, stops or regenerates the laser pattern to match the setup
+    private void activateLasers(trapSetup setup)
+    {
         if (laserManager == null) {
             return;
         }
@@ -273,8 +285,9 @@ public class TrapManager : MonoBehaviour {
         p4 = makeSetup(true , -1 , true , 1f , -1 , true , 0.85f , true , true , 8f);
     }
 
-    // Makes a setup based on given values
-    private trapSetup makeSetup(bool lasers , int pattern , bool generate , float difficulty , int spin , bool lavaOn , float level , bool platforms , bool cycle , float interval) {
+    // builds a trapSetup in code, used by the defaults and the test menu
+    private trapSetup makeSetup(bool lasers, int pattern, bool generate, float difficulty, int spin, bool lavaOn, float level, bool platforms, bool cycle, float interval)
+    {
         trapSetup setup = new trapSetup();
 
         setup.laserActive = lasers;
@@ -292,6 +305,7 @@ public class TrapManager : MonoBehaviour {
     }
 
     [ContextMenu("Test Phase 1")]
+    // inspector-only helpers for jumping straight to a phase while testing
     void testP1() { StartP1(); }
 
     [ContextMenu("Test Immune 1")]

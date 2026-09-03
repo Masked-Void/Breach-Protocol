@@ -53,6 +53,9 @@ public class LaserArrayManager : MonoBehaviour {
     [Tooltip("how close to the target angle counts as arrived. keep it above one frame of travel or it overshoots forever")]
     [SerializeField] private float angleEpsilon = 0.5f;
 
+    // every array that rotates with the rig, and the rotation each started at.
+    // the spin is applied as an offset from those, so a designer can angle a
+    // pillar in the scene and the spin still reads correctly.
     private LaserArray[] spinTargets;
     private Quaternion[] spinBaseRots;
     private float spinAngle;
@@ -61,6 +64,7 @@ public class LaserArrayManager : MonoBehaviour {
     [Tooltip("all the firing sequences. the boss controller calls these by index")]
     [SerializeField] private laserPattern[] patterns;
 
+    [Tooltip("settings for building a pattern on the fly instead of using an authored one")]
     [SerializeField] private patternGenerator generator = new patternGenerator();
 
     // built in awake from the four fields above. unity wont serialize a jagged array
@@ -93,6 +97,7 @@ public class LaserArrayManager : MonoBehaviour {
         buildSpinTargets();
     }
 
+    // collects everything the spin rotates and remembers where each started
     private void buildSpinTargets() {
         
         List<LaserArray> found = new List<LaserArray>();
@@ -119,6 +124,7 @@ public class LaserArrayManager : MonoBehaviour {
         spinAngle = 0f;
     }
 
+    // collects everything the spin rotates and remembers where each started
     private void applySpinAngle() {
         Quaternion offset = Quaternion.Euler(0f , spinAngle , 0f);
 
@@ -129,7 +135,11 @@ public class LaserArrayManager : MonoBehaviour {
         }
     }
 
-    public bool ResolveSlot(pillarColor color , int slot , out LaserArray owner , out int localIndex) {
+    // turns a colour and a global slot number into the array that owns that
+    // laser and its index inside that array. pillars can have different laser
+    // counts, so a slot number alone is not enough.
+    public bool ResolveSlot(pillarColor color, int slot, out LaserArray owner, out int localIndex)
+    {
         owner = null;
         localIndex = -1;
 
@@ -145,7 +155,7 @@ public class LaserArrayManager : MonoBehaviour {
         for (int i = 0 ; i < arrays.Length ; i++) {
             if (arrays[i] == null) continue;
 
-            int count = arrays[i].getCount;
+            int count = arrays[i].Count;
 
             if (slot < walked + count) {
                 owner = arrays[i];
@@ -158,10 +168,9 @@ public class LaserArrayManager : MonoBehaviour {
         return false;
     }
 
-    // single point of validation for every fire call
-    // checks the pillar index, the slot index, and whether the entry is actually filled in
-    // returns null on any miss so a bad pattern step just does nothing instead of throwing mid fight
-    private LaserArray getLaser(int pillar , int slot) {
+    // walks the arrays on a pillar to find which one owns a global slot
+    private LaserArray getLaser(int pillar, int slot)
+    {
         if (pillar < 0 || pillar >= pillars.Length)
             return null;
 
@@ -202,9 +211,9 @@ public class LaserArrayManager : MonoBehaviour {
         return -1;
     }
 
-    // how many lasers this pillar actually has, 0 if its empty
-    // nothing should ever hardcode a count, ask here instead
-    public int LaserCount(pillarColor color) {
+    // total lasers on a pillar, summed across its arrays
+    public int LaserCount(pillarColor color)
+    {
 
         LaserArray[] arrays = getPillar(color);
 
@@ -214,7 +223,7 @@ public class LaserArrayManager : MonoBehaviour {
 
         for (int i = 0 ; i < arrays.Length ; i++) {
             if (arrays[i] != null) {
-                total += arrays[i].getCount;
+                total += arrays[i].Count;
             }
         }
 
@@ -289,14 +298,14 @@ public class LaserArrayManager : MonoBehaviour {
         }
     }
 
-    // true if any laser on this pillar is currently deployed
-    // needs a matching accessor over on LaserArray
-    public bool IsFiring(pillarColor color) {
+    // true if anything on this pillar is currently out and firing
+    public bool IsFiring(pillarColor color)
+    {
         LaserArray[] arrays = getPillar(color);
         if (arrays == null) { return false; }
 
         for (int i = 0 ; i < arrays.Length ; i++) {
-            if (arrays[i] != null && arrays[i].getIsAnyDeployed) {
+            if (arrays[i] != null && arrays[i].IsAnyDeployed) {
                 return true;
             }
         }
@@ -319,9 +328,10 @@ public class LaserArrayManager : MonoBehaviour {
 
     }
 
-    // spins the pivot every frame and never exits on its own
-    // only stopRotation or a sweepTo call can end this
-    private IEnumerator spinLoop(int direction) {
+    // continuous rotation until something stops it. shares rotateRoutine with
+    // sweep, so starting one cancels the other for free.
+    private IEnumerator spinLoop(int direction)
+    {
         int dir = direction < 0 ? -1 : 1;
 
         while (true) {
@@ -355,9 +365,10 @@ public class LaserArrayManager : MonoBehaviour {
         rotateRoutine = StartCoroutine(sweepRoutine(angle));
     }
 
-    // normalize the current angle first or the accumulated spin makes the math wrong
-    // then pick whichever direction is shorter, rotate until past the target, snap exact
-    private IEnumerator sweepRoutine(float target) {
+    // rotates to a set angle and stops. picks the shorter way round, overshoots
+    // slightly, then snaps exact so it never creeps.
+    private IEnumerator sweepRoutine(float target)
+    {
 
         // a speed of 0 never closes the gap and the loop would run for the rest of the fight
         if (sweepSpeed <= 0f) {
@@ -455,8 +466,10 @@ public class LaserArrayManager : MonoBehaviour {
 
 
     [ContextMenu("Check Rotation Setup")]
-    // prints everything the spin depends on, use this before blaming the code
-    private void checkRotationSetup() {
+    // logs whether every array is where the spin expects it. inspector only,
+    // for catching a pillar that was moved without updating its base rotation.
+    private void checkRotationSetup()
+    {
         int count = spinTargets == null ? 0 : spinTargets.Length;
 
         Debug.Log("LaserArrayManager rotation setup:"
@@ -521,10 +534,9 @@ public class LaserArrayManager : MonoBehaviour {
         patternRoutine = StartCoroutine(patternLoop(chosen));
     }
 
-    // walks the steps, slot -1 means fire the whole pillar, otherwise fire the one laser
-    // waits the steps delay after firing so a delay of 0 fires with the next step
-    // loops back to the start if the pattern is set to loop, otherwise exits and clears the handle
-    private IEnumerator patternLoop(laserPattern pattern) {
+    // walks an authored pattern step by step until told to stop
+    private IEnumerator patternLoop(laserPattern pattern)
+    {
         do {
             for (int i = 0 ; i < pattern.steps.Length ; i++) {
                 laserStep step = pattern.steps[i];
@@ -560,7 +572,9 @@ public class LaserArrayManager : MonoBehaviour {
         StopAllLasers();
     }
 
-    private void runStep(laserStep step) {
+    // fires or retracts whatever one step asks for, whole pillar or single laser
+    private void runStep(laserStep step)
+    {
         if (step.slot < 0) {
             if (step.retract) {
                 StopPillar(step.color);
@@ -583,7 +597,11 @@ public class LaserArrayManager : MonoBehaviour {
     }
 
 
-    private IEnumerator generatedLoop(float difficulty) {
+    // builds and runs a fresh sequence instead of an authored one. difficulty
+    // lerps every generator setting between its easy and hard value.
+    private IEnumerator generatedLoop(float difficulty)
+    {
+
         while (true) {
             float[] weights = rollPillarWeights(difficulty);
 
@@ -626,7 +644,10 @@ public class LaserArrayManager : MonoBehaviour {
         }
     }
 
-    private float[] rollPillarWeights(float difficulty) {
+    // decides how likely each pillar is to be picked. more pillars come into
+    // play as difficulty rises.
+    private float[] rollPillarWeights(float difficulty)
+    {
         float[] weights = new float[4];
 
         int wanted = Mathf.RoundToInt(Mathf.Lerp(generator.pillarsEasy,generator.pillarsHard,difficulty));
@@ -669,7 +690,10 @@ public class LaserArrayManager : MonoBehaviour {
     }
 
 
-    private AnimationCurve rollSlotBias() {
+    // picks one of the slot bias curves, so two passes at the same difficulty
+    // favour different heights
+    private AnimationCurve rollSlotBias()
+    {
         if (generator.slotBiasOptions == null || generator.slotBiasOptions.Length == 0) {
             return AnimationCurve.Linear(0f , 1f , 1f , 1f);
         }
@@ -679,8 +703,10 @@ public class LaserArrayManager : MonoBehaviour {
         return picked != null ? picked : AnimationCurve.Linear(0f , 1f , 1f , 1f);
     }
 
-
-    private float jittered(float value) {
+    // nudges a value randomly within the jitter range, so nothing is exactly
+    // repeatable at a given difficulty
+    private float jittered(float value)
+    {
         if (generator.jitter <= 0) {
             return value;
         }
@@ -689,8 +715,12 @@ public class LaserArrayManager : MonoBehaviour {
     }
 
 
-    private pillarColor rollColor(float[] weights , bool needsDeployed) {
-        
+    // picks a pillar by weight. needsDeployed limits it to pillars that already
+    // have something out, used when the step is a retract.
+    private pillarColor rollColor(float[] weights, bool needsDeployed)
+    {
+
+
         float[] live = new float[4];
         float total = 0f;
 
@@ -731,7 +761,9 @@ public class LaserArrayManager : MonoBehaviour {
     }
 
 
-    private int rollSlot(pillarColor color , AnimationCurve slotBias , bool needsDeployed) {
+    // picks a slot on a pillar, biased by the curve so patterns favour certain heights
+    private int rollSlot(pillarColor color, AnimationCurve slotBias, bool needsDeployed)
+    {
         int count = LaserCount(color);
 
         if (count <= 0) {
@@ -775,7 +807,9 @@ public class LaserArrayManager : MonoBehaviour {
         return -2;
     }
 
-    private bool hasDeployed(pillarColor color) {
+    // true if this pillar has at least one laser out
+    private bool hasDeployed(pillarColor color)
+    {
         int count = LaserCount(color);
 
         for (int i = 0 ; i < count ; i++) {
@@ -787,7 +821,9 @@ public class LaserArrayManager : MonoBehaviour {
         return false;
     }
 
-    private bool anyDeployed() {
+    // true if anything anywhere is out, so a retract step has something to retract
+    private bool anyDeployed()
+    {
         for (int i = 0 ; i < 4; i++) {
             if (hasDeployed((pillarColor)i)) {
                 return true;

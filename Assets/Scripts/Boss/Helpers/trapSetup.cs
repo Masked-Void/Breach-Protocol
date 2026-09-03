@@ -1,16 +1,24 @@
 using UnityEngine;
 
+// one block of hazard settings. TrapManager holds one per boss phase and one
+// per transition, and applies whichever block the fight asks for.
 [System.Serializable]
 public struct trapSetup
 {
     [Header("Lasers")]
-
     [Tooltip("False retracts every laser and stops the lasers from spinning")]
     public bool laserActive;
+
     [Tooltip("Index into LaserArrayManager's pattern list. -1 runs no sequence")]
     public int laserPattern;
+
+    [Tooltip("On ignores laserPattern and builds a fresh sequence at laserDifficulty instead")]
     public bool generatePattern;
+
+    [Tooltip("How hard a generated pattern is. 0 is sparse and slow, 1 is dense and fast")]
     [Range(0f, 1f)] public float laserDifficulty;
+
+    [Tooltip("1 spins clockwise, -1 counter clockwise, 0 holds still")]
     public int laserSpinDirection;
 
     [Header("Lava")]

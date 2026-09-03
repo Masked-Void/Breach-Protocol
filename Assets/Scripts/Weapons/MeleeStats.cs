@@ -1,46 +1,49 @@
 using UnityEngine;
 using System.Collections;
+
+/*
+ * Script: MeleeStats
+ *
+ * Description:
+ * Data and swing behaviour for a melee weapon. Raycasts on swing and plays a
+ * different sound depending on whether it hit flesh, a shield, or a wall.
+ *
+ * Interacts With:
+ * - WeaponManager (Barrel for the ray origin, PlayMeleeSwing for the animation)
+ * - EnemyBase (RegisterDamageSource so the kill credits this weapon)
+ * - IDamage (whatever it hits)
+ *
+ * Notes:
+ * - The swing animation lives in WeaponManager because a ScriptableObject
+ *   can't run a coroutine. The commented block below is the failed attempt.
+ */
 [CreateAssetMenu(menuName = "Weapons/Melee", order = 2)]
 public class MeleeStats : WeaponStats
 {
     [Header("Damage")]
+    [Tooltip("damage per hit")]
     [Range(1, 10)][SerializeField] public int attackDamage;
+
+    [Tooltip("how far the swing reaches, in metres")]
     [Range(5, 10)][SerializeField] public int attackDist;
-    Quaternion katanaOrigRot;
-    Transform katanaTransform;
+
     [Header("Audio")]
+    [Tooltip("played on every swing, hit or miss")]
     public AudioClip swingSound;
     [Range(0, 1)] public float swingSoundVol = 1f;
+
+    [Tooltip("played when the swing connects with something damageable")]
     public AudioClip hitFleshSound;
     [Range(0, 1)] public float hitFleshVol = 1f;
+
+    [Tooltip("played when the swing hits level geometry")]
     public AudioClip hitWallSound;
     [Range(0, 1)] public float hitWallVol = 1f;
+
+    [Tooltip("played when the swing hits the ice wall shield")]
     public AudioClip hitShieldSound;
-    [Range(0,1)] public float hitShieldVol = 1f;
-    /*private IEnumerator katanaSwing()
-    {
-        float duration = 0.1f;
-        float t = 0f;
+    [Range(0, 1)] public float hitShieldVol = 1f;
 
-        Quaternion startRot = katanaOrigRot;
-        Quaternion endRot = katanaOrigRot * Quaternion.Euler(28.9087696f, 148.389023f, 97.1623077f);
-
-        while (t < 1f)
-        {
-            t += Time.deltaTime / duration;
-            katanaTransform.localRotation = Quaternion.Lerp(startRot, endRot, t);
-            yield return null;
-        }
-
-        t = 0f;
-        while (t < 1f)
-        {
-            t += Time.deltaTime / duration;
-            katanaTransform.localRotation = Quaternion.Lerp(endRot, startRot, t);
-            yield return null;
-        }
-    } cant call this coroutine from non monobehaviour script
-    */
     public override void Attack()
     {
         Transform gunBarrel = WeaponManager.instance.Barrel;
@@ -49,7 +52,6 @@ public class MeleeStats : WeaponStats
         WeaponManager.instance.PlayMeleeSwing();
         AudioManager.instance.PlaySFX(swingSound, swingSoundVol);
 
-        AudioManager.instance.PlaySFX(swingSound, swingSoundVol);
         //StartCoroutine(katanaSwing());
 
         RaycastHit hit;

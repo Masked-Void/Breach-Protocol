@@ -9,33 +9,44 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     public static BossWaveManager instance;
 
     [Header("Prefabs")]
+    [Tooltip("melee enemies, one is picked at random when a basic spawn rolls")]
     [SerializeField] GameObject[] basicEnemyPrefabs;
+
+    [Tooltip("shoving enemies")]
     [SerializeField] GameObject[] heavyEnemyPrefabs;
+
+    [Tooltip("shooting enemies")]
     [SerializeField] GameObject[] rangedEnemyPrefabs;
 
-
-
     [Header("Roam and Spawn points")]
+    [Tooltip("empty objects enemies wander between in the arena")]
     [SerializeField] Transform[] roamPointTransforms;
+
+    [Tooltip("empty objects enemies appear at, spread around the arena edge")]
     [SerializeField] Transform[] spawnPointTransforms;
-    private RoamPoint[] roamPoints;
-    private SpawnPoint[] spawnPoints;
+
 
 
     [Header("Roam Settings")]
+    [Tooltip("chance a spawning ranged enemy roams before engaging, 0 to 1")]
     [SerializeField] float giveWillRoamChance;
 
     [Header("Cues")]
-    [Tooltip("Music that plays while a madage phase is running")]
+    [Tooltip("Music that plays while a damage phase is running")]
     [SerializeField] AudioClip phaseMusic;
+
     [Tooltip("Music that plays during immune phase")]
     [SerializeField] AudioClip immuneMusic;
+
     [Tooltip("How long warning lights flash when a segment changes")]
     [SerializeField] float lightFlashTime = 3f;
-    
+
 
     [Header("Spawn Settings")]
+    [Tooltip("real seconds between each enemy appearing")]
     [SerializeField] float timeBetweenSpawns = .25f;
+
+    [Tooltip("real seconds a spawn point rests before reusing, spreads spawns around the arena")]
     [SerializeField] float spawnPointCooldown = 5f;
 
 
@@ -60,10 +71,16 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     [Header("Phase 4")]
     [SerializeField] waveSetup p4;
 
+    // whichever setup the current phase is running, swapped by the boss manager
     private waveSetup current;
+
+    // which type the last roll picked, held between the roll and the spawn
     private EnemyType typeSpawned;
     private int enemiesAlive;
     private Coroutine spawnRoutine;
+    private RoamPoint[] roamPoints;
+    private SpawnPoint[] spawnPoints;
+
 
 
     void Awake() {
@@ -91,7 +108,9 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         }
     }
 
-    // Called by bossFightManager as each phase begins
+    // the boss manager calls these as each phase begins. StartP* run during a
+    // damage phase, EndP* run during the immune window between phases.
+
     public void StartP1() { applySetup(p1); segmentCue(false); }
     public void StartP2() { applySetup(p2); segmentCue(false); }
     public void StartP3() { applySetup(p3); segmentCue(false); }
@@ -105,7 +124,7 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     // Boss is dead, stop spawning.
     public void EndP4() { StopSpawning(); }
 
-
+    // swaps music and flashes the warning lights when the fight changes state
     private void segmentCue(bool immuneWindow) {
         if (WaveLightController.instance != null) {
             WaveLightController.instance.FlashWarningLights(lightFlashTime);
@@ -121,8 +140,11 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         }
     }
 
-    // Swap the spawn numbers to the current phase numbers
-    private void applySetup(waveSetup setup) {
+    // switches to a new spawn setup. the loop is already running, it just starts
+    // reading different numbers, so phases blend rather than restart.
+    private void applySetup(waveSetup setup)
+    {
+
         current = setup;
 
         if (spawnRoutine == null) {
@@ -139,7 +161,10 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         spawnRoutine = null;
     }
 
-    private IEnumerator spawnLoop() {
+    // one loop for the whole fight, topping the arena back up to whatever the
+    // current setup allows rather than spawning in discrete waves
+    private IEnumerator spawnLoop()
+    {
         // only fill the room that is left, so it never goes above maxEnemiesOnMap but it isnt target.
         while (true) {
             int roomLeft = current.maxEnemiesOnMap - enemiesAlive;
@@ -158,7 +183,10 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         }
     }
 
-    private void spawnOne() {
+    // spawns a single enemy of a rolled type at a free spawn point
+    private void spawnOne()
+    {
+
         // Grab a random prefab for whichever type the roll landed on
         GameObject enemyPrefab = chooseEnemyPrefab();
         if (enemyPrefab == null)
@@ -184,7 +212,9 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         enemiesAlive++;
     }
 
-    public Transform[] cleanList(Transform[] source) {
+    // strips nulls out of an inspector array so a forgotten empty slot doesn't throw
+    public Transform[] cleanList(Transform[] source)
+    {
         if (source == null)
             return new Transform[0];
 
@@ -316,8 +346,9 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
         return spawnPoints[startIndex];
     }
 
-    // Standardized method to pick randomly from a list
-    private GameObject pickFrom(GameObject[] list) {
+    // picks one at random from a prefab list, null safe
+    private GameObject pickFrom(GameObject[] list)
+    {
         if (list == null || list.Length == 0)
             return null;
 
@@ -325,8 +356,9 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     }
 
 
-    // Rolls against the weight total incase it isnt set to 100 or 1
-    private GameObject chooseEnemyPrefab() {
+    // rolls a type against the current setup's weights and returns a prefab
+    private GameObject chooseEnemyPrefab()
+    {
         float totalPercent = current.rangedEnemyPercent + current.heavyEnemyPercent + current.basicEnemyPercent;
 
         if (totalPercent <= 0f)
@@ -352,7 +384,9 @@ public class BossWaveManager : MonoBehaviour , IWaveHost {
     }
 
 
-    private void setWaveSetupBase() {
+    // sets the starting setup so the loop has something to read before phase 1
+    private void setWaveSetupBase()
+    {
         waveSetup[] waves = new waveSetup[] { p1 , p1_p2 ,p2, p2_p3 , p3 , p3_p4 , p4 };
 
         for (int i = 0 ; i < waves.Length ; i++) {

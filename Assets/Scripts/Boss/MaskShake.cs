@@ -18,11 +18,12 @@ public class MaskShake : MonoBehaviour {
     [Tooltip("How fast it goes to new rotation")]
     [SerializeField] private float shakeSpeed = 25f;
 
-
     [Header("Settle")]
+    [Tooltip("How fast it eases back to rest once shaking stops")]
     [SerializeField] private float settleSpeed = 2f;
 
     [Header("State")]
+    [Tooltip("Toggled by the fight manager, on during phases and off between them")]
     public bool doShake = false;
 
     private Quaternion restRot;

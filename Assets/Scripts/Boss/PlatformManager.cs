@@ -1,8 +1,29 @@
 using System.Collections;
 using UnityEngine;
 
-// handles the rising and falling platforms in the arena, stages fire on a stagger
-public class PlatformManager : MonoBehaviour {
+/*
+ * Script: PlatformManager
+ *
+ * Description:
+ * The rising and falling platforms in the boss arena. Platforms are grouped
+ * into stages, and each stage fires on a delay after the last so the arena
+ * changes shape in a wave rather than all at once.
+ *
+ * Responsibilities:
+ * - Cache each platform's start position and travel height on Awake
+ * - Raise and lower every stage on a stagger
+ * - Keep one pass running at a time so a rise and fall never fight
+ *
+ * Interacts With:
+ * - TrapManager (calls RisePlatforms and FallPlatforms per phase)
+ *
+ * Notes:
+ * - Runs on unscaled time like every boss hazard.
+ * - One passRoutine handle means calling Rise mid-Fall cancels the fall
+ *   cleanly instead of both running.
+ */
+public class PlatformManager : MonoBehaviour
+{
 
     [System.Serializable]
     public class platformStage {
@@ -54,8 +75,10 @@ public class PlatformManager : MonoBehaviour {
     }
 
 
-    // grabs the start position of every platform and works out how far it has to travel
-    void cacheStages() {
+    // reads each stage's markers and stores start positions and travel distance.
+    // done once so the moving code never touches markers again.
+    void cacheStages()
+    {
 
         stageRoutines = new Coroutine[stages.Length];
 
@@ -120,12 +143,15 @@ public class PlatformManager : MonoBehaviour {
     }
 
 
-    // kills any pass already running so a fall can interrupt a rise
-    void startPass(bool rising) {
+    // cancels whatever pass is running and starts a new one in the given direction
+    void startPass(bool rising)
+    {
         stopEveryPass();
         passRoutine = StartCoroutine(runPass(rising));
     }
 
+    // stops the pass and every per stage and per platform routine underneath it,
+    // so nothing survives a phase handoff
     void stopEveryPass() {
         if (passRoutine != null) {
             StopCoroutine(passRoutine);
@@ -145,7 +171,7 @@ public class PlatformManager : MonoBehaviour {
     }
 
 
-    // walks every stage in order with the stagger between them
+    // walks the stages in order, waiting stageStagger between each
     IEnumerator runPass(bool rising) {
         for (int i = 0 ; i < stages.Length ; i++) {
             stageRoutines[i] = StartCoroutine(runStage(stages[i] , rising));
@@ -158,8 +184,9 @@ public class PlatformManager : MonoBehaviour {
     }
 
 
-    // fires the platforms inside one stage, all at once or spread out
-    IEnumerator runStage(platformStage stage , bool rising) {
+    // moves one stage's platforms, waiting inStageStagger between each
+    IEnumerator runStage(platformStage stage, bool rising)
+    {
         // stage failed setup, skip it instead of throwing
         if (!stage.ready)
             yield break;
@@ -229,8 +256,9 @@ public class PlatformManager : MonoBehaviour {
     }
 
 
-    // places the platform based on its normalized current value
-    void applyHeight(platformStage stage , int index) {
+    // writes the current height onto the platform, called every frame while moving
+    void applyHeight(platformStage stage, int index)
+    {
         stage.platforms[index].position = stage.startPositions[index] + Vector3.up * (stage.current[index] * stage.riseHeight);
     }
 

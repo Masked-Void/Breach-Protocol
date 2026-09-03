@@ -2,10 +2,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// owns every hold point in the boss arena. runs the center point during immune phases and
-// lights up one random outer point during damage phases. zones report back here instead of
-// reaching into the boss themselves.
-public class HoldZoneManager : MonoBehaviour {
+/*
+ * Script: HoldZoneManager
+ *
+ * Description:
+ * Owns every hold point in the boss arena. Runs the centre point during immune
+ * phases and lights one random outer point during damage phases. Zones report
+ * back here instead of reaching into the boss themselves.
+ *
+ * Responsibilities:
+ * - Start and stop the immune hold that breaks boss invulnerability
+ * - Pick a random damage point each damage phase, never the same one twice running
+ * - Mirror the live point's progress on the HUD
+ * - Shut every point down on a phase handoff
+ *
+ * Interacts With:
+ * - HoldZone (the individual points)
+ * - BossFightManager (polls immuneHoldDone and immuneProgress)
+ *
+ * Notes:
+ * - The damage point roll draws from the list minus last time's index, then
+ *   steps over the gap. That keeps every remaining point equally likely instead
+ *   of rerolling until it differs.
+ */
+public class HoldZoneManager : MonoBehaviour
+{
     [Header("Zones")]
     [Tooltip("the single center point used by all three immune phases")]
     [SerializeField] private HoldZone immuneZone;
@@ -18,14 +39,18 @@ public class HoldZoneManager : MonoBehaviour {
     [SerializeField] private bool repeatDamageHolds = true;
 
     [Header("References")]
+    [Tooltip("the fight this belongs to, found on a parent if left empty")]
     [SerializeField] private BossFightManager boss;
 
     [Header("HUD")]
     [Tooltip("optional hud mirror of whichever point is live right now. the computer is still the main readout")]
     [SerializeField] private Image hudFill;
+
+    [Tooltip("root of the hud readout, hidden whenever no point is live")]
     [SerializeField] private GameObject hudObj;
 
-    // Phase transition polls these
+
+    // BossFightManager polls these each frame to decide when a phase can end
     public bool immuneHoldDone { get; private set; }
     public float immuneProgress { get { return immuneZone != null ? immuneZone.progress : 0f; } }
     public bool holdActive { get { return activeZone != null; } }

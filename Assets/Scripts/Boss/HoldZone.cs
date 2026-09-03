@@ -12,6 +12,8 @@ public class HoldZone : MonoBehaviour {
     [Header("Mode")]
     [Tooltip("breakImmunity or dealDamage")]
     [SerializeField] private holdMode mode = holdMode.dealDamage;
+
+    [Tooltip("damage dealt to the boss when a dealDamage hold completes, ignored in breakImmunity mode")]
     [SerializeField] private float holdDamageAmount = 100f;
 
     [Header("Shape")]
@@ -35,9 +37,12 @@ public class HoldZone : MonoBehaviour {
     [SerializeField] private SpriteRenderer fillSprite;
     [Tooltip("which axis the bar stretches along")]
     [SerializeField] private fillAxis growAxis = fillAxis.horizontal;
-    [Tooltip("HDR, so crank the intensity and the screen blooms")]
-    [ColorUsage(true , true)][SerializeField] private Color fillingColor = new Color(0.2f , 0.9f , 1f);
-    [ColorUsage(true , true)][SerializeField] private Color drainingColor = new Color(1f , 0.25f , 0.2f);
+    [Tooltip("colour while the player is inside and progress is climbing")]
+    [ColorUsage(true, true)][SerializeField] private Color fillingColor = new Color(0.2f, 0.9f, 1f);
+
+    [Tooltip("colour while the player has stepped out and progress is bleeding away")]
+    [ColorUsage(true, true)][SerializeField] private Color drainingColor = new Color(1f, 0.25f, 0.2f);
+
     [Tooltip("color multiplier at full progress, so the screen gets brighter as it fills and reads from across the arena")]
     [SerializeField] private float brightnessAtFull = 4f;
 
@@ -50,7 +55,10 @@ public class HoldZone : MonoBehaviour {
 
 
     [Header("References")]
+    [Tooltip("the player transform, found by tag on Awake if left empty")]
     [SerializeField] private Transform player;
+
+    [Tooltip("tag used to find the player when the reference above is empty")]
     [SerializeField] private string playerTag = "Player";
 
 
@@ -117,7 +125,10 @@ public class HoldZone : MonoBehaviour {
     }
 
 
-    bool checkInside() {
+    // flat cylinder check rather than a trigger, so the zone can be resized in
+    // the inspector without touching a collider
+    bool checkInside()
+    {
         Vector3 basePos = transform.position + Vector3.up * baseOffset;
         Vector3 offset = player.position - basePos;
 
@@ -130,8 +141,10 @@ public class HoldZone : MonoBehaviour {
     }
 
 
-    // Stretches sprite
-    void updateScreen() {
+    // scales and recolours the computer screen bar. brightness rises with
+    // progress so it reads from across the arena.
+    void updateScreen()
+    {
         if (fillSprite == null)
             return;
 
@@ -153,7 +166,10 @@ public class HoldZone : MonoBehaviour {
     }
 
 
-    void matchMarkerToRadius() {
+    // keeps the ring marker matching the radius value, so what you see in the
+    // scene is what the check actually uses
+    void matchMarkerToRadius()
+    {
         if (zoneMarker == null)
             return;
 

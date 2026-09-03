@@ -6,9 +6,12 @@ public struct waveSetup
 {
     [Tooltip("Weights, not real percents. They are rolled against their own total so they do not have to add to 100")]
     public float basicEnemyPercent;
-    public float heavyEnemyPercent;
-    public float rangedEnemyPercent;
 
+    [Tooltip("Weight for heavy enemies, rolled against the total of all three")]
+    public float heavyEnemyPercent;
+
+    [Tooltip("Weight for ranged enemies, rolled against the total of all three")]
+    public float rangedEnemyPercent;
     [Tooltip("Ceiling on how many enemies can be alive at once")]
     public int maxEnemiesOnMap;
     [Tooltip("How many spawn per burst, capped by the room left under maxEnemiesOnMap")]

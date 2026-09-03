@@ -29,8 +29,13 @@ public class GlitchCubeRotate : MonoBehaviour {
 
 
     [Header("Scale")]
+    [Tooltip("smallest a cube can be scaled to")]
     [SerializeField] float minSize = .25f;
+
+    [Tooltip("largest a cube can be scaled to")]
     [SerializeField] float maxSize = 1.5f;
+
+    [Tooltip("on also randomizes scale alongside rotation, off leaves cubes at their prefab size")]
     [SerializeField] bool doScale = false;
     Vector3[] fromScale;
     Vector3[] toScale;
@@ -58,6 +63,9 @@ public class GlitchCubeRotate : MonoBehaviour {
         if (cubes == null)
             return;
 
+        // per cube state, all these stay the same length as cubes.
+        // parallel arrays rather than a struct so the whole thing is one allocation.
+        Quaternion[] fromRot;
         fromRot = new Quaternion[cubes.Length];
         toRot = new Quaternion[cubes.Length];
         fromScale = new Vector3[cubes.Length];

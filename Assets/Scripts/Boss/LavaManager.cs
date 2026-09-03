@@ -1,15 +1,35 @@
 using System.Collections;
 using UnityEngine;
 
-// Moves a lava object between a low and a high marker.
-// Runs on unscaled time so the lava keeps rising even while time is frozen.
+/*
+ * Script: LavaManager
+ *
+ * Description:
+ * Moves a lava object between a low and a high marker, and damages the player
+ * while they're standing in it. Runs on unscaled time so the lava keeps rising
+ * even while the player has frozen time.
+ *
+ * Responsibilities:
+ * - Rise, drain, or move to any 0 to 1 level over a set duration
+ * - Tick damage on the player while they're below the surface
+ * - Expose the current level and surface height for other systems
+ *
+ * Interacts With:
+ * - TrapManager (sets the level per boss phase)
+ * - IDamage (damages the player)
+ * - MarkerUtility (finds the low and high markers by name)
+ */
 public class LavaManager : MonoBehaviour {
 
     [Header("Drag in Lava")]
+    [Tooltip("the lava surface object, moved between the two markers below")]
     [SerializeField] Transform lavaObject;
 
     [Header("Marker names (children of the lava object)")]
+    [Tooltip("child marking the drained position, found by name so it can be moved in the scene")]
     [SerializeField] string lowMarkerName = "Low";
+
+    [Tooltip("child marking the full position")]
     [SerializeField] string highMarkerName = "High";
 
     [Header("Motion (Uses unscaledDeltaTime)")]
@@ -19,8 +39,12 @@ public class LavaManager : MonoBehaviour {
     [SerializeField] float drainTime = 4f;
 
     [Header("Damage")]
+    [Tooltip("seconds between damage ticks while the player is standing in it")]
     [SerializeField] private float damageRate = 2f;
+
+    [Tooltip("how far below the surface counts as being in the lava, stops ankle deep hurting")]
     [SerializeField] private float damageDepth = 0.2f;
+    [Tooltip("tag used to find the player on Awake")]
     [SerializeField] private string playerTag = "Player";
 
     private Transform player;
@@ -57,20 +81,12 @@ public class LavaManager : MonoBehaviour {
     }
 
     // Read only 0 to 1 progress for anything that needs to know how full the arena is
-    public float getCurrentLevel {
-        get {
-            return currentProgress;
-        }
-    }
+    public float CurrentLevel => currentProgress;
 
 
 
     // Read only world height of the lava surface, for damage/height checks
-    public float getCurrentSurfaceY {
-        get {
-            return lavaObject.position.y;
-        }
-    }
+    public float CurrentSurfaceY => lavaObject.position.y;
 
     void Awake() {
 
@@ -132,8 +148,10 @@ public class LavaManager : MonoBehaviour {
         playerDamage.TakeDamage(1);
     }
 
+    // depth check against the surface height rather than a trigger, so the lava
+    // can be any shape and the check still works
     bool checkInLava() {
-        if (player.position.y > getCurrentSurfaceY - damageDepth) {
+        if (player.position.y > CurrentSurfaceY - damageDepth) {
             return false;
         }
 
@@ -178,7 +196,9 @@ public class LavaManager : MonoBehaviour {
 
 
 
-    // method call for gradual lava rise/fall
+    // starts a move to a 0 to 1 target, cancelling whatever move was running.
+    // duration comes from riseTime or drainTime depending on direction.
+
     public void MoveTo(float amt) {
         // error check
         if (!enabled)
@@ -261,7 +281,7 @@ public class LavaManager : MonoBehaviour {
 
 
 
-    // Updates lava position
+    // writes the lava to a height with no animation, used on reset and by SetNow
     void placeLava() {
         lavaObject.position = Vector3.Lerp(lowPos.position , highPos.position , currentProgress);
     }

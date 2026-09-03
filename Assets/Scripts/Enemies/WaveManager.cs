@@ -102,7 +102,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
 
     [Header("Wave Tracking")]
     [Tooltip("current wave, set at runtime")]
-    [SerializeField] private int currentWave = 0;
+    [SerializeField] public int CurrentWave = 0;
 
     [Header("Economy")]
     [Tooltip("how many Files a cleared wave is worth")]
@@ -178,7 +178,7 @@ public class WaveManager : MonoBehaviour,IWaveHost
     {
         int amountToSpawn = Mathf.RoundToInt(
             enemiesToSpawnAtWave0 *
-            Mathf.Pow(enemyIncreaseMultiplier, currentWave)
+            Mathf.Pow(enemyIncreaseMultiplier, CurrentWave)
         );
 
         for (int i = 0; i < amountToSpawn; i++)
@@ -299,10 +299,10 @@ public class WaveManager : MonoBehaviour,IWaveHost
     // starts the gap between waves and the round transition music
     private void queueNextWave()
     {
-        currentWave++;
+        CurrentWave++;
         enemiesAlive = 0;
 
-        if (currentWave > maxWaves)
+        if (CurrentWave > maxWaves)
         {
             playerWins();
             return;

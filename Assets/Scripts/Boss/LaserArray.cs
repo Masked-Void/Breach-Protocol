@@ -30,8 +30,13 @@ using UnityEngine;
 public class LaserArray : MonoBehaviour {
 
     [Header("Marker Names: (Children of each laser)")]
+    [Tooltip("child marking the retracted position")]
     [SerializeField] string laserInMarkerName = "laserIn";
+
+    [Tooltip("child marking the deployed position")]
     [SerializeField] string laserOutMarkerName = "laserOut";
+
+    [Tooltip("child the beam fires from, needs a LineRenderer on it")]
     [SerializeField] string beamMarkerName = "beam";
 
     [Header("Deploy Motion")]
@@ -49,6 +54,7 @@ public class LaserArray : MonoBehaviour {
     [SerializeField] int beamDamage = 1;
     [Tooltip("Real seconds between ticks to account for time slow and not instant death")]
     [SerializeField] float beamRate = .5f;
+    [Tooltip("gap between the beam origin and where the line starts drawing, stops it clipping into the emitter")]
     [SerializeField] float beamStartOffset = .1f;
 
     // Sends every laser out, staggered
@@ -86,15 +92,11 @@ public class LaserArray : MonoBehaviour {
     bool isOut = false;
 
     // Read only so other scripts can check the array state without changing it
-    public bool getIsOut {
-        get {
-            return isOut;
-        }
-    }
+    public bool IsOut => isOut;
 
     // True only when every laser is all the way out and the beams are live
     // The manager checks this instead of getIsOut, a half deployed array shouldn't count as firing
-    public bool getIsDeployed {
+    public bool IsDeployed {
         get {
             if (lasers == null || lasers.Length == 0) {
                 return false;
@@ -111,7 +113,7 @@ public class LaserArray : MonoBehaviour {
     }
 
     // True while anything in here is still sliding, group or single
-    public bool getIsMoving {
+    public bool IsMoving {
         get {
             if (groupRoutine != null) {
                 return true;
@@ -134,13 +136,15 @@ public class LaserArray : MonoBehaviour {
 
 
     // How many lasers ended up under this object
-    public int getCount {
+    public int Count {
         get {
             return lasers == null ? 0 : lasers.Length;
         }
     }
 
-    public bool getIsAnyDeployed {
+    // true if at least one laser is fully out. the manager uses this to know
+    // whether the pillar is doing anything at all, versus fully retracted.
+    public bool IsAnyDeployed {
         get {
             if (lasers== null) {
                 return false;
@@ -169,7 +173,8 @@ public class LaserArray : MonoBehaviour {
     }
 
 
-    // Grabs every child laser and sets up its markers, beams and starting state
+    // finds every laser child and caches its markers, beam renderer and state.
+    // runs once, so nothing after this has to search the hierarchy.
     void build() {
 
         int count = transform.childCount;
@@ -230,7 +235,9 @@ public class LaserArray : MonoBehaviour {
 
 
 
-    // Looks through one laser's children for a marker whose name contains 'wanted'
+    // local wrapper over MarkerUtility that logs against the laser rather than
+    // the array, so an error points at the object actually missing a child
+
     Transform findMark(Transform laser , string wanted) {
         // empty variable for 1 return call
         Transform found = null;
@@ -256,8 +263,11 @@ public class LaserArray : MonoBehaviour {
 
 
 
-    // Reapplies every laser position after everything else has moved for the frame
-    private void LateUpdate() {
+    // beams are drawn in LateUpdate so they land after the lasers have moved
+    // this frame, otherwise the line trails a frame behind the emitter
+    private void LateUpdate()
+    {
+
         // error check
         if (!enabled) {
             return;
@@ -269,8 +279,10 @@ public class LaserArray : MonoBehaviour {
         }
     }
 
-
-    void updateBeam(laserUnit laser) {
+    // raycasts from the beam origin, draws the line to whatever it hits, and
+    // ticks damage on a real time interval
+    void updateBeam(laserUnit laser)
+    {
         if (laser.beam == null || laser.beamPos == null) {
             return;
         }
@@ -330,9 +342,10 @@ public class LaserArray : MonoBehaviour {
         startMove(lasers[index] , goOut);
     }
 
-    // Pulls everything in at once with no stagger, for when a phase ends
-    // retract() walks down the array with a delay, so lasers it hasn't reached yet keep deploying
-    public void RetractNow() {
+    // snaps everything in immediately with no animation, for phase handoffs
+    // where a staggered retract would be too slow
+    public void RetractNow()
+    {
         // error check
         if (!enabled) {
             return;
@@ -370,8 +383,9 @@ public class LaserArray : MonoBehaviour {
 
 
 
-    // Kicks off each laser one at a time so they don't all pop out together
-    IEnumerator moveGroup(bool goOut) {
+    // walks the array with the stagger delay between each laser
+    IEnumerator moveGroup(bool goOut)
+    {
         for (int i = 0 ; i < lasers.Length ; i++) {
             startMove(lasers[i] , goOut);
 

@@ -35,32 +35,56 @@ using UnityEngine.UI;
 public class BossFightManager : MonoBehaviour,IDamage {
 
     [Header("References")]
+    [Tooltip("the boss model, hidden or shown as phases change")]
     [SerializeField] private GameObject boss;
+
+    [Tooltip("spawns enemies, told when each phase starts and ends")]
     [SerializeField] private BossWaveManager bossWavesManager;
+
+    [Tooltip("the hold points, one breaks immunity and the others deal damage")]
     [SerializeField] private HoldZoneManager holdManager;
+
+    [Tooltip("lasers, lava and platforms, set per phase")]
     [SerializeField] private TrapManager trapManager;
 
     [Header("UI")]
+    [Tooltip("root of the immunity readout, only shown during immune windows")]
     [SerializeField] private GameObject immuneBarObj;
+
+    [Tooltip("root of the health readout, hidden while immune")]
     [SerializeField] private GameObject healthBarObj;
+
+    [Tooltip("boss health bar, fills 1 to 0 as it takes damage")]
     [SerializeField] private Image healthBar;
+
     [Tooltip("fills 0 to 1 as the hold progresses, so set the art to fill in that direction")]
     [SerializeField] private Image immuneBar;
 
     [Header("Health")]
+    [Tooltip("total health across all four phases")]
     [SerializeField] private float maxHealth = 1000f;
-    [Range(0f , 10f)][SerializeField] private float bulletDamageMult = 1f;
-    [Range(0f , 1f)][SerializeField] private float p1EndHealthPerc = .75f;
-    [Range(0f , 1f)][SerializeField] private float p2EndHealthPerc = .5f;
-    [Range(0f , 1f)][SerializeField] private float p3EndHealthPerc = .25f;
+
+    [Tooltip("bullets are multiplied by this, so guns can be tuned against the boss separately")]
+    [Range(0f, 10f)][SerializeField] private float bulletDamageMult = 1f;
+
+    [Tooltip("health fraction where phase 1 ends and the first immune window opens")]
+    [Range(0f, 1f)][SerializeField] private float p1EndHealthPerc = .75f;
+
+    [Tooltip("health fraction where phase 2 ends")]
+    [Range(0f, 1f)][SerializeField] private float p2EndHealthPerc = .5f;
+
+    [Tooltip("health fraction where phase 3 ends, phase 4 runs to zero")]
+    [Range(0f, 1f)][SerializeField] private float p3EndHealthPerc = .25f;
 
     [Header("Misc")]
+    [Tooltip("how many Files beating the boss awards")]
     [SerializeField] private EconomyConfig economy;
-
 
     [Header("Debug")]
     [Tooltip("tick this in play mode to chip the boss by damageAmt")]
     [SerializeField] private bool dealDamage = false;
+
+    [Tooltip("how much the debug toggle takes off per tick")]
     [SerializeField] private float damageAmt = 10f;
 
     // the wave manager reads these
