@@ -74,7 +74,6 @@ public class TrapManager : MonoBehaviour
     // one handle so a cycle can never stack on top of another
     private Coroutine cycleRoutine;
 
-
     void Awake()
     {
         // Logs potential fatal errors
@@ -82,17 +81,17 @@ public class TrapManager : MonoBehaviour
         {
             Debug.LogWarning("TrapManager: no LaserArrayManager assigned", this);
         }
+
         if (lavaManager == null)
         {
             Debug.LogWarning("TrapManager: no LavaManager assigned", this);
         }
+
         if (platManager == null)
         {
             Debug.LogWarning("TrapManager: no platformsManager assigned", this);
         }
-
     }
-
 
     // Called by BossFightManager as each phase begins or ends
     public void StartP1() { applySetup(p1); }
@@ -106,8 +105,6 @@ public class TrapManager : MonoBehaviour
     public void EndP3() { applySetup(p3_p4); }
 
     public void EndP4() { StopAll(); }
-
-
 
     // applies one block of hazard settings. compares against what is already
     // running so nothing restarts unnecessarily.
@@ -131,12 +128,13 @@ public class TrapManager : MonoBehaviour
     private void stopCycle()
     {
         if (cycleRoutine == null)
+        {
             return;
+        }
 
         StopCoroutine(cycleRoutine);
         cycleRoutine = null;
     }
-
 
     [ContextMenu("Stop all traps")]
     // shuts down every hazard, used when the fight ends
@@ -180,9 +178,13 @@ public class TrapManager : MonoBehaviour
             if (setup.platformsActive && platManager != null)
             {
                 if (up)
+                {
                     platManager.RisePlatforms();
+                }
                 else
+                {
                     platManager.FallPlatforms();
+                }
 
                 platformsUp = up;
             }
@@ -262,34 +264,41 @@ public class TrapManager : MonoBehaviour
 
             currentSpin = setup.laserSpinDirection;
         }
-
     }
 
     private void activateLava(trapSetup setup)
     {
         if (lavaManager == null)
+        {
             return;
+        }
 
         lavaManager.MoveTo(setup.lavaActive ? setup.lavaLevel : 0f);
     }
     private void activatePlatforms(trapSetup setup)
-    {
+    {        
         if (platManager == null)
+        {
             return;
+        }
 
         if (setup.platformsActive == platformsUp)
+        {
             return;
+        }
 
         if (setup.platformsActive)
+        {
             platManager.RisePlatforms();
+        }
         else
+        {
             platManager.FallPlatforms();
+        }
 
         platformsUp = setup.platformsActive;
 
     }
-
-
 
     [ContextMenu("Apply defaults")]
     private void applyDefaults()

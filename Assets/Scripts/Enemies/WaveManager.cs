@@ -30,8 +30,6 @@
 using System.Collections;
 using UnityEngine;
 
-
-
 public class WaveManager : MonoBehaviour, IWaveHost
 {
     public static WaveManager instance;
@@ -148,12 +146,10 @@ public class WaveManager : MonoBehaviour, IWaveHost
 
     }
 
-
     void Start()
     {
         queueNextWave();
     }
-
 
     void Update()
     {
@@ -164,7 +160,9 @@ public class WaveManager : MonoBehaviour, IWaveHost
         }
 
         if (!waitingForNextWave)
+        {
             return;
+        }
 
         waveTimer += Time.unscaledDeltaTime;
 
@@ -178,7 +176,9 @@ public class WaveManager : MonoBehaviour, IWaveHost
     private void OnDestroy()
     {
         if (instance == this)
-            instance = null;
+        { 
+        instance = null;
+        }
 
         if (ReferenceEquals(waveHost.active, this))
         {
@@ -199,12 +199,16 @@ public class WaveManager : MonoBehaviour, IWaveHost
             GameObject enemyPrefab = chooseEnemyPrefab();
 
             if (enemyPrefab == null)
+            {
                 continue;
+            }
 
             SpawnPoint point = getSpawnPoint();
 
             if (point == null)
+            {
                 break;
+            }
 
             GameObject enemy = Instantiate(
                 enemyPrefab,
@@ -237,7 +241,6 @@ public class WaveManager : MonoBehaviour, IWaveHost
         }
     }
 
-
     GameObject chooseEnemyPrefab()
     {
         float totalPercent =
@@ -246,7 +249,9 @@ public class WaveManager : MonoBehaviour, IWaveHost
             heavyEnemyPercent;
 
         if (totalPercent <= 0)
+        {
             return null;
+        }
 
         float randomValue = Random.Range(0f, totalPercent);
 
@@ -272,7 +277,9 @@ public class WaveManager : MonoBehaviour, IWaveHost
     private SpawnPoint getSpawnPoint()
     {
         if (spawnPoints == null || spawnPoints.Length == 0)
+        {
             return null;
+        }
 
         int startIndex = Random.Range(0, spawnPoints.Length);
 
@@ -342,10 +349,14 @@ public class WaveManager : MonoBehaviour, IWaveHost
     public Transform ClaimRoamPoint(GameObject askingEnemy)
     {
         if (askingEnemy == null)
+        {
             return null;
+        }
 
         if (roamPoints == null || roamPoints.Length == 0)
+        {
             return null;
+        }
 
         int startIndex = Random.Range(0, roamPoints.Length);
 
@@ -355,7 +366,9 @@ public class WaveManager : MonoBehaviour, IWaveHost
                 roamPoints[(startIndex + i) % roamPoints.Length];
 
             if (!candidate.isFree)
+            {
                 continue;
+            }
 
             candidate.claimedBy = askingEnemy;
 
@@ -369,7 +382,9 @@ public class WaveManager : MonoBehaviour, IWaveHost
     public void ReleaseRoamPoint(GameObject askingEnemy)
     {
         if (askingEnemy == null || roamPoints == null)
+        {
             return;
+        }
 
         for (int i = 0; i < roamPoints.Length; i++)
         {
@@ -443,7 +458,9 @@ public class WaveManager : MonoBehaviour, IWaveHost
     void completeWave()
     {
         if (!waveInProgress)
+        {
             return;
+        }
 
         waveInProgress = false;
 
@@ -469,7 +486,6 @@ public class WaveManager : MonoBehaviour, IWaveHost
         queueNextWave();
     }
 
-
     // all waves cleared, hands off to the win state
     void playerWins()
     {
@@ -479,20 +495,23 @@ public class WaveManager : MonoBehaviour, IWaveHost
         }
     }
 
-
     // strips nulls out of an inspector array, so a forgotten empty slot doesn't
     // throw when picking a random point
-    public Transform[] cleanList(Transform[] source)
+    public Transform[] CleanList(Transform[] source)
     {
         if (source == null)
+        {
             return new Transform[0];
+        }
 
         int counted = 0;
 
         for (int i = 0; i < source.Length; i++)
         {
             if (source[i] != null)
+            {
                 counted++;
+            }
         }
 
         Transform[] cleaned = new Transform[counted];
@@ -502,7 +521,9 @@ public class WaveManager : MonoBehaviour, IWaveHost
         for (int i = 0; i < source.Length; i++)
         {
             if (source[i] == null)
+            {
                 continue;
+            }
 
             cleaned[write] = source[i];
             write++;
@@ -511,10 +532,9 @@ public class WaveManager : MonoBehaviour, IWaveHost
         return cleaned;
     }
 
-
     private void assignSpawnPoints(Transform[] points)
     {
-        Transform[] cleaned = cleanList(points);
+        Transform[] cleaned = CleanList(points);
 
         spawnPoints = new SpawnPoint[cleaned.Length];
 
@@ -534,10 +554,9 @@ public class WaveManager : MonoBehaviour, IWaveHost
         }
     }
 
-
     private void assignRoamPoints(Transform[] points)
     {
-        Transform[] cleaned = cleanList(points);
+        Transform[] cleaned = CleanList(points);
 
         roamPoints = new RoamPoint[cleaned.Length];
 
@@ -556,6 +575,4 @@ public class WaveManager : MonoBehaviour, IWaveHost
             Debug.LogError("WaveManager: no roam points assigned");
         }
     }
-
-
 }
