@@ -87,7 +87,12 @@ public class BossFightManager : MonoBehaviour,IDamage {
     [Tooltip("how much the debug toggle takes off per tick")]
     [SerializeField] private float damageAmt = 10f;
 
-    // the wave manager reads these
+    // all indexed by phase, 0 to 3. the wave manager reads these to know what
+    // to spawn, so they are public rather than properties.
+    // Active = this phase is currently running
+    // Activated = this phase has been started at least once, stops re-entry
+    // Immuned = the immune window after this phase has been done
+    // endHealthReqs = health fraction that ends this phase, filled from the percs above
     [System.NonSerialized] public List<bool> phaseActive = new List<bool> { false , false , false , false };
     [System.NonSerialized] public List<bool> phaseActivated = new List<bool> { false , false , false , false };
     [System.NonSerialized] public List<bool> phaseImmuned = new List<bool> { false , false , false , false };
@@ -198,16 +203,20 @@ public class BossFightManager : MonoBehaviour,IDamage {
     }
 
 
-    // single entry point for damage. guns, holds, and the debug toggle all come through here
-    public void ApplyDamage(float amt) {
+    // single entry point for damage. guns, holds and the debug toggle all come
+    // through here, so immunity only has to be checked in one place.
+    public void ApplyDamage(float amt)
+    {
         if (fightOver || isImmune)
             return;
 
         curHealth = Mathf.Max(0f , curHealth - amt);
     }
 
-
-    IEnumerator phaseTransition(int endingPhase) {
+    // runs the immune window between two phases. the boss is invulnerable until
+    // the player finishes the hold, then the next phase starts.
+    IEnumerator phaseTransition(int endingPhase)
+    {
         phaseActive[endingPhase] = false;
 
         bool lastPhase = endingPhase >= phaseActive.Count - 1;
@@ -277,7 +286,9 @@ public class BossFightManager : MonoBehaviour,IDamage {
     }
 
 
-    void bossDefeated() {
+    // awards Files, stops every hazard and hands off to the win state
+    void bossDefeated()
+    {
 
         Debug.Log("boss fight completed");
 
@@ -296,8 +307,9 @@ public class BossFightManager : MonoBehaviour,IDamage {
 
     }
 
-
-    void startPhase(int p) {
+    // tells the wave manager and trap manager to switch to this phase's setup
+    void startPhase(int p)
+    {
 
         // every damage phase gets one optional hold point picked at random
         holdManager.StartDamageHold();
@@ -343,7 +355,7 @@ public class BossFightManager : MonoBehaviour,IDamage {
         ApplyDamage(amount * bulletDamageMult);
     }
 
-    // Looks through the bosses object's children for a marker with an exact name match
+    // local wrapper over MarkerUtility so errors point at the boss object
     Transform findMark(string wanted)
     {
         // Goes through each child of the boss object

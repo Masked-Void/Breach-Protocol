@@ -6,6 +6,7 @@ using UnityEngine;
 public class OverclockKillstreak : KillstreakBase
 {
     [Header("Overclock")]
+    [Tooltip("world speed while active, the player stays at full speed so they move faster than everything")]
     [SerializeField, Range(0.01f, 1f)] private float worldTimeScale = 0.20f;
 
     protected override void onActivate()

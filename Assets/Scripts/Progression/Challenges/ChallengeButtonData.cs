@@ -4,10 +4,16 @@ using UnityEngine.UI;
 
 public class ChallengeButtonData : MonoBehaviour
 {
+    [Tooltip("which weapon's challenge set this button opens")]
     public ChallengeData challenge;
-    Button button;
+
+    [Tooltip("shown over the button until every challenge in the set is done")]
     public GameObject lockIcon;
+
+    [Tooltip("tick on one button so the panel opens with something already selected")]
     [SerializeField] private bool selectOnEnable = false;
+
+    Button button;
 
     void Start()
     {
@@ -15,6 +21,8 @@ public class ChallengeButtonData : MonoBehaviour
         button.onClick.AddListener(Selected);
     }
 
+    // waits a frame before reading state, so ChallengeManager has finished
+    // loading saved progress before the lock icon is set
     IEnumerator initButton()
     {
         yield return null;
@@ -25,6 +33,7 @@ public class ChallengeButtonData : MonoBehaviour
         }
     }
 
+    // shows the lock unless every challenge in the set is complete
     void updateLockstate()
     {
         if (ChallengeManager.instance == null || challenge == null) return;
@@ -38,6 +47,7 @@ public class ChallengeButtonData : MonoBehaviour
         StartCoroutine(initButton());
     }
 
+    // opens this weapon's challenges in the panel
     void Selected()
     {   
         if (AudioManager.instance != null)

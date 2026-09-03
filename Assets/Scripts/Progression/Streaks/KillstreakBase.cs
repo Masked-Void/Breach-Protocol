@@ -6,29 +6,26 @@ using UnityEngine;
  *
  * Description:
  * Abstract base for the ten scorestreaks. Each subclass implements its own
- * effect and duration; the manager rolls one and activates it.
+ * effect; the manager rolls one and activates it.
  *
- * Responsibilities:
- * - Common activate and deactivate lifecycle
- * - Report back to KillstreakManager when the streak ends
+ * Duration decides the shape of the streak:
+ *   > 0  timed, ends itself after that many real seconds
+ *   = 0  instant, fires once and ends immediately
+ *   < 0  manual, stays active until something calls Deactivate
  *
  * Interacts With:
  * - KillstreakManager (rolls, activates, and is told when one ends)
  * - EnemyBase (several streaks mutate or kill enemies)
  *
  * Notes:
- * - Audit finding: six of the ten streaks set flags that nothing consumes.
- *   Setting a flag is not the same as having an effect.
+ * - Timer runs on unscaled time and skips while paused, so a streak can't be
+ *   burned through by slowing the world down.
+ * - Audit finding: six of the ten streaks set flags nothing consumes.
  */
-
-
-/// <summary>
-/// Base class for player-earned scorestreak programs.
-/// duration > 0 = timed, duration == 0 = instant, duration < 0 = manual end.
-/// </summary>
 public abstract class KillstreakBase : MonoBehaviour
 {
     [Header("Scorestreak Info")]
+    [Tooltip("shown in the stored streak slot on the hud")]
     [SerializeField] protected string killstreakName = "Unnamed Program";
 
     [Tooltip("Seconds in real time. > 0 timed, 0 instant, < 0 stays active until Deactivate() is called.")]
@@ -38,17 +35,14 @@ public abstract class KillstreakBase : MonoBehaviour
 
     private Coroutine runRoutine;
 
-    public string GetKillstreakName()
+    public string KillstreakName()
     {
         return string.IsNullOrWhiteSpace(killstreakName)
             ? gameObject.name
             : killstreakName;
     }
 
-    public float GetDuration()
-    {
-        return duration;
-    }
+    public float Duration => duration;
 
     public void Activate()
     {
@@ -107,6 +101,8 @@ public abstract class KillstreakBase : MonoBehaviour
         endStreak();
     }
 
+    // ends the streak, tells the manager, and lets the subclass clean up.
+    // guarded so a double Deactivate can't fire onDeactivate twice.
     private void endStreak()
     {
         if (!isActive)
@@ -121,6 +117,7 @@ public abstract class KillstreakBase : MonoBehaviour
         }
     }
 
+    // subclasses implement these. onTick is optional and only fires on timed streaks.
     protected abstract void onActivate();
 
     protected virtual void onTick(float unscaledDeltaTime) { }

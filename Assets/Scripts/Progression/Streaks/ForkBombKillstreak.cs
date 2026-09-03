@@ -7,7 +7,10 @@ using UnityEngine;
 public class ForkBombKillstreak : KillstreakBase
 {
     [Header("Fork Bomb")]
+    [Tooltip("how far the damage spreads from the enemy that was hit, in metres")]
     [SerializeField] private float spreadRadius = 4f;
+
+    [Tooltip("fraction of the original damage each nearby enemy takes")]
     [SerializeField, Range(0.05f, 1f)] private float damagePercent = 0.5f;
 
     protected override void onActivate()

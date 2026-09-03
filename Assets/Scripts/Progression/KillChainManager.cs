@@ -1,10 +1,21 @@
 using TMPro;
 using UnityEngine;
-
-/// <summary>
-/// Quick-kill combat feedback only.
-/// This no longer awards scorestreaks; ScoreManager owns scorestreak progression.
-/// </summary>
+/*
+ * Script: KillChainManager
+ *
+ * Description:
+ * Quick-kill combat feedback only. Counts kills that land close together and
+ * shows a chain count and an announcement. Does not award scorestreaks —
+ * ScoreManager owns that.
+ *
+ * Interacts With:
+ * - EnemyEvents (subscribes to Killed)
+ * - GameManager (stops the timer while paused)
+ *
+ * Notes:
+ * - Chain timing is real time on purpose. Slowing the world down should not
+ *   make a chain easier to hold.
+ */
 public class KillChainManager : MonoBehaviour
 {
     public static KillChainManager instance;
@@ -14,11 +25,17 @@ public class KillChainManager : MonoBehaviour
     [SerializeField] private float chainTimeLimit = 3f;
 
     [Header("UI (Optional)")]
+    [Tooltip("shows CHAIN x2, x3 and so on, hidden when the chain is empty")]
     [SerializeField] private TMP_Text killChainCountUI;
+
+    [Tooltip("shows DOUBLE KILL, TRIPLE KILL and so on")]
     [SerializeField] private TMP_Text chainAnnouncementUI;
 
     [Header("Runtime")]
+    [Tooltip("current chain length, set at runtime")]
     [SerializeField] private int killChainCount;
+
+    [Tooltip("seconds since the last kill, resets the chain at the limit")]
     [SerializeField] private float killChainTimer;
 
     private void Awake()
@@ -73,10 +90,7 @@ public class KillChainManager : MonoBehaviour
             chainAnnouncementUI.text = string.Empty;
     }
 
-    public int GetKillChainCount()
-    {
-        return killChainCount;
-    }
+    public int KillChainCount => killChainCount;
 
     private void UpdateUI()
     {

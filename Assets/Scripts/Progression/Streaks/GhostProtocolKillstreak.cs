@@ -6,6 +6,7 @@ using UnityEngine;
 public class GhostProtocolKillstreak : KillstreakBase
 {
     [Header("Ghost Protocol")]
+    [Tooltip("how far off target enemy shots go while active, in degrees")]
     [SerializeField] private float enemyAimErrorDegrees = 12f;
 
     protected override void onActivate()

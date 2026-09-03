@@ -7,6 +7,7 @@ using UnityEngine;
 public class PacketLeechKillstreak : KillstreakBase
 {
     [Header("Packet Leech")]
+    [Tooltip("rounds refunded to the held weapon per kill")]
     [SerializeField] private int ammoRefundPerKill = 1;
 
     protected override void onActivate()

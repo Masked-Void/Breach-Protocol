@@ -2,11 +2,16 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+// one upgrade button in the shop panel. clicking it shows that upgrade's details.
 public class UpgradeButtonData : MonoBehaviour
 {
+    [Tooltip("which upgrade this button opens")]
     public UpgradeData upgrade;
-    Button button;
+
+    [Tooltip("tick on one button so the panel opens with something already selected")]
     [SerializeField] private bool selectOnEnable = false;
+
+    Button button;
 
     void Awake()
     {
@@ -20,6 +25,8 @@ public class UpgradeButtonData : MonoBehaviour
         StartCoroutine(initButton());
     }
 
+    // waits a frame before auto-selecting, so UpgradeManager has finished
+    // loading before anything asks it for details
     IEnumerator initButton()
     {
         yield return null;

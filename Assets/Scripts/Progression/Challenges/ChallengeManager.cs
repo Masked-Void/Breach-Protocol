@@ -37,34 +37,59 @@ public class ChallengeManager : MonoBehaviour
 {
     public static ChallengeManager instance { get; private set; }
 
+    // one row in the challenge panel, a name and a progress bar
     [System.Serializable]
     public struct ChallengeUISlot
     {
+        [Tooltip("the whole row, hidden when a weapon has fewer challenges than there are slots")]
         public GameObject slotRoot;
+
+        [Tooltip("challenge display name, e.g. Kunai Collector")]
         public TextMeshProUGUI challengeName;
+
+        [Tooltip("fills 0 to 1 as kills accumulate toward the target")]
         public Image progressBar;
     }
 
     [Header("Challenges Data")]
+    [Tooltip("heading showing the selected weapon's name")]
     public TextMeshProUGUI weaponName;
+
+    [Tooltip("description text under the heading")]
     public TextMeshProUGUI description;
+
+    [Tooltip("root of the challenge rows, hidden when nothing is selected")]
     public GameObject statsPanel;
+
+    [Tooltip("buy or equip button, its behaviour changes with the weapon's state")]
     public Button actionButton;
+
+    [Tooltip("label on the action button, swaps between Buy, Equip and Equipped")]
     public TextMeshProUGUI actionText;
 
     [Header("Currency")]
+    [Tooltip("Files balance shown in the corner of the panel")]
     public TextMeshProUGUI fileCountText;
 
+    [Tooltip("the challenge rows, more slots than any weapon needs, spares are hidden")]
     [SerializeField] ChallengeUISlot[] challengeSlots;
+
+    [Tooltip("every challenge set in the game, one per weapon")]
     [SerializeField] ChallengeData[] challenges;
 
+    // which weapon's challenges the panel is currently showing
     ChallengeData currentlySelectedChallenge;
 
+    // progress and completion keyed by challengeID, saved between runs
     Dictionary<string, int> progress = new Dictionary<string, int>();
     Dictionary<string, bool> completed = new Dictionary<string, bool>();
-    HashSet<string> purchasedWeapons = new HashSet<string>();
-    Dictionary<WeaponStats, List<ChallengeData>> weaponChallengeLookup = new Dictionary<WeaponStats, List<ChallengeData>>();
 
+    // weapons the player has bought, keyed by weapon name
+    HashSet<string> purchasedWeapons = new HashSet<string>();
+
+    // weapon to its challenge sets, built once on Awake so ReportKill does not
+    // walk the whole challenge array on every kill
+    Dictionary<WeaponStats, List<ChallengeData>> weaponChallengeLookup = new Dictionary<WeaponStats, List<ChallengeData>>();
 
     void Awake()
     {
@@ -96,6 +121,8 @@ public class ChallengeManager : MonoBehaviour
         if (instance == this) instance = null;
     }
 
+    // builds the weapon to challenge lookup so kills can be credited without
+    // searching the whole array each time
     void InstantiateList()
     {
         weaponChallengeLookup.Clear();
@@ -129,6 +156,8 @@ public class ChallengeManager : MonoBehaviour
         return weapon != null && !string.IsNullOrEmpty(weapon.Name) && purchasedWeapons.Contains(weapon.Name);
     }
 
+    // credits a kill to every challenge tier that uses this weapon, and marks
+    // any that just hit their target as complete
     public void ReportKill(WeaponStats weapon)
     {
         if (weapon == null || !weaponChallengeLookup.TryGetValue(weapon, out var associatedChallenges)) return;
@@ -161,6 +190,7 @@ public class ChallengeManager : MonoBehaviour
 
     // ---------- UI ----------
 
+    // fills the panel with one weapon's challenges and sets the action button
     public void DisplayWeaponChallenges(ChallengeData weaponChallenge)
     {
         if (weaponChallenge == null) return;
@@ -193,7 +223,10 @@ public class ChallengeManager : MonoBehaviour
         displayProgressUI(weaponChallenge);
     }
 
+    // the button does something different depending on whether the weapon is
+    // locked, affordable, owned, or already equipped
     void UpdateActionButton(ChallengeData weaponChallenge, bool isBought, bool isEquipped)
+
     {
         if (actionButton != null && actionText != null)
         {
@@ -225,6 +258,7 @@ public class ChallengeManager : MonoBehaviour
         }
     }
 
+    // fills one row per challenge tier and hides the spare slots
     void displayProgressUI(ChallengeData weaponChallenge)
     {
         if (challengeSlots == null || weaponChallenge.challengesList == null) return;
@@ -257,6 +291,7 @@ public class ChallengeManager : MonoBehaviour
         }
     }
 
+    // spends Files and marks the weapon owned
     void buyWeapon(ChallengeData challenge)
     {
         if (AudioManager.instance != null)
@@ -278,6 +313,8 @@ public class ChallengeManager : MonoBehaviour
         }
     }
 
+    // equips an owned weapon straight from the panel. named the same as the
+    // WeaponManager method but unrelated to it.
     void equipWeapon(ChallengeData challenge)
     {
         if (AudioManager.instance != null)
@@ -304,6 +341,7 @@ public class ChallengeManager : MonoBehaviour
         return true;
     }
 
+    // reads saved progress into the dictionaries on Awake
     void LoadData()
     {
         progress.Clear();
@@ -341,6 +379,7 @@ public class ChallengeManager : MonoBehaviour
     }
 
     [ContextMenu("Reset Challenges")]
+    // wipes all progress. inspector and debug only.
     public void ResetChallenges()
     {
         if (challenges != null)

@@ -23,6 +23,7 @@ public class IceWallKillstreak : KillstreakBase
     [Tooltip("scale of the shield relative to the prefab")]
     [SerializeField] private Vector3 localScale = Vector3.one;
 
+    // the spawned shield, destroyed when the streak ends or the shield breaks
     private GameObject shieldInstance;
 
     protected override void onActivate()

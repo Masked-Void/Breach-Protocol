@@ -39,36 +39,61 @@ public class KillstreakManager : MonoBehaviour
     [SerializeField] private bool allowStacking = false;
 
     [Header("Stored Scorestreak UI")]
+    [Tooltip("label showing the held streak's name, or emptySlotText when nothing is stored")]
     [SerializeField] private TMP_Text slot3Text;
+
+    [Tooltip("shown when no streak is stored")]
     [SerializeField] private string emptySlotText = "EMPTY";
 
     [Header("Packet Leech")]
     [Tooltip("Optional. Assign a component implementing IAmmoRefundReceiver. If empty, the player hierarchy is searched automatically.")]
     [SerializeField] private MonoBehaviour ammoRefundReceiverSource;
-
+    // Flags set by the streaks and read by whatever the effect applies to.
+    // Several of these are set and never read — the streak activates and the
+    // effect never happens. See the audit before assuming one works.
     [Header("Runtime Effect State")]
+    [Tooltip("root access is active, set at runtime")]
     [SerializeField] private bool rootAccessActive;
+
+    [Tooltip("fork bomb is active, kills spread damage to nearby enemies")]
     [SerializeField] private bool chainReactionActive;
+
+    [Tooltip("god mode is active, incoming stress is ignored")]
     [SerializeField] private bool invulnerableActive;
+
+    [Tooltip("ghost protocol is active, ranged enemy aim is skewed")]
     [SerializeField] private bool ghostProtocolActive;
+
+    [Tooltip("packet leech is active, kills refund ammo")]
     [SerializeField] private bool packetLeechActive;
+
+    [Tooltip("ddos is active, enemy ai is frozen")]
     [SerializeField] private bool enemiesJammed;
 
+    [Header("Effect Tuning")]
+    [Tooltip("how far fork bomb damage spreads from the enemy that died, in metres")]
     [SerializeField] private float chainReactionRadius = 4f;
+
+    [Tooltip("fraction of the original damage each nearby enemy takes")]
     [SerializeField, Range(0f, 1f)] private float chainReactionDamagePercent = 0.5f;
+
+    [Tooltip("how far ghost protocol pushes enemy aim off target, in degrees")]
     [SerializeField] private float ghostAimErrorDegrees = 12f;
+
+    [Tooltip("rounds packet leech refunds per kill")]
     [SerializeField] private int ammoRefundPerKill = 1;
 
+    // the streak being held in the slot, spent when the player uses it
     private KillstreakBase storedStreak;
 
     private readonly HashSet<KillstreakBase> activeStreaks =
         new HashSet<KillstreakBase>();
 
-    private readonly HashSet<EnemyBase> chainReactionVictims =
-        new HashSet<EnemyBase>();
+    // reused so the overlap check doesn't allocate on every fork bomb kill
+    private readonly Collider[] chainReactionBuffer = new Collider[64];
 
-    private readonly Collider[] chainReactionBuffer =
-        new Collider[64];
+    // enemies already hit by the current fork, so secondary damage never re-forks
+    private readonly HashSet<EnemyBase> chainReactionVictims = new HashSet<EnemyBase>();
 
     private IAmmoRefundReceiver ammoRefundReceiver;
 
@@ -109,6 +134,7 @@ public class KillstreakManager : MonoBehaviour
             UseStoredStreak();
     }
 
+    // picks a random streak from the pool and activates it, respecting allowStacking
     public bool TryAwardRandomStreak()
     {
         if (storedStreak != null)
@@ -155,6 +181,7 @@ public class KillstreakManager : MonoBehaviour
         TryAwardRandomStreak();
     }
 
+    // spends the held streak
     public bool UseStoredStreak()
     {
         if (storedStreak == null)
@@ -193,6 +220,7 @@ public class KillstreakManager : MonoBehaviour
         return UseStoredStreak();
     }
 
+    // a streak reports in here when it finishes, so the manager can free the slot
     public void StreakEnded(KillstreakBase streak)
     {
         if (streak == null)
@@ -253,7 +281,7 @@ public class KillstreakManager : MonoBehaviour
         if (slotIndex != 0 || storedStreak == null)
             return string.Empty;
 
-        return storedStreak.GetKillstreakName();
+        return storedStreak.KillstreakName();
     }
 
     public void SetRootAccess(bool active)
@@ -311,6 +339,8 @@ public class KillstreakManager : MonoBehaviour
         ammoRefundReceiver?.RefundAmmo(ammoRefundPerKill);
     }
 
+    // skews an enemy's aim while ghost protocol is up. enemies call this on
+    // their firing direction rather than checking the flag themselves.
     public Vector3 ApplyGhostAimError(Vector3 normalizedDirection)
     {
         if (!ghostProtocolActive || ghostAimErrorDegrees <= 0f)
@@ -335,6 +365,8 @@ public class KillstreakManager : MonoBehaviour
             (errorRotation * normalizedDirection).normalized;
     }
 
+    // fork bomb. spreads a fraction of the damage to everything in radius,
+    // tracking victims so a chain can't loop back on itself.
     public void TriggerChainReaction(
         EnemyBase source,
         int originalDamage)
@@ -393,6 +425,8 @@ public class KillstreakManager : MonoBehaviour
         chainReactionVictims.Clear();
     }
 
+    // finds whatever can receive refunded ammo, searching the player if the
+    // inspector reference is empty
     private void ResolveAmmoRefundReceiver()
     {
         ammoRefundReceiver =
@@ -422,6 +456,7 @@ public class KillstreakManager : MonoBehaviour
         }
     }
 
+    // clears every effect flag, used between runs so nothing leaks
     private void ResetRuntimeEffects()
     {
         rootAccessActive = false;
@@ -439,7 +474,7 @@ public class KillstreakManager : MonoBehaviour
 
         string name =
             storedStreak != null
-                ? storedStreak.GetKillstreakName()
+                ? storedStreak.KillstreakName()
                 : emptySlotText;
 
         slot3Text.text =

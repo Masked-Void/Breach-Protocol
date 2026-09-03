@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// DATA PURGE: instantly kills every enemy in the level. Kills are suppressed,
+/// so they clear the wave count without awarding score, bytes or challenges.
+/// </summary>
 public class DataPurgeKillstreak : KillstreakBase
 {
     protected override void onActivate()

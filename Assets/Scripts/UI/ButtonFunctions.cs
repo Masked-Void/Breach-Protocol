@@ -4,30 +4,62 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/*
+ * Script: ButtonFunctions
+ *
+ * Description:
+ * Every pause menu button handler. Lives in GameManager-Base alongside the
+ * menus it drives.
+ *
+ * Responsibilities:
+ * - Resume, restart and return to the title screen
+ * - Switch between the challenge, upgrade and settings pages
+ * - Show the loading bar while a scene loads
+ *
+ * Interacts With:
+ * - GameManager (menu roots, pause state)
+ * - AudioManager (button clicks, stopping music on scene change)
+ *
+ * Notes:
+ * - Every public method here is wired to a Button in the inspector, so the names
+ *   are stored as strings in the prefab. Renaming one breaks its button silently,
+ *   with no compile error.
+ * - restart() reloads the active scene directly rather than going through
+ *   LevelLoader, so it bypasses the Bootstrap flow.
+ */
 public class ButtonFunctions : MonoBehaviour
 {
     [Header("Loading UI")]
+    [Tooltip("dark overlay shown while a scene loads, hides the menu underneath")]
     [SerializeField] private GameObject loadingBackground;
+
+    [Tooltip("fills 0 to 1 as the scene loads")]
     [SerializeField] private Slider progressBar;
 
+    // closes the menu and hands control back to the game
     public void resume()
     {
         if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         if (GameManager.instance != null) GameManager.instance.StateUnpause();
     }
 
+    // reloads the current level from scratch
     public void restart()
+
     {
         if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         StartCoroutine(LoadSceneAsync(SceneManager.GetActiveScene().name));
     }
 
+    // leaves the run and goes back to the title screen
     public void home()
     {
         if (AudioManager.instance != null) AudioManager.instance.PlayButtonClick();
         StartCoroutine(LoadSceneAsync("Title"));
     }
 
+    // loads a scene behind the progress bar, holding activation until it's ready
+    // so the bar reaches 100 before anything swaps
     public IEnumerator LoadSceneAsync(String levelName)
     {
         if (loadingBackground != null) loadingBackground.SetActive(true);
@@ -63,7 +95,9 @@ public class ButtonFunctions : MonoBehaviour
         scene.allowSceneActivation = true;
     }
 
+    // page switches. each hides everything then shows one panel.
     public void challenge()
+
     {
         deactivateAllPanels();
         if (GameManager.instance.challengesCanvas != null) GameManager.instance.challengesCanvas.SetActive(true);
@@ -115,7 +149,8 @@ public class ButtonFunctions : MonoBehaviour
         if (GameManager.instance.pauseScorePanel != null) GameManager.instance.pauseScorePanel.SetActive(true);
     }
 
-    private void deactivateAllPanels()
+    // hides every page so only one is ever up at a time
+    void deactivateAllPanels()
     {
         if (GameManager.instance == null) return;
         if (GameManager.instance.challengesCanvas != null) GameManager.instance.challengesCanvas.SetActive(false);

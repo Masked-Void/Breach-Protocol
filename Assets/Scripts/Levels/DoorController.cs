@@ -7,10 +7,14 @@ using UnityEngine;
 public class DoorController : MonoBehaviour
 {
     [Header("Drag door Obj in")]
+    [Tooltip("the moving part of the door, its two markers are found as children")]
     [SerializeField] Transform doorObject;
 
     [Header("Marker names (children of the door object)")]
+    [Tooltip("child marking where the door sits closed")]
     [SerializeField] string closedMarkerName = "Closed";
+
+    [Tooltip("child marking where the door sits open")]
     [SerializeField] string openMarkerName = "Open";
 
     [Header("Speed")]
@@ -53,7 +57,7 @@ public class DoorController : MonoBehaviour
 
 
     // Read only so other scripts can check the door without moving it
-    public bool getIsOpen
+    public bool IsOpen
     {
         get
         {
@@ -159,8 +163,10 @@ public class DoorController : MonoBehaviour
 
 
 
-    // Only counts enemies that are still on their way out of the spawn room
+    // only enemies still inside their spawn room open the door, so a fight
+    // outside doesn't hold it open
     bool isEnemy(Collider other)
+
     {
         // tag check first since it's the cheapest
         if (!other.CompareTag("Enemy"))
@@ -181,7 +187,7 @@ public class DoorController : MonoBehaviour
 
 
 
-    // Waits out the delay then closes, unless something walked back in
+    // waits, then closes if nothing wandered back in during the delay
     IEnumerator closeAfterDelay()
     {
         yield return new WaitForSeconds(closeDelay);

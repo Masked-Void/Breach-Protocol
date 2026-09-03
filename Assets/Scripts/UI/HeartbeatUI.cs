@@ -1,3 +1,6 @@
+using UnityEngine;
+using System.Collections;
+using TMPro;
 
 /*
  * Script: HeartbeatUI
@@ -9,9 +12,6 @@
  * - HeartbeatManager (reads CurrentBpm)
  */
 
-using UnityEngine;
-using System.Collections;
-using TMPro;
 
 
 public class HeartbeatUI : MonoBehaviour
@@ -28,8 +28,14 @@ public class HeartbeatUI : MonoBehaviour
     [Tooltip("seconds one pulse takes, the gap between beats comes from bpm")]
     [SerializeField] float pulseDuration = .2f;
 
+    // seconds since the last beat, unscaled so the heart keeps time while the
+    // world is slowed
     float beatTimer;
+
+    // scale to return to after each pulse, captured on Start
     Vector3 origHeartScale;
+
+    // stops a second pulse starting before the first finishes
     bool isPulsing;
 
 
@@ -65,6 +71,8 @@ public class HeartbeatUI : MonoBehaviour
         }
     }
 
+    // scales the heart up then back down. real seconds, so the beat stays
+    // steady regardless of world time scale.
     IEnumerator Pulse()
     {
         isPulsing = true;

@@ -39,15 +39,26 @@ public class WaveLightController : MonoBehaviour
     [SerializeField] private Renderer[] emissiveRenderers;
 
     [Header("Flash Settings")]
+    [Tooltip("colour the lights turn during a warning, red by default")]
     [SerializeField] private Color warningColor = Color.red;
+
+    [Tooltip("brightness at the peak of each flash")]
     [SerializeField] private float maximumIntensity;
+
+    [Tooltip("seconds for one fade up or down, a full flash is twice this")]
     [SerializeField] private float fadeDuration;
+
+    [Tooltip("emission strength on the fixture materials, separate from light intensity")]
     [SerializeField] private float emissionIntensity;
 
+    // the running flash, so a new warning cancels the old one instead of stacking
     private Coroutine flashCoroutine;
 
+    // what the lights looked like before the warning, restored afterward
     private Color[] originalLightColors;
     private float[] originalLightIntensities;
+
+    // instanced materials, so changing emission doesn't edit the shared asset
     private Material[] emissiveMaterials;
 
     private void Awake()
@@ -77,6 +88,7 @@ public class WaveLightController : MonoBehaviour
         if (instance == this)
             instance = null;
     }
+    // caches colour and intensity so the warning can put them back exactly
     private void saveOriginalLightSettings()
     {
         originalLightColors = new Color[warningLights.Length];
@@ -92,6 +104,8 @@ public class WaveLightController : MonoBehaviour
         }
     }
 
+    // instances each fixture material and enables its emission keyword.
+    // without instancing this would edit the shared material in the project.
     private void prepareEmissionMaterials()
     {
         emissiveMaterials = new Material[emissiveRenderers.Length];
