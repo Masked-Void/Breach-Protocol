@@ -1,0 +1,201 @@
+# Breach Protocol — editor configuration
+# Lives at the repo root so Visual Studio and Rider both pick it up.
+# Formatting is enforced. Style opinions are silent on purpose, so Code Cleanup
+# does not rewrite var usage or expression bodies across the whole project.
+
+root = true
+
+##############################################
+# C#
+##############################################
+[*.cs]
+
+#### Core formatting ####
+indent_style = space
+indent_size = 4
+tab_width = 4
+end_of_line = crlf
+charset = utf-8-bom
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+#### Usings ####
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+csharp_using_directive_placement = outside_namespace:warning
+
+#### Braces — Allman ####
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
+
+#### Always use braces, even on one liners ####
+csharp_prefer_braces = true:warning
+
+#### Indentation ####
+csharp_indent_case_contents = true
+csharp_indent_case_contents_when_block = false
+csharp_indent_switch_labels = true
+csharp_indent_labels = one_less_than_current
+csharp_indent_block_contents = true
+csharp_indent_braces = false
+
+#### Spacing ####
+csharp_space_after_cast = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_before_open_square_brackets = false
+csharp_space_between_empty_square_brackets = false
+csharp_space_between_square_brackets = false
+csharp_space_between_method_declaration_name_and_open_parenthesis = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+csharp_space_between_parentheses = false
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_after_comma = true
+csharp_space_before_comma = false
+csharp_space_after_dot = false
+csharp_space_before_dot = false
+csharp_space_after_semicolon_in_for_statement = true
+csharp_space_before_semicolon_in_for_statement = false
+csharp_space_around_declaration_statements = false
+
+#### Wrapping ####
+csharp_preserve_single_line_statements = false
+csharp_preserve_single_line_blocks = true
+
+#### Blank lines — collapses runs of 2 or more ####
+dotnet_style_allow_multiple_blank_lines_experimental = false:warning
+dotnet_style_allow_statement_immediately_after_block_experimental = false:warning
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = false:warning
+csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = false:warning
+csharp_style_allow_embedded_statements_on_same_line_experimental = false:warning
+
+##############################################
+# Style preferences
+# All silent on purpose. These are opinions, not formatting, and letting Code
+# Cleanup rewrite them across 94 files would bury the real diff in noise.
+##############################################
+
+csharp_style_var_for_built_in_types = false:silent
+csharp_style_var_when_type_is_apparent = false:silent
+csharp_style_var_elsewhere = false:silent
+
+csharp_style_expression_bodied_methods = false:silent
+csharp_style_expression_bodied_constructors = false:silent
+csharp_style_expression_bodied_operators = false:silent
+csharp_style_expression_bodied_properties = true:silent
+csharp_style_expression_bodied_indexers = true:silent
+csharp_style_expression_bodied_accessors = true:silent
+csharp_style_expression_bodied_lambdas = true:silent
+csharp_style_expression_bodied_local_functions = false:silent
+
+dotnet_style_qualification_for_field = false:silent
+dotnet_style_qualification_for_property = false:silent
+dotnet_style_qualification_for_method = false:silent
+dotnet_style_qualification_for_event = false:silent
+
+dotnet_style_predefined_type_for_locals_parameters_members = true:silent
+dotnet_style_predefined_type_for_member_access = true:silent
+
+csharp_style_prefer_switch_expression = false:silent
+csharp_style_namespace_declarations = block_scoped:silent
+
+##############################################
+# Diagnostics
+##############################################
+
+# Unused usings — surfaced, never auto removed. Removing them breaks usings that
+# only apply inside #if UNITY_WEBGL and similar conditional blocks.
+dotnet_diagnostic.IDE0005.severity = suggestion
+
+# Unity analyzers, shipped with com.unity.ide.visualstudio.
+# These catch Unity specific mistakes the C# compiler cannot see.
+dotnet_diagnostic.UNT0001.severity = warning   # empty Unity message, e.g. an Update() with nothing in it
+dotnet_diagnostic.UNT0002.severity = warning   # inefficient tag comparison, use CompareTag
+dotnet_diagnostic.UNT0003.severity = warning   # use the generic form of GetComponent
+dotnet_diagnostic.UNT0004.severity = warning   # Time.fixedDeltaTime used outside FixedUpdate
+dotnet_diagnostic.UNT0005.severity = warning   # Time.deltaTime used inside FixedUpdate
+dotnet_diagnostic.UNT0006.severity = warning   # incorrect Unity message signature
+dotnet_diagnostic.UNT0008.severity = warning   # null propagation on a UnityEngine.Object, ?. ignores fake null
+dotnet_diagnostic.UNT0010.severity = warning   # MonoBehaviour created with new
+dotnet_diagnostic.UNT0011.severity = warning   # ScriptableObject created with new
+dotnet_diagnostic.UNT0013.severity = warning   # invalid or redundant SerializeField
+dotnet_diagnostic.UNT0014.severity = warning   # GetComponent called with a non component type
+dotnet_diagnostic.UNT0017.severity = warning   # SetPixels is slow, use SetPixels32
+dotnet_diagnostic.UNT0018.severity = warning   # System.Reflection in a hot path
+dotnet_diagnostic.UNT0022.severity = warning   # set position and rotation together
+dotnet_diagnostic.UNT0026.severity = warning   # GetComponent always allocates, cache it
+dotnet_diagnostic.UNT0028.severity = warning   # use the non allocating physics APIs
+
+##############################################
+# Naming — surfaced as suggestions, never auto renamed.
+# Auto renaming a serialized field silently destroys its value in every prefab.
+##############################################
+
+dotnet_naming_rule.types_pascal.severity = suggestion
+dotnet_naming_rule.types_pascal.symbols = type_symbols
+dotnet_naming_rule.types_pascal.style = pascal_case
+dotnet_naming_symbols.type_symbols.applicable_kinds = class,struct,interface,enum
+dotnet_naming_symbols.type_symbols.applicable_accessibilities = *
+
+dotnet_naming_rule.interfaces_prefixed.severity = suggestion
+dotnet_naming_rule.interfaces_prefixed.symbols = interface_symbols
+dotnet_naming_rule.interfaces_prefixed.style = i_prefix_pascal
+dotnet_naming_symbols.interface_symbols.applicable_kinds = interface
+
+dotnet_naming_rule.public_members_pascal.severity = suggestion
+dotnet_naming_rule.public_members_pascal.symbols = public_members
+dotnet_naming_rule.public_members_pascal.style = pascal_case
+dotnet_naming_symbols.public_members.applicable_kinds = method,property,event
+dotnet_naming_symbols.public_members.applicable_accessibilities = public,protected
+
+dotnet_naming_rule.private_methods_camel.severity = suggestion
+dotnet_naming_rule.private_methods_camel.symbols = private_methods
+dotnet_naming_rule.private_methods_camel.style = camel_case
+dotnet_naming_symbols.private_methods.applicable_kinds = method
+dotnet_naming_symbols.private_methods.applicable_accessibilities = private
+
+dotnet_naming_rule.fields_camel.severity = suggestion
+dotnet_naming_rule.fields_camel.symbols = field_symbols
+dotnet_naming_rule.fields_camel.style = camel_case
+dotnet_naming_symbols.field_symbols.applicable_kinds = field
+dotnet_naming_symbols.field_symbols.applicable_accessibilities = private,protected,internal,local
+
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+dotnet_naming_style.camel_case.capitalization = camel_case
+dotnet_naming_style.i_prefix_pascal.capitalization = pascal_case
+dotnet_naming_style.i_prefix_pascal.required_prefix = I
+
+##############################################
+# Other file types
+##############################################
+
+[*.{json,yml,yaml,md}]
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{asmdef,asmref,inputactions,shadergraph,shadersubgraph}]
+indent_size = 2
+end_of_line = lf
+
+[*.{shader,cginc,hlsl,compute}]
+indent_size = 4
+end_of_line = crlf
+
+[*.{unity,prefab,asset,mat,anim,controller,meta}]
+# Unity writes these, never let an editor reformat them
+indent_style = space
+indent_size = 2
+insert_final_newline = false
+trim_trailing_whitespace = false
