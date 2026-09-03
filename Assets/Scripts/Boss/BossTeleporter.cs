@@ -20,7 +20,6 @@ public class BossTeleporter : MonoBehaviour
 
     [ContextMenu("Turn on")]
     public void TurnOn() {
-        Debug.Log("Turned On");
         isOn = true;
         if (portal != null) {
             portal.SetActive(true);

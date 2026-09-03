@@ -97,11 +97,9 @@ public class WeaponManager : MonoBehaviour
 
     void OnEnable() => GameManager.PlayerReady += setupWeapons;
 
-    // logs when something turns this off and what kind of off it is
     void OnDisable()
     {
         GameManager.PlayerReady -= setupWeapons;
-        Debug.Log($"WeaponManager disabled | activeSelf {gameObject.activeSelf} | enabled {enabled}", gameObject);
     }
 
     void setupWeapons()
