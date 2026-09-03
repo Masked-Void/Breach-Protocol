@@ -4,6 +4,38 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
+/*
+ * Script: GameManager
+ *
+ * Description:
+ * Central game state and the hub for the pause, lose and win menus. Lives in
+ * Bootstrap inside the GameManager-Base prefab alongside the UI it drives.
+ *
+ * Responsibilities:
+ * - Own the pause, lose and win states and the menus that go with them
+ * - Hold the two currencies, Bytes for the run and Files for the meta
+ * - Track kill count and drive the HUD text
+ * - Find the player after Bootstrap loads and raise PlayerReady
+ * - Route menu navigation between challenges, settings and upgrades
+ *
+ * Interacts With:
+ * - PlayerController (found by tag on Start, exposed as playerScript)
+ * - TimeManager (pause and unpause)
+ * - AudioManager (menu music and button clicks)
+ * - WaveManager (reads wave number and countdown for the HUD)
+ * - UpgradeManager (files carry over on run end)
+ * - EnemyEvents (subscribes to Killed for kill count and bytes)
+ * - WeaponManager, HeartbeatManager (wait on PlayerReady)
+ *
+ * Notes:
+ * - The player lookup is in Start, not Awake. Awake order between root objects
+ *   is not guaranteed and the player lives in the same scene.
+ * - PlayerReady exists because managers used to read playerScript in their own
+ *   Start and silently got null.
+ * - This class does too much. Score, streaks and heartbeat all live in the same
+ *   prefab and should eventually split out.
+ */
+
 public class GameManager : MonoBehaviour
 {
 

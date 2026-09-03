@@ -1,6 +1,33 @@
 using System.Collections;
 using UnityEngine;
 
+/*
+ * Script: WeaponManager
+ *
+ * Description:
+ * Owns the player's currently equipped weapon: spawning the model, firing,
+ * throwing, and swapping. Per the GDD the player carries one weapon with no
+ * reload, and swaps by throwing the current one.
+ *
+ * Responsibilities:
+ * - Equip a weapon from WeaponStats, spawn its model at the hold point
+ * - Track ammo, fire on input, handle melee and ranged attack paths
+ * - Throw the held weapon and re-enable its pickup and damage components
+ * - Restore the saved weapon from PlayerPrefs on load
+ *
+ * Interacts With:
+ * - GameManager (waits on PlayerReady for the weapon hold point)
+ * - WeaponStats, GunStats, MeleeStats (weapon data assets)
+ * - WeaponWallAvoidance (enabled while held, disabled once thrown)
+ * - PickWeapon, DroppedWeapon, Damage (toggled on throw)
+ * - HeartbeatManager (firing adds stress)
+ * - UpgradeManager (fire rate upgrade)
+ *
+ * Notes:
+ * - setupWeapons runs off GameManager.PlayerReady, not Start, because the
+ *   player may not exist yet when this manager's Start runs.
+ */
+
 public class WeaponManager : MonoBehaviour
 {
     public static WeaponManager instance { get; private set; }
@@ -97,10 +124,7 @@ public class WeaponManager : MonoBehaviour
 
     void OnEnable() => GameManager.PlayerReady += setupWeapons;
 
-    void OnDisable()
-    {
-        GameManager.PlayerReady -= setupWeapons;
-    }
+    void OnDisable() => GameManager.PlayerReady -= setupWeapons;
 
     void setupWeapons()
     {

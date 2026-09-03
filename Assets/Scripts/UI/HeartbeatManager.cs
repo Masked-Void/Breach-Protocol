@@ -1,6 +1,40 @@
 using TMPro;
 using UnityEngine;
 
+/*
+ * Script: HeartbeatManager
+ *
+ * Description:
+ * The health system. Per the GDD there is no HP pool for the player, only a
+ * BPM value driven by stress. Stress rises from firing, taking damage and near
+ * misses, and decays over time. Hitting max BPM is death.
+ *
+ * Stress and BPM use unscaled time so freezing the world does not freeze danger.
+ *
+ * Responsibilities:
+ * - Hold current stress and convert it to a BPM between resting and max
+ * - Add stress when the player fires, takes damage or is nearly hit
+ * - Reduce stress on kills and at the end of a wave
+ * - Decay stress every second while nothing is happening
+ * - Trigger the lose state when BPM reaches max
+ *
+ * Interacts With:
+ * - StressConfig (all tuning, one shared asset)
+ * - WeaponManager (calls PlayerShot when the player fires)
+ * - PlayerController (calls PlayerDamaged)
+ * - WaveManager, BossWaveManager (call EnemyKilled and WaveCompleted)
+ * - HeartbeatUI (reads CurrentBpm for the display)
+ * - GameManager (lose state)
+ *
+ * Notes:
+ * - shootStress is the player firing, not being fired at. Acting raises your
+ *   heart rate, which is the SUPERHOT-style pressure the design wants.
+ * - NearMiss has no callers yet. Near miss detection is not implemented.
+ * - This lives in the UI folder but it is gameplay state, not display. It sits
+ *   inside GameManager-Base along with everything else.
+ */
+
+
 /// <summary>
 /// Stress-driven BPM/health system.
 /// Stress and BPM use unscaled real time so freezing the world does not freeze danger.

@@ -1,6 +1,27 @@
 using System.Collections;
 using UnityEngine;
 
+/*
+ * Script: KillstreakBase
+ *
+ * Description:
+ * Abstract base for the ten scorestreaks. Each subclass implements its own
+ * effect and duration; the manager rolls one and activates it.
+ *
+ * Responsibilities:
+ * - Common activate and deactivate lifecycle
+ * - Report back to KillstreakManager when the streak ends
+ *
+ * Interacts With:
+ * - KillstreakManager (rolls, activates, and is told when one ends)
+ * - EnemyBase (several streaks mutate or kill enemies)
+ *
+ * Notes:
+ * - Audit finding: six of the ten streaks set flags that nothing consumes.
+ *   Setting a flag is not the same as having an effect.
+ */
+
+
 /// <summary>
 /// Base class for player-earned scorestreak programs.
 /// duration > 0 = timed, duration == 0 = instant, duration < 0 = manual end.

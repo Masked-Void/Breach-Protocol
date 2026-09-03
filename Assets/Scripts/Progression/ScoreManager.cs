@@ -1,6 +1,32 @@
 ﻿using TMPro;
 using UnityEngine;
 
+/*
+ * Script: ScoreManager
+ *
+ * Description:
+ * Tracks run score and decides when the player has earned a scorestreak roll.
+ * Kill score scales with current stress, so playing dangerously is worth more.
+ *
+ * Responsibilities:
+ * - Award score per kill, scaled between base and full-stress multiplier
+ * - Track the running total and the score needed for the next streak
+ * - Raise the streak requirement each time one is awarded, growing per round
+ * - Drive the score and streak progress HUD text
+ *
+ * Interacts With:
+ * - ScoreConfig (all tuning, one shared asset)
+ * - EnemyEvents (subscribes to Killed)
+ * - HeartbeatManager (reads StressPercent for the multiplier)
+ * - KillstreakManager (streak rolls)
+ *
+ * Notes:
+ * - Not attached to anything yet. The component exists but no prefab uses it,
+ *   which is why RegisterKill had no callers before the events refactor.
+ * - RegisterKill returns the points earned, presumably for a floating score
+ *   popup that was never built.
+ */
+
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager instance;

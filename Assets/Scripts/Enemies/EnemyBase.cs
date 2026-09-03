@@ -2,6 +2,36 @@
 using UnityEngine.AI;
 using System.Collections;
 
+
+/*
+ * Script: EnemyBase
+ *
+ * Description:
+ * Base class for every enemy. Owns the shared plumbing: sight checks, roaming,
+ * attacking, damage and the single death path. Subclasses override the hooks;
+ * tuning lives in an EnemyConfig asset, one per enemy type.
+ *
+ * Responsibilities:
+ * - Read tuning from EnemyConfig, copy the mutable values into fields on Start
+ * - Line of sight and FOV checks against the player
+ * - Roaming between claimed roam points when not engaged
+ * - Melee attack timing and damage
+ * - Single death path through Die(), which raises EnemyEvents.Killed
+ * - Tell the wave host directly, since wave progression is a hard dependency
+ *
+ * Interacts With:
+ * - EnemyConfig (tuning, one asset per type)
+ * - EnemyEvents (raises Killed)
+ * - IWaveHost (WaveManager or BossWaveManager)
+ * - GameManager (player position)
+ * - PacketLossKillstreak (mutates attackRate at runtime)
+ *
+ * Notes:
+ * - attackRate is a field, not a config read, because streaks and guns change it
+ * - maxHP exists but every enemy is tuned to 1, per the GDD one-hit rule
+ */
+
+
 [RequireComponent(typeof(NavMeshAgent))]
 public abstract class EnemyBase : MonoBehaviour, IDamage
 {
