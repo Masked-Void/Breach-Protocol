@@ -1524,22 +1524,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 259861007174880495, guid: 7b201f3632ebc04459b35d33858417fe, type: 3}
-      propertyPath: maxWaves
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 259861007174880495, guid: 7b201f3632ebc04459b35d33858417fe, type: 3}
-      propertyPath: basicEnemyPercent
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 259861007174880495, guid: 7b201f3632ebc04459b35d33858417fe, type: 3}
-      propertyPath: heavyEnemyPercent
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 259861007174880495, guid: 7b201f3632ebc04459b35d33858417fe, type: 3}
-      propertyPath: roamPointTransforms.Array.size
-      value: 47
-      objectReference: {fileID: 0}
-    - target: {fileID: 259861007174880495, guid: 7b201f3632ebc04459b35d33858417fe, type: 3}
       propertyPath: 'roamPointTransforms.Array.data[0]'
       value: 
       objectReference: {fileID: 4328110471299215663}

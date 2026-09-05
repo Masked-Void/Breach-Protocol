@@ -142,8 +142,8 @@ public class WaveManager : MonoBehaviour, IWaveHost
         instance = this;
         waveHost.active = this;
 
-        assignRoamPoints();
-        assignSpawnPoints();
+        assignRoamPoints(roamPointTransforms);
+        assignSpawnPoints(spawnPointTransforms);
     }
 
 
