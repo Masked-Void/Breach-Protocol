@@ -85,10 +85,11 @@ MonoBehaviour:
   agent: {fileID: 7931631704010347091}
   config: {fileID: 11400000, guid: b921c6bf04a70f94793783087845b41b, type: 2}
   attackRate: 0.4
-  roamTarget: {fileID: 0}
   hasLeftSpawnRoom: 0
   willRoam: 0
   roamPoint: {fileID: 0}
+  roamTarget: {fileID: 0}
+  aiDisabledForTesting: 0
   gunPivot: {fileID: 7980070263694380636}
   gunRotateSpeed: 20
   gunModel: {fileID: 2706629671963561621}
