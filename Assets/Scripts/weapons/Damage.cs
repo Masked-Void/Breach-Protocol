@@ -50,6 +50,9 @@ public class Damage : MonoBehaviour
     [Tooltip("Seconds the launch burst lasts before easing down to bullet speed")]
     [SerializeField] float launchDuration = .2f;
 
+    [Tooltip("While true, a bullet mid-burst can't damage any enemy. never blocks damage to the player")]
+    [SerializeField] bool immuneToEnemiesDuringBurst = true;
+
     [Tooltip("seconds before the bullet deletes itself if it hits nothing")]
     [Range(.1f, 20)][SerializeField] int bulletDestroyTime;
 
@@ -92,6 +95,8 @@ public class Damage : MonoBehaviour
     [Tooltip("sound played on impact")]
     [SerializeField] AudioClip sfx;
 
+    [Header("Debug")]
+
     // set by whatever fired this, so kills can be credited to the right weapon
     [HideInInspector] public WeaponStats sourceWeapon;
 
@@ -104,6 +109,7 @@ public class Damage : MonoBehaviour
     int enemyLayer;
     bool hasAudioManager;
     float flightTime;
+    bool destroyScheduled;
 
     void Start()
     {
@@ -153,18 +159,24 @@ public class Damage : MonoBehaviour
         {
             rb.useGravity = false;
 
+            Debug.Log("BulletSpeed: " + bulletSpeed, this);
+
             float currentSpeed = bulletSpeed;
 
             if (launchSpeed > 0 && flightTime < launchDuration)
             {
-                float t = flightTime / launchSpeed;
+                float t = flightTime / launchDuration;
                 currentSpeed = Mathf.Lerp(launchSpeed, bulletSpeed, t);
             }
 
             rb.linearVelocity = transform.forward * currentSpeed;
             flightTime += Time.fixedDeltaTime;
 
-            Destroy(gameObject, bulletDestroyTime);
+            if (!destroyScheduled)
+            {
+                destroyScheduled = true;
+                Destroy(gameObject, bulletDestroyTime);
+            }
         }
     }
 
@@ -185,8 +197,35 @@ public class Damage : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+
+        // Bullet vs bullet
+        if (type == DamageType.bullet)
+        {
+            Damage otherBullet = other.GetComponent<Damage>();
+            if (otherBullet != null && otherBullet.type == DamageType.bullet)
+            {
+                Destroy(other.gameObject);
+                Destroy(gameObject);
+                return;
+            }
+        }
+
         if (other.isTrigger)
+        {
             return;
+        }
+
+        // Only true for enemy fired bullets
+        if (type == DamageType.bullet &&
+            immuneToEnemiesDuringBurst &&
+            launchSpeed > 0 &&
+            flightTime < launchDuration &&
+            other.gameObject.layer == enemyLayer
+            )
+        {
+            return;
+        }
+
 
         if (type == DamageType.bullet && ((1 << other.gameObject.layer) & deflectLayer) != 0)
         {
@@ -354,5 +393,15 @@ public class Damage : MonoBehaviour
         }
 
         cam.transform.localPosition = originalPos;
+    }
+
+    // Foundation for melee deflection (a katana slash, etc). Whatever detects
+    // the swing-hit should find this component on what it hit and call this.
+    public void DestroyBullet()
+    {
+        if (type == DamageType.bullet)
+        {
+            Destroy(gameObject);
+        }
     }
 }

@@ -89,6 +89,7 @@ MonoBehaviour:
   willRoam: 0
   roamPoint: {fileID: 0}
   roamTarget: {fileID: 0}
+  aiDisabledForTesting: 0
   gunPivot: {fileID: 7980070263694380636}
   gunRotateSpeed: 20
   gunModel: {fileID: 2706629671963561621}
@@ -191,7 +192,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 1.3
+  m_Speed: 3
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120

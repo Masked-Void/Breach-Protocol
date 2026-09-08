@@ -48,6 +48,8 @@ public class RangedEnemy : EnemyBase
     // rounds left, the enemy stops firing at zero
     int currentAmmo;
 
+    public void DebugFireOnce() => shoot();
+
     protected override void Start()
     {
         base.Start();
