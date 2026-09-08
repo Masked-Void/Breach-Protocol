@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UnityEditor.Toolbars;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -105,6 +106,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
     public bool IsDead => isDead;
     public int ByteValue => config.byteValue;
 
+    [Header("Debug")]
+    [Tooltip("Test-only: Skips AI movement/attack decisions so a debug controller can drive this enemy directly")]
+    public bool aiDisabledForTesting = false;
+
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -128,6 +133,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamage
 
     void Update()
     {
+        if (aiDisabledForTesting)
+        {
+            return;
+        }
+
         if (GameManager.instance != null && GameManager.instance.isPaused)
             return;
         attackTimer += Time.unscaledDeltaTime;
