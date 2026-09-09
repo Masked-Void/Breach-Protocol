@@ -1,62 +1,94 @@
 ﻿using System.Collections.Generic;
 using System;
-using UnityEngine;
+
 
 [Serializable] 
 public class SaveData
 {
-
+    public const int CurrentSaveVersion = 1;
     public int saveVersion;
     public int files;
 
-    public List<ChallengeEntry> challenges;
+    public List<ChallengeEntry> challengeEntries;
 
-    // Update to the one above as added
+    public string equippedWeaponName;
+   
     public List<string> purchasedWeaponNames;
     public List<string> purchasedUpgradeIDs;
-    
+    public List<string> activeUpgradeIDs;
+    //Audio
+    public float masterVolume;
+    public float musicVolume;
+    public float sfxVolume;
+    public bool isMuted;
+
     public SaveData()
     {
-        saveVersion = 1;
+        saveVersion = CurrentSaveVersion;
         files = 0;
-        challenges = new List<ChallengeEntry>();
+        masterVolume = 1f;
+        musicVolume = 1f;
+        sfxVolume = 1f;
+        isMuted = false;
+        equippedWeaponName = string.Empty;
+        challengeEntries = new List<ChallengeEntry>();
         purchasedWeaponNames = new List<string>();
         purchasedUpgradeIDs = new List<string>();
+        activeUpgradeIDs = new List<string>();
     }
 
-    public void FixNullLists()
+    public void FixNulls()
     {
-        if (challenges == null)
+        if (challengeEntries == null)
         {
-            challenges = new List<ChallengeEntry>();
+            challengeEntries = new List<ChallengeEntry>();
         }
 
-        // Add the other ones in a similar manner
+        if (purchasedWeaponNames == null)
+        {
+            purchasedWeaponNames = new List<string>();
+        }
+
+        if (purchasedUpgradeIDs == null)
+        {
+            purchasedUpgradeIDs = new List<string>();
+        }
+
+        if (activeUpgradeIDs == null)
+        {
+            activeUpgradeIDs = new List<string>();
+        }
+
+        if (equippedWeaponName == null)
+        {
+            equippedWeaponName = string.Empty;
+        }
+  
     }
 
-    // finds a challenge by key, or null if it isn't tracked yet
-    public ChallengeEntry GetChallenge(string key)
+    // finds a challenge by id, or null if it isn't tracked yet
+    public ChallengeEntry GetChallenge(string id)
     {
-        for (int i = 0; i < challenges.Count; i++)
+        for (int i = 0; i < challengeEntries.Count; i++)
         {
-            if (challenges[i].key == key)
+            if (challengeEntries[i].id == id)
             {
-                return challenges[i];
+                return challengeEntries[i];
             }
         }
 
         return null;
     }
 
-    public int GetProgress(string key)
+    public int GetProgress(string id)
     {
-        ChallengeEntry entry = GetChallenge(key);
+        ChallengeEntry entry = GetChallenge(id);
         return entry == null ? 0 : entry.progress;
     }
 
-    public bool IsComplete(string key)
+    public bool IsComplete(string id)
     {
-        ChallengeEntry entry = GetChallenge(key);
+        ChallengeEntry entry = GetChallenge(id);
         return entry != null && entry.complete;
     }
 }
