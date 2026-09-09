@@ -433,4 +433,18 @@ public class ChallengeManager : MonoBehaviour
             DisplayWeaponChallenges(currentlySelectedChallenge);
         Debug.Log("Challenges reset successfully.");
     }
+
+/*    // Make similar for every type
+    private ChallengeEntry getOrAddChallenge(string key)
+    {
+        ChallengeEntry entry = data.GetChallenge(key);
+
+        if (entry == null)
+        {
+            entry = new ChallengeEntry(key);
+            data.challenges.Add(entry);
+        }
+
+        return entry;
+    }*/
 }
