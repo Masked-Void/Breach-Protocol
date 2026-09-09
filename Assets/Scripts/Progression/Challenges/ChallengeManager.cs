@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+
 /*
  * Script: ChallengeManager
  *
@@ -75,14 +76,6 @@ public class ChallengeManager : MonoBehaviour
 
     // which weapon's challenges the panel is currently showing
     ChallengeData currentlySelectedChallenge;
-
-    // progress and completion keyed by challengeID, saved between runs
-    Dictionary<string, int> progress = new Dictionary<string, int>();
-    Dictionary<string, bool> completed = new Dictionary<string, bool>();
-
-    // weapons the player has bought, keyed by weapon name
-    HashSet<string> purchasedWeapons = new HashSet<string>();
-
     // weapon to its challenge sets, built once on Awake so ReportKill does not
     // walk the whole challenge array on every kill
     Dictionary<WeaponStats, List<ChallengeData>> weaponChallengeLookup = new Dictionary<WeaponStats, List<ChallengeData>>();
@@ -97,7 +90,6 @@ public class ChallengeManager : MonoBehaviour
         instance = this;
 
         InstantiateList();
-        LoadData();
     }
 
 
@@ -143,17 +135,19 @@ public class ChallengeManager : MonoBehaviour
 
     public bool IsComplete(string id)
     {
-        return !string.IsNullOrEmpty(id) && completed.TryGetValue(id, out bool done) && done;
+        return !string.IsNullOrEmpty(id) && SaveManager.Data.IsComplete(id);
     }
 
     public int GetProgress(string id)
     {
-        return !string.IsNullOrEmpty(id) && progress.TryGetValue(id, out int p) ? p : 0;
+        return string.IsNullOrEmpty(id) ? 0 : SaveManager.Data.GetProgress(id);
     }
 
     public bool IsWeaponBought(WeaponStats weapon)
     {
-        return weapon != null && !string.IsNullOrEmpty(weapon.Name) && purchasedWeapons.Contains(weapon.Name);
+        return weapon != null
+            && !string.IsNullOrEmpty(weapon.Name)
+            && SaveManager.Data.purchasedWeaponNames.Contains(weapon.Name);
     }
 
     // credits a kill to every challenge tier that uses this weapon, and marks
@@ -175,21 +169,21 @@ public class ChallengeManager : MonoBehaviour
                 if (string.IsNullOrEmpty(id) || IsComplete(id))
                     continue;
 
-                int newProgress = GetProgress(id) + 1;
-                progress[id] = newProgress;
-                PlayerPrefs.SetInt("Prog_" + id, newProgress);
+                ChallengeEntry entry = getOrAddChallenge(id);  
 
-                if (newProgress >= subchallenge.killCount)
+                entry.progress++;
+
+                if (entry.progress >= subchallenge.killCount)
                 {
-                    completed[id] = true;
-                    PlayerPrefs.SetInt("Comp_" + id, 1);
+                    entry.progress = subchallenge.killCount;
+                    entry.complete = true;
                 }
 
                 hasProgressChanged = true;
             }
         }
         if (hasProgressChanged)
-            PlayerPrefs.Save();
+            SaveManager.MarkDirty();
     }
 
     // ---------- UI ----------
@@ -204,7 +198,7 @@ public class ChallengeManager : MonoBehaviour
         bool allComplete = AreAllChallengesComplete(weaponChallenge);
         bool isBought = IsWeaponBought(weaponChallenge.weapon);
 
-        string savedEquipped = PlayerPrefs.GetString("EquippedWeapon", "");
+        string savedEquipped = SaveManager.Data.equippedWeaponName;
         bool isEquipped = false;
 
         if (weaponChallenge.weapon != null && !string.IsNullOrEmpty(weaponChallenge.weapon.Name))
@@ -316,12 +310,14 @@ public class ChallengeManager : MonoBehaviour
         {
             UpgradeManager.instance.files -= challenge.weapon.cost;
 
-            purchasedWeapons.Add(challenge.weapon.Name);
-            PlayerPrefs.SetInt("Bought_" + challenge.weapon.Name, 1);
+            // a list has no duplicate protection the way the old HashSet did
+            if (!SaveManager.Data.purchasedWeaponNames.Contains(challenge.weapon.Name))
+            {
+                SaveManager.Data.purchasedWeaponNames.Add(challenge.weapon.Name);
+            }
 
-            if (UpgradeManager.instance != null)
-                UpgradeManager.instance.SaveUpgrades();
-            PlayerPrefs.Save();
+            UpgradeManager.instance.SaveUpgrades();
+            SaveManager.Save();
 
             DisplayWeaponChallenges(challenge);
         }
@@ -337,8 +333,8 @@ public class ChallengeManager : MonoBehaviour
         if (challenge == null || challenge.weapon == null)
             return;
 
-        PlayerPrefs.SetString("EquippedWeapon", challenge.weapon.Name);
-        PlayerPrefs.Save();
+        SaveManager.Data.equippedWeaponName = challenge.weapon.Name;
+        SaveManager.Save();
 
         if (WeaponManager.instance != null)
             WeaponManager.instance.activeWeapon = challenge.weapon;
@@ -358,79 +354,36 @@ public class ChallengeManager : MonoBehaviour
         return true;
     }
 
-    // reads saved progress into the dictionaries on Awake
-    void LoadData()
-    {
-        progress.Clear();
-        completed.Clear();
-        purchasedWeapons.Clear();
-
-        if (challenges == null)
-            return;
-
-        foreach (var cData in challenges)
-        {
-            if (cData == null)
-                continue;
-
-            if (cData.challengesList != null)
-            {
-                foreach (var sub in cData.challengesList)
-                {
-                    if (string.IsNullOrEmpty(sub.challengeID))
-                        continue;
-
-                    int progValue = PlayerPrefs.GetInt("Prog_" + sub.challengeID, 0);
-                    bool compValue = PlayerPrefs.GetInt("Comp_" + sub.challengeID, 0) == 1;
-
-                    progress[sub.challengeID] = progValue;
-                    completed[sub.challengeID] = compValue;
-                }
-            }
-
-            if (cData.weapon != null && !string.IsNullOrEmpty(cData.weapon.Name))
-            {
-                if (PlayerPrefs.GetInt("Bought_" + cData.weapon.Name, 0) == 1)
-                {
-                    purchasedWeapons.Add(cData.weapon.Name);
-                }
-            }
-        }
-    }
-
+    // wipes challenge progress and weapon ownership. inspector and debug only.
+    // scoped deliberately — SaveManager.ResetSave() would also clear files,
+    // upgrades and volume settings.
     [ContextMenu("Reset Challenges")]
-    // wipes all progress. inspector and debug only.
     public void ResetChallenges()
     {
-        if (challenges != null)
+        SaveManager.Data.challengeEntries.Clear();
+        SaveManager.Data.purchasedWeaponNames.Clear();
+        SaveManager.Data.equippedWeaponName = string.Empty;
+
+        SaveManager.Save();
+
+        if (currentlySelectedChallenge != null)
         {
-            foreach (var cData in challenges)
-            {
-                if (cData == null)
-                    continue;
-
-                if (cData.challengesList != null)
-                {
-                    foreach (var sub in cData.challengesList)
-                    {
-                        if (string.IsNullOrEmpty(sub.challengeID))
-                            continue;
-                        PlayerPrefs.DeleteKey("Prog_" + sub.challengeID);
-                        PlayerPrefs.DeleteKey("Comp_" + sub.challengeID);
-                    }
-                }
-
-                if (cData.weapon != null && !string.IsNullOrEmpty(cData.weapon.Name))
-                {
-                    PlayerPrefs.DeleteKey("Bought_" + cData.weapon.Name);
-                }
-            }
+            DisplayWeaponChallenges(currentlySelectedChallenge);
         }
 
-        PlayerPrefs.Save();
-        LoadData();
-        if (currentlySelectedChallenge != null)
-            DisplayWeaponChallenges(currentlySelectedChallenge);
         Debug.Log("Challenges reset successfully.");
+    }
+
+    private ChallengeEntry getOrAddChallenge(string id)
+    {
+        ChallengeEntry entry = SaveManager.Data.GetChallenge(id);
+
+        if (entry == null)
+        {
+            entry = new ChallengeEntry(id);
+            SaveManager.Data.challengeEntries.Add(entry);
+        }
+
+        return entry;
     }
 }
