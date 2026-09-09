@@ -102,7 +102,7 @@ public class WeaponManager : MonoBehaviour
         }
 
         // Load saved weapon
-        string savedWeaponName = PlayerPrefs.GetString("EquippedWeapon", "");
+        string savedWeaponName = SaveManager.Data.equippedWeaponName;
         if (!string.IsNullOrEmpty(savedWeaponName) && allWeapons != null)
         {
             WeaponStats loadedWeapon = System.Array.Find(allWeapons, w => w != null && w.Name == savedWeaponName);
@@ -349,7 +349,8 @@ public class WeaponManager : MonoBehaviour
     [ContextMenu("Reset Saved Weapon")]
     public void ResetWeapon()
     {
-        PlayerPrefs.DeleteKey("EquippedWeapon");
+        SaveManager.Data.equippedWeaponName = string.Empty;
+        SaveManager.Save();
     }
 
     public void PlayMeleeSwing()

@@ -148,21 +148,23 @@ public class AudioManager : MonoBehaviour
 
     public void LoadSettings()
     {
-        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
-        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
-        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
-        isMuted = PlayerPrefs.GetInt("IsMuted", 0) == 1;
+        masterVolume = SaveManager.Data.masterVolume;
+        musicVolume = SaveManager.Data.musicVolume;
+        sfxVolume = SaveManager.Data.sfxVolume;
+        isMuted = SaveManager.Data.isMuted;
 
         UpdateAudioVolumes();
     }
 
     public void SaveSettings()
     {
-        PlayerPrefs.SetFloat("MasterVolume", masterVolume);
-        PlayerPrefs.SetFloat("MusicVolume", musicVolume);
-        PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
-        PlayerPrefs.SetInt("IsMuted", isMuted ? 1 : 0);
-        PlayerPrefs.Save();
+        SaveManager.Data.masterVolume = masterVolume;
+        SaveManager.Data.musicVolume = musicVolume;
+        SaveManager.Data.sfxVolume = sfxVolume;
+        SaveManager.Data.isMuted = isMuted;
+
+        // a slider drag is the player expecting it to stick, so write now
+        SaveManager.Save();
     }
 
     public void UpdateAudioVolumes()

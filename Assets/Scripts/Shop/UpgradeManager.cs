@@ -21,8 +21,12 @@ using UnityEngine.UI;
  * - GameManager, WaveManager (Files are transferred in)
  * - WeaponManager (fire rate upgrade)
  * - ChallengeManager (challenges gate some upgrades)
+ * - SaveManager (owns the file all of this state lives in)
  *
  * Notes:
+ * - files, purchasedUpgrades and activeUpgrades are properties reading straight
+ *   through to SaveManager.Data. They are not fields, so they no longer appear
+ *   in the inspector.
  * - Files accounting currently compounds. WaveManager and GameManager both add
  *   the running total rather than the amount earned, so the balance grows
  *   faster than intended.
@@ -32,6 +36,7 @@ using UnityEngine.UI;
 public class UpgradeManager : MonoBehaviour
 {
     public static UpgradeManager instance;
+
     [System.Serializable]
     public struct RequiredChallengeUISlot
     {
@@ -52,14 +57,26 @@ public class UpgradeManager : MonoBehaviour
 
     [Header("Currency")]
     public TextMeshProUGUI fileCountText;
-    public int files;
 
     [Header("Required Challenges UI")]
     [SerializeField] private RequiredChallengeUISlot[] requiredChallengeSlots;
 
-    [HideInInspector]
-    public List<string> purchasedUpgrades = new List<string>();
-    public List<string> activeUpgrades = new List<string>();
+    // all three read straight through to the save, so every call site in this
+    // class and in ChallengeManager keeps working unchanged
+    public int files
+    {
+        get => SaveManager.Data.files;
+        set
+        {
+            SaveManager.Data.files = value;
+            SaveManager.MarkDirty();
+        }
+    }
+
+    // getters only. these mutate through Add and Remove on the save's own list,
+    // so a setter would only be a way to swap that list out by accident.
+    public List<string> purchasedUpgrades => SaveManager.Data.purchasedUpgradeIDs;
+    public List<string> activeUpgrades => SaveManager.Data.activeUpgradeIDs;
 
     void Awake()
     {
@@ -70,8 +87,12 @@ public class UpgradeManager : MonoBehaviour
         }
 
         instance = this;
+    }
 
-        LoadUpgrades();
+    private void OnDestroy()
+    {
+        if (instance == this)
+            instance = null;
     }
 
     public bool IsUpgradeActive(string id) => activeUpgrades.Contains(id);
@@ -160,6 +181,23 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
+    // kept under this name so the call sites across this class and
+    // ChallengeManager need no edits
+    public void SaveUpgrades()
+    {
+        SaveManager.Save();
+    }
+
+    [ContextMenu("Reset Saved Upgrades")]
+    public void ResetUpgrades()
+    {
+        purchasedUpgrades.Clear();
+        activeUpgrades.Clear();
+        files = 0;
+
+        SaveManager.Save();
+    }
+
     private void displayRequiredChallenges(UpgradeData upgrade)
     {
         if (requiredChallengeSlots == null)
@@ -238,51 +276,5 @@ public class UpgradeManager : MonoBehaviour
         }
         if (AudioManager.instance != null)
             AudioManager.instance.PlayButtonClick();
-    }
-
-    [System.Serializable]
-    public class upgradeSaveData
-    {
-        public List<string> unlocked;
-        public List<string> purchased;
-        public List<string> active;
-        public int files;
-    }
-
-    public void SaveUpgrades()
-    {
-        upgradeSaveData data = new upgradeSaveData
-        {
-            purchased = purchasedUpgrades,
-            active = activeUpgrades,
-            files = files
-        };
-
-        PlayerPrefs.SetString("UnlockedUpgrades", JsonUtility.ToJson(data));
-        PlayerPrefs.Save();
-    }
-
-    public void LoadUpgrades()
-    {
-        if (!PlayerPrefs.HasKey("UnlockedUpgrades"))
-            return;
-        upgradeSaveData data = JsonUtility.FromJson<upgradeSaveData>(PlayerPrefs.GetString("UnlockedUpgrades"));
-        purchasedUpgrades = data.purchased ?? new List<string>();
-        activeUpgrades = data.active ?? new List<string>();
-        files = data.files;
-    }
-
-    [ContextMenu("Reset Saved Upgrades")]
-    public void ResetUpgrades()
-    {
-        PlayerPrefs.DeleteKey("UnlockedUpgrades");
-        purchasedUpgrades.Clear();
-        activeUpgrades.Clear();
-    }
-
-    private void OnDestroy()
-    {
-        if (instance == this)
-            instance = null;
     }
 }
