@@ -56,6 +56,13 @@ public class TimeManager : MonoBehaviour
     [Tooltip("the forced speed while an override is active, set at runtime")]
     [SerializeField] private float overrideTimeScale;
 
+    [Header("Debug")]
+    [Tooltip("locks time scale to Debug Locked Value, ignoring bpm, movement, overrides, and the fire pulse - for testing at a specific time scale")]
+    [SerializeField] bool debugLockTimeScale = false;
+
+    [Tooltip("the time scale to hold while Debug Lock Time Scale is on")]
+    [SerializeField] float debugLockedValue = 1f;
+
     // smoothed value we are actually applying, separate from the target
     private float currentTimeScale;
 
@@ -89,13 +96,17 @@ public class TimeManager : MonoBehaviour
 
         float targetTimeScale;
 
-        if (hasTimeScaleOverride)
+        if (debugLockTimeScale)
+        {
+            targetTimeScale = debugLockedValue;
+        }
+        else if (hasTimeScaleOverride)
         {
             // Scorestreaks such as Adrenaline temporarily take full control
             // over world speed. Movement and heartbeat cannot fight it.
             targetTimeScale = overrideTimeScale;
         }
-        else if(firePulseTimer > 0f)
+        else if (firePulseTimer > 0f)
         {
             // A shot just fired. Push time toward the pulse value for a short window
             // regardless of bpm, then fall back to the bpm-driven target.
@@ -107,7 +118,7 @@ public class TimeManager : MonoBehaviour
         {
             float stress01 = HeartbeatManager.instance != null ? HeartbeatManager.instance.StressPercent : 0f;
 
-            targetTimeScale = Mathf.Lerp(minTimeScale,maxTimeScale, stress01);
+            targetTimeScale = Mathf.Lerp(minTimeScale, maxTimeScale, stress01);
         }
 
         // Frame-rate-independent exponential smoothing.
@@ -126,10 +137,15 @@ public class TimeManager : MonoBehaviour
     // early outs on tiny changes so we're not writing Time every frame.
     private void ApplyTimeScale(float newTimeScale)
     {
-        newTimeScale = Mathf.Clamp(newTimeScale, minTimeScale, maxTimeScale);
+        if (!debugLockTimeScale)
+        {
+            newTimeScale = Mathf.Clamp(newTimeScale, minTimeScale, maxTimeScale);
+        }
 
         if (Mathf.Abs(Time.timeScale - newTimeScale) < 0.0001f)
+        {
             return;
+        }
 
         Time.timeScale = newTimeScale;
         Time.fixedDeltaTime = baseFixedDeltaTime * newTimeScale;
@@ -196,6 +212,11 @@ public class TimeManager : MonoBehaviour
 
     private void OnValidate()
     {
+        if (debugLockTimeScale && Application.isPlaying)
+        {
+            currentTimeScale = debugLockedValue;
+        }
+
         minTimeScale = Mathf.Max(0.001f, minTimeScale);
         maxTimeScale = Mathf.Max(minTimeScale, maxTimeScale);
         timeScaleSmoothing = Mathf.Max(0f, timeScaleSmoothing);

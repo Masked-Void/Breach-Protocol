@@ -166,7 +166,8 @@ public class Damage : MonoBehaviour
             if (launchSpeed > 0 && flightTime < launchDuration)
             {
                 float t = flightTime / launchDuration;
-                currentSpeed = Mathf.Lerp(launchSpeed, bulletSpeed, t);
+                float eased = 1f - Mathf.Pow(1f - t, 3f);
+                currentSpeed = Mathf.Lerp(launchSpeed, bulletSpeed, eased);
             }
 
             rb.linearVelocity = transform.forward * currentSpeed;

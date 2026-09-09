@@ -54,9 +54,9 @@ MonoBehaviour:
   rb: {fileID: 7083418051938216941}
   damageAmount: 10
   damageRate: 0.1
-  bulletSpeed: 15
-  launchSpeed: 20
-  launchDuration: 0.45
+  bulletSpeed: 20
+  launchSpeed: 70
+  launchDuration: 0.16
   immuneToEnemiesDuringBurst: 0
   bulletDestroyTime: 20
   shatterForce: 350
