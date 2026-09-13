@@ -72,7 +72,11 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
     [Tooltip("seconds between step sounds while moving on the ground")]
     [SerializeField] float stepInterval = 0.4f;
 
-    [Header("Debug")]
+    [Header("Animation")]
+    [SerializeField] Animator animator;
+    SkinnedMeshRenderer skinnedMesh;
+
+[Header("Debug")]
     [Tooltip("locks movement speed to Debug Locked Speed, ignoring bpm - for testing bullet feel against a known player speed")]
     [SerializeField] bool debugLockSpeed = false;
 
@@ -88,12 +92,35 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
 
     void Start()
     {
-
-    }
+        animator = GetComponent<Animator>();
+}
 
     void Update()
     {
         movement();
+
+            //if (Input.GetKey(KeyCode.L))
+            //    animator.SetTrigger("lying");
+            //else if (Input.GetKeyDown(KeyCode.Space))
+            //    animator.SetTrigger("jump");
+            //else if (Input.GetKeyDown(KeyCode.K))
+            //    animator.SetTrigger("knockdown");
+            //if (Input.GetKeyDown(KeyCode.Mouse0))
+            //    animator.SetTrigger("hp_straight_A");
+            //else if (Input.GetKeyDown(KeyCode.Mouse1))
+            //    animator.SetTrigger("hp_straight_right_A");
+
+            //animator.SetFloat("Vertical", Input.GetAxis("Vertical"));
+            //animator.SetFloat("Horizontal", Input.GetAxis("Horizontal"));
+
+            //if (Input.GetKey(KeyCode.LeftShift))
+            //    animator.SetBool("running", true);
+            //else
+            //    animator.SetBool("running", false);
+            //if (Input.GetKey(KeyCode.LeftControl))
+            //    animator.SetBool("sidefix", true);
+            //else
+            //    animator.SetBool("sidefix", false);
     }
     public void PushBack(Vector3 direction, float pushbackForce)
     {
