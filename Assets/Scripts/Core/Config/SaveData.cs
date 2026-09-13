@@ -11,11 +11,11 @@ public class SaveData
 
     public List<ChallengeEntry> challengeEntries;
 
+    public List<UpgradeEntry> upgradeEntries;
+
     public string equippedWeaponName;
    
     public List<string> purchasedWeaponNames;
-    public List<string> purchasedUpgradeIDs;
-    public List<string> activeUpgradeIDs;
     //Audio
     public float masterVolume;
     public float musicVolume;
@@ -32,9 +32,8 @@ public class SaveData
         isMuted = false;
         equippedWeaponName = string.Empty;
         challengeEntries = new List<ChallengeEntry>();
+        upgradeEntries = new List<UpgradeEntry>();
         purchasedWeaponNames = new List<string>();
-        purchasedUpgradeIDs = new List<string>();
-        activeUpgradeIDs = new List<string>();
     }
 
     public void FixNulls()
@@ -44,19 +43,14 @@ public class SaveData
             challengeEntries = new List<ChallengeEntry>();
         }
 
+        if (upgradeEntries == null)
+        {
+            upgradeEntries = new List<UpgradeEntry>();
+        }
+
         if (purchasedWeaponNames == null)
         {
             purchasedWeaponNames = new List<string>();
-        }
-
-        if (purchasedUpgradeIDs == null)
-        {
-            purchasedUpgradeIDs = new List<string>();
-        }
-
-        if (activeUpgradeIDs == null)
-        {
-            activeUpgradeIDs = new List<string>();
         }
 
         if (equippedWeaponName == null)
@@ -74,6 +68,20 @@ public class SaveData
             if (challengeEntries[i].id == id)
             {
                 return challengeEntries[i];
+            }
+        }
+
+        return null;
+    }
+
+    // finds a upgrade by id, or null if it isn't tracked yet
+    public UpgradeEntry GetUpgrade(string id)
+    {
+        for (int i = 0; i < upgradeEntries.Count; i++)
+        {
+            if (upgradeEntries[i].id == id)
+            {
+                return upgradeEntries[i];
             }
         }
 
