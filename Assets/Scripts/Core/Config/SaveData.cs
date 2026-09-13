@@ -88,6 +88,18 @@ public class SaveData
         return null;
     }
 
+    public bool IsUpgradePurchased(string id)
+    {
+        UpgradeEntry entry = GetUpgrade(id);
+        return entry != null && entry.purchased;
+    }
+
+    public bool IsUpgradeActive(string id)
+    {
+        UpgradeEntry entry = GetUpgrade(id);
+        return entry != null && entry.active;
+    }
+
     public int GetProgress(string id)
     {
         ChallengeEntry entry = GetChallenge(id);
