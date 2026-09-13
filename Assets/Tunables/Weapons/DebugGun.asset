@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a4636424b6eb53a499a9a76a72d3ba85, type: 3}
-  m_Name: Pistol
-  m_EditorClassIdentifier: Assembly-CSharp::gunStats
-  Name: Pistol
-  weaponName: 
-  weaponModel: {fileID: 2859026477195048651, guid: 14b71ce1189a1e14eadaf89c6cab9e3d, type: 3}
+  m_Name: DebugGun
+  m_EditorClassIdentifier: Assembly-CSharp::GunStats
+  Name: Debug
+  weaponName: Debug
+  weaponModel: {fileID: 6971496768782505918, guid: dfc4d87131163204eb41e8626f81e196, type: 3}
   sprite: {fileID: 21300000, guid: 99796ae903d72a847bb64c1ee6b394f5, type: 3}
-  cost: 100
-  attackRate: 0.59
+  cost: 0
+  attackRate: 0.1
   isFromGround: 0
   gunType: 0
   bullet: {fileID: 6785665511576398920, guid: 05e0818bb028d7f4c93c246ee307f7c5, type: 3}
-  enemyBullet: {fileID: 6785665511576398920, guid: d5b4c3b827fad4f4ca8980c3026bdc69, type: 3}
+  enemyBullet: {fileID: 0}
   Position: {x: 0.2, y: -0.31, z: 0.5}
   Rotation: {x: 0, y: 0, z: 0}
-  pelletCount: 20
+  pelletCount: 1
   spreadAngle: 0.2
-  startingBullets: 7
-  shootSound: {fileID: 8300000, guid: dce971b0af68f5240864a8d4cc1851ed, type: 3}
-  shootSoundVol: 0.8
+  startingBullets: 30
+  shootSound: {fileID: 0}
+  shootSoundVol: 0
