@@ -23,7 +23,6 @@ public class ShopManager : MonoBehaviour
     // [SerializeField] private ShopPopulator[] shopSlots;
     // [SerializeField] private UpgradeData[] allUpgrades;
 
-
     // private void Awake()
     // {
     //     instance = this;
@@ -73,21 +72,16 @@ public class ShopManager : MonoBehaviour
     //         GameManager.instance.showShopWarning();
     //         return;
     //     }
-
     //     Debug.Log("Upgrade Bought: " + upgrade.UpgradeName);
     //     GameManager.instance.totalBytes -= upgrade.Cost;
     //     //UpgradeManager.instance.PurchaseUpgrade(upgrade.Id);
     //     upgrade.applyUpgrade();
     // }
 
-
-
     // public ShopPopulator[] getShopSlots()
     // {
     //     return shopSlots;
 
     // }
-
-
 }
 

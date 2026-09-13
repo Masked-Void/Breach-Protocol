@@ -73,10 +73,6 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
-    // getters only. these mutate through Add and Remove on the save's own list,
-    // so a setter would only be a way to swap that list out by accident.
-    public List<string> purchasedUpgrades => SaveManager.Data.purchasedUpgradeIDs;
-    public List<string> activeUpgrades => SaveManager.Data.activeUpgradeIDs;
 
     void Awake()
     {
@@ -95,7 +91,7 @@ public class UpgradeManager : MonoBehaviour
             instance = null;
     }
 
-    public bool IsUpgradeActive(string id) => activeUpgrades.Contains(id);
+    public bool IsUpgradeActive(string id) => SaveManager.Data.IsUpgradeActive(id);
 
     public bool IsUpgradeUnlocked(UpgradeData upgrade)
     {
@@ -146,9 +142,9 @@ public class UpgradeManager : MonoBehaviour
 
         displayRequiredChallenges(upgrade);
 
-        bool isPurchased = purchasedUpgrades.Contains(upgrade.id);
+        bool isPurchased = SaveManager.Data.IsUpgradePurchased(upgrade.id);
         bool isUnlocked = IsUpgradeUnlocked(upgrade);
-        bool isActive = activeUpgrades.Contains(upgrade.id);
+        bool isActive = SaveManager.Data.IsUpgradeActive(upgrade.id);
         bool canBuy = files >= upgrade.cost;
         if (buyButton != null)
         {
@@ -191,8 +187,7 @@ public class UpgradeManager : MonoBehaviour
     [ContextMenu("Reset Saved Upgrades")]
     public void ResetUpgrades()
     {
-        purchasedUpgrades.Clear();
-        activeUpgrades.Clear();
+        SaveManager.Data.upgradeEntries.Clear();
         files = 0;
 
         SaveManager.Save();
@@ -244,10 +239,7 @@ public class UpgradeManager : MonoBehaviour
 
     void toggleUpgrade(UpgradeData upgrade)
     {
-        if (activeUpgrades.Contains(upgrade.id))
-            activeUpgrades.Remove(upgrade.id);
-        else
-            activeUpgrades.Add(upgrade.id);
+        getOrAddUpgrade(upgrade.id).active = !getOrAddUpgrade(upgrade.id).active;
 
         SaveUpgrades();
         DisplayUpgrades(upgrade);
@@ -267,14 +259,25 @@ public class UpgradeManager : MonoBehaviour
     void buyButtonClicked(UpgradeData upgrade)
     {
         // Check if player can afford upgrade
-        if (files >= upgrade.cost && !purchasedUpgrades.Contains(upgrade.id))
+        if (files >= upgrade.cost && !SaveManager.Data.IsUpgradePurchased(upgrade.id))
         {
             files -= upgrade.cost;
-            purchasedUpgrades.Add(upgrade.id);
+            getOrAddUpgrade(upgrade.id).purchased = true;
             SaveUpgrades();
             DisplayUpgrades(upgrade); // Immediately reflect the purchase status
         }
         if (AudioManager.instance != null)
             AudioManager.instance.PlayButtonClick();
+    }
+
+    private UpgradeEntry getOrAddUpgrade(string id)
+    {
+        UpgradeEntry entry = SaveManager.Data.GetUpgrade(id);
+        if (entry == null)
+        {
+            entry = new UpgradeEntry(id);
+            SaveManager.Data.upgradeEntries.Add(entry);
+        }
+        return entry;
     }
 }
