@@ -1,5 +1,5 @@
-using UnityEngine;
-
+﻿using UnityEngine;
+using UnityEngine.Serialization;
 /*
  * Script: UpgradeData
  *
@@ -24,7 +24,9 @@ public class UpgradeData : ScriptableObject
     [SerializeField] public string description;
 
     [Tooltip("price in Files")]
-    [SerializeField] public int cost;
+    [FormerlySerializedAs("cost")]
+    [SerializeField] public int filesCost;
+
 
     [Tooltip("which effect this applies, gameplay code switches on it")]
     [SerializeField] public UpgradeType upgradeType;
@@ -38,6 +40,9 @@ public class UpgradeData : ScriptableObject
     [Tooltip("all of these must be complete before this can be bought, leave empty for none")]
     [SerializeField] public ChallengeData[] requiredChallenges;
 
+    [Header("Bytes")]
+    [Tooltip("price in bytes")]
+    [SerializeField] public int bytesCost;
     public enum UpgradeType
     {
         FireRate,

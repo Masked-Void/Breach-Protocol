@@ -176,6 +176,8 @@ public class GameManager : MonoBehaviour
     [Header("Bootstrap Shenanigans")]
     [SerializeField] private bool isBootstrapVersion = false;
 
+    public static event System.Action PlayerReady;
+
     private void Awake()
     {
         // No conflict? Just take the slot.
@@ -192,6 +194,7 @@ public class GameManager : MonoBehaviour
 
         if (isBootstrapVersion)
         {
+    
             // We are Bootstrap. The existing manager (level or another bootstrap) stays.
             // Destroy SELF (current).
             Destroy(gameObject);
@@ -199,10 +202,18 @@ public class GameManager : MonoBehaviour
         }
 
         // We are Level. Destroy the PREVIOUS manager (bootstrap or old level).
+    
         Destroy(instance.gameObject);
         instance = this;
     }
-
+    // every path that begins a run must call this. today that is LevelLoader.LoadLevel,
+    // which both the title level select and the retry button route through. pressing
+    // play directly from a level scene skips it, which is a known gap.
+    public void StartRun()
+    {
+        totalBytes = 0;
+        totalFiles = 0;
+    }
     private void Start()
     {
         // player lives in bootstrap now and awake order between scenes is not guaranteed,
@@ -235,8 +246,6 @@ public class GameManager : MonoBehaviour
         AddBytes(enemy.ByteValue);
     }
 
-
-    public static event System.Action PlayerReady;
 
     void OnDestroy()
     {
@@ -271,8 +280,12 @@ public class GameManager : MonoBehaviour
         {
             if (AudioManager.instance != null)
                 AudioManager.instance.PlayButtonClick();
+
             if (menuActive == null)
             {
+                if (ShopManager.instance != null)
+                    ShopManager.instance.Suspend();
+
                 StatePause();
                 menuActive = menuPause;
                 menuActive.SetActive(true);
@@ -280,6 +293,9 @@ public class GameManager : MonoBehaviour
             else if (menuActive == menuPause)
             {
                 StateUnpause();
+
+                if (ShopManager.instance != null)
+                    ShopManager.instance.Resume();
             }
         }
 
@@ -293,10 +309,7 @@ public class GameManager : MonoBehaviour
     // Pause the game
     public void StatePause()
     {
-        isPaused = true;
-        TimeManager.instance.PauseTime();
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        FreezeGame();
         pauseScoreText.text = currentKill.ToString("f0");
         ResetPauseUI();
         if (AudioManager.instance != null)
@@ -305,7 +318,23 @@ public class GameManager : MonoBehaviour
             AudioManager.instance.PlayPauseMenuMusicWithDelay(4.0f);
         }
     }
-
+    //shop needs the world paused without the menu so i extracted those parts of the methods here
+    public void FreezeGame()
+    {
+        isPaused = true;
+        TimeManager.instance.PauseTime();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+    //shop needs the world unpaused without the menu so i extracted those parts of the methods here
+    public void UnfreezeGame()
+    {
+        isPaused = false;
+        if (TimeManager.instance != null)
+            TimeManager.instance.UnpauseTime();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
     public void ResetPauseUI()
     {
         if (challengesCanvas != null)
@@ -331,11 +360,7 @@ public class GameManager : MonoBehaviour
     // Unpause the game
     public void StateUnpause()
     {
-        isPaused = false;
-        if (TimeManager.instance != null)
-            TimeManager.instance.UnpauseTime();
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        UnfreezeGame();
         if (menuActive != null)
         {
             menuActive.SetActive(false);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,7 +55,7 @@ public class UpgradeManager : MonoBehaviour
     public TextMeshProUGUI upgradeValue;
     public Button buyButton;
     public TextMeshProUGUI buyButtonText;
-
+    private Dictionary<string, int> upgradeTiers = new Dictionary<string, int>();
     [Header("Currency")]
     public TextMeshProUGUI fileCountText;
 
@@ -72,7 +73,19 @@ public class UpgradeManager : MonoBehaviour
             SaveManager.MarkDirty();
         }
     }
+    public int GetUpgradeTier(string id)
+    {
+       if( upgradeTiers.TryGetValue(id, out int upgradeTier))
+        {
+            return upgradeTier;
+        }
 
+        return 0;
+    }
+    public void ClearUpgradeTiers()
+    {
+        upgradeTiers.Clear();
+    }
     // getters only. these mutate through Add and Remove on the save's own list,
     // so a setter would only be a way to swap that list out by accident.
     public List<string> purchasedUpgrades => SaveManager.Data.purchasedUpgradeIDs;
@@ -138,7 +151,7 @@ public class UpgradeManager : MonoBehaviour
                 : upgrade.description;
         }
         if (upgradeCost != null)
-            upgradeCost.text = "" + upgrade.cost;
+            upgradeCost.text = "" + upgrade.filesCost;
         if (upgradeValue != null)
             upgradeValue.text = "" + upgrade.value;
         if (fileCountText != null)
@@ -149,7 +162,7 @@ public class UpgradeManager : MonoBehaviour
         bool isPurchased = purchasedUpgrades.Contains(upgrade.id);
         bool isUnlocked = IsUpgradeUnlocked(upgrade);
         bool isActive = activeUpgrades.Contains(upgrade.id);
-        bool canBuy = files >= upgrade.cost;
+        bool canBuy = files >= upgrade.filesCost;
         if (buyButton != null)
         {
             buyButton.onClick.RemoveAllListeners();
@@ -267,9 +280,9 @@ public class UpgradeManager : MonoBehaviour
     void buyButtonClicked(UpgradeData upgrade)
     {
         // Check if player can afford upgrade
-        if (files >= upgrade.cost && !purchasedUpgrades.Contains(upgrade.id))
+        if (files >= upgrade.filesCost && !purchasedUpgrades.Contains(upgrade.id))
         {
-            files -= upgrade.cost;
+            files -= upgrade.filesCost;
             purchasedUpgrades.Add(upgrade.id);
             SaveUpgrades();
             DisplayUpgrades(upgrade); // Immediately reflect the purchase status

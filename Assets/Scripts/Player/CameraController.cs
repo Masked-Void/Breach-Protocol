@@ -37,14 +37,16 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        if (!GameManager.instance.isPaused)
+        if (GameManager.instance == null || GameManager.instance.isPaused)
         {
-            float mouseX = Input.GetAxisRaw("Mouse X") * sens;
-            float mouseY = Input.GetAxisRaw("Mouse Y") * sens;
-            camRotX -= mouseY;
-            camRotX = Mathf.Clamp(camRotX, lockVertMin, lockVertMax);
-            transform.localRotation = Quaternion.Euler(camRotX, 0, 0);
-            transform.parent.Rotate(Vector3.up * mouseX);
+            return;
         }
+
+        float mouseX = Input.GetAxisRaw("Mouse X") * sens;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * sens;
+        camRotX -= mouseY;
+        camRotX = Mathf.Clamp(camRotX, lockVertMin, lockVertMax);
+        transform.localRotation = Quaternion.Euler(camRotX, 0, 0);
+        transform.parent.Rotate(Vector3.up * mouseX);
     }
 }
