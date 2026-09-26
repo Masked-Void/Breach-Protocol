@@ -72,6 +72,13 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
     [Tooltip("seconds between step sounds while moving on the ground")]
     [SerializeField] float stepInterval = 0.4f;
 
+    [Header("Debug")]
+    [Tooltip("locks movement speed to Debug Locked Speed, ignoring bpm - for testing bullet feel against a known player speed")]
+    [SerializeField] bool debugLockSpeed = false;
+
+    [Tooltip("the speed to hold while Debug Lock Speed is on")]
+    [SerializeField] int debugLockedSpeed = 2;
+
     // runtime state
     float stepTimer;
     int jumpCount;
@@ -140,7 +147,7 @@ public class PlayerController : MonoBehaviour, IPickWeapon, IDamage
         }
 
         float stressPercent = HeartbeatManager.instance != null ? HeartbeatManager.instance.StressPercent : 0f;
-        int currSpeed = Mathf.RoundToInt(speed * Mathf.Lerp(1f, sprintMod,stressPercent));
+        int currSpeed = debugLockSpeed ? debugLockedSpeed : Mathf.RoundToInt(speed * Mathf.Lerp(1f, sprintMod, stressPercent));
 
         playerVel.x = Mathf.MoveTowards(playerVel.x, 0, pushbackFriction * Time.unscaledDeltaTime);
         playerVel.z = Mathf.MoveTowards(playerVel.z, 0, pushbackFriction * Time.unscaledDeltaTime);

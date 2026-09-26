@@ -21,6 +21,7 @@ MonoBehaviour:
   isFromGround: 0
   gunType: 1
   bullet: {fileID: 6785665511576398920, guid: d7a56a45ac2dccc428d4ccc0215f14bd, type: 3}
+  enemyBullet: {fileID: 6785665511576398920, guid: ea2ba26ba45a3e1419bb9c02e70fe78e, type: 3}
   Position: {x: 0, y: -0.27, z: 0.63}
   Rotation: {x: -7.9, y: 0, z: 0}
   pelletCount: 1
