@@ -159,7 +159,7 @@ public class UpgradeManager : MonoBehaviour
         bool isPurchased = SaveManager.Data.IsUpgradePurchased(upgrade.id);
         bool isUnlocked = IsUpgradeUnlocked(upgrade);
         bool isActive = SaveManager.Data.IsUpgradeActive(upgrade.id);
-        bool canBuy = files >= upgrade.filesCostcost;
+        bool canBuy = files >= upgrade.filesCost;
         if (buyButton != null)
         {
             buyButton.onClick.RemoveAllListeners();
@@ -273,7 +273,7 @@ public class UpgradeManager : MonoBehaviour
     void buyButtonClicked(UpgradeData upgrade)
     {
         // Check if player can afford upgrade
-        if (files >= upgrade.cost && !SaveManager.Data.IsUpgradePurchased(upgrade.id))
+        if (files >= upgrade.filesCost && !SaveManager.Data.IsUpgradePurchased(upgrade.id))
         {
             files -= upgrade.filesCost;
             getOrAddUpgrade(upgrade.id).purchased = true;

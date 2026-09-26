@@ -188,6 +188,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3800786014925651795, guid: 7618acddf8b789e4984683308483531d, type: 3}
+      propertyPath: totalFiles
+      value: 2000
+      objectReference: {fileID: 0}
+    - target: {fileID: 3800786014925651795, guid: 7618acddf8b789e4984683308483531d, type: 3}
       propertyPath: isBootstrapVersion
       value: 1
       objectReference: {fileID: 0}

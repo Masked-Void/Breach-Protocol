@@ -1,5 +1,4 @@
-﻿using Unity.VisualScripting.Antlr3.Runtime;
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: EconomyConfig

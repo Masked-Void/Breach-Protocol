@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 
 /*
@@ -31,7 +30,9 @@ public class ShopManager : MonoBehaviour
 
     [Tooltip("key that closes the shop and starts the next wave")]
     [SerializeField] private KeyCode closeKey = KeyCode.Q;
-
+    [Header("Cards")]
+    [Tooltip("the card objects inside shopUI, one upgrade per card. spare cards are hidden when fewer upgrades are offered")]
+    [SerializeField] private ShopPopulator[] shopSlots;
     public bool IsOpen => isOpen;
     private void Awake()
     {
@@ -135,6 +136,7 @@ public class ShopManager : MonoBehaviour
         GameManager.instance.FreezeGame();
         isOpen = true;
         buildOffer();
+        refreshCards();
         if (GameManager.instance.shopUI != null)
             GameManager.instance.shopUI.SetActive(true);
     }
@@ -144,9 +146,53 @@ public class ShopManager : MonoBehaviour
     private void buildOffer()
     {
         offeredUpgrades.Clear();
+        if (UpgradeManager.instance == null)
+        {
+            return;
+        }
+        foreach (UpgradeData upgrade in UpgradeManager.instance.upgrades)
+        {
+            if (upgrade == null)
+            {
+                continue;
+            }
+            if (UpgradeManager.instance.IsUpgradeActive(upgrade.id))
+            {
+                offeredUpgrades.Add(upgrade);
+                Debug.Log(upgrade.upgradeName);
+            }
+        }
+    }
+    // shows one offered upgrade per card and hides the spares. called when the
+    // shop opens and again after every purchase so prices stay current.
+    private void refreshCards()
+    {
+        if (shopSlots == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < shopSlots.Length; i++)
+        {
+            if (shopSlots[i] == null)
+            {
+                continue;
+            }
+
+            if (i < offeredUpgrades.Count)
+            {
+                shopSlots[i].gameObject.SetActive(true);
+                shopSlots[i].Populate(offeredUpgrades[i]);
+            }
+            else
+            {
+                shopSlots[i].gameObject.SetActive(false);
+            }
+        }
     }
     // [SerializeField] private ShopPopulator[] shopSlots;
     // [SerializeField] private UpgradeData[] allUpgrades;
+
 
     // private void Awake()
     // {
@@ -197,16 +243,21 @@ public class ShopManager : MonoBehaviour
     //         GameManager.instance.showShopWarning();
     //         return;
     //     }
+
     //     Debug.Log("Upgrade Bought: " + upgrade.UpgradeName);
     //     GameManager.instance.totalBytes -= upgrade.Cost;
     //     //UpgradeManager.instance.PurchaseUpgrade(upgrade.Id);
     //     upgrade.applyUpgrade();
     // }
 
+
+
     // public ShopPopulator[] getShopSlots()
     // {
     //     return shopSlots;
 
     // }
+
+
 }
 
