@@ -22,6 +22,10 @@ public class SaveData
     public float sfxVolume;
     public bool isMuted;
 
+    //Tutorial
+    public bool hasPlayedBefore;
+    public bool hasCompletedTutorial;
+
     public SaveData()
     {
         saveVersion = CurrentSaveVersion;
@@ -30,6 +34,8 @@ public class SaveData
         musicVolume = 1f;
         sfxVolume = 1f;
         isMuted = false;
+        hasPlayedBefore = false;
+        hasCompletedTutorial = false;
         equippedWeaponName = string.Empty;
         challengeEntries = new List<ChallengeEntry>();
         purchasedWeaponNames = new List<string>();
