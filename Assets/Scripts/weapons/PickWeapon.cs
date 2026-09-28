@@ -10,6 +10,8 @@ public class PickWeapon : MonoBehaviour
     [Tooltip("Ammo left in this dropped weapon. -1 means a full magazine.")]
     public int remainingAmmo = -1;
 
+    public static event System.Action<PickWeapon> PickedUp;
+
     // hands the weapon over and flags it as ground-sourced, which some
     // challenges check
     public void Interact(IPickWeapon pic)
@@ -17,7 +19,15 @@ public class PickWeapon : MonoBehaviour
         if (pic == null || weapon == null)
             return;
 
+        PickedUp?.Invoke(this);
+
         weapon.isFromGround = true;
         pic.EquipWeapon(weapon, remainingAmmo);
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void clearOldEvents()
+    {
+        PickedUp = null;
     }
 }

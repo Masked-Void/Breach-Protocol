@@ -191,6 +191,10 @@ public class TimeManager : MonoBehaviour
     // the smoothed scale we are applying, not necessarily Time.timeScale if paused
     public float TimeScale => currentTimeScale;
 
+    // slowest the world runs, anything mapping time scale to a look or sound starts from here
+    public float MinTimeScale => minTimeScale;
+
+
     // remembers the current scale before zeroing, so UnpauseTime can restore it
     public void PauseTime()
     {

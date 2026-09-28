@@ -1,16 +1,51 @@
-using UnityEngine;
+﻿using UnityEngine;
+using System;
 
-public class StressAdapter : MonoBehaviour
+// connects the tutorial to HeartbeatManager, which lives in Bootstrap. the only tutorial file that changes when the heartbeat does
+public class StressAdapter : MonoBehaviour, ITutorialStress
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private bool isTutorialModeOn;
+
+    public event Action HeartFailed;
+
+    public int CurrentBpm => HeartbeatManager.instance != null ? HeartbeatManager.instance.CurrentBpm : 0;
+
+    private void OnEnable()
     {
-        
+       
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        
+        if (isTutorialModeOn)
+        {
+            SetTutorialMode(false);
+        }    
+    }
+
+    public void ResetToResting()
+    {
+        if (HeartbeatManager.instance != null)
+        {
+            HeartbeatManager.instance.ResetToRestingBpm();
+        }
+    }
+
+    public void SetTutorialMode(bool isOn)
+    {
+        isTutorialModeOn = isOn;
+
+        if (HeartbeatManager.instance != null)
+        {
+            HeartbeatManager.instance.SetLoseSuppressed(isOn);
+        }
+    }
+
+    private void handleHeartFailed()
+    {
+        if (isTutorialModeOn)
+        {
+            HeartFailed?.Invoke();
+        }
     }
 }

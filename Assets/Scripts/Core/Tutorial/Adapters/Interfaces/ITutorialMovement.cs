@@ -1,16 +1,14 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ITutorialMovement : MonoBehaviour
+// what the tutorial needs from the player controller and input
+public interface ITutorialMovement
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    // raw movement input, not velocity, so pushing into a wall still counts
+    Vector2 MoveInput { get; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // stops movement without stopping the camera
+    void SetMovementLocked(bool shouldLock);
+
+    // moves the player instantly, for space restarts and falls
+    void TeleportTo(Vector3 position, Quaternion rotation);
 }
