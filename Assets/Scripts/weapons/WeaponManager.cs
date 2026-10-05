@@ -74,6 +74,10 @@ public class WeaponManager : MonoBehaviour
     float attackTimer;
     int currentAmmo;
 
+    public static event System.Action DryFired;
+    public static event System.Action<GameObject> Thrown;
+    public static event System.Action<WeaponStats> Equipped;
+
     void Awake()
     {
         if (instance != null && instance != this)
@@ -190,6 +194,7 @@ public class WeaponManager : MonoBehaviour
         gunBarrel = FindDeepChild(spawnedWeaponModel.transform, targetName);
 
         updateHUD();
+        Equipped?.Invoke(newWeapon);
     }
 
     public Transform Barrel => gunBarrel;
@@ -199,6 +204,9 @@ public class WeaponManager : MonoBehaviour
     {
         if (spawnedWeaponModel == null)
             return;
+
+        GameObject thrownModel = spawnedWeaponModel;
+
         spawnedWeaponModel.transform.SetParent(null);
         if (spawnedWeaponModel.TryGetComponent<WeaponWallAvoidance>(out WeaponWallAvoidance clip))
             clip.enabled = false;
@@ -250,6 +258,7 @@ public class WeaponManager : MonoBehaviour
         gunBarrel = null;
 
         updateHUD();
+        Thrown?.Invoke(thrownModel);
     }
 
     // find nested children
@@ -302,6 +311,7 @@ public class WeaponManager : MonoBehaviour
         if (currentAmmo <= 0)
         {
             AudioManager.instance.PlayEmptyMag();
+            DryFired?.Invoke();
             return;
         }
 
@@ -409,5 +419,33 @@ public class WeaponManager : MonoBehaviour
         weaponTransform.localPosition = startPosition;
 
         isMeleeSwinging = false;
+    }
+
+    public void Unequip()
+    {
+        if (spawnedWeaponModel != null)
+        {
+            Destroy(spawnedWeaponModel);
+        }
+
+        if (activeWeapon!= null)
+        {
+            activeWeapon.isFromGround = false;
+        }
+
+        activeWeapon = null;
+        spawnedWeaponModel = null;
+        gunBarrel = null;
+        currentAmmo = 0;
+
+        updateHUD();
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void clearOldEvents()
+    {
+        DryFired = null;
+        Thrown = null;
+        Equipped = null;
     }
 }

@@ -58,6 +58,12 @@ public class WaveLightController : MonoBehaviour
     // instanced materials, so changing emission doesn't edit the shared asset
     private Material[] emissiveMaterials;
 
+    [ContextMenu("Flash")]
+    void flash()
+    {
+        FlashWarningLights(10);
+    }
+
     private void Awake()
     {
         if (instance != null && instance != this)

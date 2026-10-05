@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4e8a83ce7379b0449562a0669445577, type: 3}
+  m_Name: Fists
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeStats
+  Name: fist
+  weaponName: 
+  weaponModel: {fileID: 2974049891113092823, guid: 4056f81d45f61e64289132fc8767a8ab, type: 3}
+  sprite: {fileID: 0}
+  cost: 0
+  attackRate: 0.1
+  isFromGround: 0
+  attackDamage: 1
+  attackDist: 10
+  swingSound: {fileID: 8300000, guid: 6f5a632a380b80d4b9e34ebe2a345f17, type: 3}
+  swingSoundVol: 1
+  hitFleshSound: {fileID: 8300000, guid: 339021f1d8d145e4ea02cbf93c6cffba, type: 3}
+  hitFleshVol: 1
+  hitWallSound: {fileID: 8300000, guid: dce971b0af68f5240864a8d4cc1851ed, type: 3}
+  hitWallVol: 1
+  hitShieldSound: {fileID: 0}
+  hitShieldVol: 1

@@ -67,6 +67,12 @@ public class HeartbeatManager : MonoBehaviour
 
     private bool isPlayerMoving;
 
+    // while true, max bpm raises HeartFailed but skips the lose state
+    private bool isLoseSuppressed;
+
+    // raised when bpm reaches max, before the lose state, so the tutorial can restart a ring instead
+    public static event System.Action HeartFailed;
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -163,6 +169,14 @@ public class HeartbeatManager : MonoBehaviour
 
     private void TriggerHeartFailure()
     {
+
+        HeartFailed?.Invoke();
+
+        if (isLoseSuppressed)
+        {
+            return;
+        }
+
         hasLost = true;
 
         // Timed/manual streaks must not survive death.
@@ -251,6 +265,11 @@ public class HeartbeatManager : MonoBehaviour
         RefreshHeartbeat(true);
     }
 
+    public void SetLoseSuppressed(bool isSuppressed)
+    {
+        isLoseSuppressed = isSuppressed;
+    }
+
     public int CurrentBpm => currentBpm;
 
     public int RestingBpm => config.restingBpm;
@@ -300,5 +319,11 @@ public class HeartbeatManager : MonoBehaviour
     {
         if (instance == this)
             instance = null;
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void clearOldEvents()
+    {
+        HeartFailed = null;
     }
 }

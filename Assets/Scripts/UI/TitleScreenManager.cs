@@ -151,6 +151,16 @@ public class TitleScreenManager : MonoBehaviour
         StartCoroutine(LoadSceneAsync("Bootstrap"));
     }
 
+    public void OpenTutorial()
+    {
+        AudioManager.instance.PlayButtonClick();
+        nav.SetActive(false);
+        deactivateAllPanels();
+
+        LevelLoader.requestedLevelName = "Tutorial";
+        StartCoroutine(LoadSceneAsync("Bootstrap"));
+    }
+
     public void openSettings()
     {
         AudioManager.instance.PlayButtonClick();
