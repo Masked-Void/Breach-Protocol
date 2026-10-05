@@ -36,6 +36,8 @@ public class ShopManager : MonoBehaviour
     [Header("Economy")]
     [Tooltip("same EconomyConfig asset WaveManager uses. supplies the tier cap and the cost multiplier")]
     [SerializeField] private EconomyConfig economy;
+    [Tooltip("text shown instead of cards when the player has no upgrades applied in the main menu. leave it unticked in the scene, the code turns it on")]
+    [SerializeField] private GameObject emptyMessage;
     public bool IsOpen => isOpen;
     private void Awake()
     {
@@ -214,6 +216,13 @@ public class ShopManager : MonoBehaviour
         if (shopSlots == null)
         {
             return;
+        }
+
+        // only shown when there is nothing to sell, so an empty shop
+        // explains itself instead of looking broken
+        if (emptyMessage != null)
+        {
+            emptyMessage.SetActive(offeredUpgrades.Count == 0);
         }
 
         bool canPrice = UpgradeManager.instance != null && economy != null;
