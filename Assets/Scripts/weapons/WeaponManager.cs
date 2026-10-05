@@ -266,18 +266,27 @@ public class WeaponManager : MonoBehaviour
         return null;
     }
 
+    // seconds between shots after upgrades. the fire rate upgrade's value is a
+    // divisor, so 1.5 fires 50% faster and each tier pushes it further.
     public float UpgradeFireRate
     {
         get
         {
             if (activeWeapon == null)
+            {
                 return 0f;
+            }
 
             float rate = activeWeapon.attackRate;
 
-            // Check if fire rate upgrade is active
-            if (UpgradeManager.instance != null && UpgradeManager.instance.IsUpgradeActive("fire_rate"))
-                rate /= 1.5f;
+            float speedUp = UpgradeManager.instance != null
+                ? UpgradeManager.instance.GetUpgradeValue("fire_rate")
+                : 0f;
+
+            if (speedUp > 0f)
+            {
+                rate /= speedUp;
+            }
 
             return rate;
         }

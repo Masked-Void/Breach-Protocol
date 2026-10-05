@@ -31,8 +31,11 @@ public class UpgradeData : ScriptableObject
     [Tooltip("which effect this applies, gameplay code switches on it")]
     [SerializeField] public UpgradeType upgradeType;
 
-    [Tooltip("how much the effect applies, meaning depends on upgradeType")]
+    [Tooltip("strength with no tiers bought this run. fire rate: fire speed divisor, 1.5 is 50% faster. kunai spread: kunai per throw. exploding bullets: fraction of the full blast radius, 0 to 1")]
     [SerializeField] public float value;
+
+    [Tooltip("added to value for each tier bought in the between-wave shop. exploding bullets should reach exactly 1 at the tier cap")]
+    [SerializeField] public float valuePerTier;
 
     [Tooltip("icon on the shop card")]
     [SerializeField] public Sprite icon;

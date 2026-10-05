@@ -15,10 +15,12 @@ MonoBehaviour:
   upgradeName: Exploding Bullets
   id: exploding_bullets
   description: Causes all of your bullets to explode on hit, dealing area damage.
-  cost: 500
+  filesCost: 500
   upgradeType: 1
-  value: 1
+  value: 0.1
+  valuePerTier: 0.3
   icon: {fileID: 21300000, guid: b499963d7cb6b6a42a63aa02771cadee, type: 3}
   requiredChallenges:
   - {fileID: 11400000, guid: 37f6c5d1b435b96439af4c8284b51a66, type: 2}
   - {fileID: 11400000, guid: 4195367342290cb48834db5bcd45969c, type: 2}
+  bytesCost: 10

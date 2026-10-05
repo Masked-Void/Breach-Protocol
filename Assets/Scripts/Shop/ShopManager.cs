@@ -33,6 +33,9 @@ public class ShopManager : MonoBehaviour
     [Header("Cards")]
     [Tooltip("the card objects inside shopUI, one upgrade per card. spare cards are hidden when fewer upgrades are offered")]
     [SerializeField] private ShopPopulator[] shopSlots;
+    [Header("Economy")]
+    [Tooltip("same EconomyConfig asset WaveManager uses. supplies the tier cap and the cost multiplier")]
+    [SerializeField] private EconomyConfig economy;
     public bool IsOpen => isOpen;
     private void Awake()
     {
@@ -106,9 +109,49 @@ public class ShopManager : MonoBehaviour
         }
     }
 
+    // spends Bytes on the next tier of an upgrade. returns false without
+    // spending anything if the shop is closed, the upgrade is maxed, or the
+    // player cannot afford it.
     public bool TryBuy(UpgradeData upgrade)
     {
-        return false;
+        if (upgrade == null)
+        {
+            return false;
+        }
+
+        if (!isOpen || isSuspended)
+        {
+            return false;
+        }
+
+        if (UpgradeManager.instance == null || GameManager.instance == null || economy == null)
+        {
+            Debug.LogError("ShopManager: missing UpgradeManager, GameManager or EconomyConfig, purchase skipped", this);
+            return false;
+        }
+
+        if (isMaxed(upgrade))
+        {
+            Debug.Log("ShopManager: " + upgrade.upgradeName + " is maxed", this);
+            return false;
+        }
+
+        // computed once so the check and the charge can never disagree
+        int price = getNextPrice(upgrade);
+
+        if (GameManager.instance.totalBytes < price)
+        {
+            GameManager.instance.ShowShopWarning();
+            return false;
+        }
+
+        GameManager.instance.SubtractBytes(price);
+        UpgradeManager.instance.AddUpgradeTier(upgrade.id);
+
+        Debug.Log("ShopManager bought: " + upgrade.upgradeName + " for " + price + ", now tier " + UpgradeManager.instance.GetUpgradeTier(upgrade.id), this);
+
+        refreshCards();
+        return true;
     }
 
     public void CloseShop()
@@ -163,14 +206,17 @@ public class ShopManager : MonoBehaviour
             }
         }
     }
-    // shows one offered upgrade per card and hides the spares. called when the
-    // shop opens and again after every purchase so prices stay current.
+    // shows one offered upgrade per card, wires each card's buy button, and
+    // hides the spares. called when the shop opens and again after every
+    // purchase so prices stay current.
     private void refreshCards()
     {
         if (shopSlots == null)
         {
             return;
         }
+
+        bool canPrice = UpgradeManager.instance != null && economy != null;
 
         for (int i = 0; i < shopSlots.Length; i++)
         {
@@ -181,14 +227,40 @@ public class ShopManager : MonoBehaviour
 
             if (i < offeredUpgrades.Count)
             {
+                // declared inside the loop so each button's lambda keeps its
+                // own upgrade instead of reading i after the loop has finished
+                UpgradeData upgrade = offeredUpgrades[i];
+
+                int price = canPrice ? getNextPrice(upgrade) : upgrade.bytesCost;
+                bool maxed = canPrice && isMaxed(upgrade);
+
                 shopSlots[i].gameObject.SetActive(true);
-                shopSlots[i].Populate(offeredUpgrades[i]);
+                shopSlots[i].Populate(upgrade, price, maxed);
+
+                if (shopSlots[i].BuyButton != null)
+                {
+                    shopSlots[i].BuyButton.onClick.RemoveAllListeners();
+                    shopSlots[i].BuyButton.onClick.AddListener(() => TryBuy(upgrade));
+                }
             }
             else
             {
                 shopSlots[i].gameObject.SetActive(false);
             }
         }
+    }
+    // price of the next tier. the tier read here is how many the player already
+    // owns this run, so tier 0 costs the base price, tier 1 double, tier 2 four times.
+    private int getNextPrice(UpgradeData upgrade)
+    {
+        int currentTier = UpgradeManager.instance.GetUpgradeTier(upgrade.id);
+        return Mathf.RoundToInt(upgrade.bytesCost * Mathf.Pow(economy.multiplier, currentTier));
+    }
+
+    // true once this upgrade has reached the tier cap for this run
+    private bool isMaxed(UpgradeData upgrade)
+    {
+        return UpgradeManager.instance.GetUpgradeTier(upgrade.id) >= economy.tierCap;
     }
     // [SerializeField] private ShopPopulator[] shopSlots;
     // [SerializeField] private UpgradeData[] allUpgrades;

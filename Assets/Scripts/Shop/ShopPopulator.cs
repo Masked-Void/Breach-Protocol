@@ -42,9 +42,10 @@ public class ShopPopulator : MonoBehaviour
     public UpgradeData CurrentUpgrade => currentUpgrade;
     public Button BuyButton => buyButton;
 
-    // fills the card with one upgrade. called by ShopManager every time the
-    // shop opens, so it overwrites whatever the card showed last wave.
-    public void Populate(UpgradeData upgrade)
+    // fills the card with one upgrade. called by ShopManager when the shop opens
+    // and after every purchase, so it overwrites whatever the card showed before.
+    // price and maxed come from ShopManager, which owns the economy rules.
+    public void Populate(UpgradeData upgrade, int price, bool maxed)
     {
         currentUpgrade = upgrade;
 
@@ -70,7 +71,12 @@ public class ShopPopulator : MonoBehaviour
 
         if (costText != null)
         {
-            costText.text = "Bytes: " + upgrade.bytesCost;
+            costText.text = maxed ? "Max" : "Bytes: " + price;
+        }
+
+        if (buyButton != null)
+        {
+            buyButton.interactable = !maxed;
         }
     }
 }
