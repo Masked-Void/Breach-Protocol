@@ -102,7 +102,10 @@ public class Damage : MonoBehaviour
 
     [Tooltip("tick to use the explosion block instead of a normal hit")]
     public bool isExplosive;
-
+    // fraction of explosionRadius this bullet's blast uses, set by GunStats from
+    // the exploding bullets upgrade. explosionRadius is the maximum, reached at
+    // the tier cap. defaults to 1 so anything not set by the upgrade is unchanged.
+    [HideInInspector] public float explosionRadiusScale = 1f;
     // true while a stationary hazard is mid damage tick, stops it stacking
     bool isDamaging;
     bool hasHit = false;
@@ -335,10 +338,19 @@ public class Damage : MonoBehaviour
         if (hasAudioManager)
             AudioManager.instance.PlaySpatialSFX(AudioManager.instance.PickRandomAudio(AudioManager.instance.explosion), transform.position, AudioManager.instance.explosionVol);
 
-        // Spawn explosion particle effect
+        // fraction of the full blast this bullet gets, from the exploding bullets
+        // upgrade tier. explosionRadius is the cap, reached at the top tier.
+        // clamped so a bad asset value can never exceed it
+        float radiusFraction = Mathf.Clamp01(explosionRadiusScale);
+        float radius = explosionRadius * radiusFraction;
+
+        // Spawn explosion particle effect, scaled to match the damage radius.
+        // the explosion prefab's particle systems use Hierarchy scaling mode,
+        // otherwise they would ignore this scale
         if (explosionEffect != null)
         {
             ParticleSystem explodeFx = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            explodeFx.transform.localScale = Vector3.one * radiusFraction;
             Destroy(explodeFx.gameObject, 1.9f);
         }
 
@@ -355,21 +367,20 @@ public class Damage : MonoBehaviour
         }
 
         // Query nearby colliders within explosion radius
-        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
+        Collider[] hits = Physics.OverlapSphere(transform.position, radius);
 
         foreach (Collider hit in hits)
         {
             //Apply physics knockback force
             Rigidbody targetRb = hit.GetComponent<Rigidbody>();
             if (targetRb != null)
-                targetRb.AddExplosionForce(explosionForce, transform.position, explosionRadius);
+                targetRb.AddExplosionForce(explosionForce, transform.position, radius);
 
             IDamage dmg = hit.GetComponent<IDamage>();
             if (dmg != null)
                 StartCoroutine(delayDamage(dmg));
         }
     }
-
     IEnumerator delayDamage(IDamage dmg)
     {
         yield return new WaitForFixedUpdate();

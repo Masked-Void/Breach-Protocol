@@ -54,24 +54,34 @@ public class GunStats : WeaponStats
     // spawns one bullet per pellet, each with its own random deviation inside
     // the spread cone. bullets are tagged with this weapon so kills credit
     // the right challenge.
+    // spawns one bullet per pellet, each with its own random deviation inside
+    // the spread cone. bullets are tagged with this weapon so kills credit
+    // the right challenge.
     public override void Attack()
     {
-
         Transform gunBarrel = WeaponManager.instance.Barrel;
         if (gunBarrel == null)
             return;
 
         AudioManager.instance.PlaySFX(shootSound, shootSoundVol);
 
-        bool hasKunaiSpread = UpgradeManager.instance != null &&
-                      UpgradeManager.instance.IsUpgradeActive("kunai_spread");
+        // read once per trigger pull rather than once per pellet
+        float kunaiCount = 0f;
+        float explosionScale = 0f;
+
+        if (UpgradeManager.instance != null)
+        {
+            kunaiCount = UpgradeManager.instance.GetUpgradeValue("kunai_spread");
+            explosionScale = UpgradeManager.instance.GetUpgradeValue("exploding_bullets");
+        }
 
         int shotsToFire = (gunType == GunType.Shotgun) ? pelletCount : 1;
         float spreadToUse = (gunType == GunType.Shotgun) ? spreadAngle : 0f;
 
-        if (gunType == GunType.Kunai && hasKunaiSpread)
+        if (gunType == GunType.Kunai && kunaiCount > 0f)
         {
-            shotsToFire = 3;
+            // never fewer than one, so a misconfigured asset can't make the kunai fire nothing
+            shotsToFire = Mathf.Max(1, Mathf.RoundToInt(kunaiCount));
             spreadToUse = 15f;
         }
 
@@ -94,8 +104,11 @@ public class GunStats : WeaponStats
                 {
                     dmg.sourceWeapon = this;
 
-                    if (UpgradeManager.instance != null && UpgradeManager.instance.IsUpgradeActive("exploding_bullets"))
+                    if (explosionScale > 0f)
+                    {
                         dmg.isExplosive = true;
+                        dmg.explosionRadiusScale = explosionScale;
+                    }
                 }
             }
         }

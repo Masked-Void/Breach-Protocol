@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  * Script: EconomyConfig
@@ -18,4 +18,10 @@ public class EconomyConfig : ScriptableObject
 
     [Tooltip("Files awarded for beating the boss: default is 5")]
     public int filesForBossBeat = 5;
+    [Header("Upgrades")]
+    [Tooltip("Tier Cap on Upgrades")]
+    public int tierCap = 3;
+    [Tooltip("Multiplier for cost")]
+    public float multiplier = 2;
+
 }

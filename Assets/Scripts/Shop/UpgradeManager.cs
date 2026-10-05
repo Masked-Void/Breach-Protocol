@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,7 +55,7 @@ public class UpgradeManager : MonoBehaviour
     public TextMeshProUGUI upgradeValue;
     public Button buyButton;
     public TextMeshProUGUI buyButtonText;
-
+    private Dictionary<string, int> upgradeTiers = new Dictionary<string, int>();
     [Header("Currency")]
     public TextMeshProUGUI fileCountText;
 
@@ -72,11 +73,65 @@ public class UpgradeManager : MonoBehaviour
             SaveManager.MarkDirty();
         }
     }
+    public int GetUpgradeTier(string id)
+    {
+       if( upgradeTiers.TryGetValue(id, out int upgradeTier))
+        {
+            return upgradeTier;
+        }
 
-    // getters only. these mutate through Add and Remove on the save's own list,
-    // so a setter would only be a way to swap that list out by accident.
-    public List<string> purchasedUpgrades => SaveManager.Data.purchasedUpgradeIDs;
-    public List<string> activeUpgrades => SaveManager.Data.activeUpgradeIDs;
+        return 0;
+    }
+
+    // records one more tier bought this run. writing through the indexer adds
+    // the key on the first purchase and overwrites it after that.
+    public void AddUpgradeTier(string id)
+    {
+        upgradeTiers[id] = GetUpgradeTier(id) + 1;
+    }
+    // the one question gameplay asks about an upgrade: how strong is it right now.
+    // 0 when the upgrade is not active, otherwise its base value plus one step per
+    // tier bought this run. every effect reads this so the formula lives in one place.
+    public float GetUpgradeValue(string id)
+    {
+        if (string.IsNullOrEmpty(id) || !IsUpgradeActive(id))
+        {
+            return 0f;
+        }
+
+        UpgradeData upgrade = findUpgrade(id);
+
+        if (upgrade == null)
+        {
+            return 0f;
+        }
+
+        return upgrade.value + upgrade.valuePerTier * GetUpgradeTier(id);
+    }
+
+    // looks an upgrade asset up by its id in this scene's upgrades array
+    private UpgradeData findUpgrade(string id)
+    {
+        if (upgrades == null)
+        {
+            return null;
+        }
+
+        foreach (UpgradeData upgrade in upgrades)
+        {
+            if (upgrade != null && upgrade.id == id)
+            {
+                return upgrade;
+            }
+        }
+
+        return null;
+    }
+    public void ClearUpgradeTiers()
+    {
+        upgradeTiers.Clear();
+    }
+ 
 
     void Awake()
     {
@@ -95,7 +150,7 @@ public class UpgradeManager : MonoBehaviour
             instance = null;
     }
 
-    public bool IsUpgradeActive(string id) => activeUpgrades.Contains(id);
+    public bool IsUpgradeActive(string id) => SaveManager.Data.IsUpgradeActive(id);
 
     public bool IsUpgradeUnlocked(UpgradeData upgrade)
     {
@@ -138,7 +193,7 @@ public class UpgradeManager : MonoBehaviour
                 : upgrade.description;
         }
         if (upgradeCost != null)
-            upgradeCost.text = "" + upgrade.cost;
+            upgradeCost.text = "" + upgrade.filesCost;
         if (upgradeValue != null)
             upgradeValue.text = "" + upgrade.value;
         if (fileCountText != null)
@@ -146,10 +201,10 @@ public class UpgradeManager : MonoBehaviour
 
         displayRequiredChallenges(upgrade);
 
-        bool isPurchased = purchasedUpgrades.Contains(upgrade.id);
+        bool isPurchased = SaveManager.Data.IsUpgradePurchased(upgrade.id);
         bool isUnlocked = IsUpgradeUnlocked(upgrade);
-        bool isActive = activeUpgrades.Contains(upgrade.id);
-        bool canBuy = files >= upgrade.cost;
+        bool isActive = SaveManager.Data.IsUpgradeActive(upgrade.id);
+        bool canBuy = files >= upgrade.filesCost;
         if (buyButton != null)
         {
             buyButton.onClick.RemoveAllListeners();
@@ -191,8 +246,7 @@ public class UpgradeManager : MonoBehaviour
     [ContextMenu("Reset Saved Upgrades")]
     public void ResetUpgrades()
     {
-        purchasedUpgrades.Clear();
-        activeUpgrades.Clear();
+        SaveManager.Data.upgradeEntries.Clear();
         files = 0;
 
         SaveManager.Save();
@@ -244,10 +298,7 @@ public class UpgradeManager : MonoBehaviour
 
     void toggleUpgrade(UpgradeData upgrade)
     {
-        if (activeUpgrades.Contains(upgrade.id))
-            activeUpgrades.Remove(upgrade.id);
-        else
-            activeUpgrades.Add(upgrade.id);
+        getOrAddUpgrade(upgrade.id).active = !getOrAddUpgrade(upgrade.id).active;
 
         SaveUpgrades();
         DisplayUpgrades(upgrade);
@@ -267,14 +318,25 @@ public class UpgradeManager : MonoBehaviour
     void buyButtonClicked(UpgradeData upgrade)
     {
         // Check if player can afford upgrade
-        if (files >= upgrade.cost && !purchasedUpgrades.Contains(upgrade.id))
+        if (files >= upgrade.filesCost && !SaveManager.Data.IsUpgradePurchased(upgrade.id))
         {
-            files -= upgrade.cost;
-            purchasedUpgrades.Add(upgrade.id);
+            files -= upgrade.filesCost;
+            getOrAddUpgrade(upgrade.id).purchased = true;
             SaveUpgrades();
             DisplayUpgrades(upgrade); // Immediately reflect the purchase status
         }
         if (AudioManager.instance != null)
             AudioManager.instance.PlayButtonClick();
+    }
+
+    private UpgradeEntry getOrAddUpgrade(string id)
+    {
+        UpgradeEntry entry = SaveManager.Data.GetUpgrade(id);
+        if (entry == null)
+        {
+            entry = new UpgradeEntry(id);
+            SaveManager.Data.upgradeEntries.Add(entry);
+        }
+        return entry;
     }
 }
