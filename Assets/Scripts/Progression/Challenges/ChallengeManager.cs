@@ -373,7 +373,46 @@ public class ChallengeManager : MonoBehaviour
 
         Debug.Log("Challenges reset successfully.");
     }
+    // marks every challenge in the game complete. inspector and debug only.
+    // sets progress as well as the complete flag, because AreAllChallengesComplete
+    // (which gates upgrades) reads progress and never checks complete.
+    [ContextMenu("Complete All Challenges")]
+    public void CompleteAllChallenges()
+    {
+        if (challenges == null)
+        {
+            return;
+        }
 
+        foreach (ChallengeData cData in challenges)
+        {
+            if (cData == null || cData.challengesList == null)
+            {
+                continue;
+            }
+
+            foreach (var subchallenge in cData.challengesList)
+            {
+                if (string.IsNullOrEmpty(subchallenge.challengeID))
+                {
+                    continue;
+                }
+
+                ChallengeEntry entry = getOrAddChallenge(subchallenge.challengeID);
+                entry.progress = subchallenge.killCount;
+                entry.complete = true;
+            }
+        }
+
+        SaveManager.Save();
+
+        if (currentlySelectedChallenge != null)
+        {
+            DisplayWeaponChallenges(currentlySelectedChallenge);
+        }
+
+        Debug.Log("Challenges completed.");
+    }
     private ChallengeEntry getOrAddChallenge(string id)
     {
         ChallengeEntry entry = SaveManager.Data.GetChallenge(id);

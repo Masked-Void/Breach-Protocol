@@ -85,10 +85,33 @@ public class LevelLoader : MonoBehaviour
 
         StartCoroutine(LoadLevel(wanted));
     }
+    // reloads the level that is already open. public so the lose screen's retry
+    // button can trigger it without starting a coroutine on another object.
+    public void ReloadCurrentLevel()
+    {
+        if (string.IsNullOrEmpty(currentLevel))
+        {
+            Debug.LogError("LevelLoader: no current level to reload", this);
+            return;
+        }
 
+        StartCoroutine(LoadLevel(currentLevel));
+    }
 
     public IEnumerator LoadLevel(string levelName)
     {
+        // a run begins here on both paths, title level select and retry, and every
+        // manager in Bootstrap is alive at this point. bytes and upgrade tiers are
+        // per run and leak into the next one without this.
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.StartRun();
+        }
+        else
+        {
+            Debug.LogError("LevelLoader: no GameManager, run state was not reset", this);
+        }
+
         Scene previous = SceneManager.GetSceneByName(currentLevel);
 
         // something else can unload the level behind our back, and UnloadSceneAsync

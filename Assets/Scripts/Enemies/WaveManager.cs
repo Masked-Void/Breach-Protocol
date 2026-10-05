@@ -105,7 +105,6 @@ public class WaveManager : MonoBehaviour, IWaveHost
     [Header("Economy")]
     [Tooltip("how many Files a cleared wave is worth")]
     [SerializeField] private EconomyConfig economy;
-
     // runtime counters
     private int enemiesAlive;
     private int enemiesKilled;
@@ -114,6 +113,15 @@ public class WaveManager : MonoBehaviour, IWaveHost
     private SpawnPoint[] spawnPoints;
     private Coroutine spawnRoutine;
     private int spawnersStillSpawning;
+
+    // raised when a wave is cleared and the gap before the next one begins.
+    // the between-wave shop listens for this.
+    public static event System.Action WaveCleared;
+
+    // static events survive a play session when domain reload is off, so last
+    // session's destroyed subscribers stay attached without this
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void clearOldEvents() { WaveCleared = null; }
 
     // read only views for the hud and other systems, nothing outside changes these
     public int CurrentWave => currentWave;
@@ -455,8 +463,10 @@ public class WaveManager : MonoBehaviour, IWaveHost
         }
     }
 
-    // awards Files, tells the heartbeat system, then either queues the next
-    // wave or ends the run
+    // awards Files for the wave, tells the heartbeat system, then either queues the
+    // next wave or ends the run. the Files transfer into the meta wallet happens
+    // once in GameManager.EndRun, not here — adding the running total every wave
+    // was paying the player several times over.
     void completeWave()
     {
         if (!waveInProgress)
@@ -474,18 +484,15 @@ public class WaveManager : MonoBehaviour, IWaveHost
         if (GameManager.instance != null)
         {
             GameManager.instance.AddFiles(economy.filesPerWave);
-
-            // keep the upgrade currency in sync after every wave
-            if (UpgradeManager.instance != null)
-            {
-                UpgradeManager.instance.files += GameManager.instance.totalFiles;
-                UpgradeManager.instance.SaveUpgrades();
-            }
-
-            //Debug.Log("Current Files: " + GameManager.instance.totalFiles);
         }
 
         queueNextWave();
+
+        // after queueNextWave, so the shop does not open on the run that ends in a win
+        if (currentWave <= maxWaves)
+        {
+            WaveCleared?.Invoke();
+        }
     }
 
     // all waves cleared, hands off to the win state

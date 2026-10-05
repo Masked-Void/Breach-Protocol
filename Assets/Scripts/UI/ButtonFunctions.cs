@@ -46,12 +46,27 @@ public class ButtonFunctions : MonoBehaviour
     }
 
     // reloads the current level from scratch
+    // reloads the current level. routes through LevelLoader so Bootstrap and the
+    // managers survive, instead of replacing every loaded scene.
     public void restart()
-
     {
         if (AudioManager.instance != null)
+        {
             AudioManager.instance.PlayButtonClick();
-        StartCoroutine(LoadSceneAsync(SceneManager.GetActiveScene().name));
+        }
+
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.StateUnpause();
+        }
+
+        if (LevelLoader.instance == null)
+        {
+            Debug.LogError("ButtonFunctions: no LevelLoader, restart did nothing", this);
+            return;
+        }
+
+        LevelLoader.instance.ReloadCurrentLevel();
     }
 
     // leaves the run and goes back to the title screen
