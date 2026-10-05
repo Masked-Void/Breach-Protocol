@@ -63,9 +63,21 @@ public class TutorialServices : MonoBehaviour
 
     private void Awake()
     {
-        if (Stress == null || Weapon == null || Shop == null || Movement == null)
+        if (Stress == null)
         {
-            Debug.LogError("TutorialServices: all four adapters belong on this object", this);
+            Debug.LogError("TutorialServices: No StressAdapter on this object", this);
+        }
+        if (Movement == null)
+        {
+            Debug.LogError("TutorialServices: No MovementAdapter on this object", this);
+        }
+        if (Shop == null)
+        {
+            Debug.LogWarning("TutorialServices: No ShopAdapter on this object", this);
+        }
+        if (Weapon == null)
+        {
+            Debug.LogError("TutorialServices: No WeaponAdapter on this object", this);
         }
     }
 

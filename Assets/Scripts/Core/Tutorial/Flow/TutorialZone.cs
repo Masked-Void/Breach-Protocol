@@ -1,16 +1,28 @@
 ﻿using UnityEngine;
 
-public class TutorialZone : MonoBehaviour
+// placeholder lesson for greyboxing, standing in the volume counts as doing the lesson
+[RequireComponent(typeof(Collider))]
+public class TutorialZone : TutorialLesson
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("Zone")]
+    [SerializeField] private TutorialStage stage = TutorialStage.BpmRing;
+
+    [SerializeField] private string playerTag = "Player";
+
+    public override TutorialStage Stage => stage;
+
+    private void Reset()
     {
-        
+        GetComponent<Collider>().isTrigger = true;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerStay(Collider other)
     {
+        if (!IsRunning || !other.CompareTag(playerTag))
+        {
+            return;
+        }
 
+        Complete();
     }
 }
