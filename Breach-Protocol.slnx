@@ -66,6 +66,7 @@
   <Project Path="Unity.Burst.Editor.csproj" />
   <Project Path="Unity.TextMeshPro.Editor.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.2D.Editor.Overrides.csproj" />
+  <Project Path="VFXGraph.OutputEventHandlers.Editor.csproj" />
   <Project Path="Unity.Postprocessing.Runtime.csproj" />
   <Project Path="Unity.VisualScripting.State.csproj" />
   <Project Path="Unity.AI.Generators.Redux.csproj" />
@@ -78,6 +79,7 @@
   <Project Path="Unity.Multiplayer.Center.Common.csproj" />
   <Project Path="Unity.UnifiedRayTracing.Runtime.csproj" />
   <Project Path="Unity.ProBuilder.KdTree.csproj" />
+  <Project Path="VFXGraph.OutputEventHandlers.csproj" />
   <Project Path="Unity.2D.Sprite.Editor.csproj" />
   <Project Path="Unity.AppUI.Navigation.csproj" />
   <Project Path="Unity.AI.Generators.Asset.csproj" />
@@ -107,6 +109,7 @@
   <Project Path="Unity.AI.Navigation.csproj" />
   <Project Path="Unity.CollabProxy.Editor.csproj" />
   <Project Path="Unity.TerrainTools.csproj" />
+  <Project Path="Unity.RenderPipelines.Core.Samples.Runtime.csproj" />
   <Project Path="Unity.PathTracing.Editor.csproj" />
   <Project Path="Unity.AI.Assistant.Bridge.Editor.csproj" />
   <Project Path="Unity.AI.Generators.Sdk.csproj" />
@@ -122,6 +125,7 @@
   <Project Path="Unity.ProBuilder.Stl.csproj" />
   <Project Path="Unity.VisualScripting.SettingsProvider.Editor.csproj" />
   <Project Path="Unity.AI.Toolkit.Async.csproj" />
+  <Project Path="Unity.RenderPipelines.Core.Samples.Editor.csproj" />
   <Project Path="Autodesk.Fbx.Editor.csproj" />
   <Project Path="Unity.PlasticSCM.Editor.Entities.csproj" />
   <Project Path="Unity.AI.Generators.Contexts.csproj" />

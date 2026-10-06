@@ -12,12 +12,12 @@ public interface ITutorialShop
     // points the shop popup at the tutorial stock
     void SetStock(TutorialShopConfig stock);
 
-    // opens the popup, the way it opens between rounds
+    // opens the popup, the way it opens between waves
     void OpenShop();
 
     // gives Bytes straight to the player, the way a cleared round pays
     void GrantBytes(int amount);
 
-    // zeroes tutorial Bytes and puts the real shop popup back
+    // zeroes tutorial Bytes and closes the popup if it's open
     void ClearTutorialState();
 }
